@@ -1,0 +1,11 @@
+import {buildKeymap, buildMenuItems, pubpubSetup} from './setup';
+import  {clipboardParser, clipboardSerializer} from './clipboardSerializer';
+import { migrateDiffs, migrateMarks, schema } from './schema';
+exports.pubpubSetup = pubpubSetup;
+exports.buildMenuItems = buildMenuItems;
+exports.buildKeymap = buildKeymap;
+exports.clipboardParser = clipboardParser;
+exports.clipboardSerializer = clipboardSerializer;
+exports.migrateDiffs = migrateDiffs;
+exports.migrateMarks = migrateMarks;
+exports.schema = schema;

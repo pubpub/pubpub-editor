@@ -1,0 +1,114 @@
+import { locales, sampleData, styles } from './csldata';
+
+import { CSL } from  '../citeproc/citeproc';
+import parseBibTeX from './bibtextocsl';
+import striptags from 'striptags';
+
+class CitationEngine {
+
+  constructor() {
+    this.citeproc = null;
+    this.items = {};
+    this.itemIDs = [];
+
+    this.style = 'acm';
+
+    this.sys = {
+      retrieveItem: (itemID) => {
+        return this.items[itemID];
+      },
+      retrieveLocale: (locale) => {
+        const result =  locales[locale];
+        return result;
+
+      },
+    };
+
+  }
+
+  setBibliography = (refItems) => {
+    const citeproc = new CSL.Engine(this.sys, styles[this.style]);
+    const itemIDs = refItems.map((item) => item.id);
+    const items = {};
+    for (const item of refItems) {
+      items[item.id] = item;
+    }
+    this.items = items;
+    this.itemIDs = itemIDs;
+    citeproc.updateItems(itemIDs);
+    this.citeproc = citeproc;
+  }
+
+  removeCitation = (citationID) => {
+    this.items = this.items.filter((item) => (item.id !== citationID));
+    this.itemIDs = this.itemIDs.filter((itemID) => (itemID !== citationID));
+    citeproc.updateItems(itemIDs);
+  }
+
+  getAllReferences = () => {
+    return this.items;
+  }
+
+  getShortForm = (citationID) => {
+
+    var citation_object =
+    {
+        // items that are in a citation that we want to add. in this case,
+        // there is only one citation object, and we know where it is in
+        // advance.
+        "citationItems": [
+            {
+                "id": citationID
+            }
+        ],
+        "properties": {
+            "noteIndex": 0
+        }
+
+    }
+
+
+    const citation = this.items[citationID];
+    const cluster = this.citeproc.appendCitationCluster(citation_object, true);
+    if (cluster && cluster.length > 0) {
+      return cluster[0][1];
+    }
+    return null;
+  }
+
+  addCitation = (citation) =>  {
+    this.items[citation.id] = citation;
+    this.itemIDs.push(citation.id);
+    this.citeproc.updateItems(this.itemIDs);
+  }
+
+  getBibliography = (itemIDs) => {
+    if (!this.citeproc) {
+      return null;
+    }
+    if (itemIDs) {
+      this.citeproc.updateItems(itemIDs);
+    }
+    if (this.citeproc.bibliography.tokens.length) {
+      const bibRes = this.citeproc.makeBibliography();
+      if (bibRes && bibRes.length > 1) {
+        const entries = bibRes[0].entry_ids.map((entry) => entry[0]);
+        const bibArray = bibRes[1];
+        const extractRegex = /\s*\<div[^>]*\>(.*)\<\/div.*\>\s*/;
+        const bib = bibArray.map((bibEntry, index) => {
+          if (bibEntry) {
+            return {text: striptags(bibEntry), id: entries[index]};
+          }
+          return null;
+        });
+        return bib;
+      }
+      return null;
+    }
+    return null;
+  }
+
+}
+
+
+export default CitationEngine;

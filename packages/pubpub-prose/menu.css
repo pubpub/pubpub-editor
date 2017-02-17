@@ -1,0 +1,47 @@
+.editorMenu button.pt-button {
+    border-right-color: transparent !important;
+    border-left-color: transparent !important;
+    box-shadow: none !important;
+    border-left-width: 0px;
+    border-right-width: 0px;
+}
+
+.editorMenu a.pt-button {
+    box-shadow: none !important;
+}
+
+.editorMenu .pt-icon-caret-down {
+  margin: 0px !important;
+  width: 10px;
+}
+
+.editorWrapper {
+  margin-bottom: 25px;
+}
+
+.editorMenuSeperator {
+  border-right: 1px solid black;
+}
+
+.editorMenu {
+  position: relative;
+  left: -50px;
+  top: -20px;
+}
+
+.textMenu {
+  flex-grow: 2;
+}
+
+.textMenu .pt-button {
+  width: 100%;
+}
+
+.editorMenu .pt-button {
+ background: #ffffff ;
+ border: 1px solid #e6e8eb;
+}
+
+.editorMenuPopover .pt-popover-content {
+  padding: 5px !important;
+}
