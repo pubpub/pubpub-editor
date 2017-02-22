@@ -1,6 +1,6 @@
 {
   "name": "@pubpub/prose",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Prosemirror Plugins for the PubPub Editor",
   "main": "./dist/index.js",
   "scripts": {
