@@ -1,5 +1,9 @@
 exports.urlToType = (url) => {
 
+  if (!url) {
+    return null;
+  }
+
   const extension = url.split('.').pop();
 
   if (!extension) {

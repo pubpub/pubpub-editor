@@ -40,6 +40,10 @@ var CitationsComponent = exports.CitationsComponent = _react2.default.createClas
     this.setState({ selected: selected });
   },
 
+  preventClick: function preventClick(evt) {
+    evt.preventDefault();
+  },
+
   renderDisplay: function renderDisplay() {
     var citations = this.props.citations;
 
@@ -57,7 +61,7 @@ var CitationsComponent = exports.CitationsComponent = _react2.default.createClas
     var hideCitations = !(bib && bib.length > 0);
     return _react2.default.createElement(
       'div',
-      { className: 'pub-citations' },
+      { className: 'pub-citations', onClick: this.preventClick },
       !hideCitations ? _react2.default.createElement(
         'div',
         null,

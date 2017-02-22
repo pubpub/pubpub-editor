@@ -32,6 +32,7 @@ var CollaborativeEditor = function (_BaseEditor) {
 		    username = _ref$collab.username,
 		    docID = _ref$collab.docID,
 		    repoID = _ref$collab.repoID,
+		    serverURL = _ref$collab.serverURL,
 		    createFile = _ref.handlers.createFile;
 
 		_classCallCheck(this, CollaborativeEditor);
@@ -100,7 +101,7 @@ var CollaborativeEditor = function (_BaseEditor) {
 		collab.doc = { id: tokenInfo.docid };
 		_this.collab = collab;
 
-		new ModServerCommunications(collab);
+		new ModServerCommunications(collab, serverURL);
 		new ModCollab(collab);
 
 		// this.setSaveTimers();
@@ -149,6 +150,7 @@ var CollaborativeEditor = function (_BaseEditor) {
 		key: '_onAction',
 		value: function _onAction(action) {
 			try {
+				console.log('got action', action);
 				var newState = this.view.state.apply(action);
 				this.pm = newState;
 				this.view.updateState(newState);

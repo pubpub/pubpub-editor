@@ -3,7 +3,7 @@ import React, { PropTypes } from 'react';
 
 import Dropzone from 'react-dropzone';
 import Radium from 'radium';
-import { URLToType } from 'pubpub-render-files';
+import { URLToType } from '@pubpub/render-files';
 import {s3Upload} from './uploadFile';
 
 // import {globalStyles} from 'utils/styleConstants';
@@ -98,13 +98,18 @@ export const FileUploadDialog = React.createClass({
 		});
 	},
 
+	preventClick: function(evt) {
+		evt.preventDefault();
+	},
+
+
 	render: function() {
 
 		const uploading = (this.state.uploadRates.length > 0);
 		const uploadRate = (uploading) ? this.state.uploadRates[0] : 0;
 
 		return (
-			<div>
+			<div onClick={this.preventClick}>
 				<Tabs onChange={this.changedTab} selectedTabIndex={this.state.selectedTabIndex}>
 						<TabList>
 								<Tab key="manual">Upload</Tab>

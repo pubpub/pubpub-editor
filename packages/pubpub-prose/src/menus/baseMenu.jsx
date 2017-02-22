@@ -2,8 +2,11 @@ import { Button, Dropdown, Intent, Menu, MenuItem, Popover, PopoverInteractionKi
 import React, {PropTypes} from 'react';
 import { getPlugin, getPluginState } from '../plugins';
 
+import BasePrompt from './basePrompt';
 import FileDialog from './fileDialog';
 import ReferenceDialog from './referenceDialog'
+
+console.log('got base', BasePrompt);
 
 let styles = {};
 
@@ -133,9 +136,27 @@ export const BaseMenu = React.createClass({
 		this.setState({dialogSpec: null, dialogType: null, dialogExtension: null});
 	},
 
+	saveLink(linkData) {
+		this.state.dialogSpec.run(linkData);
+		this.setState({dialogSpec: null, dialogType: null, dialogExtension: null});
+	},
+
+	saveTable(tableData) {
+		this.state.dialogSpec.run(this.props.view.state, this.props.view.dispatch, this.props.view, tableData);
+		this.setState({dialogSpec: null, dialogType: null, dialogExtension: null});
+	},
+
 	runSpec: function(spec) {
 		if (spec.dialogType) {
-			this.setState({ dialogSpec: spec, dialogType: spec.dialogType, dialogExtension: spec.dialogExtension });
+			if (spec.dialogCallback) {
+				const openPrompt = ({callback}) => {
+					const newSpec = {run: callback};
+					this.setState({ dialogSpec: newSpec, dialogType: spec.dialogType, dialogExtension: spec.dialogExtension });
+				};
+				spec.run(this.props.view.state, this.props.view.dispatch, this.props.view, openPrompt);
+			} else {
+				this.setState({ dialogSpec: spec, dialogType: spec.dialogType, dialogExtension: spec.dialogExtension });
+			}
 			return;
 		}
 		spec.run(this.props.view.state, this.props.view.dispatch, this.props.view);
@@ -162,11 +183,15 @@ export const BaseMenu = React.createClass({
 		return {};
 	},
 
+	preventClick: function(evt) {
+		evt.preventDefault();
+	},
+
   renderDisplay() {
 		const renderedMenu = this.buildMenu(this.props.menu);
 		const editorState = this.props.view.state;
     return (
-      <div className="editorWrapper">
+      <div className="editorWrapper" onClick={this.preventClick}>
 			<Toaster position={Position.TOP} ref={'errorToast'} />
 
 			<div className="pt-button-group editorMenu" style={{width: 750}}>
@@ -178,6 +203,14 @@ export const BaseMenu = React.createClass({
 			}
 			{(this.state.dialogType === 'reference') ?
 				<ReferenceDialog onClose={this.onClose} saveReference={this.saveReference} open={true}/>
+				: null
+			}
+			{(this.state.dialogType === 'link') ?
+				<BasePrompt type="link" onClose={this.onClose} savePrompt={this.saveLink}/>
+				: null
+			}
+			{(this.state.dialogType === 'table') ?
+				<BasePrompt type="table"  onClose={this.onClose} savePrompt={this.saveTable}/>
 				: null
 			}
 			</div>

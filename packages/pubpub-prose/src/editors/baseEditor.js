@@ -51,7 +51,7 @@ class BaseEditor {
         dragstart: (view, evt) => {
           evt.preventDefault();
           return true;
-        }
+        },
       },
       nodeViews: {
         embed: (node, view, getPos) => new EmbedView(node, view, getPos, {block: true}),

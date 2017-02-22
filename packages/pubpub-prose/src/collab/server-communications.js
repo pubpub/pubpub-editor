@@ -6,12 +6,10 @@ saving, collaboration, etc.).
 
 import { getVersion } from 'prosemirror-collab';
 
-const collabServerUrl = 'pubpub-collab-dev.herokuapp.com';
-
-
 export class ModServerCommunications {
-	constructor(editor) {
+	constructor(editor, serverURL) {
 		editor.mod.serverCommunications = this;
+		this.serverURL = serverURL;
 		this.editor = editor;
 		/* A list of messages to be sent. Only used when temporarily offline.
 		Messages will be sent when returning back online. */
@@ -63,7 +61,8 @@ export class ModServerCommunications {
 		const that = this;
 		// const websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 
-		const wsServer = collabServerUrl;
+		const wsServer = this.serverURL;
+		console.log('Connecting to websocket server', wsServer);
 		let websocketProtocol;
 		if (wsServer.indexOf('localhost') !== -1) {
 			websocketProtocol = 'ws:';

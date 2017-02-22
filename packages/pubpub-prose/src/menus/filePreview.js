@@ -25,7 +25,6 @@ export const FilePreview = React.createClass({
     const {fileURL} = this.props;
     const extension = fileURL.split('.').pop();
     const fileType = FileTranslation[extension];
-    console.log(extension, fileURL, fileType);
     switch (fileType) {
       case 'image':
           return <img style={{width: '100%'}} src={fileURL} />

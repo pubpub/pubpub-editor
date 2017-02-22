@@ -155,21 +155,14 @@ function insertTableItem(tableType) {
   return new MenuItem({
     title: "Insert Table",
     icon: "th",
-    run: function run(state, dispatch, view) {
-      openPrompt({
-        title: "Insert table",
-        fields: {
-          rows: new TextField({ label: "Rows", validate: positiveInteger }),
-          cols: new TextField({ label: "Columns", validate: positiveInteger })
-        },
-        callback: function callback(_ref2) {
-          var rows = _ref2.rows,
-              cols = _ref2.cols;
+    dialogType: "table",
+    run: function run(state, dispatch, view, _ref2) {
+      var rows = _ref2.rows,
+          cols = _ref2.cols;
 
-          var transaction = state.tr.replaceSelectionWith(createTable(tableType, +rows, +cols));
-          view.dispatch(transaction);
-        }
-      });
+      console.log('Making row!', rows, cols);
+      var transaction = state.tr.replaceSelectionWith(createTable(tableType, +rows, +cols));
+      view.dispatch(transaction);
     },
     select: function select(state) {
       var $from = state.selection.$from;
@@ -221,26 +214,17 @@ function linkItem(markType) {
   return markItem(markType, {
     title: "Add or remove link",
     icon: "link",
-    run: function run(state, onAction, view) {
+    dialogType: "link",
+    dialogCallback: true,
+    run: function run(state, dispatch, view, openPrompt) {
       if (markActive(state, markType)) {
-        toggleMark(markType)(state, onAction);
+        console.log('Got  existing typee');
+        toggleMark(markType)(state, view.dispatch);
         return true;
       }
       openPrompt({
-        title: "Create a link",
-        fields: {
-          href: new TextField({
-            label: "Link target",
-            required: true,
-            clean: function clean(val) {
-              if (!/^https?:\/\//i.test(val)) val = 'http://' + val;
-              return val;
-            }
-          }),
-          title: new TextField({ label: "Title" })
-        },
         callback: function callback(attrs) {
-          toggleMark(markType, attrs)(view.state, view.props.onAction);
+          toggleMark(markType, attrs)(view.state, view.dispatch);
         }
       });
     }

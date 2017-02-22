@@ -84,6 +84,10 @@ var ReferenceComponent = exports.ReferenceComponent = _react2.default.createClas
     this.setState({ label: label });
   },
 
+  preventClick: function preventClick(evt) {
+    evt.preventDefault();
+  },
+
   renderDisplay: function renderDisplay() {
 
     var referenceClass = (0, _classnames2.default)({
@@ -93,7 +97,7 @@ var ReferenceComponent = exports.ReferenceComponent = _react2.default.createClas
 
     return _react2.default.createElement(
       'span',
-      { className: referenceClass },
+      { className: referenceClass, onClick: this.preventClick },
       this.state.label ? this.state.label : "[1]"
     );
   },

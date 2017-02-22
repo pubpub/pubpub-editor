@@ -119,18 +119,11 @@ function insertTableItem(tableType) {
   return new MenuItem({
     title: "Insert Table",
     icon: "th",
-    run(state, dispatch, view) {
-      openPrompt({
-        title: "Insert table",
-        fields: {
-          rows: new TextField({label: "Rows", validate: positiveInteger}),
-          cols: new TextField({label: "Columns", validate: positiveInteger})
-        },
-        callback({rows, cols}) {
-          const transaction = state.tr.replaceSelectionWith(createTable(tableType, +rows, +cols));
-          view.dispatch(transaction);
-        }
-      })
+    dialogType: "table",
+    run(state, dispatch, view, {rows, cols}) {
+      console.log('Making row!', rows, cols);
+      const transaction = state.tr.replaceSelectionWith(createTable(tableType, +rows, +cols));
+      view.dispatch(transaction);
     },
     select(state) {
       let $from = state.selection.$from
@@ -172,29 +165,19 @@ function linkItem(markType) {
   return markItem(markType, {
     title: "Add or remove link",
     icon: "link",
-    run(state, onAction, view) {
+    dialogType: "link",
+    dialogCallback: true,
+    run(state, dispatch, view, openPrompt) {
       if (markActive(state, markType)) {
-        toggleMark(markType)(state, onAction)
+        console.log('Got  existing typee');
+        toggleMark(markType)(state, view.dispatch)
         return true
       }
       openPrompt({
-        title: "Create a link",
-        fields: {
-          href: new TextField({
-            label: "Link target",
-            required: true,
-            clean: (val) => {
-              if (!/^https?:\/\//i.test(val))
-                val = 'http://' + val
-              return val
-            }
-          }),
-          title: new TextField({label: "Title"})
-        },
         callback(attrs) {
-          toggleMark(markType, attrs)(view.state, view.props.onAction)
+          toggleMark(markType, attrs)(view.state, view.dispatch)
         }
-      })
+      });
     }
   })
 }

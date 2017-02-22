@@ -82,7 +82,7 @@ function buildKeymap(schema, mapKeys) {
     })();
   }
   if (type = schema.nodes.list_item) {
-    // bind("Enter", splitListItem(type))
+    bind("Enter", splitListItem(type));
     bind("Mod-[", liftListItem(type));
     bind("Mod-]", sinkListItem(type));
   }

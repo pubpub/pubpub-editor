@@ -15,10 +15,8 @@ var _prosemirrorCollab = require('prosemirror-collab');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var collabServerUrl = 'pubpub-collab-dev.herokuapp.com';
-
 var ModServerCommunications = exports.ModServerCommunications = function () {
-	function ModServerCommunications(editor) {
+	function ModServerCommunications(editor, serverURL) {
 		var _this = this;
 
 		_classCallCheck(this, ModServerCommunications);
@@ -47,7 +45,8 @@ var ModServerCommunications = exports.ModServerCommunications = function () {
 			var that = _this;
 			// const websocketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
 
-			var wsServer = collabServerUrl;
+			var wsServer = _this.serverURL;
+			console.log('Connecting to websocket server', wsServer);
 			var websocketProtocol = void 0;
 			if (wsServer.indexOf('localhost') !== -1) {
 				websocketProtocol = 'ws:';
@@ -247,6 +246,7 @@ var ModServerCommunications = exports.ModServerCommunications = function () {
 		};
 
 		editor.mod.serverCommunications = this;
+		this.serverURL = serverURL;
 		this.editor = editor;
 		/* A list of messages to be sent. Only used when temporarily offline.
   Messages will be sent when returning back online. */

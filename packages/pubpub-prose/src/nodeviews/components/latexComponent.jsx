@@ -43,10 +43,11 @@ export const LatexEditor = React.createClass({
     }
 	},
 
-	forceSelection: function() {
+	forceSelection: function(evt) {
 		if (!this.state.selected) {
 			this.props.forceSelection();
 		}
+		evt.preventDefault();
 	},
 
   changeToEditing: function() {

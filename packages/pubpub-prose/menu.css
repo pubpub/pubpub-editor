@@ -23,12 +23,6 @@
   border-right: 1px solid black;
 }
 
-.editorMenu {
-  position: relative;
-  left: -50px;
-  top: -20px;
-}
-
 .textMenu {
   flex-grow: 2;
 }

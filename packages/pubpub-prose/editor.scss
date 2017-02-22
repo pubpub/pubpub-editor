@@ -3,61 +3,14 @@
 /* ------------ */
 
 
-/* ProseMirror CSS */
+/***/
 
-
-$tree-width: 15vw;
-$tree-padding: 15px;
-$nav-bar-height: 50px;
-
-
-.pub-editor-body {
-  display: flex;
-  flex-direction: row;
+.pub-body {
+  margin-top: 20px;
 }
 
-.repoTitle {
-  font-size: 35px;
-  margin-bottom: 0px;
-}
-
-.editorTree {
-  width: $tree-width;
-  display: inline-block;
-  padding: 40px 0px 20px $tree-padding;
-  height: 100%;
-  margin-top: 15px;
-  min-width: 200px;
-  background-color: #f7f9fa;
-}
-
-.editorTree .pt-tree {
-  position: relative;
-  right: 20px;
-  width: 100%;
-}
-
-.pub-editor-body {
-    height: calc(100vh - 50px);
-    overflow: hidden;
-}
-
-.editorDoc {
-    height: 100%;
-    min-width: 750px;
-    overflow-y: scroll;
-    vertical-align: top;
-    display: inline-block;
-    margin-top: 20px;
-}
-
-.pt-button-group.editorMenu {
-    position: absolute;
-    top: -20px;
-    left: -50px;
-    padding-bottom: 10px;
-    width: 750px;
-    background-color: white;
+.article {
+    min-height: 60vh;
 }
 
 .richEditor {
@@ -66,24 +19,13 @@ $nav-bar-height: 50px;
     padding-right: 50px;
     padding-top: 20px;
     width: 750px;
+    min-height: 500px;
+    padding-bottom: 100px;
 }
 
-.editorWrapper {
 
-    position: absolute;
-}
 
-.btn-new-file {
-  margin-top: 25px;
-}
 
-/*Wierd bug with blueprint editable text empty on default*/
-.pub-embed .pt-editable-content {
-  min-height: 30px;
-}
-.pt-tree-node-content {
-  cursor: pointer;
-}
 
 .ProseMirror-menubar-wrapper{
   width: 100vw;

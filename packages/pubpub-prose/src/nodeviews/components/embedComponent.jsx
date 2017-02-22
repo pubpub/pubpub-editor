@@ -1,6 +1,6 @@
 import { EditableText, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 import React, {PropTypes} from 'react';
-import { RenderFile, URLToType } from 'pubpub-render-files';
+import { RenderFile, URLToType } from '@pubpub/render-files';
 
 import EmbedEditor from './EmbedEditor';
 import ReactDOM from 'react-dom';
@@ -74,10 +74,11 @@ export const EmbedComponent = React.createClass({
 		this.props.updateCaption(val);
 	},
 
-	forceSelection: function() {
+	forceSelection: function(evt) {
 		if (!this.state.selected) {
 			this.props.forceSelection();
 		}
+		evt.preventDefault();
 	},
 
 	render: function() {

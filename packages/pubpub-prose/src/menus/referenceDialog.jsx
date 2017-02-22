@@ -164,7 +164,9 @@ export const ReferenceDialog = React.createClass({
 		this.setState({ selectedTabIndex: selectedTabIndex });
 	},
 
-
+	preventClick: function(evt) {
+		evt.preventDefault();
+	},
 
   render() {
     const {open} = this.props;
@@ -187,7 +189,7 @@ export const ReferenceDialog = React.createClass({
 
 
     return (
-      <div>
+      <div onClick={this.preventClick}>
         <Dialog
             iconName="inbox"
             isOpen={open}

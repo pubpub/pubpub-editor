@@ -31,18 +31,25 @@ export const FileDialog = React.createClass({
 		this.props.saveFile({url, filename});
 	},
 
+	onClose: function() {
+		this.props.onClose();
+	},
+
+	preventClick: function(evt) {
+		evt.preventDefault();
+	},
+
   renderDisplay() {
 
     const { open, fileAccept, files } = this.props;
 		const { url } = this.state;
 
-		console.log('got props files', files);
     return (
-      <div>
+      <div onClick={this.preventClick}>
         <Dialog
             iconName="inbox"
             isOpen={open}
-            onClose={this.props.onClose}
+            onClose={this.onClose}
             title="Insert file"
         >
             <div className="pt-dialog-body">

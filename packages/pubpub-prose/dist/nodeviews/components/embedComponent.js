@@ -11,7 +11,7 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _pubpubRenderFiles = require('pubpub-render-files');
+var _renderFiles = require('@pubpub/render-files');
 
 var _EmbedEditor = require('./EmbedEditor');
 
@@ -98,6 +98,7 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 		if (!this.state.selected) {
 			this.props.forceSelection();
 		}
+		evt.preventDefault();
 	},
 
 	render: function render() {
@@ -113,7 +114,7 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 		var caption = this.state.caption || this.props.caption;
 		var data = this.props.data || {};
 
-		var file = { url: url, name: filename, type: (0, _pubpubRenderFiles.URLToType)(url) };
+		var file = { url: url, name: filename, type: (0, _renderFiles.URLToType)(url) };
 
 		var popoverContent = _react2.default.createElement(_EmbedEditor2.default, { createCaption: this.props.createCaption, removeCaption: this.props.removeCaption, embedAttrs: this.props, updateParams: this.updateAttrs });
 
@@ -149,7 +150,7 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 									var ratio = clientSize.width / _this.DOC_WIDTH * 100;
 									_this.updateAttrs({ size: ratio + '%' });
 								} },
-							_react2.default.createElement(_pubpubRenderFiles.RenderFile, { draggable: 'false', style: styles.image({ selected: selected }), file: file })
+							_react2.default.createElement(_renderFiles.RenderFile, { draggable: 'false', style: styles.image({ selected: selected }), file: file })
 						)
 					)
 				),

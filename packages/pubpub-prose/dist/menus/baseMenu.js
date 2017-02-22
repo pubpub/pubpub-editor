@@ -13,6 +13,10 @@ var _react2 = _interopRequireDefault(_react);
 
 var _plugins = require('../plugins');
 
+var _basePrompt = require('./basePrompt');
+
+var _basePrompt2 = _interopRequireDefault(_basePrompt);
+
 var _fileDialog = require('./fileDialog');
 
 var _fileDialog2 = _interopRequireDefault(_fileDialog);
@@ -22,6 +26,8 @@ var _referenceDialog = require('./referenceDialog');
 var _referenceDialog2 = _interopRequireDefault(_referenceDialog);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+console.log('got base', _basePrompt2.default);
 
 var styles = {};
 
@@ -196,11 +202,31 @@ var BaseMenu = exports.BaseMenu = _react2.default.createClass({
 		this.state.dialogSpec.run(this.props.view.state, this.props.view.dispatch, this.props.view, referenceData);
 		this.setState({ dialogSpec: null, dialogType: null, dialogExtension: null });
 	},
+	saveLink: function saveLink(linkData) {
+		this.state.dialogSpec.run(linkData);
+		this.setState({ dialogSpec: null, dialogType: null, dialogExtension: null });
+	},
+	saveTable: function saveTable(tableData) {
+		this.state.dialogSpec.run(this.props.view.state, this.props.view.dispatch, this.props.view, tableData);
+		this.setState({ dialogSpec: null, dialogType: null, dialogExtension: null });
+	},
 
 
 	runSpec: function runSpec(spec) {
+		var _this3 = this;
+
 		if (spec.dialogType) {
-			this.setState({ dialogSpec: spec, dialogType: spec.dialogType, dialogExtension: spec.dialogExtension });
+			if (spec.dialogCallback) {
+				var openPrompt = function openPrompt(_ref2) {
+					var callback = _ref2.callback;
+
+					var newSpec = { run: callback };
+					_this3.setState({ dialogSpec: newSpec, dialogType: spec.dialogType, dialogExtension: spec.dialogExtension });
+				};
+				spec.run(this.props.view.state, this.props.view.dispatch, this.props.view, openPrompt);
+			} else {
+				this.setState({ dialogSpec: spec, dialogType: spec.dialogType, dialogExtension: spec.dialogExtension });
+			}
 			return;
 		}
 		spec.run(this.props.view.state, this.props.view.dispatch, this.props.view);
@@ -227,12 +253,16 @@ var BaseMenu = exports.BaseMenu = _react2.default.createClass({
 		return {};
 	},
 
+	preventClick: function preventClick(evt) {
+		evt.preventDefault();
+	},
+
 	renderDisplay: function renderDisplay() {
 		var renderedMenu = this.buildMenu(this.props.menu);
 		var editorState = this.props.view.state;
 		return _react2.default.createElement(
 			'div',
-			{ className: 'editorWrapper' },
+			{ className: 'editorWrapper', onClick: this.preventClick },
 			_react2.default.createElement(_core.Toaster, { position: _core.Position.TOP, ref: 'errorToast' }),
 			_react2.default.createElement(
 				'div',
@@ -240,7 +270,9 @@ var BaseMenu = exports.BaseMenu = _react2.default.createClass({
 				this.renderMenu(this.props.menu)
 			),
 			this.state.dialogType === 'file' ? _react2.default.createElement(_fileDialog2.default, { files: this.getFiles(), editorState: editorState, onClose: this.onClose, saveFile: this.saveFile, open: true }) : null,
-			this.state.dialogType === 'reference' ? _react2.default.createElement(_referenceDialog2.default, { onClose: this.onClose, saveReference: this.saveReference, open: true }) : null
+			this.state.dialogType === 'reference' ? _react2.default.createElement(_referenceDialog2.default, { onClose: this.onClose, saveReference: this.saveReference, open: true }) : null,
+			this.state.dialogType === 'link' ? _react2.default.createElement(_basePrompt2.default, { type: 'link', onClose: this.onClose, savePrompt: this.saveLink }) : null,
+			this.state.dialogType === 'table' ? _react2.default.createElement(_basePrompt2.default, { type: 'table', onClose: this.onClose, savePrompt: this.saveTable }) : null
 		);
 	},
 

@@ -27,6 +27,10 @@ export const CitationsComponent = React.createClass({
 		this.setState({selected});
 	},
 
+	preventClick: function(evt) {
+		evt.preventDefault();
+	},
+
   renderDisplay() {
 		const { citations } = this.props;
 		const citationData = citations.map((citation) => citation.data);
@@ -36,7 +40,7 @@ export const CitationsComponent = React.createClass({
 		// console.log('Got bib!', bib, citations);
 		let hideCitations = !(bib && bib.length > 0);
     return (
-      <div className="pub-citations">
+      <div className="pub-citations" onClick={this.preventClick}>
 				{(!hideCitations) ?
 					<div>
 		        <h3>Citations: </h3>

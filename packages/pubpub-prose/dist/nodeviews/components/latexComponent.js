@@ -68,10 +68,11 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 		}
 	},
 
-	forceSelection: function forceSelection() {
+	forceSelection: function forceSelection(evt) {
 		if (!this.state.selected) {
 			this.props.forceSelection();
 		}
+		evt.preventDefault();
 	},
 
 	changeToEditing: function changeToEditing() {

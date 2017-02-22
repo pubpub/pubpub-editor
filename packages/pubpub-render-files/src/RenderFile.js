@@ -55,7 +55,7 @@ export const RenderFile = React.createClass({
 
 });
 
-export default Radium(RenderFile);
+export default RenderFile;
 
 styles = {
 	container: {

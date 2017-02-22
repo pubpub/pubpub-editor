@@ -2,6 +2,10 @@
 
 exports.urlToType = function (url) {
 
+  if (!url) {
+    return null;
+  }
+
   var extension = url.split('.').pop();
 
   if (!extension) {

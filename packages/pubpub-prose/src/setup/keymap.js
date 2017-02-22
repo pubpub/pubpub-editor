@@ -66,7 +66,7 @@ function buildKeymap(schema, mapKeys) {
     if (mac) bind("Ctrl-Enter", cmd)
   }
   if (type = schema.nodes.list_item) {
-    // bind("Enter", splitListItem(type))
+    bind("Enter", splitListItem(type))
     bind("Mod-[", liftListItem(type))
     bind("Mod-]", sinkListItem(type))
   }

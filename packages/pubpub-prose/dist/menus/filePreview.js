@@ -38,7 +38,6 @@ var FilePreview = exports.FilePreview = _react2.default.createClass({
 
     var extension = fileURL.split('.').pop();
     var fileType = FileTranslation[extension];
-    console.log(extension, fileURL, fileType);
     switch (fileType) {
       case 'image':
         return _react2.default.createElement('img', { style: { width: '100%' }, src: fileURL });

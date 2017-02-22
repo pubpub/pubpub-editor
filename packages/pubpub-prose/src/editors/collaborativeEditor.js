@@ -7,7 +7,7 @@ import {MD5} from 'object-hash';
 class CollaborativeEditor extends BaseEditor {
 
   constructor({ place, contents, text, fileMap,
-    collab: { userID, token, username, docID, repoID },
+    collab: { userID, token, username, docID, repoID, serverURL },
     handlers: { createFile },
 
   }) {
@@ -71,7 +71,7 @@ class CollaborativeEditor extends BaseEditor {
 		collab.doc = {id: tokenInfo.docid };
 		this.collab = collab;
 
-		new ModServerCommunications(collab);
+		new ModServerCommunications(collab, serverURL);
 		new ModCollab(collab);
 
 		// this.setSaveTimers();
@@ -265,6 +265,7 @@ class CollaborativeEditor extends BaseEditor {
 
   _onAction (action) {
     try {
+      console.log('got action', action);
       const newState = this.view.state.apply(action);
       this.pm = newState;
       this.view.updateState(newState);

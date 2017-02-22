@@ -163,6 +163,12 @@ var ReferenceDialog = exports.ReferenceDialog = _react2.default.createClass({
 	changedTab: function changedTab(selectedTabIndex, prevSelectedTabIndex) {
 		this.setState({ selectedTabIndex: selectedTabIndex });
 	},
+
+
+	preventClick: function preventClick(evt) {
+		evt.preventDefault();
+	},
+
 	render: function render() {
 		var _this2 = this;
 
@@ -185,7 +191,7 @@ var ReferenceDialog = exports.ReferenceDialog = _react2.default.createClass({
 
 		return _react2.default.createElement(
 			'div',
-			null,
+			{ onClick: this.preventClick },
 			_react2.default.createElement(
 				_core.Dialog,
 				{

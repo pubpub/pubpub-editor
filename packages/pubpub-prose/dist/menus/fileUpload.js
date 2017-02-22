@@ -19,7 +19,7 @@ var _radium = require('radium');
 
 var _radium2 = _interopRequireDefault(_radium);
 
-var _pubpubRenderFiles = require('pubpub-render-files');
+var _renderFiles = require('@pubpub/render-files');
 
 var _uploadFile = require('./uploadFile');
 
@@ -105,7 +105,7 @@ var FileUploadDialog = exports.FileUploadDialog = _react2.default.createClass({
 			if (!fileurl) {
 				return null;
 			}
-			var type = (0, _pubpubRenderFiles.URLToType)(fileurl);
+			var type = (0, _renderFiles.URLToType)(fileurl);
 			if (type.indexOf('image') === -1) {
 				return null;
 			}
@@ -128,6 +128,10 @@ var FileUploadDialog = exports.FileUploadDialog = _react2.default.createClass({
 	},
 
 
+	preventClick: function preventClick(evt) {
+		evt.preventDefault();
+	},
+
 	render: function render() {
 
 		var uploading = this.state.uploadRates.length > 0;
@@ -135,7 +139,7 @@ var FileUploadDialog = exports.FileUploadDialog = _react2.default.createClass({
 
 		return _react2.default.createElement(
 			'div',
-			null,
+			{ onClick: this.preventClick },
 			_react2.default.createElement(
 				_core.Tabs,
 				{ onChange: this.changedTab, selectedTabIndex: this.state.selectedTabIndex },

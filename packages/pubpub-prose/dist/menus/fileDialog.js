@@ -57,6 +57,14 @@ var FileDialog = exports.FileDialog = _react2.default.createClass({
 		this.props.saveFile({ url: url, filename: filename });
 	},
 
+	onClose: function onClose() {
+		this.props.onClose();
+	},
+
+	preventClick: function preventClick(evt) {
+		evt.preventDefault();
+	},
+
 	renderDisplay: function renderDisplay() {
 		var _props = this.props,
 		    open = _props.open,
@@ -65,16 +73,15 @@ var FileDialog = exports.FileDialog = _react2.default.createClass({
 		var url = this.state.url;
 
 
-		console.log('got props files', files);
 		return _react2.default.createElement(
 			'div',
-			null,
+			{ onClick: this.preventClick },
 			_react2.default.createElement(
 				_core.Dialog,
 				{
 					iconName: 'inbox',
 					isOpen: open,
-					onClose: this.props.onClose,
+					onClose: this.onClose,
 					title: 'Insert file'
 				},
 				_react2.default.createElement(

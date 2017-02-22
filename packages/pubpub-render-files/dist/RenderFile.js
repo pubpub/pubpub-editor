@@ -95,7 +95,7 @@ var RenderFile = exports.RenderFile = _react2.default.createClass({
 	}
 });
 
-exports.default = (0, _radium2.default)(RenderFile);
+exports.default = RenderFile;
 
 
 styles = {

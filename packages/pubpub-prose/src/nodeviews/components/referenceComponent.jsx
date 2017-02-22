@@ -67,6 +67,9 @@ export const ReferenceComponent = React.createClass({
 		this.setState({label});
 	},
 
+	preventClick: function(evt) {
+		evt.preventDefault();
+	},
 
   renderDisplay() {
 
@@ -76,7 +79,7 @@ export const ReferenceComponent = React.createClass({
     });
 
     return (
-      <span className={referenceClass}>
+      <span className={referenceClass} onClick={this.preventClick}>
         {(this.state.label) ? this.state.label : "[1]"}
       </span>
     );
