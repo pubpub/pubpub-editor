@@ -258,6 +258,10 @@ class CollaborativeEditor extends BaseEditor {
     }
 	}
 
+  persistChanges = () => {
+    this.collab.mod.collab.docChanges.saveDocument();
+  }
+
   getHash = () => {
 		const doc = this.view.state.doc;
 		return MD5(JSON.parse(JSON.stringify(doc.toJSON())), {unorderedArrays: true});

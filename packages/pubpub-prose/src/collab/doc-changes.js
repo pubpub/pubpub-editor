@@ -56,6 +56,12 @@ export class ModCollabDocChanges {
 		});
 	}
 
+	saveDocument() {
+		this.mod.editor.mod.serverCommunications.send({
+			type: 'save_document'
+		});
+	}
+
 	disableDiffSending() {
 		const that = this;
 		this.awaitingDiffResponse = true;
