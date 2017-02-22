@@ -1,13 +1,29 @@
 {
-  "name": "pubpub-render-files",
-  "version": "3.0.10",
-  "description": "pubpub render files",
+  "name": "@pubpub/render-files",
+  "version": "1.0.0",
+  "description": "Packages for rendering files on PubPub, supports markdown and ppub (pubpub flavored JSON documents).",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "cross-env BABEL_ENV=commonjs babel src --out-dir dist --watch"
+    "build": "cross-env BABEL_ENV=development babel src --out-dir dist",
+    "prepublish": "npm run build",
+    "watch": "cross-env BABEL_ENV=development babel src --out-dir dist --watch"
   },
-  "author": "",
-  "license": "ISC",
+  "maintainers": [
+    {
+      "name": "Thariq Shihipar",
+      "email": "thaiq@media.mit.edu"
+    },
+    {
+      "name": "Travis Rich",
+      "email": "trich@media.mit.edu"
+    }
+  ],
+  "author": "PubPub",
+  "license": "GPL-2.0+",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pubpub/pubpub-packages.git"
+  },
   "dependencies": {
     "classnames": "^2.2.5",
     "katex": "^0.7.1",

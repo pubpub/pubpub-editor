@@ -1,23 +1,40 @@
 {
-  "name": "pubpub-prose",
-  "version": "3.0.10",
+  "name": "@pubpub/prose",
+  "version": "1.0.0",
   "description": "Prosemirror Plugins for the PubPub Editor",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "cross-env BABEL_ENV=development babel src --out-dir dist --watch"
+    "build": "cross-env BABEL_ENV=development babel src --out-dir dist",
+    "prepublish": "npm run build",
+    "watch": "cross-env BABEL_ENV=development babel src --out-dir dist --watch"
   },
-  "author": "",
-  "license": "ISC",
+  "maintainers": [
+    {
+      "name": "Thariq Shihipar",
+      "email": "thaiq@media.mit.edu"
+    },
+    {
+      "name": "Travis Rich",
+      "email": "trich@media.mit.edu"
+    }
+  ],
+  "author": "PubPub",
+  "license": "GPL-2.0+",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pubpub/pubpub-packages.git"
+  },
   "dependencies": {
-    "@blueprintjs/core": "^1.3.1",
+    "@blueprintjs/core": "^1.9.0",
     "classnames": "^2.2.5",
     "diff": "^3.2.0",
     "katex": "^0.6.0",
+    "lodash": "^4.17.4",
     "murmurhash": "0.0.2",
     "object-hash": "^1.1.5",
     "prosemirror-collab": "^0.17.0",
-    "prosemirror-commands": "^0.17.0",
-    "prosemirror-history": "^0.17.0",
+    "prosemirror-commands": "^0.17.1",
+    "prosemirror-history": "^0.17.2",
     "prosemirror-inputrules": "^0.17.0",
     "prosemirror-keymap": "^0.17.0",
     "prosemirror-markdown": "^0.17.0",
@@ -26,17 +43,15 @@
     "prosemirror-schema-basic": "^0.17.0",
     "prosemirror-schema-list": "^0.17.0",
     "prosemirror-schema-table": "^0.17.0",
-    "prosemirror-state": "^0.17.0",
-    "prosemirror-view": "^0.17.0",
+    "prosemirror-state": "^0.17.1",
+    "prosemirror-view": "github:ThariqS/prosemirror-view#hotfix",
     "radium": "^0.18.1",
     "react": "^15.4.1",
     "react-addons-css-transition-group": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-dropzone": "^3.7.3",
     "react-resizable-box": "^1.8.1",
-    "react-textarea-autosize": "^4.0.5",
     "striptags": "^3.0.1",
-    "style-loader": "^0.13.1",
     "superagent": "^3.0.0"
   },
   "devDependencies": {
@@ -66,6 +81,7 @@
     "node-sass": "^3.13.1",
     "rimraf": "^2.5.4",
     "react-transform-hmr": "^1.0.4",
+    "style-loader": "^0.13.1",
     "sass-loader": "^4.0.1"
   },
   "babel": {
