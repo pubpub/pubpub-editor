@@ -194,7 +194,7 @@ export const BaseMenu = React.createClass({
       <div className="editorWrapper" onClick={this.preventClick}>
 			<Toaster position={Position.TOP} ref={'errorToast'} />
 
-			<div className="pt-button-group editorMenu" style={{width: 750}}>
+			<div className="pt-button-group editorMenu">
 			  {this.renderMenu(this.props.menu)}
 			</div>
 			{(this.state.dialogType === 'file') ?

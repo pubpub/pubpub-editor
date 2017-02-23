@@ -6,6 +6,10 @@
     border-right-width: 0px;
 }
 
+.editorMenu {
+  z-index: 100;
+}
+
 .editorMenu a.pt-button {
     box-shadow: none !important;
 }
