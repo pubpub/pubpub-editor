@@ -266,7 +266,7 @@ var BaseMenu = exports.BaseMenu = _react2.default.createClass({
 			_react2.default.createElement(_core.Toaster, { position: _core.Position.TOP, ref: 'errorToast' }),
 			_react2.default.createElement(
 				'div',
-				{ className: 'pt-button-group editorMenu', style: { width: 750 } },
+				{ className: 'pt-button-group editorMenu' },
 				this.renderMenu(this.props.menu)
 			),
 			this.state.dialogType === 'file' ? _react2.default.createElement(_fileDialog2.default, { files: this.getFiles(), editorState: editorState, onClose: this.onClose, saveFile: this.saveFile, open: true }) : null,

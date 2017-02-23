@@ -7,7 +7,7 @@
 }
 
 .editorMenu {
-  z-index: 100;
+  z-index: 10;
 }
 
 .editorMenu a.pt-button {
