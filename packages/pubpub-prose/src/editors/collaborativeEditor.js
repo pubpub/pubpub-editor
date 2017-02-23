@@ -259,6 +259,7 @@ class CollaborativeEditor extends BaseEditor {
 	}
 
   persistChanges = () => {
+    console.log('persisting changes!');
     this.collab.mod.collab.docChanges.saveDocument();
   }
 

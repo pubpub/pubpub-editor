@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@blueprintjs/core": "^1.9.0",
+    "@pubpub/render-files": "^1.0.1",
     "classnames": "^2.2.5",
     "diff": "^3.2.0",
     "katex": "^0.6.0",

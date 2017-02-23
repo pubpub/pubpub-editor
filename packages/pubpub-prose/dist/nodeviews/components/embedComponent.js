@@ -94,7 +94,7 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 		this.props.updateCaption(val);
 	},
 
-	forceSelection: function forceSelection() {
+	forceSelection: function forceSelection(evt) {
 		if (!this.state.selected) {
 			this.props.forceSelection();
 		}

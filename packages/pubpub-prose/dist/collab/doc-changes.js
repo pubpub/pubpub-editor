@@ -203,6 +203,13 @@ var ModCollabDocChanges = exports.ModCollabDocChanges = function () {
 			});
 		}
 	}, {
+		key: 'saveDocument',
+		value: function saveDocument() {
+			this.mod.editor.mod.serverCommunications.send({
+				type: 'save_document'
+			});
+		}
+	}, {
 		key: 'disableDiffSending',
 		value: function disableDiffSending() {
 			var that = this;

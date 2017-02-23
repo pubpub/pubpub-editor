@@ -310,6 +310,10 @@ var _initialiseProps = function _initialiseProps() {
 		}
 	};
 
+	this.persistChanges = function () {
+		_this2.collab.mod.collab.docChanges.saveDocument();
+	};
+
 	this.getHash = function () {
 		var doc = _this2.view.state.doc;
 		return (0, _objectHash.MD5)(JSON.parse(JSON.stringify(doc.toJSON())), { unorderedArrays: true });
