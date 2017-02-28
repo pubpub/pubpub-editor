@@ -102,7 +102,12 @@ const renderSubLoop = function(item, meta) {
 			return <IframeRender key={index} {...node.attrs} />
 		case 'reference':
 			const citationID = node.attrs.citationID;
-			const label = meta.inlineBib[citationID];
+			let label;
+			if (meta && meta.inlineBib) {
+				label = meta.inlineBib[citationID];
+			} else {
+				label = null;
+			}
 			return <ReferenceRender key={index} label={label}{...node.attrs} />
 		case 'citations':
 			const bib = meta.bib;
