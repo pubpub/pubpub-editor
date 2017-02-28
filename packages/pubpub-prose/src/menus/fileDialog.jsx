@@ -21,13 +21,13 @@ export const FileDialog = React.createClass({
 		this.setState({selected});
 	},
 
-	uploadFile: function({url, filename, preview}) {
-		this.setState({url, filename, preview});
+	uploadFile: function({url, filename, preview, type}) {
+		this.setState({url, filename, preview, type});
 	},
 
 	saveFile: function() {
-		const { url, filename } = this.state;
-		this.props.saveFile({url, filename});
+		const { url, filename, type } = this.state;
+		this.props.saveFile({url, filename, type});
 	},
 
 	onClose: function() {
@@ -40,6 +40,10 @@ export const FileDialog = React.createClass({
 
 	editFileName: function(evt) {
 		this.setState({filename: evt.target.value});
+	},
+
+	insertFile: function({url, filename}) {
+		this.props.insertFile({url, filename});
 	},
 
   renderDisplay() {
@@ -57,7 +61,7 @@ export const FileDialog = React.createClass({
         >
             <div className="pt-dialog-body">
 								{(!this.state.url || !this.state.preview) ?
-									<FileUploadDialog files={files} fileAccept={fileAccept} uploadFile={this.uploadFile}/>
+									<FileUploadDialog files={files} fileAccept={fileAccept} uploadFile={this.uploadFile} insertFile={this.insertFile}/>
 									:
 									<div style={{display: 'block', margin: '0 auto', textAlign: 'center', maxWidth: '300px'}}>
 										<FilePreview fileURL={this.state.url} />

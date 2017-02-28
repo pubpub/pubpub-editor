@@ -43,17 +43,19 @@ var FileDialog = exports.FileDialog = _react2.default.createClass({
 	uploadFile: function uploadFile(_ref) {
 		var url = _ref.url,
 		    filename = _ref.filename,
-		    preview = _ref.preview;
+		    preview = _ref.preview,
+		    type = _ref.type;
 
-		this.setState({ url: url, filename: filename, preview: preview });
+		this.setState({ url: url, filename: filename, preview: preview, type: type });
 	},
 
 	saveFile: function saveFile() {
 		var _state = this.state,
 		    url = _state.url,
-		    filename = _state.filename;
+		    filename = _state.filename,
+		    type = _state.type;
 
-		this.props.saveFile({ url: url, filename: filename });
+		this.props.saveFile({ url: url, filename: filename, type: type });
 	},
 
 	onClose: function onClose() {
@@ -66,6 +68,13 @@ var FileDialog = exports.FileDialog = _react2.default.createClass({
 
 	editFileName: function editFileName(evt) {
 		this.setState({ filename: evt.target.value });
+	},
+
+	insertFile: function insertFile(_ref2) {
+		var url = _ref2.url,
+		    filename = _ref2.filename;
+
+		this.props.insertFile({ url: url, filename: filename });
 	},
 
 	renderDisplay: function renderDisplay() {
@@ -92,7 +101,7 @@ var FileDialog = exports.FileDialog = _react2.default.createClass({
 				_react2.default.createElement(
 					'div',
 					{ className: 'pt-dialog-body' },
-					!this.state.url || !this.state.preview ? _react2.default.createElement(_fileUpload2.default, { files: files, fileAccept: fileAccept, uploadFile: this.uploadFile }) : _react2.default.createElement(
+					!this.state.url || !this.state.preview ? _react2.default.createElement(_fileUpload2.default, { files: files, fileAccept: fileAccept, uploadFile: this.uploadFile, insertFile: this.insertFile }) : _react2.default.createElement(
 						'div',
 						{ style: { display: 'block', margin: '0 auto', textAlign: 'center', maxWidth: '300px' } },
 						_react2.default.createElement(_filePreview2.default, { fileURL: this.state.url }),

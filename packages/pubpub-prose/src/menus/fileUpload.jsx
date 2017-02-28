@@ -63,7 +63,8 @@ export const FileUploadDialog = React.createClass({
 
 		const fileURL = 'https://assets.pubpub.org/' + filename;
 		const realFileName = filename.split('/').pop();
-		this.props.uploadFile({url: fileURL, filename: title, preview: true});
+		const fileType = URLToType(fileURL);
+		this.props.uploadFile({url: fileURL, filename: title, preview: true, type: fileType});
 	},
 
 
@@ -77,7 +78,7 @@ export const FileUploadDialog = React.createClass({
 
 	selectFile(filename, url) {
 		this.setState({ selectedURL: url });
-		this.props.uploadFile({url, filename, preview: false});
+		this.props.insertFile({url, filename, preview: false});
 	},
 
 	renderExistingFiles(files) {

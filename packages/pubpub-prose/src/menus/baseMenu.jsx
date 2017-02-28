@@ -6,8 +6,6 @@ import BasePrompt from './basePrompt';
 import FileDialog from './fileDialog';
 import ReferenceDialog from './referenceDialog'
 
-console.log('got base', BasePrompt);
-
 let styles = {};
 
 export const BaseMenu = React.createClass({
@@ -125,9 +123,14 @@ export const BaseMenu = React.createClass({
 
 	},
 
-	saveFile({url, filename}) {
+	insertFile({url, filename}) {
 		this.state.dialogSpec.run(this.props.view.state, this.props.view.dispatch, this.props.view, {url, filename});
-		this.props.createFile({url, filename});
+		this.setState({dialogSpec: null, dialogType: null, dialogExtension: null});
+	},
+
+	saveFile({url, filename, type}) {
+		this.state.dialogSpec.run(this.props.view.state, this.props.view.dispatch, this.props.view, {url, filename});
+		this.props.createFile({url, filename, type});
 		this.setState({dialogSpec: null, dialogType: null, dialogExtension: null});
 	},
 
@@ -198,7 +201,7 @@ export const BaseMenu = React.createClass({
 			  {this.renderMenu(this.props.menu)}
 			</div>
 			{(this.state.dialogType === 'file') ?
-				<FileDialog files={this.getFiles()} editorState={editorState} onClose={this.onClose} saveFile={this.saveFile} open={true}/>
+				<FileDialog files={this.getFiles()} editorState={editorState} onClose={this.onClose} insertFile={this.insertFile} saveFile={this.saveFile} open={true}/>
 				: null
 			}
 			{(this.state.dialogType === 'reference') ?

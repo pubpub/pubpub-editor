@@ -27,8 +27,6 @@ var _referenceDialog2 = _interopRequireDefault(_referenceDialog);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-console.log('got base', _basePrompt2.default);
-
 var styles = {};
 
 var BaseMenu = exports.BaseMenu = _react2.default.createClass({
@@ -190,12 +188,20 @@ var BaseMenu = exports.BaseMenu = _react2.default.createClass({
 		return menuItems;
 	},
 
-	saveFile: function saveFile(_ref) {
+	insertFile: function insertFile(_ref) {
 		var url = _ref.url,
 		    filename = _ref.filename;
 
 		this.state.dialogSpec.run(this.props.view.state, this.props.view.dispatch, this.props.view, { url: url, filename: filename });
-		this.props.createFile({ url: url, filename: filename });
+		this.setState({ dialogSpec: null, dialogType: null, dialogExtension: null });
+	},
+	saveFile: function saveFile(_ref2) {
+		var url = _ref2.url,
+		    filename = _ref2.filename,
+		    type = _ref2.type;
+
+		this.state.dialogSpec.run(this.props.view.state, this.props.view.dispatch, this.props.view, { url: url, filename: filename });
+		this.props.createFile({ url: url, filename: filename, type: type });
 		this.setState({ dialogSpec: null, dialogType: null, dialogExtension: null });
 	},
 	saveReference: function saveReference(referenceData) {
@@ -217,8 +223,8 @@ var BaseMenu = exports.BaseMenu = _react2.default.createClass({
 
 		if (spec.dialogType) {
 			if (spec.dialogCallback) {
-				var openPrompt = function openPrompt(_ref2) {
-					var callback = _ref2.callback;
+				var openPrompt = function openPrompt(_ref3) {
+					var callback = _ref3.callback;
 
 					var newSpec = { run: callback };
 					_this3.setState({ dialogSpec: newSpec, dialogType: spec.dialogType, dialogExtension: spec.dialogExtension });
@@ -269,7 +275,7 @@ var BaseMenu = exports.BaseMenu = _react2.default.createClass({
 				{ className: 'pt-button-group editorMenu' },
 				this.renderMenu(this.props.menu)
 			),
-			this.state.dialogType === 'file' ? _react2.default.createElement(_fileDialog2.default, { files: this.getFiles(), editorState: editorState, onClose: this.onClose, saveFile: this.saveFile, open: true }) : null,
+			this.state.dialogType === 'file' ? _react2.default.createElement(_fileDialog2.default, { files: this.getFiles(), editorState: editorState, onClose: this.onClose, insertFile: this.insertFile, saveFile: this.saveFile, open: true }) : null,
 			this.state.dialogType === 'reference' ? _react2.default.createElement(_referenceDialog2.default, { onClose: this.onClose, saveReference: this.saveReference, open: true }) : null,
 			this.state.dialogType === 'link' ? _react2.default.createElement(_basePrompt2.default, { type: 'link', onClose: this.onClose, savePrompt: this.saveLink }) : null,
 			this.state.dialogType === 'table' ? _react2.default.createElement(_basePrompt2.default, { type: 'table', onClose: this.onClose, savePrompt: this.saveTable }) : null
