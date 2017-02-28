@@ -300,6 +300,8 @@ function wrapListItem(nodeType, options) {
 //   : An array of arrays of menu elements for use as the full menu
 //     for, for example the [menu bar](#menu.MenuBarEditorView).
 function buildMenuItems(schema) {
+
+  var paragraphType = schema.nodes.paragraph;
   var r = {},
       type = void 0;
   if (type = schema.marks.sup) r.supMark = markItem(type, { title: "superscript", icon: null });
@@ -341,7 +343,7 @@ function buildMenuItems(schema) {
     title: "Code block",
     label: "Code",
     icon: "Code"
-  });
+  }, paragraphType);
   if (type = schema.nodes.heading) for (var i = 1; i <= 10; i++) {
     r["makeHead" + i] = blockTypeItem(type, {
       title: "Heading " + i,

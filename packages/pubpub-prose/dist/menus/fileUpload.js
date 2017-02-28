@@ -83,7 +83,7 @@ var FileUploadDialog = exports.FileUploadDialog = _react2.default.createClass({
 
 		var fileURL = 'https://assets.pubpub.org/' + filename;
 		var realFileName = filename.split('/').pop();
-		this.props.uploadFile({ url: fileURL, filename: realFileName, preview: true });
+		this.props.uploadFile({ url: fileURL, filename: title, preview: true });
 	},
 
 	setFilter: function setFilter(string) {
@@ -106,7 +106,7 @@ var FileUploadDialog = exports.FileUploadDialog = _react2.default.createClass({
 				return null;
 			}
 			var type = (0, _renderFiles.URLToType)(fileurl);
-			if (type.indexOf('image') === -1) {
+			if (!type || type.indexOf('image') === -1) {
 				return null;
 			}
 			var selected = _this2.state.selectedURL === fileurl;

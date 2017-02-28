@@ -18,7 +18,6 @@ export const FileDialog = React.createClass({
 	},
 
 	setSelected: function(selected) {
-		console.log('update selected!', selected);
 		this.setState({selected});
 	},
 
@@ -39,10 +38,14 @@ export const FileDialog = React.createClass({
 		evt.preventDefault();
 	},
 
+	editFileName: function(evt) {
+		this.setState({filename: evt.target.value});
+	},
+
   renderDisplay() {
 
     const { open, fileAccept, files } = this.props;
-		const { url } = this.state;
+		const { url, filename } = this.state;
 
     return (
       <div onClick={this.preventClick}>
@@ -58,6 +61,9 @@ export const FileDialog = React.createClass({
 									:
 									<div style={{display: 'block', margin: '0 auto', textAlign: 'center', maxWidth: '300px'}}>
 										<FilePreview fileURL={this.state.url} />
+											<label className="pt-label">
+											  <input value={filename} onChange={this.editFileName} className="pt-input" type="text" placeholder="Text input" dir="auto" />
+											</label>
 									</div>
 								 }
             </div>

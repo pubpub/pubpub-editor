@@ -9,7 +9,9 @@ var _require = require("prosemirror-commands"),
     joinUp = _require.joinUp,
     selectParentNode = _require.selectParentNode,
     wrapIn = _require.wrapIn,
-    setBlockType = _require.setBlockType;
+    setBlockType = _require.setBlockType,
+    chainCommands = _require.chainCommands,
+    createParagraphNear = _require.createParagraphNear;
 
 var _require2 = require("prosemirror-history"),
     undo = _require2.undo,
@@ -226,23 +228,49 @@ function wrapItem(nodeType, options) {
 }
 exports.wrapItem = wrapItem;
 
+var insertParagraphAfter = function insertParagraphAfter(paragraphType, state, dispatch) {
+  var _state$selection = state.selection,
+      $from = _state$selection.$from,
+      $to = _state$selection.$to,
+      node = _state$selection.node;
+
+  console.log('inserting paragraph!', paragraphType);
+  // if (!node || !node.isBlock) return false
+  var type = state.doc.defaultContentType(0);
+  if (dispatch) {
+    var side = $from.pos;
+    var tr = state.tr.insert(side, paragraphType.createAndFill());
+    // tr.setSelection(TextSelection.create(tr.doc, side + 1))
+    return dispatch(tr);
+  }
+  return true;
+};
+
 // :: (NodeType, Object) → MenuItem
 // Build a menu item for changing the type of the textblock around the
 // selection to the given type. Provides `run`, `active`, and `select`
 // properties. Others must be given in `options`. `options.attrs` may
 // be an object to provide the attributes for the textblock node.
-function blockTypeItem(nodeType, options) {
-  var command = setBlockType(nodeType, options.attrs);
+function blockTypeItem(nodeType, options, paragraphType) {
+  var selectCommand = setBlockType(nodeType, options.attrs);
+  var runCommand = function runCommand(state, dispatch) {
+    var newState = paragraphType ? insertParagraphAfter(paragraphType, state, dispatch) : state;
+    setBlockType(nodeType, options.attrs)(newState, dispatch);
+
+    // return chainCommands(setBlockType(nodeType, options.attrs), insertParagraphAfter)(state, dispatch);
+    // setBlockType(nodeType, options.attrs)(state, dispatch)
+    //   createParagraphNear(state, dispatch)
+  };
   var passedOptions = {
-    run: command,
+    run: runCommand,
     select: function select(state) {
-      return command(state);
+      return selectCommand(state);
     },
     active: function active(state) {
-      var _state$selection = state.selection,
-          $from = _state$selection.$from,
-          to = _state$selection.to,
-          node = _state$selection.node;
+      var _state$selection2 = state.selection,
+          $from = _state$selection2.$from,
+          to = _state$selection2.to,
+          node = _state$selection2.node;
 
       if (node) return node.hasMarkup(nodeType, options.attrs);
       return to <= $from.end() && $from.parent.hasMarkup(nodeType, options.attrs);

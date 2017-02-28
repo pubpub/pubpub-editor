@@ -37,7 +37,6 @@ var FileDialog = exports.FileDialog = _react2.default.createClass({
 	},
 
 	setSelected: function setSelected(selected) {
-		console.log('update selected!', selected);
 		this.setState({ selected: selected });
 	},
 
@@ -65,12 +64,18 @@ var FileDialog = exports.FileDialog = _react2.default.createClass({
 		evt.preventDefault();
 	},
 
+	editFileName: function editFileName(evt) {
+		this.setState({ filename: evt.target.value });
+	},
+
 	renderDisplay: function renderDisplay() {
 		var _props = this.props,
 		    open = _props.open,
 		    fileAccept = _props.fileAccept,
 		    files = _props.files;
-		var url = this.state.url;
+		var _state2 = this.state,
+		    url = _state2.url,
+		    filename = _state2.filename;
 
 
 		return _react2.default.createElement(
@@ -90,7 +95,12 @@ var FileDialog = exports.FileDialog = _react2.default.createClass({
 					!this.state.url || !this.state.preview ? _react2.default.createElement(_fileUpload2.default, { files: files, fileAccept: fileAccept, uploadFile: this.uploadFile }) : _react2.default.createElement(
 						'div',
 						{ style: { display: 'block', margin: '0 auto', textAlign: 'center', maxWidth: '300px' } },
-						_react2.default.createElement(_filePreview2.default, { fileURL: this.state.url })
+						_react2.default.createElement(_filePreview2.default, { fileURL: this.state.url }),
+						_react2.default.createElement(
+							'label',
+							{ className: 'pt-label' },
+							_react2.default.createElement('input', { value: filename, onChange: this.editFileName, className: 'pt-input', type: 'text', placeholder: 'Text input', dir: 'auto' })
+						)
 					)
 				),
 				_react2.default.createElement(

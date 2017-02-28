@@ -311,6 +311,7 @@ var _initialiseProps = function _initialiseProps() {
 	};
 
 	this.persistChanges = function () {
+		console.log('persisting changes!');
 		_this2.collab.mod.collab.docChanges.saveDocument();
 	};
 
