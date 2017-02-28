@@ -1,6 +1,6 @@
 {
   "name": "@pubpub/render-files",
-  "version": "1.0.2",
+  "version": "1.0.7",
   "description": "Packages for rendering files on PubPub, supports markdown and ppub (pubpub flavored JSON documents).",
   "main": "./dist/index.js",
   "scripts": {
