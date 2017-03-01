@@ -206,7 +206,12 @@ var renderSubLoop = function renderSubLoop(item, meta) {
 				return _react2.default.createElement(_components.IframeRender, _extends({ key: index }, node.attrs));
 			case 'reference':
 				var citationID = node.attrs.citationID;
-				var label = meta.inlineBib[citationID];
+				var label = void 0;
+				if (meta && meta.inlineBib) {
+					label = meta.inlineBib[citationID];
+				} else {
+					label = null;
+				}
 				return _react2.default.createElement(_components.ReferenceRender, _extends({ key: index, label: label }, node.attrs));
 			case 'citations':
 				var bib = meta.bib;

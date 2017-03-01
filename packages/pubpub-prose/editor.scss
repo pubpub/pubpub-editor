@@ -24,7 +24,21 @@
 }
 
 
+.pub-citation:hover {
+  background-color: #CED9E0;
+}
 
+.pub-citation-btn {
+  opacity: 0.5;
+  float: right;
+  line-height: 1.5em;
+  min-height: 1.5em;
+  min-width: 1.5em;
+}
+
+.pub-citation-btn:hover {
+  opacity: 1;
+}
 
 
 .ProseMirror-menubar-wrapper{

@@ -1,4 +1,4 @@
-import { findNodeByAttr, findNodesWithIndex } from '../utils/doc-operations';
+import { findNodeByAttr, findNodeByFunc, findNodesWithIndex } from '../utils/doc-operations';
 
 import { CitationEngine } from '../references';
 import { Plugin } from 'prosemirror-state';
@@ -19,12 +19,39 @@ const createReferenceDecoration = (index, node, label) => {
   return Decoration.node(index , index + 1, {class: 'diff-marker add'}, { citationID: node.attrs.citationID, label });
 }
 
+const findCitationNode = (doc, citationID) => {
+  const citationsNode = doc.child(1);
+  if (!citationsNode) {
+    return null;
+  }
+  let foundNode = findNodeByFunc(doc, (_node) => (_node.attrs.citationID === citationID));
+  if (!foundNode) {
+    return null;
+  }
+  const from = foundNode.index + 1;
+  const to = from + foundNode.node.nodeSize;
+  return {from, to};
+}
+
+
 // need to check if there are other references with nodes?
-const removeDecoration = (citationID, engine, state) => {
+const removeDecoration = (citationID, engine, view) => {
+  // engine.removeCitation(citationID);
+
+  // NEED TO CHECK IF THERE ARE OTHERS
+
+  const action = () => {
+    const doc = view.state.doc;
+    const foundNodePos = findCitationNode(doc, citationID);
+    if (foundNodePos) {
+      const transaction = view.state.tr.delete(foundNodePos.from, foundNodePos.to);
+      transaction.setMeta("deleteReference", citationID);
+      view.dispatch(transaction);
+    }
+  }
+
+  window.setTimeout(action, 0);
   return;
-  engine.removeCitation(citationID);
-  const removeNodePos = findNodeByAttr(state.doc, 'citationID', citationID);
-  const transaction = state.tr.replaceRange(removeNodePos.index, removeNodePos.index + 1, Slice.empty);
 
 }
 
@@ -32,6 +59,7 @@ const createDecorations = (doc, set, engine) => {
   const nodes = findNodesWithIndex(doc, 'reference') || [];
   const decos = nodes.map((node) => {
     const label = engine.getShortForm(node.node.attrs.citationID);
+    console.log('label', label, node.node.attrs.citationID);
     const deco = createReferenceDecoration(node.index, node.node, label);
     return deco;
   });
@@ -96,17 +124,28 @@ const citationsPlugin = new Plugin({
 			}
 
       let set = state.decos;
-      let createdRef;
-      if (createdRef = transaction.getMeta("createdReference")) {
+      if (transaction.getMeta("createdReference") || transaction.getMeta("deleteReference")) {
+        console.log('updating all refs');
         const blueSet = createDecorations(editorState.doc, state.decos, state.engine);
         return {decos: blueSet, engine: state.engine};
       } else if (transaction.mapping) {
         const newSet = set.map(transaction.mapping, editorState.doc,
-          { onRemove: (deco) => { removeDecoration(deco.citationID, state.engine, editorState) } });
+          { onRemove: (deco) => { removeDecoration(deco.citationID, state.engine, this.options.view) } });
         return {decos: newSet, engine: state.engine};
       }
 
       return {decos: set, engine: state.engine};
+    }
+  },
+  view: function(editorView) {
+    this.view = editorView;
+    return {
+      update: (newView, prevState) => {
+        this.view = newView;
+      },
+      destroy: () => {
+        this.view = null;
+      }
     }
   },
   appendTransaction: function (transactions, oldState, newState)  {
@@ -123,6 +162,12 @@ const citationsPlugin = new Plugin({
   },
 
   props: {
+    getCitationString(state, citationID, citationData) {
+      if (state && this.getState(state)) {
+        const engine = this.getState(state).engine;
+        return engine.getSingleBibliography(citationID);
+      }
+    },
     getBibliography(state, citationData, citationIDs) {
       if (state && this.getState(state)) {
         const engine = this.getState(state).engine;

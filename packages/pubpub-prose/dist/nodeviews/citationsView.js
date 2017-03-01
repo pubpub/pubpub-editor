@@ -10,6 +10,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
+var _docOperations = require('../utils/doc-operations');
+
 var _components = require('./components');
 
 var _react = require('react');
@@ -23,6 +25,8 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 var _reactview = require('./reactview');
 
 var _reactview2 = _interopRequireDefault(_reactview);
+
+var _prosemirrorTransform = require('prosemirror-transform');
 
 var _plugins = require('../plugins');
 
@@ -50,6 +54,7 @@ var CitationsView = function (_ReactView) {
     value: function bindFunctions() {
       this.valueChanged = this.valueChanged.bind(this);
       this.getBibliography = this.getBibliography.bind(this);
+      this.deleteItem = this.deleteItem.bind(this);
 
       _get(CitationsView.prototype.__proto__ || Object.getPrototypeOf(CitationsView.prototype), 'bindFunctions', this).call(this);
     }
@@ -64,7 +69,44 @@ var CitationsView = function (_ReactView) {
       var node = this.node;
       var citations = this.getChildren();
       // updateParams={this.updateNodeParams} {...node.attrs}
-      return _reactDom2.default.render(_react2.default.createElement(_components.CitationsComponent, _extends({ getBibliography: this.getBibliography, citations: citations, updateValue: this.valueChanged, value: this.value }, node.attrs)), domChild);
+      return _reactDom2.default.render(_react2.default.createElement(_components.CitationsComponent, _extends({
+        getBibliography: this.getBibliography,
+        citations: citations,
+        updateValue: this.valueChanged,
+        deleteItem: this.deleteItem,
+        value: this.value }, node.attrs)), domChild);
+    }
+  }, {
+    key: 'deleteItem',
+    value: function deleteItem(bibItem) {
+      var childPos = this.getChildNode(bibItem);
+      if (childPos) {
+        var transaction = this.view.state.tr.delete(childPos.from, childPos.to);
+        this.view.dispatch(transaction);
+      }
+    }
+  }, {
+    key: 'getCitationOrder',
+    value: function getCitationOrder() {
+      var referenceNodes = (0, _docOperations.findNodes)(this.view.state.doc, 'reference');
+      var sortedIDs = referenceNodes.map(function (subNode) {
+        return subNode.attrs.citationID;
+      });
+      return sortedIDs;
+    }
+  }, {
+    key: 'getChildNode',
+    value: function getChildNode(bibItem) {
+      var foundNode = (0, _docOperations.findNodeByFunc)(this.node, function (_node) {
+        return _node.attrs.data.id === bibItem.id;
+      });
+      if (!foundNode) {
+        console.log('could not find textnode', foundNode);
+        return null;
+      }
+      var from = this.getPos() + foundNode.index + 1;
+      var to = from + foundNode.node.nodeSize;
+      return { from: from, to: to };
     }
   }, {
     key: 'getChildren',
@@ -74,7 +116,21 @@ var CitationsView = function (_ReactView) {
       var childNodes = node.content.content.map(function (subNode) {
         return subNode.attrs;
       });
-      return childNodes;
+
+      // gets the order of citations in the document, and then sorts it by that order
+      var citationOrder = this.getCitationOrder();
+
+      var filteredNodes = childNodes.filter(function (node) {
+        var nodeIndex = citationOrder.indexOf(node.citationID);
+        return nodeIndex !== -1;
+      });
+
+      filteredNodes.sort(function (a, b) {
+        var aIndex = citationOrder.indexOf(a.citationID);
+        var bIndex = citationOrder.indexOf(b.citationID);
+        return aIndex - bIndex;
+      });
+      return filteredNodes;
     }
   }, {
     key: 'selectNode',

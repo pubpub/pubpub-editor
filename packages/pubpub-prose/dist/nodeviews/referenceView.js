@@ -10,6 +10,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
+var _plugins = require('../plugins');
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -23,8 +25,6 @@ var _reactview = require('./reactview');
 var _reactview2 = _interopRequireDefault(_reactview);
 
 var _components = require('./components');
-
-var _plugins = require('../plugins');
 
 var _setup = require('../setup');
 
@@ -81,16 +81,22 @@ var ReferenceView = function (_ReactView) {
       }
     }
   }, {
+    key: 'getCitationString',
+    value: function getCitationString() {
+      var citationID = this.node.attrs.citationID;
+      return (0, _plugins.getPlugin)('citations', this.view.state).props.getCitationString(this.view.state, citationID, this.node.attrs);
+    }
+  }, {
     key: 'bindFunctions',
     value: function bindFunctions() {
-      this.valueChanged = this.valueChanged.bind(this);
+      this.getCitationString = this.getCitationString.bind(this);
       _get(ReferenceView.prototype.__proto__ || Object.getPrototypeOf(ReferenceView.prototype), 'bindFunctions', this).call(this);
     }
   }, {
     key: 'renderElement',
     value: function renderElement(domChild) {
       var node = this.node;
-      return _reactDom2.default.render(_react2.default.createElement(_components.ReferenceComponent, _extends({ updateValue: this.valueChanged, value: this.value }, node.attrs)), domChild);
+      return _reactDom2.default.render(_react2.default.createElement(_components.ReferenceComponent, _extends({ getCitationString: this.getCitationString }, node.attrs)), domChild);
     }
   }, {
     key: 'getCitationData',
@@ -98,28 +104,13 @@ var ReferenceView = function (_ReactView) {
       // get Count
       var citations = (0, _plugins.getPluginState)('citations', this.view.state);
     }
-
-    // Register citation info?
-
-  }, {
-    key: 'getCountOfCitation',
-    value: function getCountOfCitation() {}
-  }, {
-    key: 'valueChanged',
-    value: function valueChanged() {
-      var start = this.getPos();
-      var nodeType = _setup.schema.nodes.reference;
-      var oldNodeAttrs = this.node.attrs;
-      var transform = this.view.state.tr.setNodeType(start, nodeType, { citationID: 5 });
-      var action = transform.action();
-      this.view.props.onAction(action);
-    }
   }, {
     key: 'update',
     value: function update(node, decorations) {
       if (!_get(ReferenceView.prototype.__proto__ || Object.getPrototypeOf(ReferenceView.prototype), 'update', this).call(this, node, decorations)) {
         return false;
       }
+      console.log('got new redraw!', decorations);
       this.renderDecorations(decorations);
       return true;
     }
@@ -145,13 +136,3 @@ var ReferenceView = function (_ReactView) {
 }(_reactview2.default);
 
 exports.default = ReferenceView;
-
-// How to click on a view and cite it??
-// A plugin that tracks citations and highlights. When you click on a view,
-//
-// A plugin can be persistent and store state...
-// A plugin can add persistence to it
-//
-
-// What tracks citation order and terms? What updates citation orders?
-// What orders references?

@@ -1,7 +1,10 @@
+import { findNodeByFunc, findNodes } from '../utils/doc-operations';
+
 import { CitationsComponent } from './components';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactView from './reactview';
+import {delete} from 'prosemirror-transform';
 import { getPlugin } from '../plugins';
 import { schema } from '../setup';
 
@@ -13,6 +16,7 @@ class CitationsView extends ReactView {
   bindFunctions() {
     this.valueChanged = this.valueChanged.bind(this);
     this.getBibliography = this.getBibliography.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
 
     super.bindFunctions();
   }
@@ -25,7 +29,39 @@ class CitationsView extends ReactView {
     const node = this.node;
     const citations = this.getChildren();
     // updateParams={this.updateNodeParams} {...node.attrs}
-    return ReactDOM.render(<CitationsComponent getBibliography={this.getBibliography} citations={citations} updateValue={this.valueChanged} value={this.value} {...node.attrs}/>, domChild);
+    return ReactDOM.render(<CitationsComponent
+      getBibliography={this.getBibliography}
+      citations={citations}
+      updateValue={this.valueChanged}
+      deleteItem={this.deleteItem}
+      value={this.value} {...node.attrs}/>, domChild);
+  }
+
+  deleteItem(bibItem) {
+    const childPos = this.getChildNode(bibItem);
+    if (childPos) {
+      const transaction = this.view.state.tr.delete(childPos.from, childPos.to);
+      this.view.dispatch(transaction);
+    }
+  }
+
+  getCitationOrder() {
+    const referenceNodes = findNodes(this.view.state.doc, 'reference');
+    const sortedIDs = referenceNodes.map((subNode) => {
+      return subNode.attrs.citationID;
+    });
+    return sortedIDs;
+  }
+
+  getChildNode(bibItem) {
+    let foundNode = findNodeByFunc(this.node, (_node) => (_node.attrs.data.id === bibItem.id));
+    if (!foundNode) {
+      console.log('could not find textnode', foundNode);
+      return null;
+    }
+    const from = this.getPos() + foundNode.index + 1;
+    const to = from + foundNode.node.nodeSize;
+    return {from, to};
   }
 
   getChildren() {
@@ -34,7 +70,21 @@ class CitationsView extends ReactView {
     const childNodes = node.content.content.map((subNode) => {
       return subNode.attrs;
     });
-    return childNodes;
+
+    // gets the order of citations in the document, and then sorts it by that order
+    const citationOrder = this.getCitationOrder();
+
+    const filteredNodes = childNodes.filter(function(node) {
+      const nodeIndex = citationOrder.indexOf(node.citationID);
+      return (nodeIndex !== -1);
+    });
+
+    filteredNodes.sort(function(a, b) {
+      const aIndex = citationOrder.indexOf(a.citationID);
+      const bIndex = citationOrder.indexOf(b.citationID);
+      return aIndex - bIndex;
+    });
+    return filteredNodes;
   }
 
   selectNode() {

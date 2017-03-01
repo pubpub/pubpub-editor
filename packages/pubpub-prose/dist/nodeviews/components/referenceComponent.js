@@ -1,9 +1,11 @@
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
 exports.ReferenceComponent = undefined;
+
+var _core = require('@blueprintjs/core');
 
 var _react = require('react');
 
@@ -15,118 +17,66 @@ var _classnames2 = _interopRequireDefault(_classnames);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var styles = {};
-
 var ReferenceComponent = exports.ReferenceComponent = _react2.default.createClass({
-  displayName: 'ReferenceComponent',
+	displayName: 'ReferenceComponent',
 
-  propTypes: {
-    value: _react.PropTypes.string,
-    block: _react.PropTypes.bool,
-    updateValue: _react.PropTypes.func,
-    changeToBlock: _react.PropTypes.func,
-    changeToInline: _react.PropTypes.func
-  },
-  getInitialState: function getInitialState() {
-    return { editing: true };
-  },
-  getDefaultProps: function getDefaultProps() {
-    return {
-      context: 'document'
-    };
-  },
+	propTypes: {
+		label: _react.PropTypes.string
+	},
+	getInitialState: function getInitialState() {
+		return {};
+	},
+	getDefaultProps: function getDefaultProps() {
+		return {};
+	},
 
-  // what happens if you click or hover a reference?\
-  //  could: emit an action that hovers the info
-  //  could: pass in info stored in a citation database
-  //  could: use node decorations to put info on them without storing it permanently
-  //      -> Ideal
+	// what happens if you click or hover a reference?\
+	//  could: emit an action that hovers the info
+	//  could: pass in info stored in a citation database
+	//  could: use node decorations to put info on them without storing it permanently
+	//      -> Ideal
 
 
-  /*
-  componentWillReceiveProps: function(nextProps) {
-    if (this.props.value !== nextProps.value) {
-      const text = nextProps.value;
-      // Search for new plugins
-    }
-  },
-  */
+	setSelected: function setSelected(selected) {
+		this.setState({ selected: selected });
+	},
 
-  setSelected: function setSelected(selected) {
-    this.setState({ selected: selected });
-  },
+	preventClick: function preventClick(evt) {
+		evt.preventDefault();
+	},
 
-  handleKeyPress: function handleKeyPress(e) {
-    if (e.key === 'Enter' && !this.props.block) {
-      this.changeToNormal();
-    }
-  },
+	updateLabel: function updateLabel(label) {
+		this.setState({ label: label });
+	},
 
-  handleChange: function handleChange(event) {
-    var value = event.target.value;
-    this.props.updateValue(value);
-  },
+	render: function render() {
 
-  changeToEditing: function changeToEditing() {
-    var _this = this;
+		var referenceClass = (0, _classnames2.default)({
+			'reference': true,
+			'selected': this.state.selected
+		});
 
-    this.setState({ editing: true });
-    setTimeout(function () {
-      return _this.refs.input.focus();
-    }, 0);
-  },
+		var popoverContent = _react2.default.createElement(
+			'div',
+			null,
+			_react2.default.createElement('span', { dangerouslySetInnerHTML: { __html: this.props.getCitationString() } })
+		);
 
-  changeToNormal: function changeToNormal() {
-    this.setState({ editing: false });
-  },
-
-  updateLabel: function updateLabel(label) {
-    this.setState({ label: label });
-  },
-
-  preventClick: function preventClick(evt) {
-    evt.preventDefault();
-  },
-
-  renderDisplay: function renderDisplay() {
-
-    var referenceClass = (0, _classnames2.default)({
-      'reference': true,
-      'selected': this.state.selected
-    });
-
-    return _react2.default.createElement(
-      'span',
-      { className: referenceClass, onClick: this.preventClick },
-      this.state.label ? this.state.label : "[1]"
-    );
-  },
-
-
-  render: function render() {
-    return this.renderDisplay();
-  }
+		return _react2.default.createElement(
+			'span',
+			{ className: referenceClass, onClick: this.preventClick },
+			_react2.default.createElement(
+				_core.Popover,
+				{ content: popoverContent,
+					interactionKind: _core.PopoverInteractionKind.CLICK,
+					popoverClassName: 'pt-popover-content-sizing',
+					position: _core.Position.BOTTOM,
+					autoFocus: false,
+					useSmartPositioning: false },
+				this.state.label ? this.state.label : "[]"
+			)
+		);
+	}
 });
-
-styles = {
-  wrapper: {
-    backgroundColor: 'blue'
-  },
-  selected: {},
-  editing: function editing(_ref) {
-    var clientWidth = _ref.clientWidth;
-
-    return {
-      display: 'inline',
-      minWidth: '100px',
-      fontSize: '12px',
-      margin: '0px',
-      padding: '0px',
-      lineHeight: '1em',
-      border: '2px solid #BBBDC0',
-      borderRadius: '2px'
-    };
-  }
-};
 
 exports.default = ReferenceComponent;

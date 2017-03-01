@@ -51,29 +51,35 @@ class CitationEngine {
 
   getShortForm = (citationID) => {
 
-    var citation_object =
-    {
-        // items that are in a citation that we want to add. in this case,
-        // there is only one citation object, and we know where it is in
-        // advance.
-        "citationItems": [
-            {
-                "id": citationID
-            }
-        ],
-        "properties": {
-            "noteIndex": 0
-        }
+    try {
 
+      var citation_object =
+      {
+          // items that are in a citation that we want to add. in this case,
+          // there is only one citation object, and we know where it is in
+          // advance.
+          "citationItems": [
+              {
+                  "id": citationID
+              }
+          ],
+          "properties": {
+              "noteIndex": 0
+          }
+
+      }
+
+
+      const citation = this.items[citationID];
+      const cluster = this.citeproc.appendCitationCluster(citation_object, true);
+      if (cluster && cluster.length > 0) {
+        return cluster[0][1];
+      }
+      return null;
+
+    } catch (err) {
+      return null;
     }
-
-
-    const citation = this.items[citationID];
-    const cluster = this.citeproc.appendCitationCluster(citation_object, true);
-    if (cluster && cluster.length > 0) {
-      return cluster[0][1];
-    }
-    return null;
   }
 
   addCitation = (citation) =>  {
@@ -82,12 +88,29 @@ class CitationEngine {
     this.citeproc.updateItems(this.itemIDs);
   }
 
+  getSingleBibliography(itemID) {
+    const query = {
+      "include" : [
+         {
+            "field" : "id",
+            "value" : itemID
+         }
+      ]
+   }
+
+    const result = this.citeproc.makeBibliography(query);
+    if (result && result.length >= 1 && result[1].length > 0) {
+      return result[1][0];
+    }
+    return null;
+  }
+
   getBibliography = (itemIDs) => {
     if (!this.citeproc) {
       return null;
     }
     if (itemIDs) {
-      this.citeproc.updateItems(itemIDs);
+      this.citeproc.updateItems(itemIDs, true);
     }
     if (this.citeproc.bibliography.tokens.length) {
       const bibRes = this.citeproc.makeBibliography();

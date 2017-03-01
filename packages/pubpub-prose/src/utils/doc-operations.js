@@ -35,6 +35,20 @@ const findNodeByAttr = (doc, attrKey, attrVal) => {
 };
 
 
+const findNodeByFunc = (doc, nodeEval) => {
+	let foundNode = null;
+	const nodeMatch = (node, index, parent) => {
+		if (nodeEval(node)) {
+			foundNode = {node, index};
+		}
+	};
+
+	doc.descendants(nodeMatch);
+	// loopThroughNodes(doc, nodeMatch);
+  return foundNode;
+};
+
+
 
 const findNodesWithIndex = (doc, nodeType) => {
 
@@ -53,7 +67,7 @@ const findNodesWithIndex = (doc, nodeType) => {
 		if (child.isLeaf) {
 				nodeIndex += child.nodeSize - 1;
 		}
-		
+
   }
 
   return foundNodes;
@@ -64,3 +78,4 @@ exports.loopThroughNodes = loopThroughNodes;
 exports.findNodes = findNodes;
 exports.findNodesWithIndex = findNodesWithIndex;
 exports.findNodeByAttr = findNodeByAttr;
+exports.findNodeByFunc = findNodeByFunc;

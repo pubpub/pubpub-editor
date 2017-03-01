@@ -31,6 +31,10 @@ export const CitationsComponent = React.createClass({
 		evt.preventDefault();
 	},
 
+	deleteClick: function(bibItem) {
+		this.props.deleteItem(bibItem);
+	},
+
   renderDisplay() {
 		const { citations } = this.props;
 		const citationData = citations.map((citation) => citation.data);
@@ -45,7 +49,13 @@ export const CitationsComponent = React.createClass({
 					<div>
 		        <h3>Citations: </h3>
 						{bib.map((bibItem) => {
-							return <div dangerouslySetInnerHTML={{__html:bibItem.text}}></div>
+
+							return (<div className="pub-citation">
+								<span dangerouslySetInnerHTML={{__html:bibItem.text}}></span>
+								{/*
+								<button type="button" className="pt-button pt-icon-cross pt-minimal pub-citation-btn" onClick={this.deleteClick}></button>
+								*/}
+								</div>);
 						})}
 					</div>
 					:

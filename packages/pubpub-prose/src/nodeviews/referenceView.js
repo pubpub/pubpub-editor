@@ -1,8 +1,9 @@
+import { getPlugin, getPluginState } from '../plugins';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactView from './reactview';
 import { ReferenceComponent } from './components';
-import { getPluginState } from '../plugins';
 import { schema } from '../setup';
 
 class ReferenceView extends ReactView {
@@ -21,14 +22,19 @@ class ReferenceView extends ReactView {
     }
   }
 
+  getCitationString() {
+    const citationID = this.node.attrs.citationID;
+    return getPlugin('citations', this.view.state).props.getCitationString(this.view.state, citationID, this.node.attrs);
+  }
+
   bindFunctions() {
-    this.valueChanged = this.valueChanged.bind(this);
+    this.getCitationString = this.getCitationString.bind(this);
     super.bindFunctions();
   }
 
   renderElement(domChild) {
     const node = this.node;
-    return ReactDOM.render(<ReferenceComponent updateValue={this.valueChanged} value={this.value} {...node.attrs}/>, domChild);
+    return ReactDOM.render(<ReferenceComponent getCitationString={this.getCitationString} {...node.attrs}/>, domChild);
   }
 
   getCitationData() {
@@ -36,26 +42,11 @@ class ReferenceView extends ReactView {
     const citations = getPluginState('citations', this.view.state);
   }
 
-  // Register citation info?
-  getCountOfCitation() {
-
-  }
-
-
-	valueChanged() {
-    const start = this.getPos();
-    const nodeType = schema.nodes.reference;
-    const oldNodeAttrs = this.node.attrs;
-		const transform = this.view.state.tr.setNodeType(start, nodeType, {citationID: 5});
-		const action = transform.action();
-		this.view.props.onAction(action);
-	}
-
-
   update(node, decorations) {
     if (!super.update(node, decorations)) {
       return false
     }
+    console.log('got new redraw!', decorations);
     this.renderDecorations(decorations);
     return true;
   }
@@ -76,13 +67,3 @@ class ReferenceView extends ReactView {
 }
 
 export default ReferenceView;
-
-// How to click on a view and cite it??
-// A plugin that tracks citations and highlights. When you click on a view,
-//
-// A plugin can be persistent and store state...
-// A plugin can add persistence to it
-//
-
-// What tracks citation order and terms? What updates citation orders?
-// What orders references?

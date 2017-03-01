@@ -31,18 +31,47 @@ var createReferenceDecoration = function createReferenceDecoration(index, node, 
   return Decoration.node(index, index + 1, { class: 'diff-marker add' }, { citationID: node.attrs.citationID, label: label });
 };
 
+var findCitationNode = function findCitationNode(doc, citationID) {
+  var citationsNode = doc.child(1);
+  if (!citationsNode) {
+    return null;
+  }
+  var foundNode = (0, _docOperations.findNodeByFunc)(doc, function (_node) {
+    return _node.attrs.citationID === citationID;
+  });
+  if (!foundNode) {
+    return null;
+  }
+  var from = foundNode.index + 1;
+  var to = from + foundNode.node.nodeSize;
+  return { from: from, to: to };
+};
+
 // need to check if there are other references with nodes?
-var removeDecoration = function removeDecoration(citationID, engine, state) {
+var removeDecoration = function removeDecoration(citationID, engine, view) {
+  // engine.removeCitation(citationID);
+
+  // NEED TO CHECK IF THERE ARE OTHERS
+
+  var action = function action() {
+    var doc = view.state.doc;
+    var foundNodePos = findCitationNode(doc, citationID);
+    if (foundNodePos) {
+      var transaction = view.state.tr.delete(foundNodePos.from, foundNodePos.to);
+      transaction.setMeta("deleteReference", citationID);
+      view.dispatch(transaction);
+    }
+  };
+
+  window.setTimeout(action, 0);
   return;
-  engine.removeCitation(citationID);
-  var removeNodePos = (0, _docOperations.findNodeByAttr)(state.doc, 'citationID', citationID);
-  var transaction = state.tr.replaceRange(removeNodePos.index, removeNodePos.index + 1, _prosemirrorModel.Slice.empty);
 };
 
 var createDecorations = function createDecorations(doc, set, engine) {
   var nodes = (0, _docOperations.findNodesWithIndex)(doc, 'reference') || [];
   var decos = nodes.map(function (node) {
     var label = engine.getShortForm(node.node.attrs.citationID);
+    console.log('label', label, node.node.attrs.citationID);
     var deco = createReferenceDecoration(node.index, node.node, label);
     return deco;
   });
@@ -98,6 +127,7 @@ var citationsPlugin = new _prosemirrorState.Plugin({
       };
     },
     apply: function apply(transaction, state, prevEditorState, editorState) {
+      var _this = this;
 
       if (transaction.getMeta("docReset")) {
 
@@ -106,19 +136,32 @@ var citationsPlugin = new _prosemirrorState.Plugin({
       }
 
       var set = state.decos;
-      var createdRef = void 0;
-      if (createdRef = transaction.getMeta("createdReference")) {
+      if (transaction.getMeta("createdReference") || transaction.getMeta("deleteReference")) {
+        console.log('updating all refs');
         var blueSet = createDecorations(editorState.doc, state.decos, state.engine);
         return { decos: blueSet, engine: state.engine };
       } else if (transaction.mapping) {
         var _newSet = set.map(transaction.mapping, editorState.doc, { onRemove: function onRemove(deco) {
-            removeDecoration(deco.citationID, state.engine, editorState);
+            removeDecoration(deco.citationID, state.engine, _this.options.view);
           } });
         return { decos: _newSet, engine: state.engine };
       }
 
       return { decos: set, engine: state.engine };
     }
+  },
+  view: function view(editorView) {
+    var _this2 = this;
+
+    this.view = editorView;
+    return {
+      update: function update(newView, prevState) {
+        _this2.view = newView;
+      },
+      destroy: function destroy() {
+        _this2.view = null;
+      }
+    };
   },
   appendTransaction: function appendTransaction(transactions, oldState, newState) {
     var firstTransaction = transactions[0];
@@ -134,6 +177,12 @@ var citationsPlugin = new _prosemirrorState.Plugin({
   },
 
   props: {
+    getCitationString: function getCitationString(state, citationID, citationData) {
+      if (state && this.getState(state)) {
+        var engine = this.getState(state).engine;
+        return engine.getSingleBibliography(citationID);
+      }
+    },
     getBibliography: function getBibliography(state, citationData, citationIDs) {
       if (state && this.getState(state)) {
         var engine = this.getState(state).engine;
