@@ -21,6 +21,8 @@ exports.urlToType = function (url) {
       return 'image/jpeg';
     case 'gif':
       return 'image/jpeg';
+    case 'bmp':
+      return 'image/jpeg';
     case 'md':
       return 'text/markdown';
     case 'pdf':
