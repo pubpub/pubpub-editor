@@ -25,14 +25,15 @@ import sub from 'markdown-it-sub';
 import sup from 'markdown-it-sup';
 import emoji from 'markdown-it-emoji';
 */
-var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownParser(_setup.schema, (0, _markdownIt2.default)({ html: false }).disable(['table'])
+var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownParser(_setup.schema, (0, _markdownIt2.default)({ html: false }).disable(['table']),
 /*
 .use(emoji)
 .use(sub)
 .use(sup)
 .use(pagebreak)
+.use(embed),
 */
-.use(_markdownItEmbed2.default), {
+{
 	blockquote: { block: 'blockquote' },
 	paragraph: { block: 'paragraph' },
 	list_item: { block: 'list_item' },
@@ -91,4 +92,4 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 	code_inline: { mark: 'code' },
 	sub: { mark: 'sub' },
 	sup: { mark: 'sup' }
-});
+});'';

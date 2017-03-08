@@ -10,7 +10,7 @@ import emoji from 'markdown-it-emoji';
 */
 export const markdownParser = new MarkdownParser(schema,
 	markdownit({html: false})
-	.disable([ 'table' ])
+	.disable([ 'table' ]),
 		/*
 	.use(emoji)
 	.use(sub)
