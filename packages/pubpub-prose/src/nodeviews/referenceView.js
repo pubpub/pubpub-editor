@@ -24,7 +24,7 @@ class ReferenceView extends ReactView {
 
   getCitationString() {
     const citationID = this.node.attrs.citationID;
-    return getPlugin('citations', this.view.state).props.getCitationString(this.view.state, citationID, this.node.attrs);
+    return getPlugin('citations', this.view.state).props.getCitationString(this.view.state, citationID);
   }
 
   bindFunctions() {
@@ -46,7 +46,6 @@ class ReferenceView extends ReactView {
     if (!super.update(node, decorations)) {
       return false
     }
-    console.log('got new redraw!', decorations);
     this.renderDecorations(decorations);
     return true;
   }

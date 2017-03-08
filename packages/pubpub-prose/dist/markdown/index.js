@@ -30,3 +30,12 @@ Object.defineProperty(exports, 'jsonToMarkdown', {
     return _jsonToMarkdown.jsonToMarkdown;
   }
 });
+
+var _markdownToJSON = require('./markdownToJSON');
+
+Object.defineProperty(exports, 'markdownToJSON', {
+  enumerable: true,
+  get: function get() {
+    return _markdownToJSON.markdownToJSON;
+  }
+});

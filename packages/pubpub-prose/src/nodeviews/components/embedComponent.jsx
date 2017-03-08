@@ -122,6 +122,7 @@ export const EmbedComponent = React.createClass({
 			<figcaption style={styles.caption({size, align})}>
 				{(this.props.caption) ?
 					<EditableText
+							className="pub-caption"
 							ref="captionArea"
 							maxLines={5}
 							minLines={1}

@@ -158,6 +158,7 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 					'figcaption',
 					{ style: styles.caption({ size: size, align: align }) },
 					this.props.caption ? _react2.default.createElement(_core.EditableText, {
+						className: 'pub-caption',
 						ref: 'captionArea',
 						maxLines: 5,
 						minLines: 1,

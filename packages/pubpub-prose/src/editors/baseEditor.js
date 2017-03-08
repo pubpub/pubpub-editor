@@ -89,7 +89,9 @@ class BaseEditor {
 
   remove() {
     this.menuElem.remove();
-    this.view.destroy();
+    if (this.view) {
+      this.view.destroy();
+    }
   }
 
 

@@ -40,6 +40,11 @@
   opacity: 1;
 }
 
+/*Wierd bug with blueprint editable text empty on default*/
+.pt-editable-text:not(.pt-editable-editing) .pt-editable-content {
+  height: auto !important;
+}
+
 
 .ProseMirror-menubar-wrapper{
   width: 100vw;

@@ -27,12 +27,6 @@ export class ModCollab {
 
 		this.editor.setParticipants(participants);
 		const titleUserDivs = document.getElementsByClassName('title-connected-user');
-		const menubar = document.getElementsByClassName('editor-participants')[0];
-
-		if (!menubar) {
-			console.log('No menu bar'); // This error should not happen, this is a hack to stop it
-			return;
-		}
 
 		for (let index = titleUserDivs.length - 1; index >= 0; index--) {
 			titleUserDivs[index].parentNode.removeChild(titleUserDivs[index]);

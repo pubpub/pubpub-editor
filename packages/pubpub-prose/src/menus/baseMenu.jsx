@@ -130,7 +130,9 @@ export const BaseMenu = React.createClass({
 
 	saveFile({url, filename, type}) {
 		this.state.dialogSpec.run(this.props.view.state, this.props.view.dispatch, this.props.view, {url, filename});
-		this.props.createFile({url, filename, type});
+		if (this.props.createFile) {
+			this.props.createFile({url, filename, type});
+		}
 		this.setState({dialogSpec: null, dialogType: null, dialogExtension: null});
 	},
 

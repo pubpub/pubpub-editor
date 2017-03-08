@@ -51,6 +51,10 @@ var ReferenceComponent = exports.ReferenceComponent = _react2.default.createClas
 
 	render: function render() {
 
+		if (!this.state.label) {
+			return null;
+		}
+
 		var referenceClass = (0, _classnames2.default)({
 			'reference': true,
 			'selected': this.state.selected

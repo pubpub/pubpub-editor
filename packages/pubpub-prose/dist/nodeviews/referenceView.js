@@ -84,7 +84,7 @@ var ReferenceView = function (_ReactView) {
     key: 'getCitationString',
     value: function getCitationString() {
       var citationID = this.node.attrs.citationID;
-      return (0, _plugins.getPlugin)('citations', this.view.state).props.getCitationString(this.view.state, citationID, this.node.attrs);
+      return (0, _plugins.getPlugin)('citations', this.view.state).props.getCitationString(this.view.state, citationID);
     }
   }, {
     key: 'bindFunctions',
@@ -110,7 +110,6 @@ var ReferenceView = function (_ReactView) {
       if (!_get(ReferenceView.prototype.__proto__ || Object.getPrototypeOf(ReferenceView.prototype), 'update', this).call(this, node, decorations)) {
         return false;
       }
-      console.log('got new redraw!', decorations);
       this.renderDecorations(decorations);
       return true;
     }

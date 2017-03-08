@@ -73,7 +73,9 @@ var EmbedView = function (_ReactView) {
         var relativeFilePlugin = (0, _plugins.getPlugin)('relativefiles', state);
         if (relativeFilePlugin) {
           var fileURL = relativeFilePlugin.props.getFile({ filename: nodeAttrs.filename, state: state });
-          nodeAttrs.url = fileURL;
+          if (fileURL) {
+            nodeAttrs.url = fileURL;
+          }
         }
       }
 

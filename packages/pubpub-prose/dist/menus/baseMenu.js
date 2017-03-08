@@ -201,7 +201,9 @@ var BaseMenu = exports.BaseMenu = _react2.default.createClass({
 		    type = _ref2.type;
 
 		this.state.dialogSpec.run(this.props.view.state, this.props.view.dispatch, this.props.view, { url: url, filename: filename });
-		this.props.createFile({ url: url, filename: filename, type: type });
+		if (this.props.createFile) {
+			this.props.createFile({ url: url, filename: filename, type: type });
+		}
 		this.setState({ dialogSpec: null, dialogType: null, dialogExtension: null });
 	},
 	saveReference: function saveReference(referenceData) {

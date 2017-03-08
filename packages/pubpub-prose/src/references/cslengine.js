@@ -15,6 +15,7 @@ class CitationEngine {
 
     this.sys = {
       retrieveItem: (itemID) => {
+        console.log('GETTING ITEM', itemID);
         return this.items[itemID];
       },
       retrieveLocale: (locale) => {
@@ -23,6 +24,10 @@ class CitationEngine {
 
       },
     };
+
+    this.setBibliography = this.setBibliography.bind(this);
+    this.getShortForm = this.getShortForm.bind(this);
+    this.getSingleBibliography = this.getSingleBibliography.bind(this);
 
   }
 
@@ -35,14 +40,14 @@ class CitationEngine {
     }
     this.items = items;
     this.itemIDs = itemIDs;
-    citeproc.updateItems(itemIDs);
+    citeproc.updateItems(itemIDs, true);
     this.citeproc = citeproc;
   }
 
   removeCitation = (citationID) => {
     this.items = this.items.filter((item) => (item.id !== citationID));
     this.itemIDs = this.itemIDs.filter((itemID) => (itemID !== citationID));
-    citeproc.updateItems(itemIDs);
+    citeproc.updateItems(itemIDs, true);
   }
 
   getAllReferences = () => {
@@ -50,6 +55,10 @@ class CitationEngine {
   }
 
   getShortForm = (citationID) => {
+
+    if (!this.items[citationID]) {
+      return null;
+    }
 
     try {
 
@@ -85,10 +94,16 @@ class CitationEngine {
   addCitation = (citation) =>  {
     this.items[citation.id] = citation;
     this.itemIDs.push(citation.id);
-    this.citeproc.updateItems(this.itemIDs);
+    this.citeproc.updateItems(this.itemIDs, true);
   }
 
   getSingleBibliography(itemID) {
+    if (!this.items[itemID]) {
+      console.log('Could not find in dict');
+      return null;
+    }
+    // console.log(this.citeproc);
+    // this.citeproc.updateItems(this.itemIDs, true);
     const query = {
       "include" : [
          {
@@ -97,8 +112,10 @@ class CitationEngine {
          }
       ]
    }
-
     const result = this.citeproc.makeBibliography(query);
+
+    console.log('Found result!', result, this.items[itemID], query);
+
     if (result && result.length >= 1 && result[1].length > 0) {
       return result[1][0];
     }

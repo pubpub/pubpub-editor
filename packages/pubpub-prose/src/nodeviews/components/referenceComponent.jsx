@@ -37,6 +37,10 @@ export const ReferenceComponent = React.createClass({
 
   render() {
 
+		if (!this.state.label) {
+			return null;
+		}
+
 		const referenceClass = classNames({
       'reference': true,
       'selected': this.state.selected,
@@ -45,6 +49,7 @@ export const ReferenceComponent = React.createClass({
 		const popoverContent = (<div>
 			<span dangerouslySetInnerHTML={{__html:this.props.getCitationString()}}></span>
 		</div>);
+
 
     return (
       <span className={referenceClass} onClick={this.preventClick}>

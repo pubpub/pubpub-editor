@@ -49,12 +49,6 @@ var ModCollab = exports.ModCollab = function () {
 
 			this.editor.setParticipants(participants);
 			var titleUserDivs = document.getElementsByClassName('title-connected-user');
-			var menubar = document.getElementsByClassName('editor-participants')[0];
-
-			if (!menubar) {
-				console.log('No menu bar'); // This error should not happen, this is a hack to stop it
-				return;
-			}
 
 			for (var index = titleUserDivs.length - 1; index >= 0; index--) {
 				titleUserDivs[index].parentNode.removeChild(titleUserDivs[index]);

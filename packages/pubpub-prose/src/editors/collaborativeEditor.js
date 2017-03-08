@@ -86,9 +86,6 @@ class CollaborativeEditor extends BaseEditor {
     .concat(RelativeFilesPlugin)
     .concat(collabEditing({version: 0, clientID: clientID}));
 
-
-    //.concat(RelativeFilesPlugin)
-
     let docJSON;
     if (text) {
       docJSON = markdownParser.parse(text).toJSON();

@@ -116,8 +116,6 @@ var CollaborativeEditor = function (_BaseEditor) {
 
 		var plugins = pubpubSetup({ schema: _setup.schema }).concat(_plugins.CitationsPlugin).concat(_plugins.SelectPlugin).concat(_plugins.RelativeFilesPlugin).concat(collabEditing({ version: 0, clientID: clientID }));
 
-		//.concat(RelativeFilesPlugin)
-
 		var docJSON = void 0;
 		if (text) {
 			docJSON = markdownParser.parse(text).toJSON();

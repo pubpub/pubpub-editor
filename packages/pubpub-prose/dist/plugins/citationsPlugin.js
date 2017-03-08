@@ -28,7 +28,7 @@ Problem:
 */
 
 var createReferenceDecoration = function createReferenceDecoration(index, node, label) {
-  return Decoration.node(index, index + 1, { class: 'diff-marker add' }, { citationID: node.attrs.citationID, label: label });
+  return Decoration.node(index, index + 1, {}, { citationID: node.attrs.citationID, label: label });
 };
 
 var findCitationNode = function findCitationNode(doc, citationID) {
@@ -71,9 +71,11 @@ var createDecorations = function createDecorations(doc, set, engine) {
   var nodes = (0, _docOperations.findNodesWithIndex)(doc, 'reference') || [];
   var decos = nodes.map(function (node) {
     var label = engine.getShortForm(node.node.attrs.citationID);
-    console.log('label', label, node.node.attrs.citationID);
-    var deco = createReferenceDecoration(node.index, node.node, label);
-    return deco;
+    if (label) {
+      var deco = createReferenceDecoration(node.index, node.node, label);
+      return deco;
+    }
+    return null;
   });
   var newSet = DecorationSet.create(doc, decos);
   return newSet;
@@ -130,14 +132,12 @@ var citationsPlugin = new _prosemirrorState.Plugin({
       var _this = this;
 
       if (transaction.getMeta("docReset")) {
-
-        var newSet = createAllCitations(state.engine, editorState, state.decos);
+        var newSet = createAllCitations(state.engine, editorState.doc, state.decos);
         return { decos: newSet, engine: state.engine };
       }
 
       var set = state.decos;
       if (transaction.getMeta("createdReference") || transaction.getMeta("deleteReference")) {
-        console.log('updating all refs');
         var blueSet = createDecorations(editorState.doc, state.decos, state.engine);
         return { decos: blueSet, engine: state.engine };
       } else if (transaction.mapping) {
@@ -177,7 +177,7 @@ var citationsPlugin = new _prosemirrorState.Plugin({
   },
 
   props: {
-    getCitationString: function getCitationString(state, citationID, citationData) {
+    getCitationString: function getCitationString(state, citationID) {
       if (state && this.getState(state)) {
         var engine = this.getState(state).engine;
         return engine.getSingleBibliography(citationID);

@@ -63,7 +63,7 @@ var CitationEngine = function () {
 
       _this.items = items;
       _this.itemIDs = itemIDs;
-      citeproc.updateItems(itemIDs);
+      citeproc.updateItems(itemIDs, true);
       _this.citeproc = citeproc;
     };
 
@@ -74,7 +74,7 @@ var CitationEngine = function () {
       _this.itemIDs = _this.itemIDs.filter(function (itemID) {
         return itemID !== citationID;
       });
-      citeproc.updateItems(itemIDs);
+      citeproc.updateItems(itemIDs, true);
     };
 
     this.getAllReferences = function () {
@@ -82,6 +82,10 @@ var CitationEngine = function () {
     };
 
     this.getShortForm = function (citationID) {
+
+      if (!_this.items[citationID]) {
+        return null;
+      }
 
       try {
 
@@ -112,7 +116,7 @@ var CitationEngine = function () {
     this.addCitation = function (citation) {
       _this.items[citation.id] = citation;
       _this.itemIDs.push(citation.id);
-      _this.citeproc.updateItems(_this.itemIDs);
+      _this.citeproc.updateItems(_this.itemIDs, true);
     };
 
     this.getBibliography = function (itemIDs) {
@@ -157,6 +161,7 @@ var CitationEngine = function () {
 
     this.sys = {
       retrieveItem: function retrieveItem(itemID) {
+        console.log('GETTING ITEM', itemID);
         return _this.items[itemID];
       },
       retrieveLocale: function retrieveLocale(locale) {
@@ -164,19 +169,31 @@ var CitationEngine = function () {
         return result;
       }
     };
+
+    this.setBibliography = this.setBibliography.bind(this);
+    this.getShortForm = this.getShortForm.bind(this);
+    this.getSingleBibliography = this.getSingleBibliography.bind(this);
   }
 
   _createClass(CitationEngine, [{
     key: 'getSingleBibliography',
     value: function getSingleBibliography(itemID) {
+      if (!this.items[itemID]) {
+        console.log('Could not find in dict');
+        return null;
+      }
+      // console.log(this.citeproc);
+      // this.citeproc.updateItems(this.itemIDs, true);
       var query = {
         "include": [{
           "field": "id",
           "value": itemID
         }]
       };
-
       var result = this.citeproc.makeBibliography(query);
+
+      console.log('Found result!', result, this.items[itemID], query);
+
       if (result && result.length >= 1 && result[1].length > 0) {
         return result[1][0];
       }

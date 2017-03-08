@@ -16,7 +16,7 @@ Problem:
 
 
 const createReferenceDecoration = (index, node, label) => {
-  return Decoration.node(index , index + 1, {class: 'diff-marker add'}, { citationID: node.attrs.citationID, label });
+  return Decoration.node(index , index + 1, {}, { citationID: node.attrs.citationID, label });
 }
 
 const findCitationNode = (doc, citationID) => {
@@ -59,9 +59,11 @@ const createDecorations = (doc, set, engine) => {
   const nodes = findNodesWithIndex(doc, 'reference') || [];
   const decos = nodes.map((node) => {
     const label = engine.getShortForm(node.node.attrs.citationID);
-    console.log('label', label, node.node.attrs.citationID);
-    const deco = createReferenceDecoration(node.index, node.node, label);
-    return deco;
+    if (label) {
+      const deco = createReferenceDecoration(node.index, node.node, label);
+      return deco;
+    }
+    return null;
   });
   const newSet = DecorationSet.create(doc, decos);
   return newSet;
@@ -118,14 +120,12 @@ const citationsPlugin = new Plugin({
     apply(transaction, state, prevEditorState, editorState) {
 
       if (transaction.getMeta("docReset")) {
-
-        const newSet = createAllCitations(state.engine, editorState, state.decos);
+        const newSet = createAllCitations(state.engine, editorState.doc, state.decos);
         return {decos: newSet, engine: state.engine};
 			}
 
       let set = state.decos;
       if (transaction.getMeta("createdReference") || transaction.getMeta("deleteReference")) {
-        console.log('updating all refs');
         const blueSet = createDecorations(editorState.doc, state.decos, state.engine);
         return {decos: blueSet, engine: state.engine};
       } else if (transaction.mapping) {
@@ -162,7 +162,7 @@ const citationsPlugin = new Plugin({
   },
 
   props: {
-    getCitationString(state, citationID, citationData) {
+    getCitationString(state, citationID) {
       if (state && this.getState(state)) {
         const engine = this.getState(state).engine;
         return engine.getSingleBibliography(citationID);

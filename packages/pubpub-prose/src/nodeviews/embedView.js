@@ -33,7 +33,9 @@ class EmbedView extends ReactView {
       const relativeFilePlugin = getPlugin('relativefiles', state);
       if (relativeFilePlugin) {
         const fileURL = relativeFilePlugin.props.getFile({filename: nodeAttrs.filename, state});
-        nodeAttrs.url = fileURL;
+        if (fileURL) {
+          nodeAttrs.url = fileURL;          
+        }
       }
     }
 

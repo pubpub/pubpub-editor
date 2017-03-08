@@ -156,7 +156,7 @@ var ReferenceDialog = exports.ReferenceDialog = _react2.default.createClass({
 		if (cslJSON && cslJSON.length > 0 && Object.keys(cslJSON[0]).length > 0) {
 
 			var randomCitationId = !cslJSON.id || isNaN(cslJSON.id) ? Math.round(Math.random() * 100000000) : cslJSON.id;
-			cslJSON.id = randomCitationId;
+			cslJSON.id = String(randomCitationId);
 			this.props.saveReference(cslJSON[0]);
 		}
 	},
