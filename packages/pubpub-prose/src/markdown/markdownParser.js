@@ -16,8 +16,8 @@ export const markdownParser = new MarkdownParser(schema,
 	.use(sub)
 	.use(sup)
 	.use(pagebreak)
-	*/
 	.use(embed),
+	*/
 	{
 		blockquote: {block: 'blockquote'},
 		paragraph: {block: 'paragraph'},
@@ -66,4 +66,4 @@ export const markdownParser = new MarkdownParser(schema,
 		sub: {mark: 'sub'},
 		sup: {mark: 'sup'},
 	}
-);
+);''
