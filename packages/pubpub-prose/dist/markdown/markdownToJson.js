@@ -8,7 +8,7 @@ var _setup = require('../setup');
 
 var markdownToJSON = function markdownToJSON(markdown) {
   var newState = _prosemirrorState.EditorState.create({
-    doc: _MarkdownParser.MarkdownParser.parse(markdown)
+    doc: _MarkdownParser.markdownParser.parse(markdown)
   });
   var doc = newState.doc;
   return doc.toJSON();
