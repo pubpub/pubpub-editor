@@ -31,11 +31,11 @@ Object.defineProperty(exports, 'jsonToMarkdown', {
   }
 });
 
-var _markdownToJSON = require('./markdownToJSON');
+var _markdownToJson = require('./markdownToJson');
 
 Object.defineProperty(exports, 'markdownToJSON', {
   enumerable: true,
   get: function get() {
-    return _markdownToJSON.markdownToJSON;
+    return _markdownToJson.markdownToJSON;
   }
 });
