@@ -104,8 +104,6 @@ class EmbedView extends ReactView {
 
   updateCaption(txt) {
     // assumes no marks or anything
-    console.log('updating caption with', txt);
-
     let textNode = this.getTextNode();
 
     if (!textNode) {
@@ -150,10 +148,10 @@ class EmbedView extends ReactView {
 
   stopEvent(evt) {
     if (evt.type === "keypress" || evt.type === "input" || evt.type === "keydown" || evt.type === "keyup" || evt.type === "paste") {
-      console.log('Stopped ', evt.type);
+      // console.log('Stopped ', evt.type);
       return true;
     }
-    console.log('Played ', evt.type);
+    // console.log('Played ', evt.type);
     return false;
   }
 

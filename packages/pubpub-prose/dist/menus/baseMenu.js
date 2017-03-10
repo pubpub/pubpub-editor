@@ -240,10 +240,6 @@ var BaseMenu = exports.BaseMenu = _react2.default.createClass({
 		spec.run(this.props.view.state, this.props.view.dispatch, this.props.view);
 	},
 
-	showReference: function showReference() {
-		this.setState({ dialogType: 'file', dialogExtension: '.jpg .img' });
-	},
-
 	onClose: function onClose() {
 		this.setState({ dialogSpec: null, dialogType: null, dialogExtension: null });
 	},
@@ -278,6 +274,7 @@ var BaseMenu = exports.BaseMenu = _react2.default.createClass({
 				this.renderMenu(this.props.menu)
 			),
 			this.state.dialogType === 'file' ? _react2.default.createElement(_fileDialog2.default, { files: this.getFiles(), editorState: editorState, onClose: this.onClose, insertFile: this.insertFile, saveFile: this.saveFile, open: true }) : null,
+			this.state.dialogType === 'video' ? _react2.default.createElement(_fileDialog2.default, { type: 'video', files: this.getFiles(), editorState: editorState, onClose: this.onClose, insertFile: this.insertFile, saveFile: this.saveFile, open: true }) : null,
 			this.state.dialogType === 'reference' ? _react2.default.createElement(_referenceDialog2.default, { onClose: this.onClose, saveReference: this.saveReference, open: true }) : null,
 			this.state.dialogType === 'link' ? _react2.default.createElement(_basePrompt2.default, { type: 'link', onClose: this.onClose, savePrompt: this.saveLink }) : null,
 			this.state.dialogType === 'table' ? _react2.default.createElement(_basePrompt2.default, { type: 'table', onClose: this.onClose, savePrompt: this.saveTable }) : null

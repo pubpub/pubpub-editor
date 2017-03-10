@@ -105,6 +105,34 @@ function insertImageEmbed(nodeType) {
   });
 }
 
+function insertVideoEmbed(nodeType) {
+  return new MenuItem({
+    title: "Insert Video",
+    label: "Video",
+    icon: "mobile-video",
+    dialogType: 'video',
+    dialogExtension: '.mp4,.ogg,.webm',
+    select: function select(state) {
+      return canInsert(state, nodeType);
+    },
+    run: function run(state, dispatch, view, _ref2) {
+      var filename = _ref2.filename,
+          url = _ref2.url;
+
+      var textnode = _schema.schema.text('Enter caption.');
+      var newNode2 = _schema.schema.nodes.caption.create({}, textnode);
+      var newNode = _schema.schema.nodes.embed.create({
+        filename: filename,
+        align: 'full',
+        size: '50%'
+      }, newNode2);
+      var transaction = state.tr.replaceSelectionWith(newNode);
+      transaction = transaction.setMeta("uploadedFile", { filename: filename, url: url });
+      dispatch(transaction);
+    }
+  });
+}
+
 function insertReferenceEmbed(nodeType) {
   return new MenuItem({
     title: "Insert Reference",
@@ -156,9 +184,9 @@ function insertTableItem(tableType) {
     title: "Insert Table",
     icon: "th",
     dialogType: "table",
-    run: function run(state, dispatch, view, _ref2) {
-      var rows = _ref2.rows,
-          cols = _ref2.cols;
+    run: function run(state, dispatch, view, _ref3) {
+      var rows = _ref3.rows,
+          cols = _ref3.cols;
 
       console.log('Making row!', rows, cols);
       var transaction = state.tr.replaceSelectionWith(createTable(tableType, +rows, +cols));
@@ -311,7 +339,10 @@ function buildMenuItems(schema) {
   if (type = schema.marks.code) r.toggleCode = markItem(type, { title: "Toggle code font", icon: "Code" });
   if (type = schema.marks.link) r.toggleLink = linkItem(type);
 
-  if (type = schema.nodes.embed) r.insertImageEmbed = insertImageEmbed(type);
+  if (type = schema.nodes.embed) {
+    r.insertImageEmbed = insertImageEmbed(type);
+    r.insertVideoEmbed = insertVideoEmbed(type);
+  }
 
   if (type = schema.nodes.reference) {
     r.insertReferenceEmbed = insertReferenceEmbed(type);
@@ -401,7 +432,7 @@ function buildMenuItems(schema) {
   r.textMenu = [new Dropdown(cut([r.makeParagraph, r.makeHead1, r.makeHead2, r.makeHead3, r.makeHead4]), { label: "Normal", className: "textMenu" })];
 
   r.moreinlineMenu = new Dropdown(cut([r.supMark, r.subMark, r.strikeMark]), { label: "", icon: "Style" });
-  r.insertMenu = new Dropdown(cut([r.insertImageEmbed, r.insertReferenceEmbed, r.insertLatexEmbed]), { label: "Insert", icon: "Insert" });
+  r.insertMenu = new Dropdown(cut([r.insertImageEmbed, r.insertVideoEmbed, r.insertReferenceEmbed, r.insertLatexEmbed]), { label: "Insert", icon: "Insert" });
   r.typeMenu = new Dropdown(cut([r.makeCodeBlock, r.insertPageBreak]), { label: "..." });
   var tableItems = cut([r.insertTable, r.addRowBefore, r.addRowAfter, r.removeRow, r.addColumnBefore, r.addColumnAfter, r.removeColumn]);
   if (tableItems.length) r.tableMenu = new Dropdown(tableItems, { label: "", icon: "th", hideOnDisable: false });

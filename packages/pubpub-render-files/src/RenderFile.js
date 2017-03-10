@@ -43,6 +43,13 @@ export const RenderFile = React.createClass({
 		case 'application/msword':
 		case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
 			return <RenderFileDoc file={file} />;
+		case 'video/mp4':
+		case 'mp4':
+			return (
+				<video width={'100%'} controls>
+					<source src={file.url} type={'video/mp4'} />
+				</video>
+			);
 		default:
 			return (
 				<div className={'pt-callout'}>

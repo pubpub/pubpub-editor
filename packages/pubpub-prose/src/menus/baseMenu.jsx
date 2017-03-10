@@ -167,10 +167,6 @@ export const BaseMenu = React.createClass({
 		spec.run(this.props.view.state, this.props.view.dispatch, this.props.view);
 	},
 
-	showReference: function() {
-		this.setState({dialogType: 'file', dialogExtension: '.jpg .img'});
-	},
-
 	onClose: function() {
 		this.setState({dialogSpec: null, dialogType: null, dialogExtension: null});
 	},
@@ -206,6 +202,12 @@ export const BaseMenu = React.createClass({
 				<FileDialog files={this.getFiles()} editorState={editorState} onClose={this.onClose} insertFile={this.insertFile} saveFile={this.saveFile} open={true}/>
 				: null
 			}
+
+			{(this.state.dialogType === 'video') ?
+				<FileDialog type={'video'} files={this.getFiles()} editorState={editorState} onClose={this.onClose} insertFile={this.insertFile} saveFile={this.saveFile} open={true}/>
+				: null
+			}
+
 			{(this.state.dialogType === 'reference') ?
 				<ReferenceDialog onClose={this.onClose} saveReference={this.saveReference} open={true}/>
 				: null

@@ -148,8 +148,6 @@ var EmbedView = function (_ReactView) {
     key: 'updateCaption',
     value: function updateCaption(txt) {
       // assumes no marks or anything
-      console.log('updating caption with', txt);
-
       var textNode = this.getTextNode();
 
       if (!textNode) {
@@ -194,10 +192,10 @@ var EmbedView = function (_ReactView) {
     key: 'stopEvent',
     value: function stopEvent(evt) {
       if (evt.type === "keypress" || evt.type === "input" || evt.type === "keydown" || evt.type === "keyup" || evt.type === "paste") {
-        console.log('Stopped ', evt.type);
+        // console.log('Stopped ', evt.type);
         return true;
       }
-      console.log('Played ', evt.type);
+      // console.log('Played ', evt.type);
       return false;
     }
   }, {

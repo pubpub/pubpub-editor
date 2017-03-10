@@ -48,6 +48,8 @@ var RenderFile = exports.RenderFile = _react2.default.createClass({
 
 		var file = this.props.file || {};
 
+		console.log('rendering with type', file.type);
+
 		switch (file.type) {
 			case 'text/markdown':
 				return _react2.default.createElement(
@@ -72,6 +74,13 @@ var RenderFile = exports.RenderFile = _react2.default.createClass({
 			case 'application/msword':
 			case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
 				return _react2.default.createElement(_RenderFileDoc2.default, { file: file });
+			case 'video/mp4':
+			case 'mp4':
+				return _react2.default.createElement(
+					'video',
+					{ width: '100%', controls: true },
+					_react2.default.createElement('source', { src: file.url, type: 'video/mp4' })
+				);
 			default:
 				return _react2.default.createElement(
 					'div',

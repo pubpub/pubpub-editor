@@ -1,8 +1,8 @@
 import { Button, Dialog } from '@blueprintjs/core';
 import React, {PropTypes} from 'react';
 
-import FilePreview from './filePreview';
 import FileUploadDialog from './fileUpload';
+import { RenderFile } from '@pubpub/render-files';
 
 let styles = {};
 
@@ -48,8 +48,17 @@ export const FileDialog = React.createClass({
 
   renderDisplay() {
 
-    const { open, fileAccept, files } = this.props;
+    const { open, fileAccept, files, type } = this.props;
 		const { url, filename } = this.state;
+
+		let title;
+		if (type === 'video') {
+			title = "Insert Video"
+		} else if (type === 'image') {
+			title = "Insert Image"
+		} else {
+			title = "Insert File"
+		}
 
     return (
       <div onClick={this.preventClick}>
@@ -57,14 +66,14 @@ export const FileDialog = React.createClass({
             iconName="inbox"
             isOpen={open}
             onClose={this.onClose}
-            title="Insert file"
+            title={title}
         >
             <div className="pt-dialog-body">
 								{(!this.state.url || !this.state.preview) ?
 									<FileUploadDialog files={files} fileAccept={fileAccept} uploadFile={this.uploadFile} insertFile={this.insertFile}/>
 									:
 									<div style={{display: 'block', margin: '0 auto', textAlign: 'center', maxWidth: '300px'}}>
-										<FilePreview fileURL={this.state.url} />
+											<RenderFile file={{url: this.state.url, type: this.state.type}} />
 											<label className="pt-label">
 											  <input value={filename} onChange={this.editFileName} className="pt-input" type="text" placeholder="Text input" dir="auto" />
 											</label>
@@ -72,6 +81,11 @@ export const FileDialog = React.createClass({
 								 }
             </div>
             <div className="pt-dialog-footer">
+							{(type === 'video') ?
+								<div className="pt-callout" style={{marginBottom: 10}}>
+									Video files can be large! Be ready for a longer upload process. If possible, try and compress and shorten your video.
+								</div>
+							: null}
                 <div className="pt-dialog-footer-actions">
                     <Button intent={'yes'} disabled={!(this.state.url)} onClick={this.saveFile} text="Upload" />
                 </div>

@@ -11,13 +11,11 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _filePreview = require('./filePreview');
-
-var _filePreview2 = _interopRequireDefault(_filePreview);
-
 var _fileUpload = require('./fileUpload');
 
 var _fileUpload2 = _interopRequireDefault(_fileUpload);
+
+var _renderFiles = require('@pubpub/render-files');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -81,11 +79,21 @@ var FileDialog = exports.FileDialog = _react2.default.createClass({
 		var _props = this.props,
 		    open = _props.open,
 		    fileAccept = _props.fileAccept,
-		    files = _props.files;
+		    files = _props.files,
+		    type = _props.type;
 		var _state2 = this.state,
 		    url = _state2.url,
 		    filename = _state2.filename;
 
+
+		var title = void 0;
+		if (type === 'video') {
+			title = "Insert Video";
+		} else if (type === 'image') {
+			title = "Insert Image";
+		} else {
+			title = "Insert File";
+		}
 
 		return _react2.default.createElement(
 			'div',
@@ -96,7 +104,7 @@ var FileDialog = exports.FileDialog = _react2.default.createClass({
 					iconName: 'inbox',
 					isOpen: open,
 					onClose: this.onClose,
-					title: 'Insert file'
+					title: title
 				},
 				_react2.default.createElement(
 					'div',
@@ -104,7 +112,7 @@ var FileDialog = exports.FileDialog = _react2.default.createClass({
 					!this.state.url || !this.state.preview ? _react2.default.createElement(_fileUpload2.default, { files: files, fileAccept: fileAccept, uploadFile: this.uploadFile, insertFile: this.insertFile }) : _react2.default.createElement(
 						'div',
 						{ style: { display: 'block', margin: '0 auto', textAlign: 'center', maxWidth: '300px' } },
-						_react2.default.createElement(_filePreview2.default, { fileURL: this.state.url }),
+						_react2.default.createElement(_renderFiles.RenderFile, { file: { url: this.state.url, type: this.state.type } }),
 						_react2.default.createElement(
 							'label',
 							{ className: 'pt-label' },
@@ -115,6 +123,11 @@ var FileDialog = exports.FileDialog = _react2.default.createClass({
 				_react2.default.createElement(
 					'div',
 					{ className: 'pt-dialog-footer' },
+					type === 'video' ? _react2.default.createElement(
+						'div',
+						{ className: 'pt-callout', style: { marginBottom: 10 } },
+						'Video files can be large! Be ready for a longer upload process. If possible, try and compress and shorten your video.'
+					) : null,
 					_react2.default.createElement(
 						'div',
 						{ className: 'pt-dialog-footer-actions' },

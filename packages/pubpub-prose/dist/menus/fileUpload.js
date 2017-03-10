@@ -84,6 +84,7 @@ var FileUploadDialog = exports.FileUploadDialog = _react2.default.createClass({
 		var fileURL = 'https://assets.pubpub.org/' + filename;
 		var realFileName = filename.split('/').pop();
 		var fileType = (0, _renderFiles.URLToType)(fileURL);
+		console.log('Ceating file', fileType, fileURL);
 		this.props.uploadFile({ url: fileURL, filename: title, preview: true, type: fileType });
 	},
 

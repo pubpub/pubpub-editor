@@ -69,6 +69,29 @@ function insertImageEmbed(nodeType) {
 }
 
 
+function insertVideoEmbed(nodeType) {
+  return new MenuItem({
+    title: "Insert Video",
+    label: "Video",
+    icon: "mobile-video",
+    dialogType: 'video',
+    dialogExtension: '.mp4,.ogg,.webm',
+    select(state) { return canInsert(state, nodeType) },
+    run(state, dispatch, view, {filename, url}) {
+      const textnode = schema.text('Enter caption.');
+      const newNode2 = schema.nodes.caption.create({},textnode);
+      const newNode = schema.nodes.embed.create({
+        filename,
+        align: 'full',
+        size: '50%',
+      }, newNode2);
+      let transaction = state.tr.replaceSelectionWith(newNode);
+      transaction = transaction.setMeta("uploadedFile",{filename, url});
+      dispatch(transaction);
+    }
+  })
+}
+
 function insertReferenceEmbed(nodeType) {
   return new MenuItem({
     title: "Insert Reference",
@@ -268,8 +291,12 @@ function buildMenuItems(schema) {
   if (type = schema.marks.link)
     r.toggleLink = linkItem(type)
 
-  if (type = schema.nodes.embed)
+  if (type = schema.nodes.embed) {
     r.insertImageEmbed = insertImageEmbed(type)
+    r.insertVideoEmbed = insertVideoEmbed(type)
+  }
+
+
 
   if (type = schema.nodes.reference) {
     r.insertReferenceEmbed = insertReferenceEmbed(type)
@@ -350,7 +377,7 @@ function buildMenuItems(schema) {
   r.textMenu = [new Dropdown(cut([r.makeParagraph, r.makeHead1, r.makeHead2, r.makeHead3, r.makeHead4]), {label: "Normal", className: "textMenu"})];
 
   r.moreinlineMenu = new Dropdown(cut([r.supMark, r.subMark, r.strikeMark]), {label: "", icon: "Style"})
-  r.insertMenu = new Dropdown(cut([r.insertImageEmbed, r.insertReferenceEmbed, r.insertLatexEmbed]), {label: "Insert", icon: "Insert"})
+  r.insertMenu = new Dropdown(cut([r.insertImageEmbed, r.insertVideoEmbed, r.insertReferenceEmbed, r.insertLatexEmbed]), {label: "Insert", icon: "Insert"})
   r.typeMenu = new Dropdown(cut([r.makeCodeBlock,r.insertPageBreak]), {label: "..."})
   let tableItems = cut([r.insertTable, r.addRowBefore, r.addRowAfter, r.removeRow, r.addColumnBefore, r.addColumnAfter, r.removeColumn])
   if (tableItems.length)

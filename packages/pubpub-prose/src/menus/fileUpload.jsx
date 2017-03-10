@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 import Dropzone from 'react-dropzone';
 import Radium from 'radium';
 import { URLToType } from '@pubpub/render-files';
-import {s3Upload} from './uploadFile';
+import { s3Upload } from './uploadFile';
 
 // import {globalStyles} from 'utils/styleConstants';
 
@@ -64,6 +64,7 @@ export const FileUploadDialog = React.createClass({
 		const fileURL = 'https://assets.pubpub.org/' + filename;
 		const realFileName = filename.split('/').pop();
 		const fileType = URLToType(fileURL);
+		console.log('Ceating file', fileType, fileURL);
 		this.props.uploadFile({url: fileURL, filename: title, preview: true, type: fileType});
 	},
 
