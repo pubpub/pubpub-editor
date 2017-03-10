@@ -1,4 +1,4 @@
-exports.urlToType = (url) => {
+exports.urlToType = (url, defaultType) => {
 
   if (!url) {
     return null;
@@ -36,6 +36,6 @@ exports.urlToType = (url) => {
     case 'stl':
       return 'stl';
     default:
-      return null;
+      return (defaultType) ? defaultType : 'file';
   }
 }

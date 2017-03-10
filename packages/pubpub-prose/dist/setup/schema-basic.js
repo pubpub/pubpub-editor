@@ -53,6 +53,17 @@ var nodes = {
     }
   },
 
+  highlight: {
+    group: 'inline',
+    content: "text*",
+    /*
+    attrs: {
+      content: {default: ''},
+    },
+    */
+    inline: true
+  },
+
   mention: {
     group: 'inline',
     content: "text*",

@@ -47,6 +47,18 @@ const nodes = {
     toDOM() { return ["p", 0] }
   },
 
+  highlight: {
+    group: 'inline',
+    content: "text*",
+    /*
+    attrs: {
+      content: {default: ''},
+    },
+    */
+    inline: true,
+  },
+
+
   mention: {
     group: 'inline',
     content: "text*",

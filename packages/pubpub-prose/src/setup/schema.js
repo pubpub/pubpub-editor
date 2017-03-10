@@ -56,7 +56,8 @@ const tableSchema = addTableNodes(listSchema, "paragraph block*", "block");
 
 export const schema = new Schema({
 	nodes: tableSchema,
-	marks: basicSchema.markSpec.addBefore('code', 'sub', SubMark).addBefore('code', 'sup', SupMark).addBefore('code', 'strike', StrikeThroughMark)
+	marks: basicSchema.markSpec.addBefore('code', 'sub', SubMark).addBefore('code', 'sup', SupMark).addBefore('code', 'strike', StrikeThroughMark),
+  topNode: 'article'
 });
 
 export const createSchema = () => {

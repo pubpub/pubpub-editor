@@ -1,10 +1,11 @@
 import {EditorState} from 'prosemirror-state';
 import {markdownParser} from './MarkdownParser';
-import {schema as pubSchema} from '../setup';
+import {schema} from '../setup';
 
 const markdownToJSON = (markdown) => {
+  const contents = markdownParser.parse(markdown);
   const newState = EditorState.create({
-  	doc: markdownParser.parse(markdown),
+  	doc: contents,
   });
   const doc = newState.doc;
   return doc.toJSON();
