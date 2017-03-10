@@ -1,6 +1,6 @@
 'use strict';
 
-exports.urlToType = function (url) {
+exports.urlToType = function (url, defaultType) {
 
   if (!url) {
     return null;
@@ -38,6 +38,6 @@ exports.urlToType = function (url) {
     case 'stl':
       return 'stl';
     default:
-      return null;
+      return defaultType ? defaultType : 'file';
   }
 };
