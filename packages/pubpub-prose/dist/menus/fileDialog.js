@@ -109,7 +109,7 @@ var FileDialog = exports.FileDialog = _react2.default.createClass({
 				_react2.default.createElement(
 					'div',
 					{ className: 'pt-dialog-body' },
-					!this.state.url || !this.state.preview ? _react2.default.createElement(_fileUpload2.default, { files: files, fileAccept: fileAccept, uploadFile: this.uploadFile, insertFile: this.insertFile }) : _react2.default.createElement(
+					!this.state.url || !this.state.preview ? _react2.default.createElement(_fileUpload2.default, { type: type, files: files, fileAccept: fileAccept, uploadFile: this.uploadFile, insertFile: this.insertFile }) : _react2.default.createElement(
 						'div',
 						{ style: { display: 'block', margin: '0 auto', textAlign: 'center', maxWidth: '300px' } },
 						_react2.default.createElement(_renderFiles.RenderFile, { file: { url: this.state.url, type: this.state.type } }),

@@ -70,7 +70,7 @@ export const FileDialog = React.createClass({
         >
             <div className="pt-dialog-body">
 								{(!this.state.url || !this.state.preview) ?
-									<FileUploadDialog files={files} fileAccept={fileAccept} uploadFile={this.uploadFile} insertFile={this.insertFile}/>
+									<FileUploadDialog type={type} files={files} fileAccept={fileAccept} uploadFile={this.uploadFile} insertFile={this.insertFile}/>
 									:
 									<div style={{display: 'block', margin: '0 auto', textAlign: 'center', maxWidth: '300px'}}>
 											<RenderFile file={{url: this.state.url, type: this.state.type}} />

@@ -203,6 +203,12 @@ export const BaseMenu = React.createClass({
 				: null
 			}
 
+			{(this.state.dialogType === 'image') ?
+				<FileDialog type={'image'} files={this.getFiles()} editorState={editorState} onClose={this.onClose} insertFile={this.insertFile} saveFile={this.saveFile} open={true}/>
+				: null
+			}
+
+
 			{(this.state.dialogType === 'video') ?
 				<FileDialog type={'video'} files={this.getFiles()} editorState={editorState} onClose={this.onClose} insertFile={this.insertFile} saveFile={this.saveFile} open={true}/>
 				: null

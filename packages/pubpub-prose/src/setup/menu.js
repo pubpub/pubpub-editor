@@ -50,8 +50,8 @@ function insertImageEmbed(nodeType) {
     title: "Insert Image",
     label: "Image",
     icon: "Media",
-    dialogType: 'file',
-    dialogExtension: '.jpg,.png,.gif,.tiff',
+    dialogType: 'image',
+    dialogExtension: ['.jpg','.png','.gif', '.tiff'],
     select(state) { return canInsert(state, nodeType) },
     run(state, dispatch, view, {filename, url}) {
       const textnode = schema.text('Enter caption.');
@@ -75,7 +75,7 @@ function insertVideoEmbed(nodeType) {
     label: "Video",
     icon: "mobile-video",
     dialogType: 'video',
-    dialogExtension: '.mp4,.ogg,.webm',
+    dialogExtension: ['.mp4','.ogg','.webm'],
     select(state) { return canInsert(state, nodeType) },
     run(state, dispatch, view, {filename, url}) {
       const textnode = schema.text('Enter caption.');

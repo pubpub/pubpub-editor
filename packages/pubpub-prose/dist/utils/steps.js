@@ -96,6 +96,7 @@ exports.applySafeDiffs = function (_ref3) {
   try {
     return applyDiffs({ state: state, diffs: diffs, schema: schema });
   } catch (err) {
+    console.log('could not error!', err);
     return applyDiffsSequential({ state: state, diffs: diffs, schema: schema });
   }
 };

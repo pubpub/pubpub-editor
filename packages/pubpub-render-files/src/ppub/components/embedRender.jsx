@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react';
 
 import ReactDOM from 'react-dom';
 import { RenderFile } from '../../RenderFile';
+import { urlToType } from '../../urlToType';
 
 let styles = {};
 
@@ -32,14 +33,16 @@ export const EmbedRender = React.createClass({
 		const data = this.props.data || {};
 		// Data is the version object with a populated parent field.
 		// The parent field is the atomData field
-		const file = {name: '', url};
+		const type = urlToType(url);
+
+		const file = { name: '', url, type };
 
 		return (
 			<div ref="embedroot" className={'pub-embed ' + this.props.className}>
 				<figure style={styles.figure({size, align, false})}>
   				<div style={{width: size, position: 'relative', display: 'table-row'}}>
-						{/* <RenderFile file={file} /> */}
-  					<img draggable="false" style={styles.image({selected})} src={url}></img>
+						<RenderFile file={file} />
+  					{/*<img draggable="false" style={styles.image({selected})} src={url}></img>*/}
           </div>
           <figcaption style={styles.caption({size, align})}>
             <div style={styles.captionInput} ref="captioninsert">

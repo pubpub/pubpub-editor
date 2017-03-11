@@ -82,8 +82,8 @@ function insertImageEmbed(nodeType) {
     title: "Insert Image",
     label: "Image",
     icon: "Media",
-    dialogType: 'file',
-    dialogExtension: '.jpg,.png,.gif,.tiff',
+    dialogType: 'image',
+    dialogExtension: ['.jpg', '.png', '.gif', '.tiff'],
     select: function select(state) {
       return canInsert(state, nodeType);
     },
@@ -111,7 +111,7 @@ function insertVideoEmbed(nodeType) {
     label: "Video",
     icon: "mobile-video",
     dialogType: 'video',
-    dialogExtension: '.mp4,.ogg,.webm',
+    dialogExtension: ['.mp4', '.ogg', '.webm'],
     select: function select(state) {
       return canInsert(state, nodeType);
     },

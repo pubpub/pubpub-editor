@@ -82,20 +82,20 @@ export const FileUploadDialog = React.createClass({
 		this.props.insertFile({url, filename, preview: false});
 	},
 
-	renderExistingFiles(files) {
+	renderExistingFiles(filterType, files) {
 		return Object.keys(files).map((filename) => {
 				const fileurl = files[filename];
 				if (!fileurl) {
 					return null;
 				}
 				const type = URLToType(fileurl);
-				if (!type || type.indexOf('image') === -1) {
+				if (!type || type.indexOf(filterType) === -1) {
 					return null;
 				}
 				const selected = (this.state.selectedURL === fileurl);
 				return (<div key={filename} onClick={this.selectFile.bind(this, filename, fileurl)} style={styles.card({selected})} className="pt-card pt-elevation-0 pt-interactive">
 			     <h5 style={styles.label}><a href="#">{filename}</a></h5>
-			     <img src={'https://jake.pubpub.org/unsafe/50x50/' + fileurl}  />
+					 {(filterType === 'image') ? <img src={'https://jake.pubpub.org/unsafe/50x50/' + fileurl}  /> : null}
 			   </div>);
 		});
 	},
@@ -136,7 +136,7 @@ export const FileUploadDialog = React.createClass({
 
 						<TabPanel>
 							<div style={styles.cardContainer}>
-							{this.renderExistingFiles(this.props.files)}
+							{this.renderExistingFiles(this.props.type, this.props.files)}
 							</div>
 						</TabPanel>
 				</Tabs>

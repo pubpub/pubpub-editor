@@ -42,6 +42,7 @@ exports.applySafeDiffs = ({ state, diffs, schema }) => {
   try {
     return applyDiffs({state, diffs, schema});
   } catch (err) {
+    console.log('could not error!', err);
     return applyDiffsSequential({state, diffs, schema});
   }
 

@@ -99,7 +99,7 @@ var FileUploadDialog = exports.FileUploadDialog = _react2.default.createClass({
 		this.setState({ selectedURL: url });
 		this.props.insertFile({ url: url, filename: filename, preview: false });
 	},
-	renderExistingFiles: function renderExistingFiles(files) {
+	renderExistingFiles: function renderExistingFiles(filterType, files) {
 		var _this2 = this;
 
 		return Object.keys(files).map(function (filename) {
@@ -108,7 +108,7 @@ var FileUploadDialog = exports.FileUploadDialog = _react2.default.createClass({
 				return null;
 			}
 			var type = (0, _renderFiles.URLToType)(fileurl);
-			if (!type || type.indexOf('image') === -1) {
+			if (!type || type.indexOf(filterType) === -1) {
 				return null;
 			}
 			var selected = _this2.state.selectedURL === fileurl;
@@ -124,7 +124,7 @@ var FileUploadDialog = exports.FileUploadDialog = _react2.default.createClass({
 						filename
 					)
 				),
-				_react2.default.createElement('img', { src: 'https://jake.pubpub.org/unsafe/50x50/' + fileurl })
+				filterType === 'image' ? _react2.default.createElement('img', { src: 'https://jake.pubpub.org/unsafe/50x50/' + fileurl }) : null
 			);
 		});
 	},
@@ -181,7 +181,7 @@ var FileUploadDialog = exports.FileUploadDialog = _react2.default.createClass({
 					_react2.default.createElement(
 						'div',
 						{ style: styles.cardContainer },
-						this.renderExistingFiles(this.props.files)
+						this.renderExistingFiles(this.props.type, this.props.files)
 					)
 				)
 			)

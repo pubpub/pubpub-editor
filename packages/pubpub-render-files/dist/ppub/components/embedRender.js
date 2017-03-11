@@ -15,6 +15,8 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _RenderFile = require('../../RenderFile');
 
+var _urlToType = require('../../urlToType');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var styles = {};
@@ -51,7 +53,9 @@ var EmbedRender = exports.EmbedRender = _react2.default.createClass({
 		var data = this.props.data || {};
 		// Data is the version object with a populated parent field.
 		// The parent field is the atomData field
-		var file = { name: '', url: url };
+		var type = (0, _urlToType.urlToType)(url);
+
+		var file = { name: '', url: url, type: type };
 
 		return _react2.default.createElement(
 			'div',
@@ -62,7 +66,7 @@ var EmbedRender = exports.EmbedRender = _react2.default.createClass({
 				_react2.default.createElement(
 					'div',
 					{ style: { width: size, position: 'relative', display: 'table-row' } },
-					_react2.default.createElement('img', { draggable: 'false', style: styles.image({ selected: selected }), src: url })
+					_react2.default.createElement(_RenderFile.RenderFile, { file: file })
 				),
 				_react2.default.createElement(
 					'figcaption',
