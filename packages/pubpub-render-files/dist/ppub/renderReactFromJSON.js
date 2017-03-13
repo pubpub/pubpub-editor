@@ -103,7 +103,7 @@ var renderSubLoop = function renderSubLoop(item, meta) {
 			case 'text':
 				var marks = node.marks || [];
 				return marks.reduce(function (previous, current) {
-					switch (current._) {
+					switch (current.type) {
 						case 'strong':
 							return _react2.default.createElement(
 								'strong',

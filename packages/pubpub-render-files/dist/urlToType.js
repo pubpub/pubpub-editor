@@ -13,6 +13,8 @@ exports.urlToType = function (url, defaultType) {
   }
 
   switch (extension) {
+    case 'tif':
+      return 'image/jpg';
     case 'jpg':
       return 'image/jpg';
     case 'png':
