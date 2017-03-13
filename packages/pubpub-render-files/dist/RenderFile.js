@@ -48,8 +48,6 @@ var RenderFile = exports.RenderFile = _react2.default.createClass({
 
 		var file = this.props.file || {};
 
-		console.log('rendering with type', file.type);
-
 		switch (file.type) {
 			case 'text/markdown':
 				return _react2.default.createElement(
