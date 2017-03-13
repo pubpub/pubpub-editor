@@ -55,7 +55,7 @@ const renderSubLoop = function(item, meta) {
 		case 'text':
 			const marks = node.marks || [];
 			return marks.reduce((previous, current)=>{
-				switch (current._) {
+				switch (current.type) {
 				case 'strong':
 					return <strong key={index}>{previous}</strong>;
 				case 'em':
