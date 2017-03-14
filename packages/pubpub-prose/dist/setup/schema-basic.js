@@ -66,12 +66,11 @@ var nodes = {
 
   mention: {
     group: 'inline',
-    content: "text*",
-    /*
     attrs: {
-      content: {default: ''},
+      text: { default: '' },
+      meta: { default: {} },
+      type: { default: '' }
     },
-    */
     inline: true
   },
 

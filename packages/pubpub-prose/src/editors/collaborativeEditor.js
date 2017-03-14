@@ -122,11 +122,12 @@ class CollaborativeEditor extends BaseEditor {
 
     migrateDiffs(this.collab.docInfo.last_diffs);
     // console.log('Got diffs!', this.collab.docInfo.last_diffs);
-    const appliedAction = this.collab.mod.collab.docChanges.applyAllDiffs(this.collab.docInfo.last_diffs);
-    if (appliedAction) {
+    const couldApplyAction = this.collab.mod.collab.docChanges.applyAllDiffs(this.collab.docInfo.last_diffs);
+    // const couldApplyAction = this.collab.mod.collab.docChanges.applyAllSafeDiffs(this.view, this.view.state, this.collab.docInfo.last_diffs);
+    if (couldApplyAction) {
     		// this.applyAction(appliedAction);
     } else {
-    		// indicates that the DOM is broken and cannot be repaired
+        console.log('COULD NOT APPLY ACTIONS!');
     		this.collab.mod.serverCommunications.disconnect();
     }
 

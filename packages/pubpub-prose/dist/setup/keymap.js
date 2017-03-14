@@ -21,6 +21,10 @@ var _require4 = require("prosemirror-history"),
     undo = _require4.undo,
     redo = _require4.redo;
 
+var _require5 = require("prosemirror-state"),
+    Selection = _require5.Selection,
+    TextSelection = _require5.TextSelection;
+
 var mac = typeof navigator != "undefined" ? /Mac/.test(navigator.platform) : false;
 
 // :: (Schema, ?Object) → Object
@@ -103,6 +107,17 @@ function buildKeymap(schema, mapKeys) {
   if (schema.nodes.table_row) {
     bind("Tab", selectNextCell);
     bind("Shift-Tab", selectPreviousCell);
+  }
+
+  if (schema.nodes.mention) {
+    bind("@", function (state, onAction) {
+      var sel = state.selection;
+      var newSelection = TextSelection.create(state.doc, sel.from, sel.from);
+      var transaction = state.tr.replaceSelectionWith(schema.nodes.mention.create({ editing: true }));
+      transaction = transaction.setSelection(newSelection);
+      var result = onAction(transaction);
+      return true;
+    });
   }
   return keys;
 }

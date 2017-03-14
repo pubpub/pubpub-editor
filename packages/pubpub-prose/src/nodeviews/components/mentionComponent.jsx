@@ -1,5 +1,8 @@
 import React, {PropTypes} from 'react';
 
+import Autosuggest from 'react-autosuggest';
+import katexStyles from './katex.css.js';
+
 let styles = {};
 
 export const MentionComponent = React.createClass({
@@ -11,84 +14,136 @@ export const MentionComponent = React.createClass({
     changeToInline: PropTypes.func,
 	},
 	getInitialState: function() {
-    return {editing: true};
+    return {editing: false};
 	},
 	getDefaultProps: function() {
-		return {
-			context: 'document',
-		};
 	},
 
   componentDidMount: function() {
-    setTimeout(() => this.refs.input.focus(), 0);
   },
 
-  /*
-	componentWillReceiveProps: function(nextProps) {
-    if (this.props.value !== nextProps.value) {
-      const text = nextProps.value;
-      // Search for new plugins
-    }
+	openEdit: function() {
+		this.setState({editing: true})
+		setTimeout(() => this.refs.suggest.input.focus(), 0);
 	},
-  */
-
 
 	setSelected: function(selected) {
-		console.log('update selected!', selected);
-		this.setState({selected});
+		// this.refs.input.focus();
+		// this.setState({selected});
 	},
 
 	componentWillUnmount: function() {
-		console.log('unmounted atom!');
 	},
-
 
   handleKeyPress: function(e) {
      if (e.key === 'Enter' && !this.props.block) {
-       this.changeToNormal();
+			const {text, type, meta} = this.state;
+			// this.refs.input.blur();
+			this.props.updateMention({text, type, meta});
+      this.changeToNormal();
      }
   },
 
-  handleChange: function(event) {
-    const value = event.target.value;
-    this.props.updateValue(value);
+
+  handleChange: function(event, {newValue}) {
+    const value = newValue;
+		if (value.length === 0) {
+			this.props.revertToText();
+			return;
+		}
+		this.setState({text: newValue, type: 'file', meta: {}});
+    // this.props.updateMention({text: value, type: 'file', meta: {}});
   },
 
   changeToEditing: function() {
-    this.setState({editing: true});
-    setTimeout(() => this.refs.input.focus(), 0);
+		const {text, type, meta} = this.props;
+    this.setState({editing: true, text, type, meta});
+    // setTimeout(() => this.refs.input.focus(), 0);
   },
 
   changeToNormal: function() {
     this.setState({editing: false});
   },
 
+	getAutocompleteContent: function() {
+		const results = ['a', 'b'];
+	},
 
   renderDisplay() {
     const {displayHTML} = this.state;
-    const {value, block} = this.props;
+    const {text, block} = this.props;
     return (
       <span className={'mention'} onDoubleClick={this.changeToEditing} style={styles.display}>
-        @{value}
+				@{text}
       </span>
     );
   },
 
+	onSuggestionsFetchRequested({ value }) {
+		return;
+	},
+
+	// Autosuggest will call this function every time you need to clear suggestions.
+	onSuggestionsClearRequested() {
+		this.setState({
+			suggestions: []
+		});
+	},
+
+	getSuggestionValue(suggestion) {
+		return suggestion;
+	},
+
+	renderSuggestion(suggestion) {
+		return (<div>{suggestion}</div>);
+	},
+
+	renderInputComponent(inputProps){
+		return (
+	  <span>
+	    <input ref={(input) => { this.textInput = input; }} {...inputProps} />
+	  </span>
+		);
+	},
+
   renderEdit() {
     const {clientWidth} = this.state;
-    const {value, block} = this.props;
+    const {block} = this.props;
+		const text = this.state.text || this.props.text;
+
+		const files = ['A', 'B', 'C'];
+
+		const inputProps = {
+      placeholder: 'Type a programming language',
+      value: text,
+      onChange: this.handleChange
+    };
+
     return (
       <span style={{position: 'relative'}}>
         @
+				<Autosuggest
+					ref={'suggest'}
+        	suggestions={files}
+					onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+					onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+					getSuggestionValue={this.getSuggestionValue}
+					renderSuggestion={this.renderSuggestion}
+					inputProps={inputProps}
+      	/>
+			{/*
         <input
+					className="pt-input"
           id="test"
           ref="input"
           style={styles.editing({clientWidth})}
           onDoubleClick={this.changeToNormal}
           onChange={this.handleChange}
           onKeyPress={this.handleKeyPress}
-          type="text" name="name"
-          value={value} />
+          type="text"
+					name="name"
+          value={text} />
+					*/}
       </span>
     );
   },

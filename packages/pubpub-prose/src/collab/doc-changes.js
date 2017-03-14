@@ -201,6 +201,41 @@ export class ModCollabDocChanges {
 		this.receiving = false;
 	}
 
+	applyAllSafeDiffs = (view, baseState, diffs) => {
+
+		let transaction = null;
+		let newState = null;
+		this.receiving = true;
+
+		try {
+			const steps = diffs.map(jIndex => Step.fromJSON(pubSchema, jIndex));
+			const clientIds = diffs.map(jIndex => jIndex.client_id);
+			transaction = this.receiveAction(steps, clientIds);
+			transaction.setMeta("docReset", true);
+			newState = baseState.apply(transaction);
+		} catch (err) {
+			console.log('ERROR: ', err);
+			let oldState = baseState;
+			for (const diff of diffs) {
+				try {
+					const steps = [diff].map(jIndex => Step.fromJSON(pubSchema, jIndex));
+					const clientIds = [diff].map(jIndex => jIndex.client_id);
+					transaction = this.receiveAction(steps, clientIds);
+					newState = oldState.apply(transaction);
+					oldState = newState;
+				} catch (err) {
+					console.log('ERROR: ', err);
+					console.log(diff);
+					newState = oldState;
+				}
+			}
+		}
+
+		view.updateState(newState);
+		this.receiving = false;
+		return true;
+	}
+
 	applyAllDiffs = (diffs) => {
 		let transaction = null;
 		this.receiving = true;

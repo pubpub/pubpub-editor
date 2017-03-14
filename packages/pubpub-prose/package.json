@@ -49,6 +49,7 @@
     "radium": "^0.18.1",
     "react": "^15.4.1",
     "react-addons-css-transition-group": "^15.4.1",
+    "react-autosuggest": "^9.0.0",
     "react-dom": "^15.4.1",
     "react-dropzone": "^3.7.3",
     "react-resizable-box": "^1.8.1",

@@ -81,7 +81,12 @@ var ReactView = function () {
     key: 'update',
     value: function update(node, decorations) {
       if (node.type !== this.node.type) return false;
+      if (node === this.node && this.decorations === decorations) {
+        console.log('Avoided unnecessary evaluation');
+        return true;
+      }
       this.node = node;
+      this.decorations = decorations;
       this.reactElement = this.renderElement(this.dom);
       return true;
     }

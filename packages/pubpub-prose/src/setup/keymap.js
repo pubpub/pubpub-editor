@@ -2,7 +2,7 @@ const {wrapIn, setBlockType, chainCommands, newlineInCode, toggleMark} = require
 const {selectNextCell, selectPreviousCell} = require("prosemirror-schema-table")
 const {wrapInList, splitListItem, liftListItem, sinkListItem} = require("prosemirror-schema-list")
 const {undo, redo} = require("prosemirror-history")
-
+const {Selection, TextSelection} = require("prosemirror-state");
 const mac = typeof navigator != "undefined" ? /Mac/.test(navigator.platform) : false
 
 // :: (Schema, ?Object) → Object
@@ -87,6 +87,17 @@ function buildKeymap(schema, mapKeys) {
   if (schema.nodes.table_row) {
     bind("Tab", selectNextCell)
     bind("Shift-Tab", selectPreviousCell)
+  }
+
+  if (schema.nodes.mention) {
+    bind("@", (state, onAction) => {
+      const sel = state.selection;
+      const newSelection = TextSelection.create(state.doc, sel.from, sel.from);
+      let transaction = state.tr.replaceSelectionWith(schema.nodes.mention.create({editing: true}));
+      transaction = transaction.setSelection(newSelection);
+      const result = onAction(transaction);
+      return true
+    })
   }
   return keys
 }

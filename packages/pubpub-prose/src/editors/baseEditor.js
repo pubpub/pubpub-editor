@@ -134,7 +134,7 @@ class BaseEditor {
 	}
 
 	applyAction = (action) => {
-		const newState = this.view.state.applyAction(action);
+		const newState = this.view.state.apply(action);
 		this.view.updateState(newState);
 	}
 

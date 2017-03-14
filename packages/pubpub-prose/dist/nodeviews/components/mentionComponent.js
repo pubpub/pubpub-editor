@@ -5,9 +5,19 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.MentionComponent = undefined;
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
+
+var _reactAutosuggest = require('react-autosuggest');
+
+var _reactAutosuggest2 = _interopRequireDefault(_reactAutosuggest);
+
+var _katexCss = require('./katex.css.js');
+
+var _katexCss2 = _interopRequireDefault(_katexCss);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24,96 +34,145 @@ var MentionComponent = exports.MentionComponent = _react2.default.createClass({
     changeToInline: _react.PropTypes.func
   },
   getInitialState: function getInitialState() {
-    return { editing: true };
+    return { editing: false };
   },
-  getDefaultProps: function getDefaultProps() {
-    return {
-      context: 'document'
-    };
-  },
+  getDefaultProps: function getDefaultProps() {},
 
-  componentDidMount: function componentDidMount() {
+  componentDidMount: function componentDidMount() {},
+
+  openEdit: function openEdit() {
     var _this = this;
 
+    this.setState({ editing: true });
     setTimeout(function () {
-      return _this.refs.input.focus();
+      return _this.refs.suggest.input.focus();
     }, 0);
   },
 
-  /*
-  componentWillReceiveProps: function(nextProps) {
-    if (this.props.value !== nextProps.value) {
-      const text = nextProps.value;
-      // Search for new plugins
-    }
-  },
-  */
-
   setSelected: function setSelected(selected) {
-    console.log('update selected!', selected);
-    this.setState({ selected: selected });
+    // this.refs.input.focus();
+    // this.setState({selected});
   },
 
-  componentWillUnmount: function componentWillUnmount() {
-    console.log('unmounted atom!');
-  },
+  componentWillUnmount: function componentWillUnmount() {},
 
   handleKeyPress: function handleKeyPress(e) {
     if (e.key === 'Enter' && !this.props.block) {
+      var _state = this.state,
+          text = _state.text,
+          type = _state.type,
+          meta = _state.meta;
+      // this.refs.input.blur();
+
+      this.props.updateMention({ text: text, type: type, meta: meta });
       this.changeToNormal();
     }
   },
 
-  handleChange: function handleChange(event) {
-    var value = event.target.value;
-    this.props.updateValue(value);
+  handleChange: function handleChange(event, _ref) {
+    var newValue = _ref.newValue;
+
+    var value = newValue;
+    if (value.length === 0) {
+      this.props.revertToText();
+      return;
+    }
+    this.setState({ text: newValue, type: 'file', meta: {} });
+    // this.props.updateMention({text: value, type: 'file', meta: {}});
   },
 
   changeToEditing: function changeToEditing() {
-    var _this2 = this;
+    var _props = this.props,
+        text = _props.text,
+        type = _props.type,
+        meta = _props.meta;
 
-    this.setState({ editing: true });
-    setTimeout(function () {
-      return _this2.refs.input.focus();
-    }, 0);
+    this.setState({ editing: true, text: text, type: type, meta: meta });
+    // setTimeout(() => this.refs.input.focus(), 0);
   },
 
   changeToNormal: function changeToNormal() {
     this.setState({ editing: false });
   },
 
+  getAutocompleteContent: function getAutocompleteContent() {
+    var results = ['a', 'b'];
+  },
+
   renderDisplay: function renderDisplay() {
     var displayHTML = this.state.displayHTML;
-    var _props = this.props,
-        value = _props.value,
-        block = _props.block;
+    var _props2 = this.props,
+        text = _props2.text,
+        block = _props2.block;
 
     return _react2.default.createElement(
       'span',
       { className: 'mention', onDoubleClick: this.changeToEditing, style: styles.display },
       '@',
-      value
+      text
+    );
+  },
+  onSuggestionsFetchRequested: function onSuggestionsFetchRequested(_ref2) {
+    var value = _ref2.value;
+
+    return;
+  },
+
+
+  // Autosuggest will call this function every time you need to clear suggestions.
+  onSuggestionsClearRequested: function onSuggestionsClearRequested() {
+    this.setState({
+      suggestions: []
+    });
+  },
+  getSuggestionValue: function getSuggestionValue(suggestion) {
+    return suggestion;
+  },
+  renderSuggestion: function renderSuggestion(suggestion) {
+    return _react2.default.createElement(
+      'div',
+      null,
+      suggestion
+    );
+  },
+  renderInputComponent: function renderInputComponent(inputProps) {
+    var _this2 = this;
+
+    return _react2.default.createElement(
+      'span',
+      null,
+      _react2.default.createElement('input', _extends({ ref: function ref(input) {
+          _this2.textInput = input;
+        } }, inputProps))
     );
   },
   renderEdit: function renderEdit() {
     var clientWidth = this.state.clientWidth;
-    var _props2 = this.props,
-        value = _props2.value,
-        block = _props2.block;
+    var block = this.props.block;
+
+    var text = this.state.text || this.props.text;
+
+    var files = ['A', 'B', 'C'];
+
+    var inputProps = {
+      placeholder: 'Type a programming language',
+      value: text,
+      onChange: this.handleChange
+    };
 
     return _react2.default.createElement(
       'span',
       { style: { position: 'relative' } },
       '@',
-      _react2.default.createElement('input', {
-        id: 'test',
-        ref: 'input',
-        style: styles.editing({ clientWidth: clientWidth }),
-        onDoubleClick: this.changeToNormal,
-        onChange: this.handleChange,
-        onKeyPress: this.handleKeyPress,
-        type: 'text', name: 'name',
-        value: value })
+      _react2.default.createElement(_reactAutosuggest2.default, {
+        ref: 'suggest',
+        suggestions: files,
+        onSuggestionsFetchRequested: this.onSuggestionsFetchRequested,
+        onSuggestionsClearRequested: this.onSuggestionsClearRequested,
+        getSuggestionValue: this.getSuggestionValue,
+        renderSuggestion: this.renderSuggestion,
+        inputProps: inputProps
+      })
     );
   },
 
@@ -133,8 +192,8 @@ styles = {
     backgroundColor: 'blue'
   },
   display: {},
-  editing: function editing(_ref) {
-    var clientWidth = _ref.clientWidth;
+  editing: function editing(_ref3) {
+    var clientWidth = _ref3.clientWidth;
 
     return {
       display: 'inline',
