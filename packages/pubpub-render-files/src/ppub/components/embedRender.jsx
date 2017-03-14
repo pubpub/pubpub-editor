@@ -27,7 +27,7 @@ export const EmbedRender = React.createClass({
 	},
 
 	render: function() {
-		const {size, align, url} = this.props;
+		const {size, align, url, children} = this.props;
 		const {selected} = false;
 
 		const data = this.props.data || {};
@@ -36,6 +36,11 @@ export const EmbedRender = React.createClass({
 		const type = urlToType(url);
 
 		const file = { name: '', url, type };
+
+		const captionNode = (children) ? children[0] : null;
+		console.log('Got children!', captionNode);
+		const captionText = (captionNode) ? captionNode.text : '';
+		console.log('GOT CAPTION TEXTv2');
 
 		return (
 			<div ref="embedroot" className={'pub-embed ' + this.props.className}>
@@ -46,7 +51,7 @@ export const EmbedRender = React.createClass({
           </div>
           <figcaption style={styles.caption({size, align})}>
             <div style={styles.captionInput} ref="captioninsert">
-              {this.props.children}
+              {captionText}
             </div>
           </figcaption>
         </figure>

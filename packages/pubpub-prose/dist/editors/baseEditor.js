@@ -49,7 +49,7 @@ var BaseEditor = function () {
     };
 
     this.applyAction = function (action) {
-      var newState = _this.view.state.applyAction(action);
+      var newState = _this.view.state.apply(action);
       _this.view.updateState(newState);
     };
 

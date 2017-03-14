@@ -45,7 +45,8 @@ var EmbedRender = exports.EmbedRender = _react2.default.createClass({
 		var _props = this.props,
 		    size = _props.size,
 		    align = _props.align,
-		    url = _props.url;
+		    url = _props.url,
+		    children = _props.children;
 		var _false = false,
 		    selected = _false.selected;
 
@@ -56,6 +57,11 @@ var EmbedRender = exports.EmbedRender = _react2.default.createClass({
 		var type = (0, _urlToType.urlToType)(url);
 
 		var file = { name: '', url: url, type: type };
+
+		var captionNode = children ? children[0] : null;
+		console.log('Got children!', captionNode);
+		var captionText = captionNode ? captionNode.text : '';
+		console.log('GOT CAPTION TEXTv2');
 
 		return _react2.default.createElement(
 			'div',
@@ -74,7 +80,7 @@ var EmbedRender = exports.EmbedRender = _react2.default.createClass({
 					_react2.default.createElement(
 						'div',
 						{ style: styles.captionInput, ref: 'captioninsert' },
-						this.props.children
+						captionText
 					)
 				)
 			)

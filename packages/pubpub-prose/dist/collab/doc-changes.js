@@ -108,6 +108,70 @@ var ModCollabDocChanges = exports.ModCollabDocChanges = function () {
 			_this.receiving = false;
 		};
 
+		this.applyAllSafeDiffs = function (view, baseState, diffs) {
+
+			var transaction = null;
+			var newState = null;
+			_this.receiving = true;
+
+			try {
+				var steps = diffs.map(function (jIndex) {
+					return _prosemirrorTransform.Step.fromJSON(_setup.schema, jIndex);
+				});
+				var clientIds = diffs.map(function (jIndex) {
+					return jIndex.client_id;
+				});
+				transaction = _this.receiveAction(steps, clientIds);
+				transaction.setMeta("docReset", true);
+				newState = baseState.apply(transaction);
+			} catch (err) {
+				console.log('ERROR: ', err);
+				var oldState = baseState;
+				var _iteratorNormalCompletion = true;
+				var _didIteratorError = false;
+				var _iteratorError = undefined;
+
+				try {
+					for (var _iterator = diffs[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+						var diff = _step.value;
+
+						try {
+							var _steps = [diff].map(function (jIndex) {
+								return _prosemirrorTransform.Step.fromJSON(_setup.schema, jIndex);
+							});
+							var _clientIds = [diff].map(function (jIndex) {
+								return jIndex.client_id;
+							});
+							transaction = _this.receiveAction(_steps, _clientIds);
+							newState = oldState.apply(transaction);
+							oldState = newState;
+						} catch (err) {
+							console.log('ERROR: ', err);
+							console.log(diff);
+							newState = oldState;
+						}
+					}
+				} catch (err) {
+					_didIteratorError = true;
+					_iteratorError = err;
+				} finally {
+					try {
+						if (!_iteratorNormalCompletion && _iterator.return) {
+							_iterator.return();
+						}
+					} finally {
+						if (_didIteratorError) {
+							throw _iteratorError;
+						}
+					}
+				}
+			}
+
+			view.updateState(newState);
+			_this.receiving = false;
+			return true;
+		};
+
 		this.applyAllDiffs = function (diffs) {
 			var transaction = null;
 			_this.receiving = true;
@@ -275,13 +339,13 @@ var ModCollabDocChanges = exports.ModCollabDocChanges = function () {
 			var action = null;
 			this.receiving = true;
 
-			var _iteratorNormalCompletion = true;
-			var _didIteratorError = false;
-			var _iteratorError = undefined;
+			var _iteratorNormalCompletion2 = true;
+			var _didIteratorError2 = false;
+			var _iteratorError2 = undefined;
 
 			try {
-				for (var _iterator = diffs[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-					var diff = _step.value;
+				for (var _iterator2 = diffs[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+					var diff = _step2.value;
 
 					try {
 						var steps = [diff].map(function (jIndex) {
@@ -298,16 +362,16 @@ var ModCollabDocChanges = exports.ModCollabDocChanges = function () {
 					}
 				}
 			} catch (err) {
-				_didIteratorError = true;
-				_iteratorError = err;
+				_didIteratorError2 = true;
+				_iteratorError2 = err;
 			} finally {
 				try {
-					if (!_iteratorNormalCompletion && _iterator.return) {
-						_iterator.return();
+					if (!_iteratorNormalCompletion2 && _iterator2.return) {
+						_iterator2.return();
 					}
 				} finally {
-					if (_didIteratorError) {
-						throw _iteratorError;
+					if (_didIteratorError2) {
+						throw _iteratorError2;
 					}
 				}
 			}

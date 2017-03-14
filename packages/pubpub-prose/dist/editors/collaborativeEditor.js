@@ -184,11 +184,12 @@ var _initialiseProps = function _initialiseProps() {
 
 		(0, _setup.migrateDiffs)(_this2.collab.docInfo.last_diffs);
 		// console.log('Got diffs!', this.collab.docInfo.last_diffs);
-		var appliedAction = _this2.collab.mod.collab.docChanges.applyAllDiffs(_this2.collab.docInfo.last_diffs);
-		if (appliedAction) {
+		var couldApplyAction = _this2.collab.mod.collab.docChanges.applyAllDiffs(_this2.collab.docInfo.last_diffs);
+		// const couldApplyAction = this.collab.mod.collab.docChanges.applyAllSafeDiffs(this.view, this.view.state, this.collab.docInfo.last_diffs);
+		if (couldApplyAction) {
 			// this.applyAction(appliedAction);
 		} else {
-			// indicates that the DOM is broken and cannot be repaired
+			console.log('COULD NOT APPLY ACTIONS!');
 			_this2.collab.mod.serverCommunications.disconnect();
 		}
 	};

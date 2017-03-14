@@ -15,7 +15,6 @@ class CitationEngine {
 
     this.sys = {
       retrieveItem: (itemID) => {
-        console.log('GETTING ITEM', itemID);
         return this.items[itemID];
       },
       retrieveLocale: (locale) => {
