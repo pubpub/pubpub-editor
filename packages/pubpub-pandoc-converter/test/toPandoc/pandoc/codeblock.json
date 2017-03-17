@@ -1,0 +1,22 @@
+{
+	"blocks": [
+		{
+			"t": "CodeBlock",
+			"c": [
+				[
+					"",
+					[],
+					[]
+				],
+				"a block\n\n"
+			]
+		}
+	],
+	"pandoc-api-version": [
+		1,
+		17,
+		0,
+		4
+	],
+	"meta": {}
+}

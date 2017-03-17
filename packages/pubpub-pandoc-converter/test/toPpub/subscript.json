@@ -1,0 +1,26 @@
+{
+	"blocks": [
+		{
+			"t": "Para",
+			"c": [
+				{
+					"t": "Subscript",
+					"c": [
+						{
+							"t": "Str",
+							"c": "subscript"
+						}
+					]
+				}
+			]
+		}
+	],
+	"pandoc-api-version": [
+		1,
+		17,
+		0,
+		4
+	],
+	"meta": {
+	}
+}

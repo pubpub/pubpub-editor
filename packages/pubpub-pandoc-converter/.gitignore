@@ -1,0 +1,5 @@
+node_modules/
+sandbox/
+.atomignore
+.DS_Store
+npm-debug.log

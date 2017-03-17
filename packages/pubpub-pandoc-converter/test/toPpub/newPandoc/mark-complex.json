@@ -1,0 +1,76 @@
+{
+	"blocks": [
+		{
+			"t": "Para",
+			"c": [
+				{
+					"t": "Emph",
+					"c": [
+						{
+							"t": "Str",
+							"c": "Here's"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "some"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "bold"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "stuff"
+						}
+					]
+				},
+				{
+					"t": "Emph",
+					"c": [
+						{
+							"t": "Str",
+							"c": "Here's"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "some"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "bold"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "stuff"
+						}
+					]
+				}
+			]
+		}
+	],
+	"pandoc-api-version": [
+		1,
+		17,
+		0,
+		4
+	],
+	"meta": {}
+}

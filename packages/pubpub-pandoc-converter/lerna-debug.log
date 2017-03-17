@@ -1,0 +1,46 @@
+lerna(verbose) GitUtilities.isInitialized    ()
+lerna(verbose) GitUtilities.isInitialized    () => true
+lerna(verbose) GitUtilities.getTopLevelDirectory()
+lerna(verbose) GitUtilities.getTopLevelDirectory() => "/Users/hydraboy/work/pubpub-packages"
+lerna(verbose) FileSystemUtilities.existsSync("/Users/hydraboy/work/pubpub-packages/lerna.json")
+lerna(verbose) FileSystemUtilities.existsSync("/Users/hydraboy/work/pubpub-packages/lerna.json") => true
+lerna(verbose) FileSystemUtilities.readFileSync("/Users/hydraboy/work/pubpub-packages/lerna.json")
+lerna(verbose) FileSystemUtilities.readFileSync("/Users/hydraboy/work/pubpub-packages/lerna.json") => "{\n  \"lerna\": \"2.0.0-beta.38\",\n  \"packages\": [\n    \"packages/*\"\n  ],\n  \"version\": \"1.1.5\"\n}"
+lerna(verbose) FileSystemUtilities.existsSync("/Users/hydraboy/work/pubpub-packages/package.json")
+lerna(verbose) FileSystemUtilities.existsSync("/Users/hydraboy/work/pubpub-packages/package.json") => true
+lerna(verbose) FileSystemUtilities.readFileSync("/Users/hydraboy/work/pubpub-packages/package.json")
+lerna(verbose) FileSystemUtilities.readFileSync("/Users/hydraboy/work/pubpub-packages/package.json") => "{\n  \"devDependencies\": {\n    \"lerna\": \"2.0.0-beta.38\"\n  }\n}"
+lerna(info)    Lerna v2.0.0-beta.38
+lerna(verbose) FileSystemUtilities.existsSync("/Users/hydraboy/work/pubpub-packages/package.json")
+lerna(verbose) FileSystemUtilities.existsSync("/Users/hydraboy/work/pubpub-packages/package.json") => true
+lerna(verbose) FileSystemUtilities.existsSync("/Users/hydraboy/work/pubpub-packages/lerna.json")
+lerna(verbose) FileSystemUtilities.existsSync("/Users/hydraboy/work/pubpub-packages/lerna.json") => true
+lerna(verbose) FileSystemUtilities.existsSync("/Users/hydraboy/work/pubpub-packages/VERSION")
+lerna(verbose) FileSystemUtilities.existsSync("/Users/hydraboy/work/pubpub-packages/VERSION") => false
+lerna(verbose) FileSystemUtilities.existsSync("./package.json")
+lerna(verbose) FileSystemUtilities.existsSync("./package.json") => true
+lerna(verbose) FileSystemUtilities.existsSync("/Users/hydraboy/work/pubpub-packages/packages/pubpub-prose/package.json")
+lerna(verbose) FileSystemUtilities.existsSync("/Users/hydraboy/work/pubpub-packages/packages/pubpub-prose/package.json") => true
+lerna(verbose) FileSystemUtilities.existsSync("/Users/hydraboy/work/pubpub-packages/packages/pubpub-render-files/package.json")
+lerna(verbose) FileSystemUtilities.existsSync("/Users/hydraboy/work/pubpub-packages/packages/pubpub-render-files/package.json") => true
+lerna(verbose) Attempting running BootstrapCommand.initialize
+lerna(verbose) Successfully ran BootstrapCommand.initialize
+lerna(verbose) Attempting running BootstrapCommand.execute
+lerna(info)    Bootstrapping 3 packages
+lerna(info)    Preinstalling packages
+lerna(info)    Installing external dependencies
+lerna(verbose) NpmUtilities.installInDir     (".", ["babel-eslint@^7.1.1","eslint@^3.13.1","eslint-config-airbnb@^14.0.0","eslint-plugin-import@^2...)
+lerna(verbose) FileSystemUtilities.rename    ("./package.json", "./package.json.lerna_backup")
+lerna(verbose) NpmUtilities.installInDir     ("/Users/hydraboy/work/pubpub-packages/packages/pubpub-prose", ["prosemirror-view@github:ThariqS/pros...)
+lerna(verbose) FileSystemUtilities.rename    ("/Users/hydraboy/work/pubpub-packages/packages/pubpub-prose/package.json", "/Users/hydraboy/work/pub...)
+lerna(verbose) FileSystemUtilities.rename    ("./package.json", "./package.json.lerna_backup") => 
+lerna(verbose) FileSystemUtilities.writeFile ("./package.json", "{\"dependencies\":{\"babel-eslint\":\"^7.1.1\",\"eslint\":\"^3.13.1\",\"eslint-co...)
+lerna(verbose) FileSystemUtilities.rename    ("/Users/hydraboy/work/pubpub-packages/packages/pubpub-prose/package.json", "/Users/hydraboy/work/pub...) => 
+lerna(verbose) FileSystemUtilities.writeFile ("/Users/hydraboy/work/pubpub-packages/packages/pubpub-prose/package.json", "{\"dependencies\":{\"pro...)
+lerna(verbose) FileSystemUtilities.writeFile ("./package.json", "{\"dependencies\":{\"babel-eslint\":\"^7.1.1\",\"eslint\":\"^3.13.1\",\"eslint-co...) => 
+lerna(verbose) FileSystemUtilities.writeFile ("/Users/hydraboy/work/pubpub-packages/packages/pubpub-prose/package.json", "{\"dependencies\":{\"pro...) => 
+lerna(verbose) FileSystemUtilities.renameSync("./package.json.lerna_backup", "./package.json")
+lerna(verbose) FileSystemUtilities.renameSync("./package.json.lerna_backup", "./package.json") => 
+lerna(error)   NpmUtilities.installInDir     (".", ["babel-eslint@^7.1.1","eslint@^3.13.1","eslint-config-airbnb@^14.0.0","eslint-plugin-import@^2...)
+    Command exited with status 1: npm install
+lerna(error)   Errored while running BootstrapCommand.execute

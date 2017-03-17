@@ -1,0 +1,23 @@
+{
+   "type":"doc",
+   "content":[
+      {
+         "type":"paragraph",
+         "content":[
+            {
+               "type":"text",
+               "text":" "
+            },
+            {
+               "type":"text",
+               "marks":[
+                  {
+                     "type":"sup"
+                  }
+               ],
+               "text":"superscript"
+            }
+         ]
+      }
+   ]
+}

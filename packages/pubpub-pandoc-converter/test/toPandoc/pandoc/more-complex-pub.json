@@ -1,0 +1,227 @@
+{
+	"blocks": [
+		{
+			"t": "Header",
+			"c": [
+				1,
+				[
+					"",
+					[],
+					[]
+				],
+				[
+					{
+						"t": "Str",
+						"c": "A"
+					},
+					{
+						"t": "Space"
+					},
+					{
+						"t": "Str",
+						"c": "more"
+					},
+					{
+						"t": "Space"
+					},
+					{
+						"t": "Str",
+						"c": "complex"
+					},
+					{
+						"t": "Space"
+					},
+					{
+						"t": "Str",
+						"c": "pub(h1)"
+					}
+				]
+			]
+		},
+		{
+			"t": "Para",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Some"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "paragraph"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "text"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "More"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "paragraph"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "text."
+				}
+			]
+		},
+		{
+			"t": "Para",
+			"c": [
+				{
+					"t": "Code",
+					"c": [
+						[
+							"",
+							[],
+							[]
+						],
+						"Some Code"
+					]
+				}
+			]
+		},
+		{
+			"t": "BlockQuote",
+			"c": [
+				{
+					"t": "Para",
+					"c": [
+						{
+							"t": "Str",
+							"c": "A"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "Quotation"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "about"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "stuff"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "that"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "is"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "important."
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": ""
+						},
+						{
+							"t": "Code",
+							"c": [
+								[
+									"",
+									[],
+									[]
+								],
+								"Code in the quotation"
+							]
+						}
+					]
+				},
+				{
+					"t": "Para",
+					"c": [
+						{
+							"t": "Emph",
+							"c": [
+								{
+									"t": "Str",
+									"c": "Italics."
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"t": "Para",
+			"c": []
+		},
+		{
+			"t": "Header",
+			"c": [
+				1,
+				[
+					"references",
+					[
+						"unnumbered"
+					],
+					[]
+				],
+				[
+					{
+						"t": "Str",
+						"c": "References"
+					}
+				]
+			]
+		}
+	],
+	"pandoc-api-version": [
+		1,
+		17,
+		0,
+		4
+	],
+	"meta": {}
+}

@@ -1,0 +1,28 @@
+{
+	"type": "article",
+	"content": [
+		{
+			"type": "paragraph",
+			"content": [
+				{
+					"type": "text",
+					"text": "Here's some bold stuff",
+					"marks": [
+						{
+							"type": "em"
+						}
+					]
+				},
+				{
+					"type": "text",
+					"text": "Here's some bold stuff",
+					"marks": [
+						{
+							"type": "em"
+						}
+					]
+				}
+			]
+		}
+	]
+}
