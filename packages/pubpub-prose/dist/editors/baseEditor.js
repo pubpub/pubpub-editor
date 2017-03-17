@@ -49,7 +49,7 @@ var BaseEditor = function () {
     };
 
     this.applyAction = function (action) {
-      var newState = _this.view.state.apply(action);
+      var newState = _this.view.state.applyAction(action);
       _this.view.updateState(newState);
     };
 
@@ -96,7 +96,9 @@ var BaseEditor = function () {
           contents = _ref.contents,
           plugins = _ref.plugins,
           config = _ref.config,
-          createFile = _ref.handlers.createFile;
+          _ref$handlers = _ref.handlers,
+          createFile = _ref$handlers.createFile,
+          captureError = _ref$handlers.captureError;
 
       var _require4 = require('../setup'),
           buildMenuItems = _require4.buildMenuItems,
@@ -119,6 +121,7 @@ var BaseEditor = function () {
       // TO-DO: USE UNIQUE ID FOR USER AND VERSION NUMBER
 
       this.plugins = plugins;
+      this.captureError = captureError;
 
       var stateConfig = _extends({
         doc: _setup.schema.nodeFromJSON(contents),

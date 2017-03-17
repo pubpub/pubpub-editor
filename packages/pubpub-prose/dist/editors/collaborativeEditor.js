@@ -33,7 +33,9 @@ var CollaborativeEditor = function (_BaseEditor) {
 		    docID = _ref$collab.docID,
 		    repoID = _ref$collab.repoID,
 		    serverURL = _ref$collab.serverURL,
-		    createFile = _ref.handlers.createFile;
+		    _ref$handlers = _ref.handlers,
+		    createFile = _ref$handlers.createFile,
+		    captureError = _ref$handlers.captureError;
 
 		_classCallCheck(this, CollaborativeEditor);
 
@@ -184,12 +186,14 @@ var _initialiseProps = function _initialiseProps() {
 
 		(0, _setup.migrateDiffs)(_this2.collab.docInfo.last_diffs);
 		// console.log('Got diffs!', this.collab.docInfo.last_diffs);
-		var couldApplyAction = _this2.collab.mod.collab.docChanges.applyAllDiffs(_this2.collab.docInfo.last_diffs);
-		// const couldApplyAction = this.collab.mod.collab.docChanges.applyAllSafeDiffs(this.view, this.view.state, this.collab.docInfo.last_diffs);
-		if (couldApplyAction) {
+		var appliedAction = _this2.collab.mod.collab.docChanges.applyAllDiffs(_this2.collab.docInfo.last_diffs);
+		if (appliedAction) {
 			// this.applyAction(appliedAction);
 		} else {
-			console.log('COULD NOT APPLY ACTIONS!');
+			// indicates that the DOM is broken and cannot be repaired
+			if (_this2.captureError) {
+				_this2.captureError('DOM Broken ' + err);
+			}
 			_this2.collab.mod.serverCommunications.disconnect();
 		}
 	};

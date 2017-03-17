@@ -161,7 +161,6 @@ var CitationEngine = function () {
 
     this.sys = {
       retrieveItem: function retrieveItem(itemID) {
-        console.log('GETTING ITEM', itemID);
         return _this.items[itemID];
       },
       retrieveLocale: function retrieveLocale(locale) {

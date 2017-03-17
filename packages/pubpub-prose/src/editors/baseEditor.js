@@ -13,7 +13,7 @@ class BaseEditor {
     this.reconfigure = this.reconfigure.bind(this);
   }
 
-  create({place, contents, plugins, config, handlers: { createFile }}) {
+  create({place, contents, plugins, config, handlers: { createFile, captureError }}) {
     const {buildMenuItems, clipboardParser, clipboardSerializer} = require('../setup');
     const {EditorState} = require('prosemirror-state');
     const {MenuBarEditorView, MenuItem} = require('prosemirror-menu');
@@ -24,6 +24,7 @@ class BaseEditor {
     // TO-DO: USE UNIQUE ID FOR USER AND VERSION NUMBER
 
     this.plugins = plugins;
+    this.captureError = captureError;
 
     const stateConfig = {
     	doc: pubSchema.nodeFromJSON(contents),
