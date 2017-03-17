@@ -144,7 +144,7 @@ var renderSubLoop = function renderSubLoop(item, meta) {
 						case 'link':
 							return _react2.default.createElement(
 								'a',
-								{ href: current.href, title: current.title, key: index, target: '_top' },
+								{ href: current.attrs.href, title: current.attrs.title, key: index, target: '_top' },
 								previous
 							);
 						default:

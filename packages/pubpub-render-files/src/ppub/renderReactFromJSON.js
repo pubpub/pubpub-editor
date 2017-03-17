@@ -70,7 +70,7 @@ const renderSubLoop = function(item, meta) {
 				case 'strike':
 					return <s key={index}>{previous}</s>;
 				case 'link':
-					return <a href={current.href} title={current.title} key={index} target={'_top'}>{previous}</a>;
+					return <a href={current.attrs.href} title={current.attrs.title} key={index} target={'_top'}>{previous}</a>;
 				default:
 					return previous;
 				}
