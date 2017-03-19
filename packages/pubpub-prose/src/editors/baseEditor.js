@@ -26,10 +26,13 @@ class BaseEditor {
     this.plugins = plugins;
 
     const stateConfig = {
-    	doc: pubSchema.nodeFromJSON(contents),
+    	doc: (contents) ? pubSchema.nodeFromJSON(contents) : undefined,
+      schema: pubSchema,
     	plugins: plugins,
       ...config
     };
+
+    console.log('GOT CONFIG', stateConfig);
 
     const state = EditorState.create(stateConfig);
 

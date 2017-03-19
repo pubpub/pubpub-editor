@@ -34,7 +34,7 @@ export const RichEditorWrapper = React.createClass({
 	},
 
 	componentDidMount() {
-		this.createEditor();
+		this.createEditor(null);
 	},
 
   componentWillUpdate(nextProps) {
@@ -55,7 +55,7 @@ export const RichEditorWrapper = React.createClass({
     }
     const place = ReactDOM.findDOMNode(this.refs.container);
 		this.editor1 = new RichEditor({
-			place: place1,
+			place: place,
 			contents: docJSON,
 			handlers: {
         createFile: handleFileUpload,

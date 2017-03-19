@@ -45,7 +45,7 @@ var RichEditorWrapper = exports.RichEditorWrapper = _react2.default.createClass(
 	},
 	componentWillMount: function componentWillMount() {},
 	componentDidMount: function componentDidMount() {
-		this.createEditor();
+		this.createEditor(null);
 	},
 	componentWillUpdate: function componentWillUpdate(nextProps) {
 		if (this.props) {}
@@ -62,7 +62,7 @@ var RichEditorWrapper = exports.RichEditorWrapper = _react2.default.createClass(
 		}
 		var place = _reactDom2.default.findDOMNode(this.refs.container);
 		this.editor1 = new _index.RichEditor({
-			place: place1,
+			place: place,
 			contents: docJSON,
 			handlers: {
 				createFile: handleFileUpload,

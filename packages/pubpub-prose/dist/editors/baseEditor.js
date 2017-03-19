@@ -121,9 +121,12 @@ var BaseEditor = function () {
       this.plugins = plugins;
 
       var stateConfig = _extends({
-        doc: _setup.schema.nodeFromJSON(contents),
+        doc: contents ? _setup.schema.nodeFromJSON(contents) : undefined,
+        schema: _setup.schema,
         plugins: plugins
       }, config);
+
+      console.log('GOT CONFIG', stateConfig);
 
       var state = EditorState.create(stateConfig);
 
