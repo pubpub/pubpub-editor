@@ -1,26 +1,16 @@
 const path = require('path');
 
-console.log('LOADING CUSTOM ');
-
 module.exports = {
 	module: {
 		loaders: [
 			{
 				test: /\.css$/,
-				use: [
-					{ loader: 'style-loader' },
-					{ loader: 'css-loader' },
-					{ loader: 'sass-loader' }
-				],
+				loaders: ['style-loader', 'css-loader'],
         include: path.resolve(__dirname, '../')
 			},
 			{
 				test: /\.scss$/,
-				use: [
-					{ loader: 'style-loader' },
-					{ loader: 'css-loader' },
-					{ loader: 'sass-loader' }
-				],
+				loaders: ['style-loader', 'css-loader', 'sass-loader'],
         include: path.resolve(__dirname, '../')
 			},
 			{ test: /\.svg$/, loader: 'file-loader', include: path.resolve(__dirname, '../') },
@@ -29,6 +19,14 @@ module.exports = {
 			{ test: /\.jpg$/, loader: 'file-loader', include: path.resolve(__dirname, '../')  },
 			{ test: /\.json$/, loader: 'json-loader', include: path.resolve(__dirname, '../../')  },
 			{ test: /\.html$/, loader: 'html', include: path.resolve(__dirname, '../')  },
+      { test: /\.(woff|woff2)$/, loader: 'url-loader', include: path.resolve(__dirname, '../'), options: { name: 'fonts/[hash].[ext]', limit: 5000, mimetype: 'application/font-woff' } },
+			{ test: /\.(ttf|eot|svg)$/,
+        loader: 'file-loader',
+         options: {
+           name: 'fonts/[hash].[ext]',
+           include: path.resolve(__dirname, '../../')
+         }
+     }
 		]
 	}
 };

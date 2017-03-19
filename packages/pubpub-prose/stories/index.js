@@ -3,6 +3,10 @@ import { action, storiesOf } from '@kadira/storybook';
 import React from 'react';
 import RichEditor from '../src/react/reactRichEditor';
 
+require("@blueprintjs/core/dist/blueprint.css");
+require("../style/base.scss");
+// require("../style/blueprint.scss");
+
 storiesOf('Button', module)
   .add('with text', () => (
     <button onClick={action('clicked')}>Hello Button</button>
