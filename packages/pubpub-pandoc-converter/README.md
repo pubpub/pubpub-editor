@@ -1,41 +1,69 @@
 # ppub-pandoc-convert
 
-## A converter from PubPub to Pandoc
+A converter from PubPub (ProseMirror) to Pandoc.
 
-You can either `require('@pubpub/pubpub-pandoc-converter').pandocToPpub` OR `.pandocToPpub`.
+#### Table of Contents
 
-# pandocToPpub(file, options)
+1. [Installation](#install)
+2. [Usage](#usage)
+	1. [Converting to Pandoc](#pandoc-convert)
+		1. [Supported Metadata](#metadata)
+	2. [Converting to Ppub](#ppub-convert)
+3. [Testing](#test)
 
-## Currently supported metadata
 
-- author
-- title
 
-The below metadata work for the MIT Thesis Template:
+<a id='install'></a>
+## Installation
+`npm install @pubpub/pubpub-pandoc-converter`
 
-- university
-- degree
-- date
-- supervisor-name
-- supervisor-title
-- department-chairman-name
-- department-chairman-title
-- acknowledgements
-- abstract
-- degree-month
-- degree-year
-- thesis-date
-- department
+`var ppubToPandoc = require('@pubpub/pubpub-pandoc-converter').ppubToPandoc`.
 
-# ppubToPandoc
+<a id='usage'></a>
 
-### Progress
+## Usage
 
-A reverse converter (Pandoc to PubPub) is being created as well.
 
-These are the only parts that have been completed so far:
+<a id='pandoc-convert'></a>
+### Converting to Pandoc
 
-- Header
-- Paragraph
-- Code
-- Strong, Italic, Substring, Superscript, Strikethrough
+`ppubToPandoc(file, options)`
+
+`options.bibFile` (what the bib file will be saved as)
+
+`options.metadata` all the metadata stored in the converted pandoc file. Possible keys are listed below.
+
+
+<a id='metadata'></a>
+#### Supported Metadata
+
+There is more documentation
+
+authors (an array of strings)
+title
+university
+degree
+date
+supervisor-name
+supervisor-title
+department-chairman-name
+department-chairman-title
+acknowledgements
+abstract
+degree-month
+degree-year
+thesis-date
+department
+pub-readers (an array of JSON objects with strings name, title, and affiliation)
+
+<a id='ppub-convert'></a>
+## Converting to Ppub
+
+Converting to Ppub from Pandoc is a work in progress.
+
+<a id='test'></a>
+## Testing
+
+cd into this package directory and run:
+
+`npm run test`
