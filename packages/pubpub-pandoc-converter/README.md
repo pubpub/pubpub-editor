@@ -57,7 +57,7 @@ pub-readers (an array of JSON objects with strings name, title, and affiliation)
 ```
 
 <a id='ppub-convert'></a>
-## Converting to Ppub
+### Converting to Ppub
 
 Converting to Ppub from Pandoc is a work in progress.
 
