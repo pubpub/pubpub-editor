@@ -37,8 +37,7 @@ A converter from PubPub (ProseMirror) to Pandoc.
 <a id='metadata'></a>
 #### Supported Metadata
 
-There is more documentation
-
+```
 authors (an array of strings)
 title
 university
@@ -55,6 +54,7 @@ degree-year
 thesis-date
 department
 pub-readers (an array of JSON objects with strings name, title, and affiliation)
+```
 
 <a id='ppub-convert'></a>
 ## Converting to Ppub
@@ -64,6 +64,6 @@ Converting to Ppub from Pandoc is a work in progress.
 <a id='test'></a>
 ## Testing
 
-cd into this package directory and run:
+cd into this package directory and run
 
 `npm run test`
