@@ -1,14 +1,10 @@
 # ppub-pandoc-convert
 
-## A converter between ppub and pandoc
+## A converter from PubPub to Pandoc
 
-You can either `require('./index').pandocToPpub` OR `.pandocToPpub` or run on the command line like `node index.js [--toPandoc OR --toPpub] [filename].json`
+You can either `require('@pubpub/pubpub-pandoc-converter').pandocToPpub` OR `.pandocToPpub`.
 
-# pandocToPpub
-
-### Progress
-
-The pandocToPpub converter is complete.
+# pandocToPpub(file, options)
 
 ## Currently supported metadata
 
@@ -34,6 +30,8 @@ The below metadata work for the MIT Thesis Template:
 # ppubToPandoc
 
 ### Progress
+
+A reverse converter (Pandoc to PubPub) is being created as well.
 
 These are the only parts that have been completed so far:
 

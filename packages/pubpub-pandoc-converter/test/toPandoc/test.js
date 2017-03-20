@@ -1,11 +1,11 @@
-var convert = require('../../ppubToPandoc.js').ppubToPandoc;
+var convert = require('../../dist/ppubToPandoc.js').ppubToPandoc;
 var chai = require('chai');
 var expect = chai.expect;
 
 var write = require('fs-writefile-promise');
 var execPromise = require('child-process-promise').exec;
 
-var convertPandocToPpub = require('../../pandocToPpub').pandocToPpub;
+var convertPandocToPpub = require('../../dist/pandocToPpub').pandocToPpub;
 
 describe('Convert docJSON to PandocAST', function() {
 	describe(', successful to: ', function() {
@@ -354,12 +354,6 @@ describe('Convert docJSON to PandocAST', function() {
 				'thesis-date': 'May 6, 2013',
 				department: 'Program in Media Arts and Sciences, School of Architecture and Planning',
 				'past-degrees': ['B.S. Boston University (2010)', 'M.S., Boston University (2011)'],
-				'reader-one-name': 'Patricia Maes',
-				'reader-one-title': 'Professor of Media Technology',
-				'reader-one-affiliation': 'Program in Media Arts and Sciences',
-				'reader-two-name': 'V. Michael Bove, Jr',
-				'reader-two-title': 'Principal Research Scientist',
-				'reader-two-affiliation': 'Media Lab',
 				'pub-readers': [
 					{ name: 'Patricia Maes', title: 'Professor of Media Technology', affiliation:  'Program in Media Arts and Sciences' },
 					{ name: 'Goerge Sweg', title: 'Professor of Fun', affiliation:  'Media Arts and Sciences' },

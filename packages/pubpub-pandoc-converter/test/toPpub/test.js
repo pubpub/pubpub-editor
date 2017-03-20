@@ -4,9 +4,9 @@ var expect = chai.expect;
 var write = require('fs-writefile-promise');
 var execPromise = require('child-process-promise').exec;
 
-var convert = require('../../pandocToPpub').pandocToPpub;
+var convert = require('../../dist/pandocToPpub').pandocToPpub;
 
-var convertPpubToPandoc = require('../../ppubToPandoc.js').ppubToPandoc;
+var convertPpubToPandoc = require('../../dist/ppubToPandoc.js').ppubToPandoc;
 
 
 describe('Convert Pandoc to Ppub', function() {

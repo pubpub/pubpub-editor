@@ -380,37 +380,33 @@ function buildMenuItems(schema) {
       attrs: { level: i }
     });
   }if (type = schema.nodes.horizontal_rule) {
-    (function () {
-      var hr = type;
-      r.insertHorizontalRule = new MenuItem({
-        title: "Insert horizontal rule",
-        label: "Horizontal rule",
-        icon: "Small-minus",
-        select: function select(state) {
-          return canInsert(state, hr);
-        },
-        run: function run(state, onAction) {
-          onAction(state.tr.replaceSelection(hr.create()));
-        }
-      });
-    })();
+    var hr = type;
+    r.insertHorizontalRule = new MenuItem({
+      title: "Insert horizontal rule",
+      label: "Horizontal rule",
+      icon: "Small-minus",
+      select: function select(state) {
+        return canInsert(state, hr);
+      },
+      run: function run(state, onAction) {
+        onAction(state.tr.replaceSelection(hr.create()));
+      }
+    });
   }
 
   if (type = schema.nodes.page_break) {
-    (function () {
-      var pb = type;
-      r.insertPageBreak = new MenuItem({
-        title: "Insert page break",
-        label: "Page break",
-        icon: "Vertical-distribution",
-        select: function select(state) {
-          return canInsert(state, pb);
-        },
-        run: function run(state, onAction) {
-          onAction(state.tr.replaceSelection(pb.create()));
-        }
-      });
-    })();
+    var pb = type;
+    r.insertPageBreak = new MenuItem({
+      title: "Insert page break",
+      label: "Page break",
+      icon: "Vertical-distribution",
+      select: function select(state) {
+        return canInsert(state, pb);
+      },
+      run: function run(state, onAction) {
+        onAction(state.tr.replaceSelection(pb.create()));
+      }
+    });
   }
 
   if (type = schema.nodes.table) r.insertTable = insertTableItem(type);

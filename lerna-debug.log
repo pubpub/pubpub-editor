@@ -5,7 +5,7 @@ lerna(verbose) GitUtilities.getTopLevelDirectory() => "."
 lerna(verbose) FileSystemUtilities.existsSync("./lerna.json")
 lerna(verbose) FileSystemUtilities.existsSync("./lerna.json") => true
 lerna(verbose) FileSystemUtilities.readFileSync("./lerna.json")
-lerna(verbose) FileSystemUtilities.readFileSync("./lerna.json") => "{\n  \"lerna\": \"2.0.0-beta.37\",\n  \"packages\": [\n    \"packages/*\"\n  ],\n  \"version\": \"1.0.9\"\n}"
+lerna(verbose) FileSystemUtilities.readFileSync("./lerna.json") => "{\n  \"lerna\": \"2.0.0-beta.37\",\n  \"packages\": [\n    \"packages/*\"\n  ],\n  \"version\": \"1.1.5\"\n}"
 lerna(verbose) FileSystemUtilities.existsSync("./package.json")
 lerna(verbose) FileSystemUtilities.existsSync("./package.json") => true
 lerna(verbose) FileSystemUtilities.readFileSync("./package.json")
@@ -17,75 +17,80 @@ lerna(verbose) FileSystemUtilities.existsSync("./lerna.json")
 lerna(verbose) FileSystemUtilities.existsSync("./lerna.json") => true
 lerna(verbose) FileSystemUtilities.existsSync("./VERSION")
 lerna(verbose) FileSystemUtilities.existsSync("./VERSION") => false
+lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-pandoc-converter/package.json")
+lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-pandoc-converter/package.json") => true
 lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-prose/package.json")
 lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-prose/package.json") => true
 lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-render-files/package.json")
 lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-render-files/package.json") => true
-lerna(verbose) Attempting running PublishCommand.initialize
-lerna(info)    Current version: 1.0.9
-lerna(info)    Checking for updated packages...
-lerna(verbose) GitUtilities.hasTags          ()
-lerna(verbose) GitUtilities.hasTags          () => true
-lerna(verbose) GitUtilities.getLastTaggedCommit()
-lerna(verbose) GitUtilities.getLastTaggedCommit() => "edfa3199f0a6e5f2a373d2ad8aba553f5aaf24ce"
-lerna(verbose) GitUtilities.describeTag      ("edfa3199f0a6e5f2a373d2ad8aba553f5aaf24ce")
-lerna(verbose) GitUtilities.describeTag      ("edfa3199f0a6e5f2a373d2ad8aba553f5aaf24ce") => "v1.0.9"
-lerna(verbose) GitUtilities.diffSinceIn      ("v1.0.9", "./packages/pubpub-prose")
-lerna(verbose) GitUtilities.diffSinceIn      ("v1.0.9", "./packages/pubpub-prose") => "packages/pubpub-prose/dist/collab/mod.js\npackages/pubpub-prose/dist/editors/baseEditor.js\npackages/pubpub-prose/dist/editors/collaborativeEditor.js\npackages/pubpub-prose/dist/editors/richEditor.js\npackages/pubpub-prose/dist/markdown/index.js\npackages/pubpub-prose/dist/markdown/markdownToJson.js\npackages/pubpub-prose/dist/menus/baseMenu.js\npackages/pubpub-prose/dist/menus/referenceDialog.js\npackages/pubpub-prose/dist/nodeviews/components/embedComponent.js\npackages/pubpub-prose/dist/nodeviews/components/referenceComponent.js\npackages/pubpub-prose/dist/nodeviews/embedView.js\npackages/pubpub-prose/dist/nodeviews/referenceView.js\npackages/pubpub-prose/dist/plugins/citationsPlugin.js\npackages/pubpub-prose/dist/references/cslengine.js\npackages/pubpub-prose/dist/setup/menu.js\npackages/pubpub-prose/dist/setup/menuItems.js\npackages/pubpub-prose/doc.scss\npackages/pubpub-prose/editor.scss\npackages/pubpub-prose/src/collab/mod.js\npackages/pubpub-prose/src/editors/baseEditor.js\npackages/pubpub-prose/src/editors/collaborativeEditor.js\npackages/pubpub-prose/src/editors/richEditor.js\npackages/pubpub-prose/src/markdown/index.js\npackages/pubpub-prose/src/markdown/markdownParser.js\npackages/pubpub-prose/src/markdown/markdownToJson.js\npackages/pubpub-prose/src/menus/baseMenu.jsx\npackages/pubpub-prose/src/menus/referenceDialog.jsx\npackages/pubpub-prose/src/nodeviews/components/embedComponent.jsx\npackages/pubpub-prose/src/nodeviews/components/referenceComponent.jsx\npackages/pubpub-prose/src/nodeviews/embedView.js\npackages/pubpub-prose/src/nodeviews/referenceView.js\npackages/pubpub-prose/src/plugins/citationsPlugin.js\npackages/pubpub-prose/src/references/cslengine.js"
-lerna(verbose) GitUtilities.diffSinceIn      ("v1.0.9", "./packages/pubpub-render-files")
-lerna(verbose) GitUtilities.diffSinceIn      ("v1.0.9", "./packages/pubpub-render-files") => "packages/pubpub-render-files/dist/urlToType.js"
-lerna(info)    Changes:
-lerna(info)    - @pubpub/prose: 1.0.9 => 1.0.10
-- @pubpub/render-files: 1.0.9 => 1.0.10
-lerna(verbose) Successfully ran PublishCommand.initialize
-lerna(verbose) Attempting running PublishCommand.execute
-lerna(verbose) FileSystemUtilities.writeFileSync("./lerna.json", "{\n  \"lerna\": \"2.0.0-beta.37\",\n  \"packages\": [\n    \"packages/*\"\n  ],\n  ...)
-lerna(verbose) FileSystemUtilities.writeFileSync("./lerna.json", "{\n  \"lerna\": \"2.0.0-beta.37\",\n  \"packages\": [\n    \"packages/*\"\n  ],\n  ...) => 
-lerna(verbose) GitUtilities.addFile          ("./lerna.json")
-lerna(verbose) GitUtilities.addFile          ("./lerna.json") => 
-lerna(verbose) FileSystemUtilities.writeFileSync("./packages/pubpub-prose/package.json", "{\n  \"name\": \"@pubpub/prose\",\n  \"version\": \"1.0.10\...)
-lerna(verbose) FileSystemUtilities.writeFileSync("./packages/pubpub-prose/package.json", "{\n  \"name\": \"@pubpub/prose\",\n  \"version\": \"1.0.10\...) => 
-lerna(verbose) FileSystemUtilities.writeFileSync("./packages/pubpub-render-files/package.json", "{\n  \"name\": \"@pubpub/render-files\",\n  \"versio...)
-lerna(verbose) FileSystemUtilities.writeFileSync("./packages/pubpub-render-files/package.json", "{\n  \"name\": \"@pubpub/render-files\",\n  \"versio...) => 
-lerna(verbose) GitUtilities.addFile          ("./packages/pubpub-prose/package.json", 0, ["./packages/pubpub-prose/package.json","/Users/thariqshi...)
-lerna(verbose) GitUtilities.addFile          ("./packages/pubpub-prose/package.json", 0, ["./packages/pubpub-prose/package.json","/Users/thariqshi...) => 
-lerna(verbose) GitUtilities.addFile          ("./packages/pubpub-render-files/package.json", 1, ["./packages/pubpub-prose/package.json","/Users/th...)
-lerna(verbose) GitUtilities.addFile          ("./packages/pubpub-render-files/package.json", 1, ["./packages/pubpub-prose/package.json","/Users/th...) => 
-lerna(verbose) GitUtilities.commit           ("v1.0.10")
-lerna(verbose) GitUtilities.commit           ("v1.0.10") => 
-lerna(verbose) GitUtilities.addTag           ("v1.0.10")
-lerna(verbose) GitUtilities.addTag           ("v1.0.10") => 
-lerna(info)    Publishing packages to npm...
-lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-prose/scripts/prepublish.js")
-lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-prose/scripts/prepublish.js") => false
-lerna(verbose) No prepublish script found at /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose/scripts/prepublish.js
-lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-render-files/scripts/prepublish.js")
-lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-render-files/scripts/prepublish.js") => false
-lerna(verbose) No prepublish script found at /Users/thariqshihipar/pubpub-packages/packages/pubpub-render-files/scripts/prepublish.js
-lerna(verbose) Publishing @pubpub/prose...
-lerna(verbose) NpmUtilities.publishTaggedInDir("lerna-temp", "./packages/pubpub-prose")
-lerna(verbose) Publishing @pubpub/render-files...
-lerna(verbose) NpmUtilities.publishTaggedInDir("lerna-temp", "./packages/pubpub-render-files")
-lerna(error)   NpmUtilities.publishTaggedInDir("lerna-temp", "./packages/pubpub-prose")
-    Error: Command failed: cd /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose && npm publish --tag lerna-temp
-    SyntaxError: src/markdown/markdownParser.js: Unexpected token, expected , (21:1)
-      19 | 	.use(embed),
-      20 | 	*/
-    > 21 | 	{
-         | 	^
-      22 | 		blockquote: {block: 'blockquote'},
-      23 | 		paragraph: {block: 'paragraph'},
-      24 | 		list_item: {block: 'list_item'},
+lerna(verbose) Attempting running BootstrapCommand.initialize
+lerna(verbose) Successfully ran BootstrapCommand.initialize
+lerna(verbose) Attempting running BootstrapCommand.execute
+lerna(info)    Bootstrapping 3 packages
+lerna(info)    Preinstalling packages
+lerna(info)    Installing external dependencies
+lerna(verbose) NpmUtilities.installInDir     ("./packages/pubpub-prose", ["prosemirror-view@github:ThariqS/prosemirror-view#hotfix"])
+lerna(verbose) FileSystemUtilities.rename    ("./packages/pubpub-prose/package.json", "./packages/pubpub-prose/package.json.lerna_backup")
+lerna(verbose) FileSystemUtilities.rename    ("./packages/pubpub-prose/package.json", "./packages/pubpub-prose/package.json.lerna_backup") => 
+lerna(verbose) FileSystemUtilities.writeFile ("./packages/pubpub-prose/package.json", "{\"dependencies\":{\"prosemirror-view\":\"github:ThariqS/pr...)
+lerna(verbose) FileSystemUtilities.writeFile ("./packages/pubpub-prose/package.json", "{\"dependencies\":{\"prosemirror-view\":\"github:ThariqS/pr...) => 
+lerna(verbose) FileSystemUtilities.renameSync("./packages/pubpub-prose/package.json.lerna_backup", "./packages/pubpub-prose/package.json")
+lerna(verbose) FileSystemUtilities.renameSync("./packages/pubpub-prose/package.json.lerna_backup", "./packages/pubpub-prose/package.json") => 
+lerna(verbose) NpmUtilities.installInDir     ("./packages/pubpub-prose", ["prosemirror-view@github:ThariqS/prosemirror-view#hotfix"]) => 
+lerna(info)    Symlinking packages and binaries
+lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-prose/package.json")
+lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-prose/package.json") => true
+lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-pandoc-converter/node_modules/@pubpub/prose")
+lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-pandoc-converter/node_modules/@pubpub/prose") => true
+lerna(verbose) FileSystemUtilities.isSymlink ("./packages/pubpub-pandoc-converter/node_modules/@pubpub/prose")
+lerna(verbose) FileSystemUtilities.isSymlink ("./packages/pubpub-pandoc-converter/node_modules/@pubpub/prose") => "./packages/pubpub-prose"
+lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-render-files/package.json")
+lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-render-files/package.json") => true
+lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-pandoc-converter/node_modules/@pubpub/render-files")
+lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-pandoc-converter/node_modules/@pubpub/render-files") => true
+lerna(verbose) FileSystemUtilities.isSymlink ("./packages/pubpub-pandoc-converter/node_modules/@pubpub/render-files")
+lerna(verbose) FileSystemUtilities.isSymlink ("./packages/pubpub-pandoc-converter/node_modules/@pubpub/render-files") => "./packages/pubpub-render-files"
+lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-render-files/package.json")
+lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-render-files/package.json") => true
+lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-prose/node_modules/@pubpub/render-files")
+lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-prose/node_modules/@pubpub/render-files") => true
+lerna(verbose) FileSystemUtilities.isSymlink ("./packages/pubpub-prose/node_modules/@pubpub/render-files")
+lerna(verbose) FileSystemUtilities.isSymlink ("./packages/pubpub-prose/node_modules/@pubpub/render-files") => "./packages/pubpub-render-files"
+lerna(verbose) FileSystemUtilities.mkdirp    ("./packages/pubpub-pandoc-converter/node_modules/@pubpub")
+lerna(verbose) FileSystemUtilities.mkdirp    ("./packages/pubpub-pandoc-converter/node_modules/@pubpub") => null
+lerna(verbose) FileSystemUtilities.symlink   ("./packages/pubpub-prose", "./packages/pubpub-pandoc-converter/node_modules/@pubpub/prose", "junctio...)
+lerna(verbose) FileSystemUtilities.symlink   ("./packages/pubpub-prose", "./packages/pubpub-pandoc-converter/node_modules/@pubpub/prose", "junctio...) => 
+lerna(verbose) FileSystemUtilities.mkdirp    ("./packages/pubpub-pandoc-converter/node_modules/@pubpub")
+lerna(verbose) FileSystemUtilities.mkdirp    ("./packages/pubpub-pandoc-converter/node_modules/@pubpub") => null
+lerna(verbose) FileSystemUtilities.symlink   ("./packages/pubpub-render-files", "./packages/pubpub-pandoc-converter/node_modules/@pubpub/render-fi...)
+lerna(verbose) FileSystemUtilities.symlink   ("./packages/pubpub-render-files", "./packages/pubpub-pandoc-converter/node_modules/@pubpub/render-fi...) => 
+lerna(verbose) FileSystemUtilities.mkdirp    ("./packages/pubpub-prose/node_modules/@pubpub")
+lerna(verbose) FileSystemUtilities.mkdirp    ("./packages/pubpub-prose/node_modules/@pubpub") => null
+lerna(verbose) FileSystemUtilities.symlink   ("./packages/pubpub-render-files", "./packages/pubpub-prose/node_modules/@pubpub/render-files", "junc...)
+lerna(verbose) FileSystemUtilities.symlink   ("./packages/pubpub-render-files", "./packages/pubpub-prose/node_modules/@pubpub/render-files", "junc...) => 
+lerna(info)    Postinstalling packages
+lerna(info)    Prepublishing packages
+lerna(verbose) NpmUtilities.runScriptInDir   ("prepublish", [], "./packages/pubpub-render-files")
+lerna(verbose) NpmUtilities.execInDir        ("run prepublish", [], "./packages/pubpub-render-files")
+lerna(verbose) NpmUtilities.execInDir        ("run prepublish", [], "./packages/pubpub-render-files") => "\n> @pubpub/render-files@1.1.5 prepublish ./packages/pubpub-render-files\n> npm run build\n\n\n> @pubpub/render-files@1.1.5 build /Users/hydraboy/work/pubpub-packages/packages/pubpub-render-files\n> cross-env BABEL_ENV=development babel src --out-dir dist\n\nsrc/RenderFile.js -> dist/RenderFile.js\nsrc/RenderFileDoc.js -> dist/RenderFileDoc.js\nsrc/RenderFileMarkdown.js -> dist/RenderFileMarkdown.js\nsrc/RenderFilePDF.js -> dist/RenderFilePDF.js\nsrc/RenderFilePPT.js -> dist/RenderFilePPT.js\nsrc/index.js -> dist/index.js\nsrc/ppub/components/citationsRender.jsx -> dist/ppub/components/citationsRender.js\nsrc/ppub/components/embedRender.jsx -> dist/ppub/components/embedRender.js\nsrc/ppub/components/iframeRender.jsx -> dist/ppub/components/iframeRender.js\nsrc/ppub/components/index.js -> dist/ppub/components/index.js\nsrc/ppub/components/katex.css.js -> dist/ppub/components/katex.css.js\nsrc/ppub/components/latexRender.jsx -> dist/ppub/components/latexRender.js\nsrc/ppub/components/referenceRender.jsx -> dist/ppub/components/referenceRender.js\nsrc/ppub/index.js -> dist/ppub/index.js\nsrc/ppub/renderReactFromJSON.js -> dist/ppub/renderReactFromJSON.js\nsrc/urlToType.js -> dist/urlToType.js\n"
+lerna(verbose) NpmUtilities.runScriptInDir   ("prepublish", [], "./packages/pubpub-render-files") => "\n> @pubpub/render-files@1.1.5 prepublish ./packages/pubpub-render-files\n> npm run build\n\n\n> @pubpub/render-files@1.1.5 build /Users/hydraboy/work/pubpub-packages/packages/pubpub-render-files\n> cross-env BABEL_ENV=development babel src --out-dir dist\n\nsrc/RenderFile.js -> dist/RenderFile.js\nsrc/RenderFileDoc.js -> dist/RenderFileDoc.js\nsrc/RenderFileMarkdown.js -> dist/RenderFileMarkdown.js\nsrc/RenderFilePDF.js -> dist/RenderFilePDF.js\nsrc/RenderFilePPT.js -> dist/RenderFilePPT.js\nsrc/index.js -> dist/index.js\nsrc/ppub/components/citationsRender.jsx -> dist/ppub/components/citationsRender.js\nsrc/ppub/components/embedRender.jsx -> dist/ppub/components/embedRender.js\nsrc/ppub/components/iframeRender.jsx -> dist/ppub/components/iframeRender.js\nsrc/ppub/components/index.js -> dist/ppub/components/index.js\nsrc/ppub/components/katex.css.js -> dist/ppub/components/katex.css.js\nsrc/ppub/components/latexRender.jsx -> dist/ppub/components/latexRender.js\nsrc/ppub/components/referenceRender.jsx -> dist/ppub/components/referenceRender.js\nsrc/ppub/index.js -> dist/ppub/index.js\nsrc/ppub/renderReactFromJSON.js -> dist/ppub/renderReactFromJSON.js\nsrc/urlToType.js -> dist/urlToType.js\n"
+lerna(verbose) NpmUtilities.runScriptInDir   ("prepublish", [], "./packages/pubpub-prose")
+lerna(verbose) NpmUtilities.execInDir        ("run prepublish", [], "./packages/pubpub-prose")
+lerna(error)   NpmUtilities.execInDir        ("run prepublish", [], "./packages/pubpub-prose")
+    Error: Command failed: npm run prepublish 
+    You have mistakenly installed the `babel` package, which is a no-op in Babel 6.
+    Babel's CLI commands have been moved from the `babel` package to the `babel-cli` package.
     
-    npm ERR! Darwin 15.2.0
-    npm ERR! argv "/Users/thariqshihipar/.nvm/versions/node/v6.1.0/bin/node" "/Users/thariqshihipar/.nvm/versions/node/v6.1.0/bin/npm" "run" "build"
-    npm ERR! node v6.1.0
-    npm ERR! npm  v3.8.6
+        npm uninstall babel
+        npm install --save-dev babel-cli
+    
+    See http://babeljs.io/docs/usage/cli/ for setup instructions.
     npm ERR! code ELIFECYCLE
-    npm ERR! @pubpub/prose@1.0.10 build: `cross-env BABEL_ENV=development babel src --out-dir dist`
+    npm ERR! errno 1
+    npm ERR! @pubpub/prose@1.1.5 build: `cross-env BABEL_ENV=development babel src --out-dir dist`
     npm ERR! Exit status 1
     npm ERR! 
-    npm ERR! Failed at the @pubpub/prose@1.0.10 build script 'cross-env BABEL_ENV=development babel src --out-dir dist'.
+    npm ERR! Failed at the @pubpub/prose@1.1.5 build script 'cross-env BABEL_ENV=development babel src --out-dir dist'.
     npm ERR! Make sure you have the latest version of node.js and npm installed.
     npm ERR! If you do, this is most likely a problem with the @pubpub/prose package,
     npm ERR! not with npm itself.
@@ -97,19 +102,14 @@ lerna(error)   NpmUtilities.publishTaggedInDir("lerna-temp", "./packages/pubpub-
     npm ERR!     npm owner ls @pubpub/prose
     npm ERR! There is likely additional logging output above.
     
-    npm ERR! Please include the following file with any support request:
-    npm ERR!     /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose/npm-debug.log
-    
-    npm ERR! addLocal Could not install /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose
-    npm ERR! Darwin 15.2.0
-    npm ERR! argv "/Users/thariqshihipar/.nvm/versions/node/v6.1.0/bin/node" "/Users/thariqshihipar/.nvm/versions/node/v6.1.0/bin/npm" "publish" "--tag" "lerna-temp"
-    npm ERR! node v6.1.0
-    npm ERR! npm  v3.8.6
+    npm ERR! A complete log of this run can be found in:
+    npm ERR!     /Users/hydraboy/.npm/_logs/2017-03-20T19_08_49_915Z-debug.log
     npm ERR! code ELIFECYCLE
-    npm ERR! @pubpub/prose@1.0.10 prepublish: `npm run build`
+    npm ERR! errno 1
+    npm ERR! @pubpub/prose@1.1.5 prepublish: `npm run build`
     npm ERR! Exit status 1
     npm ERR! 
-    npm ERR! Failed at the @pubpub/prose@1.0.10 prepublish script 'npm run build'.
+    npm ERR! Failed at the @pubpub/prose@1.1.5 prepublish script 'npm run build'.
     npm ERR! Make sure you have the latest version of node.js and npm installed.
     npm ERR! If you do, this is most likely a problem with the @pubpub/prose package,
     npm ERR! not with npm itself.
@@ -121,290 +121,34 @@ lerna(error)   NpmUtilities.publishTaggedInDir("lerna-temp", "./packages/pubpub-
     npm ERR!     npm owner ls @pubpub/prose
     npm ERR! There is likely additional logging output above.
     
-    npm ERR! Please include the following file with any support request:
-    npm ERR!     /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose/npm-debug.log
+    npm ERR! A complete log of this run can be found in:
+    npm ERR!     /Users/hydraboy/.npm/_logs/2017-03-20T19_08_49_926Z-debug.log
     
-        at ChildProcess.exithandler (child_process.js:202:12)
+        at ChildProcess.exithandler (child_process.js:211:12)
         at emitTwo (events.js:106:13)
-        at ChildProcess.emit (events.js:191:7)
-        at maybeClose (internal/child_process.js:850:16)
-        at Process.ChildProcess._handle.onexit (internal/child_process.js:215:5)
-lerna(error)   
-> @pubpub/prose@1.0.10 prepublish /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose
-> npm run build
-
-
-> @pubpub/prose@1.0.10 build /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose
-> cross-env BABEL_ENV=development babel src --out-dir dist
-
-src/collab/carets.js -> dist/collab/carets.js
-src/collab/colors.js -> dist/collab/colors.js
-src/collab/doc-changes.js -> dist/collab/doc-changes.js
-src/collab/mod.js -> dist/collab/mod.js
-src/collab/node-convert.js -> dist/collab/node-convert.js
-src/collab/server-communications.js -> dist/collab/server-communications.js
-src/editors/baseEditor.js -> dist/editors/baseEditor.js
-src/editors/collaborativeEditor.js -> dist/editors/collaborativeEditor.js
-src/editors/diffEditor.js -> dist/editors/diffEditor.js
-src/editors/reviewEditor.js -> dist/editors/reviewEditor.js
-src/editors/richEditor.js -> dist/editors/richEditor.js
-src/editors/simpleEditor.js -> dist/editors/simpleEditor.js
-src/index.js -> dist/index.js
-src/markdown/index.js -> dist/markdown/index.js
-src/markdown/jsonToMarkdown.js -> dist/markdown/jsonToMarkdown.js
-src/markdown/markdown-it-embed.js -> dist/markdown/markdown-it-embed.js
-src/markdown/markdown-it-pagebreak.js -> dist/markdown/markdown-it-pagebreak.js
-
-lerna(error)   Attempting to retry publishing @pubpub/prose...
-    Error: Command failed: cd /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose && npm publish --tag lerna-temp
-    SyntaxError: src/markdown/markdownParser.js: Unexpected token, expected , (21:1)
-      19 | 	.use(embed),
-      20 | 	*/
-    > 21 | 	{
-         | 	^
-      22 | 		blockquote: {block: 'blockquote'},
-      23 | 		paragraph: {block: 'paragraph'},
-      24 | 		list_item: {block: 'list_item'},
-    
-    npm ERR! Darwin 15.2.0
-    npm ERR! argv "/Users/thariqshihipar/.nvm/versions/node/v6.1.0/bin/node" "/Users/thariqshihipar/.nvm/versions/node/v6.1.0/bin/npm" "run" "build"
-    npm ERR! node v6.1.0
-    npm ERR! npm  v3.8.6
-    npm ERR! code ELIFECYCLE
-    npm ERR! @pubpub/prose@1.0.10 build: `cross-env BABEL_ENV=development babel src --out-dir dist`
-    npm ERR! Exit status 1
-    npm ERR! 
-    npm ERR! Failed at the @pubpub/prose@1.0.10 build script 'cross-env BABEL_ENV=development babel src --out-dir dist'.
-    npm ERR! Make sure you have the latest version of node.js and npm installed.
-    npm ERR! If you do, this is most likely a problem with the @pubpub/prose package,
-    npm ERR! not with npm itself.
-    npm ERR! Tell the author that this fails on your system:
-    npm ERR!     cross-env BABEL_ENV=development babel src --out-dir dist
-    npm ERR! You can get information on how to open an issue for this project with:
-    npm ERR!     npm bugs @pubpub/prose
-    npm ERR! Or if that isn't available, you can get their info via:
-    npm ERR!     npm owner ls @pubpub/prose
-    npm ERR! There is likely additional logging output above.
-    
-    npm ERR! Please include the following file with any support request:
-    npm ERR!     /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose/npm-debug.log
-    
-    npm ERR! addLocal Could not install /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose
-    npm ERR! Darwin 15.2.0
-    npm ERR! argv "/Users/thariqshihipar/.nvm/versions/node/v6.1.0/bin/node" "/Users/thariqshihipar/.nvm/versions/node/v6.1.0/bin/npm" "publish" "--tag" "lerna-temp"
-    npm ERR! node v6.1.0
-    npm ERR! npm  v3.8.6
-    npm ERR! code ELIFECYCLE
-    npm ERR! @pubpub/prose@1.0.10 prepublish: `npm run build`
-    npm ERR! Exit status 1
-    npm ERR! 
-    npm ERR! Failed at the @pubpub/prose@1.0.10 prepublish script 'npm run build'.
-    npm ERR! Make sure you have the latest version of node.js and npm installed.
-    npm ERR! If you do, this is most likely a problem with the @pubpub/prose package,
-    npm ERR! not with npm itself.
-    npm ERR! Tell the author that this fails on your system:
-    npm ERR!     npm run build
-    npm ERR! You can get information on how to open an issue for this project with:
-    npm ERR!     npm bugs @pubpub/prose
-    npm ERR! Or if that isn't available, you can get their info via:
-    npm ERR!     npm owner ls @pubpub/prose
-    npm ERR! There is likely additional logging output above.
-    
-    npm ERR! Please include the following file with any support request:
-    npm ERR!     /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose/npm-debug.log
-    
-        at ChildProcess.exithandler (child_process.js:202:12)
-        at emitTwo (events.js:106:13)
-        at ChildProcess.emit (events.js:191:7)
-        at maybeClose (internal/child_process.js:850:16)
-        at Process.ChildProcess._handle.onexit (internal/child_process.js:215:5)
-lerna(verbose) Publishing @pubpub/prose...
-lerna(verbose) NpmUtilities.publishTaggedInDir("lerna-temp", "./packages/pubpub-prose")
-lerna(verbose) NpmUtilities.publishTaggedInDir("lerna-temp", "./packages/pubpub-render-files") => "\n> @pubpub/render-files@1.0.10 prepublish ./packages/pubpub-render-files\n> npm run build\n\n\n> @pubpub/render-files@1.0.10 build /Users/thariqshihipar/pubpub-packages/packages/pubpub-render-files\n> cross-env BABEL_ENV=development babel src --out-dir dist\n\nsrc/RenderFile.js -> dist/RenderFile.js\nsrc/RenderFileDoc.js -> dist/RenderFileDoc.js\nsrc/RenderFileMarkdown.js -> dist/RenderFileMarkdown.js\nsrc/RenderFilePDF.js -> dist/RenderFilePDF.js\nsrc/RenderFilePPT.js -> dist/RenderFilePPT.js\nsrc/index.js -> dist/index.js\nsrc/ppub/components/citationsRender.jsx -> dist/ppub/components/citationsRender.js\nsrc/ppub/components/embedRender.jsx -> dist/ppub/components/embedRender.js\nsrc/ppub/components/iframeRender.jsx -> dist/ppub/components/iframeRender.js\nsrc/ppub/components/index.js -> dist/ppub/components/index.js\nsrc/ppub/components/katex.css.js -> dist/ppub/components/katex.css.js\nsrc/ppub/components/latexRender.jsx -> dist/ppub/components/latexRender.js\nsrc/ppub/components/referenceRender.jsx -> dist/ppub/components/referenceRender.js\nsrc/ppub/index.js -> dist/ppub/index.js\nsrc/ppub/renderReactFromJSON.js -> dist/ppub/renderReactFromJSON.js\nsrc/urlToType.js -> dist/urlToType.js\n+ @pubpub/render-files@1.0.10\n"
-lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-render-files/scripts/postpublish.js")
-lerna(verbose) FileSystemUtilities.existsSync("./packages/pubpub-render-files/scripts/postpublish.js") => false
-lerna(verbose) No postpublish script found at /Users/thariqshihipar/pubpub-packages/packages/pubpub-render-files/scripts/postpublish.js
-lerna(error)   NpmUtilities.publishTaggedInDir("lerna-temp", "./packages/pubpub-prose")
-lerna(error)   
-> @pubpub/prose@1.0.10 prepublish /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose
-> npm run build
-
-
-> @pubpub/prose@1.0.10 build /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose
-> cross-env BABEL_ENV=development babel src --out-dir dist
-
-src/collab/carets.js -> dist/collab/carets.js
-src/collab/colors.js -> dist/collab/colors.js
-src/collab/doc-changes.js -> dist/collab/doc-changes.js
-src/collab/mod.js -> dist/collab/mod.js
-src/collab/node-convert.js -> dist/collab/node-convert.js
-src/collab/server-communications.js -> dist/collab/server-communications.js
-src/editors/baseEditor.js -> dist/editors/baseEditor.js
-src/editors/collaborativeEditor.js -> dist/editors/collaborativeEditor.js
-src/editors/diffEditor.js -> dist/editors/diffEditor.js
-src/editors/reviewEditor.js -> dist/editors/reviewEditor.js
-src/editors/richEditor.js -> dist/editors/richEditor.js
-src/editors/simpleEditor.js -> dist/editors/simpleEditor.js
-src/index.js -> dist/index.js
-src/markdown/index.js -> dist/markdown/index.js
-src/markdown/jsonToMarkdown.js -> dist/markdown/jsonToMarkdown.js
-src/markdown/markdown-it-embed.js -> dist/markdown/markdown-it-embed.js
-src/markdown/markdown-it-pagebreak.js -> dist/markdown/markdown-it-pagebreak.js
-
-lerna(error)   Attempting to retry publishing @pubpub/prose...
-    Error: Command failed: cd /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose && npm publish --tag lerna-temp
-    SyntaxError: src/markdown/markdownParser.js: Unexpected token, expected , (21:1)
-      19 | 	.use(embed),
-      20 | 	*/
-    > 21 | 	{
-         | 	^
-      22 | 		blockquote: {block: 'blockquote'},
-      23 | 		paragraph: {block: 'paragraph'},
-      24 | 		list_item: {block: 'list_item'},
-    
-    npm ERR! Darwin 15.2.0
-    npm ERR! argv "/Users/thariqshihipar/.nvm/versions/node/v6.1.0/bin/node" "/Users/thariqshihipar/.nvm/versions/node/v6.1.0/bin/npm" "run" "build"
-    npm ERR! node v6.1.0
-    npm ERR! npm  v3.8.6
-    npm ERR! code ELIFECYCLE
-    npm ERR! @pubpub/prose@1.0.10 build: `cross-env BABEL_ENV=development babel src --out-dir dist`
-    npm ERR! Exit status 1
-    npm ERR! 
-    npm ERR! Failed at the @pubpub/prose@1.0.10 build script 'cross-env BABEL_ENV=development babel src --out-dir dist'.
-    npm ERR! Make sure you have the latest version of node.js and npm installed.
-    npm ERR! If you do, this is most likely a problem with the @pubpub/prose package,
-    npm ERR! not with npm itself.
-    npm ERR! Tell the author that this fails on your system:
-    npm ERR!     cross-env BABEL_ENV=development babel src --out-dir dist
-    npm ERR! You can get information on how to open an issue for this project with:
-    npm ERR!     npm bugs @pubpub/prose
-    npm ERR! Or if that isn't available, you can get their info via:
-    npm ERR!     npm owner ls @pubpub/prose
-    npm ERR! There is likely additional logging output above.
-    
-    npm ERR! Please include the following file with any support request:
-    npm ERR!     /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose/npm-debug.log
-    
-    npm ERR! addLocal Could not install /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose
-    npm ERR! Darwin 15.2.0
-    npm ERR! argv "/Users/thariqshihipar/.nvm/versions/node/v6.1.0/bin/node" "/Users/thariqshihipar/.nvm/versions/node/v6.1.0/bin/npm" "publish" "--tag" "lerna-temp"
-    npm ERR! node v6.1.0
-    npm ERR! npm  v3.8.6
-    npm ERR! code ELIFECYCLE
-    npm ERR! @pubpub/prose@1.0.10 prepublish: `npm run build`
-    npm ERR! Exit status 1
-    npm ERR! 
-    npm ERR! Failed at the @pubpub/prose@1.0.10 prepublish script 'npm run build'.
-    npm ERR! Make sure you have the latest version of node.js and npm installed.
-    npm ERR! If you do, this is most likely a problem with the @pubpub/prose package,
-    npm ERR! not with npm itself.
-    npm ERR! Tell the author that this fails on your system:
-    npm ERR!     npm run build
-    npm ERR! You can get information on how to open an issue for this project with:
-    npm ERR!     npm bugs @pubpub/prose
-    npm ERR! Or if that isn't available, you can get their info via:
-    npm ERR!     npm owner ls @pubpub/prose
-    npm ERR! There is likely additional logging output above.
-    
-    npm ERR! Please include the following file with any support request:
-    npm ERR!     /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose/npm-debug.log
-    
-        at ChildProcess.exithandler (child_process.js:202:12)
-        at emitTwo (events.js:106:13)
-        at ChildProcess.emit (events.js:191:7)
-        at maybeClose (internal/child_process.js:850:16)
-        at Socket.<anonymous> (internal/child_process.js:323:11)
+        at ChildProcess.emit (events.js:192:7)
+        at maybeClose (internal/child_process.js:890:16)
+        at Socket.<anonymous> (internal/child_process.js:334:11)
         at emitOne (events.js:96:13)
-        at Socket.emit (events.js:188:7)
-        at Pipe._handle.close [as _onclose] (net.js:492:12)
-lerna(verbose) Publishing @pubpub/prose...
-lerna(verbose) NpmUtilities.publishTaggedInDir("lerna-temp", "./packages/pubpub-prose")
-lerna(error)   NpmUtilities.publishTaggedInDir("lerna-temp", "./packages/pubpub-prose")
+        at Socket.emit (events.js:189:7)
+        at Pipe._handle.close [as _onclose] (net.js:501:12)
 lerna(error)   
-> @pubpub/prose@1.0.10 prepublish /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose
+> @pubpub/prose@1.1.5 prepublish /Users/hydraboy/work/pubpub-packages/packages/pubpub-prose
 > npm run build
 
 
-> @pubpub/prose@1.0.10 build /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose
+> @pubpub/prose@1.1.5 build /Users/hydraboy/work/pubpub-packages/packages/pubpub-prose
 > cross-env BABEL_ENV=development babel src --out-dir dist
 
-src/collab/carets.js -> dist/collab/carets.js
-src/collab/colors.js -> dist/collab/colors.js
-src/collab/doc-changes.js -> dist/collab/doc-changes.js
-src/collab/mod.js -> dist/collab/mod.js
-src/collab/node-convert.js -> dist/collab/node-convert.js
-src/collab/server-communications.js -> dist/collab/server-communications.js
-src/editors/baseEditor.js -> dist/editors/baseEditor.js
-src/editors/collaborativeEditor.js -> dist/editors/collaborativeEditor.js
-src/editors/diffEditor.js -> dist/editors/diffEditor.js
-src/editors/reviewEditor.js -> dist/editors/reviewEditor.js
-src/editors/richEditor.js -> dist/editors/richEditor.js
-src/editors/simpleEditor.js -> dist/editors/simpleEditor.js
-src/index.js -> dist/index.js
-src/markdown/index.js -> dist/markdown/index.js
-src/markdown/jsonToMarkdown.js -> dist/markdown/jsonToMarkdown.js
-src/markdown/markdown-it-embed.js -> dist/markdown/markdown-it-embed.js
-src/markdown/markdown-it-pagebreak.js -> dist/markdown/markdown-it-pagebreak.js
 
-lerna(error)   Attempting to retry publishing @pubpub/prose...
-lerna(verbose) Publishing @pubpub/prose...
-lerna(verbose) NpmUtilities.publishTaggedInDir("lerna-temp", "./packages/pubpub-prose")
-lerna(error)   NpmUtilities.publishTaggedInDir("lerna-temp", "./packages/pubpub-prose")
+lerna(error)   NpmUtilities.runScriptInDir   ("prepublish", [], "./packages/pubpub-prose")
 lerna(error)   
-> @pubpub/prose@1.0.10 prepublish /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose
+> @pubpub/prose@1.1.5 prepublish /Users/hydraboy/work/pubpub-packages/packages/pubpub-prose
 > npm run build
 
 
-> @pubpub/prose@1.0.10 build /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose
+> @pubpub/prose@1.1.5 build /Users/hydraboy/work/pubpub-packages/packages/pubpub-prose
 > cross-env BABEL_ENV=development babel src --out-dir dist
 
-src/collab/carets.js -> dist/collab/carets.js
-src/collab/colors.js -> dist/collab/colors.js
-src/collab/doc-changes.js -> dist/collab/doc-changes.js
-src/collab/mod.js -> dist/collab/mod.js
-src/collab/node-convert.js -> dist/collab/node-convert.js
-src/collab/server-communications.js -> dist/collab/server-communications.js
-src/editors/baseEditor.js -> dist/editors/baseEditor.js
-src/editors/collaborativeEditor.js -> dist/editors/collaborativeEditor.js
-src/editors/diffEditor.js -> dist/editors/diffEditor.js
-src/editors/reviewEditor.js -> dist/editors/reviewEditor.js
-src/editors/richEditor.js -> dist/editors/richEditor.js
-src/editors/simpleEditor.js -> dist/editors/simpleEditor.js
-src/index.js -> dist/index.js
-src/markdown/index.js -> dist/markdown/index.js
-src/markdown/jsonToMarkdown.js -> dist/markdown/jsonToMarkdown.js
-src/markdown/markdown-it-embed.js -> dist/markdown/markdown-it-embed.js
-src/markdown/markdown-it-pagebreak.js -> dist/markdown/markdown-it-pagebreak.js
 
-lerna(error)   Attempting to retry publishing @pubpub/prose...
-lerna(verbose) Publishing @pubpub/prose...
-lerna(verbose) NpmUtilities.publishTaggedInDir("lerna-temp", "./packages/pubpub-prose")
-lerna(error)   NpmUtilities.publishTaggedInDir("lerna-temp", "./packages/pubpub-prose")
-lerna(error)   
-> @pubpub/prose@1.0.10 prepublish /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose
-> npm run build
-
-
-> @pubpub/prose@1.0.10 build /Users/thariqshihipar/pubpub-packages/packages/pubpub-prose
-> cross-env BABEL_ENV=development babel src --out-dir dist
-
-src/collab/carets.js -> dist/collab/carets.js
-src/collab/colors.js -> dist/collab/colors.js
-src/collab/doc-changes.js -> dist/collab/doc-changes.js
-src/collab/mod.js -> dist/collab/mod.js
-src/collab/node-convert.js -> dist/collab/node-convert.js
-src/collab/server-communications.js -> dist/collab/server-communications.js
-src/editors/baseEditor.js -> dist/editors/baseEditor.js
-src/editors/collaborativeEditor.js -> dist/editors/collaborativeEditor.js
-src/editors/diffEditor.js -> dist/editors/diffEditor.js
-src/editors/reviewEditor.js -> dist/editors/reviewEditor.js
-src/editors/richEditor.js -> dist/editors/richEditor.js
-src/editors/simpleEditor.js -> dist/editors/simpleEditor.js
-src/index.js -> dist/index.js
-src/markdown/index.js -> dist/markdown/index.js
-src/markdown/jsonToMarkdown.js -> dist/markdown/jsonToMarkdown.js
-src/markdown/markdown-it-embed.js -> dist/markdown/markdown-it-embed.js
-src/markdown/markdown-it-pagebreak.js -> dist/markdown/markdown-it-pagebreak.js
-
-lerna(error)   Ran out of retries while publishing @pubpub/prose
-lerna(error)   Errored while running PublishCommand.execute
+lerna(error)   Errored while running BootstrapCommand.execute

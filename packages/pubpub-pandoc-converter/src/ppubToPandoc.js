@@ -607,45 +607,6 @@ function ppubToPandoc(ppub, options) {
 				};
 			}
 
-			if (metadata['reader-one-name']) {
-				pandocJSON.meta.pubreaderonename = {
-					t: 'MetaInlines',
-					c: createTextNodes(metadata['reader-one-name'])
-				};
-			}
-			if (metadata['reader-one-title']) {
-				pandocJSON.meta.pubreaderonetitle = {
-					t: 'MetaInlines',
-					c: createTextNodes(metadata['reader-one-title'])
-				};
-			}
-			if (metadata['reader-one-affiliation']) {
-				pandocJSON.meta.pubreaderoneaffiliation = {
-					t: 'MetaInlines',
-					c: createTextNodes(metadata['reader-one-affiliation'])
-				};
-			}
-
-			if (metadata['reader-two-name']) {
-				pandocJSON.meta.pubreadertwoname = {
-					t: 'MetaInlines',
-					c: createTextNodes(metadata['reader-two-name'])
-				};
-			}
-			if (metadata['reader-two-title']) {
-				pandocJSON.meta.pubreadertwotitle = {
-					t: 'MetaInlines',
-					c: createTextNodes(metadata['reader-two-title'])
-				};
-			}
-
-			if (metadata['reader-two-affiliation']) {
-				pandocJSON.meta.pubreadertwoaffiliation = {
-					t: 'MetaInlines',
-					c: createTextNodes(metadata['reader-two-affiliation'])
-				};
-			}
-
 			if (metadata['pub-readers']) {
 
 				for (var i = 0; i < metadata['pub-readers'].length; i++){

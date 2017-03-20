@@ -26,8 +26,6 @@ var _reactview = require('./reactview');
 
 var _reactview2 = _interopRequireDefault(_reactview);
 
-var _prosemirrorTransform = require('prosemirror-transform');
-
 var _plugins = require('../plugins');
 
 var _setup = require('../setup');

@@ -2,9 +2,15 @@
   "name": "@pubpub/pubpub-pandoc-converter",
   "version": "1.0.0",
   "description": "Convert PubPub (ProseMirror) to Pandoc JSON",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
+		"build": "cross-env BABEL_ENV=development babel src --out-dir dist",
+		"prepublish": "npm run build",
     "test": "node_modules/mocha/bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pubpub/pubpub-packages.git"
   },
   "author": "Hassan Shaikley <hassan.shaikley@gmail.com>",
   "license": "ISC",
@@ -16,11 +22,18 @@
     "colors": "^1.1.2",
     "fs-writefile-promise": "^2.0.0",
     "mocha": "^3.2.0",
-    "prosemirror-markdown": "^0.14.0",
-    "pubpub-prose": "github:pubpub/pubpub-prose"
+    "prosemirror-markdown": "^0.14.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.24.0",
     "babel-eslint": "^7.1.1",
+		"babel-plugin-react-intl": "^2.2.0",
+		"babel-plugin-react-transform": "^2.0.2",
+		"babel-plugin-syntax-flow": "^6.18.0",
+		"babel-plugin-transform-object-assign": "^6.8.0",
+		"babel-preset-es2015": "^6.13.2",
+		"babel-preset-react": "^6.11.1",
+		"babel-preset-stage-0": "^6.5.0",
     "eslint": "^3.13.1",
     "eslint-config-airbnb": "^14.0.0",
     "eslint-plugin-import": "^2.2.0",
