@@ -4,6 +4,7 @@
 
 .pub-body {
   width: 750px;
+  padding: 0px 50px;
 }
 
 .article {
@@ -79,7 +80,7 @@
 Makes empty paragraphs easier to see
 */
 .Prosemirror p {
-    min-height: 1em;
+  min-height: 1em;
 }
 
 .ProseMirror-content {
@@ -120,6 +121,10 @@ Makes empty paragraphs easier to see
   pointer-events: auto;
 }
 
+
+.ProseMirror.ProseMirror-nodeselection {
+  outline: none;
+}
 
 .ProseMirror-nodeselection :not(textarea):not(input)::selection {
 	background: transparent;

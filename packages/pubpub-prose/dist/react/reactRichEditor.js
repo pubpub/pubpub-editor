@@ -17,8 +17,6 @@ var _index = require('../index');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-require("@blueprintjs/core/dist/blueprint.css");
-
 /*
 <Editor
     mentionsComponent={component}
@@ -29,10 +27,6 @@ require("@blueprintjs/core/dist/blueprint.css");
     initialState={object}
     />
 */
-
-// var style = require('style-loader/useable!css-loader!../../prose/style/editor.css');
-// var style = require('style-loader!raw-loader!../../prose/style/editor.css');
-// style.use();
 
 var RichEditorWrapper = exports.RichEditorWrapper = _react2.default.createClass({
 	displayName: 'RichEditorWrapper',

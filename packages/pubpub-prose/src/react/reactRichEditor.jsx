@@ -3,8 +3,6 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { RichEditor } from '../index';
 
-require("@blueprintjs/core/dist/blueprint.css");
-
 /*
 <Editor
     mentionsComponent={component}
@@ -16,10 +14,6 @@ require("@blueprintjs/core/dist/blueprint.css");
     />
 */
 
-
-// var style = require('style-loader/useable!css-loader!../../prose/style/editor.css');
-// var style = require('style-loader!raw-loader!../../prose/style/editor.css');
-// style.use();
 
 export const RichEditorWrapper = React.createClass({
 	propTypes: {
