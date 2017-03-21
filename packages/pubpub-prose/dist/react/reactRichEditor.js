@@ -17,6 +17,8 @@ var _index = require('../index');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+require("@blueprintjs/core/dist/blueprint.css");
+
 /*
 <Editor
     mentionsComponent={component}

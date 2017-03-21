@@ -3,6 +3,8 @@ import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { RichEditor } from '../index';
 
+require("@blueprintjs/core/dist/blueprint.css");
+
 /*
 <Editor
     mentionsComponent={component}

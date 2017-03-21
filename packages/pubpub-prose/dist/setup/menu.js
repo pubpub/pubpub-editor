@@ -81,7 +81,7 @@ function insertImageEmbed(nodeType) {
   return new MenuItem({
     title: "Insert Image",
     label: "Image",
-    icon: "Media",
+    icon: "media",
     dialogType: 'image',
     dialogExtension: ['.jpg', '.png', '.gif', '.tiff'],
     select: function select(state) {
@@ -137,7 +137,7 @@ function insertReferenceEmbed(nodeType) {
   return new MenuItem({
     title: "Insert Reference",
     label: "Reference",
-    icon: "Book",
+    icon: "book",
     dialogType: 'reference',
     dialogExtension: '.*',
     select: function select(state) {
@@ -160,7 +160,7 @@ function insertLatexEmbed(nodeType) {
   return new MenuItem({
     title: "Insert Equation",
     label: "Equation",
-    icon: "Function",
+    icon: "function",
     select: function select(state) {
       return canInsert(state, nodeType);
     },
@@ -334,9 +334,9 @@ function buildMenuItems(schema) {
   if (type = schema.marks.sub) r.subMark = markItem(type, { title: "subscript", icon: null });
   if (type = schema.marks.strike) r.strikeMark = markItem(type, { title: "strikethrough", icon: null });
 
-  if (type = schema.marks.strong) r.toggleStrong = markItem(type, { title: "Toggle strong style", icon: "Bold" });
-  if (type = schema.marks.em) r.toggleEm = markItem(type, { title: "Toggle emphasis", icon: "Italic" });
-  if (type = schema.marks.code) r.toggleCode = markItem(type, { title: "Toggle code font", icon: "Code" });
+  if (type = schema.marks.strong) r.toggleStrong = markItem(type, { title: "Toggle strong style", icon: "bold" });
+  if (type = schema.marks.em) r.toggleEm = markItem(type, { title: "Toggle emphasis", icon: "italic" });
+  if (type = schema.marks.code) r.toggleCode = markItem(type, { title: "Toggle code font", icon: "code" });
   if (type = schema.marks.link) r.toggleLink = linkItem(type);
 
   if (type = schema.nodes.embed) {
@@ -354,15 +354,15 @@ function buildMenuItems(schema) {
 
   if (type = schema.nodes.bullet_list) r.wrapBulletList = wrapListItem(type, {
     title: "Wrap in bullet list",
-    icon: "Properties"
+    icon: "properties"
   });
   if (type = schema.nodes.ordered_list) r.wrapOrderedList = wrapListItem(type, {
     title: "Wrap in ordered list",
-    icon: "Numbered-list"
+    icon: "numbered-list"
   });
   if (type = schema.nodes.blockquote) r.wrapBlockQuote = wrapItem(type, {
     title: "Quote",
-    icon: "Citation"
+    icon: "citation"
   });
   if (type = schema.nodes.paragraph) r.makeParagraph = blockTypeItem(type, {
     title: "Normal",
@@ -371,7 +371,7 @@ function buildMenuItems(schema) {
   if (type = schema.nodes.code_block) r.makeCodeBlock = blockTypeItem(type, {
     title: "Code block",
     label: "Code",
-    icon: "Code"
+    icon: "code"
   });
   if (type = schema.nodes.heading) for (var i = 1; i <= 10; i++) {
     r["makeHead" + i] = blockTypeItem(type, {
@@ -385,7 +385,7 @@ function buildMenuItems(schema) {
       r.insertHorizontalRule = new MenuItem({
         title: "Insert horizontal rule",
         label: "Horizontal rule",
-        icon: "Small-minus",
+        icon: "small-minus",
         select: function select(state) {
           return canInsert(state, hr);
         },
@@ -402,7 +402,7 @@ function buildMenuItems(schema) {
       r.insertPageBreak = new MenuItem({
         title: "Insert page break",
         label: "Page break",
-        icon: "Vertical-distribution",
+        icon: "vertical-distribution",
         select: function select(state) {
           return canInsert(state, pb);
         },
@@ -431,8 +431,8 @@ function buildMenuItems(schema) {
 
   r.textMenu = [new Dropdown(cut([r.makeParagraph, r.makeHead1, r.makeHead2, r.makeHead3, r.makeHead4]), { label: "Normal", className: "textMenu" })];
 
-  r.moreinlineMenu = new Dropdown(cut([r.supMark, r.subMark, r.strikeMark]), { label: "", icon: "Style" });
-  r.insertMenu = new Dropdown(cut([r.insertImageEmbed, r.insertVideoEmbed, r.insertReferenceEmbed, r.insertLatexEmbed]), { label: "Insert", icon: "Insert" });
+  r.moreinlineMenu = new Dropdown(cut([r.supMark, r.subMark, r.strikeMark]), { label: "", icon: "style" });
+  r.insertMenu = new Dropdown(cut([r.insertImageEmbed, r.insertVideoEmbed, r.insertReferenceEmbed, r.insertLatexEmbed]), { label: "Insert", icon: "insert" });
   r.typeMenu = new Dropdown(cut([r.makeCodeBlock, r.insertPageBreak]), { label: "..." });
   var tableItems = cut([r.insertTable, r.addRowBefore, r.addRowAfter, r.removeRow, r.addColumnBefore, r.addColumnAfter, r.removeColumn]);
   if (tableItems.length) r.tableMenu = new Dropdown(tableItems, { label: "", icon: "th", hideOnDisable: false });
