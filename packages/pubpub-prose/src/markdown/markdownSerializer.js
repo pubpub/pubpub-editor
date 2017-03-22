@@ -75,6 +75,9 @@ export const markdownSerializer = new MarkdownSerializer({
 		state.renderInline(node);
 		state.write('$$\n');
 	},
+	mention: function mention(state, node) {
+		state.write('[@' + node.attrs.text + ']');
+	},
 	reference: function reference(state) {
 		state.write('');
 	},
