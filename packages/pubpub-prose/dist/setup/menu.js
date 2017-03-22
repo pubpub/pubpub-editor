@@ -221,10 +221,11 @@ function cmdItem(cmd, options) {
 function markActive(state, type) {
   var _state$selection2 = state.selection,
       from = _state$selection2.from,
+      $from = _state$selection2.$from,
       to = _state$selection2.to,
       empty = _state$selection2.empty;
 
-  if (empty) return type.isInSet(state.storedMarks || state.doc.marksAt(from));else return state.doc.rangeHasMark(from, to, type);
+  if (empty) return type.isInSet(state.storedMarks || $from.marks());else return state.doc.rangeHasMark(from, to, type);
 }
 
 function markItem(markType, options) {

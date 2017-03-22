@@ -142,7 +142,7 @@ var citationsPlugin = new _prosemirrorState.Plugin({
         return { decos: blueSet, engine: state.engine };
       } else if (transaction.mapping) {
         var _newSet = set.map(transaction.mapping, editorState.doc, { onRemove: function onRemove(deco) {
-            removeDecoration(deco.citationID, state.engine, _this.options.view);
+            removeDecoration(deco.citationID, state.engine, _this.spec.view);
           } });
         return { decos: _newSet, engine: state.engine };
       }
@@ -153,13 +153,13 @@ var citationsPlugin = new _prosemirrorState.Plugin({
   view: function view(editorView) {
     var _this2 = this;
 
-    this.view = editorView;
+    this.editorView = editorView;
     return {
       update: function update(newView, prevState) {
-        _this2.view = newView;
+        _this2.editorView = newView;
       },
       destroy: function destroy() {
-        _this2.view = null;
+        _this2.editorView = null;
       }
     };
   },

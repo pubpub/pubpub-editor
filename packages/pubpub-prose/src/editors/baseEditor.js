@@ -16,7 +16,6 @@ class BaseEditor {
   create({place, contents, plugins, config, components: {suggestComponent} = {}, handlers: { createFile }}) {
     const {buildMenuItems, clipboardParser, clipboardSerializer} = require('../setup');
     const {EditorState} = require('prosemirror-state');
-    const {MenuBarEditorView, MenuItem} = require('prosemirror-menu');
     const {EditorView} = require('prosemirror-view');
     const collabEditing = require('prosemirror-collab').collab;
 

@@ -130,7 +130,7 @@ const citationsPlugin = new Plugin({
         return {decos: blueSet, engine: state.engine};
       } else if (transaction.mapping) {
         const newSet = set.map(transaction.mapping, editorState.doc,
-          { onRemove: (deco) => { removeDecoration(deco.citationID, state.engine, this.options.view) } });
+          { onRemove: (deco) => { removeDecoration(deco.citationID, state.engine, this.spec.view) } });
         return {decos: newSet, engine: state.engine};
       }
 
@@ -138,13 +138,13 @@ const citationsPlugin = new Plugin({
     }
   },
   view: function(editorView) {
-    this.view = editorView;
+    this.editorView = editorView;
     return {
       update: (newView, prevState) => {
-        this.view = newView;
+        this.editorView = newView;
       },
       destroy: () => {
-        this.view = null;
+        this.editorView = null;
       }
     }
   },

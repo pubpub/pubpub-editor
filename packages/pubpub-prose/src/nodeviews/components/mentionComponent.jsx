@@ -80,7 +80,7 @@ export const MentionComponent = React.createClass({
     return (
       <span style={{position: 'relative'}}>
         @
-				{(SuggestComponent) ? <SuggestComponent {...this.props.suggestComponent.props}/> : null}
+				{(SuggestComponent) ? <SuggestComponent revertToText={this.props.revertToText} updateMention={this.props.updateMention} {...this.props.suggestComponent.props}/> : null}
       </span>
     );
   },

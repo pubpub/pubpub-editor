@@ -109,12 +109,8 @@ var BaseEditor = function () {
       var _require5 = require('prosemirror-state'),
           EditorState = _require5.EditorState;
 
-      var _require6 = require('prosemirror-menu'),
-          MenuBarEditorView = _require6.MenuBarEditorView,
-          MenuItem = _require6.MenuItem;
-
-      var _require7 = require('prosemirror-view'),
-          EditorView = _require7.EditorView;
+      var _require6 = require('prosemirror-view'),
+          EditorView = _require6.EditorView;
 
       var collabEditing = require('prosemirror-collab').collab;
 

@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.MentionComponent = undefined;
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -103,7 +105,7 @@ var MentionComponent = exports.MentionComponent = _react2.default.createClass({
       'span',
       { style: { position: 'relative' } },
       '@',
-      SuggestComponent ? _react2.default.createElement(SuggestComponent, this.props.suggestComponent.props) : null
+      SuggestComponent ? _react2.default.createElement(SuggestComponent, _extends({ revertToText: this.props.revertToText, updateMention: this.props.updateMention }, this.props.suggestComponent.props)) : null
     );
   },
 

@@ -63,14 +63,14 @@ var Emoji = {
 	inline: true
 };
 
-var schemaNodes = _schemaBasic.schema.nodeSpec.addBefore('horizontal_rule', 'page_break', PageBreak).addBefore('image', 'emoji', Emoji);
+var schemaNodes = _schemaBasic.schema.spec.nodes.addBefore('horizontal_rule', 'page_break', PageBreak).addBefore('image', 'emoji', Emoji);
 
 var listSchema = (0, _prosemirrorSchemaList.addListNodes)(schemaNodes, "paragraph block*", "block");
 var tableSchema = (0, _prosemirrorSchemaTable.addTableNodes)(listSchema, "paragraph block*", "block");
 
 var schema = exports.schema = new _prosemirrorModel.Schema({
 	nodes: tableSchema,
-	marks: _schemaBasic.schema.markSpec.addBefore('code', 'sub', SubMark).addBefore('code', 'sup', SupMark).addBefore('code', 'strike', StrikeThroughMark),
+	marks: _schemaBasic.schema.spec.marks.addBefore('code', 'sub', SubMark).addBefore('code', 'sup', SupMark).addBefore('code', 'strike', StrikeThroughMark),
 	topNode: 'article'
 });
 

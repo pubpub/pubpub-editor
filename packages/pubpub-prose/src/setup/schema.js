@@ -47,7 +47,7 @@ const Emoji = {
 }
 
 
-const schemaNodes = basicSchema.nodeSpec
+const schemaNodes = basicSchema.spec.nodes
 .addBefore('horizontal_rule', 'page_break', PageBreak)
 .addBefore('image', 'emoji', Emoji);
 
@@ -56,7 +56,7 @@ const tableSchema = addTableNodes(listSchema, "paragraph block*", "block");
 
 export const schema = new Schema({
 	nodes: tableSchema,
-	marks: basicSchema.markSpec.addBefore('code', 'sub', SubMark).addBefore('code', 'sup', SupMark).addBefore('code', 'strike', StrikeThroughMark),
+	marks: basicSchema.spec.marks.addBefore('code', 'sub', SubMark).addBefore('code', 'sup', SupMark).addBefore('code', 'strike', StrikeThroughMark),
   topNode: 'article'
 });
 
