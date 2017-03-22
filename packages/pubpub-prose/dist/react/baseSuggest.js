@@ -17,6 +17,8 @@ var _reactAutosuggest2 = _interopRequireDefault(_reactAutosuggest);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+require('../../style/autosuggest.scss');
+
 var SuggestComponent = exports.SuggestComponent = _react2.default.createClass({
 	displayName: 'SuggestComponent',
 
@@ -47,7 +49,6 @@ var SuggestComponent = exports.SuggestComponent = _react2.default.createClass({
 			// this.refs.input.blur();
 
 			this.props.updateMention({ text: text, type: type, meta: meta });
-			this.changeToNormal();
 		}
 	},
 
@@ -105,6 +106,16 @@ var SuggestComponent = exports.SuggestComponent = _react2.default.createClass({
 				} }, inputProps))
 		);
 	},
+	onSuggestionSelected: function onSuggestionSelected(event, _ref3) {
+		var suggestion = _ref3.suggestion,
+		    suggestionValue = _ref3.suggestionValue,
+		    suggestionIndex = _ref3.suggestionIndex,
+		    sectionIndex = _ref3.sectionIndex,
+		    method = _ref3.method;
+
+		console.log('Selected suggestion!', suggestion);
+		this.props.updateMention({ text: suggestion, type: 'file', meta: {} });
+	},
 	render: function render() {
 		var files = this.props.files;
 
@@ -116,17 +127,20 @@ var SuggestComponent = exports.SuggestComponent = _react2.default.createClass({
 			onChange: this.handleChange
 		};
 
-		console.log('these are the files!', files);
-
-		return _react2.default.createElement(_reactAutosuggest2.default, {
-			ref: 'suggest',
-			suggestions: files,
-			onSuggestionsFetchRequested: this.onSuggestionsFetchRequested,
-			onSuggestionsClearRequested: this.onSuggestionsClearRequested,
-			getSuggestionValue: this.getSuggestionValue,
-			renderSuggestion: this.renderSuggestion,
-			inputProps: inputProps
-		});
+		return _react2.default.createElement(
+			'span',
+			null,
+			_react2.default.createElement(_reactAutosuggest2.default, {
+				ref: 'suggest',
+				suggestions: files,
+				onSuggestionsFetchRequested: this.onSuggestionsFetchRequested,
+				onSuggestionsClearRequested: this.onSuggestionsClearRequested,
+				getSuggestionValue: this.getSuggestionValue,
+				renderSuggestion: this.renderSuggestion,
+				onSuggestionSelected: this.onSuggestionSelected,
+				inputProps: inputProps
+			})
+		);
 	}
 });
 

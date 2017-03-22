@@ -2,6 +2,8 @@ import React, {PropTypes} from 'react';
 
 import Autosuggest from 'react-autosuggest';
 
+require('../../style/autosuggest.scss');
+
 export const SuggestComponent = React.createClass({
 	propTypes: { },
 	getInitialState() {
@@ -30,7 +32,6 @@ export const SuggestComponent = React.createClass({
 			const {text, type, meta} = this.state;
 			// this.refs.input.blur();
 			this.props.updateMention({text, type, meta});
-      this.changeToNormal();
      }
   },
 
@@ -75,10 +76,15 @@ export const SuggestComponent = React.createClass({
 
 	renderInputComponent(inputProps){
 		return (
-	  <span>
-	    <input ref={(input) => { this.textInput = input; }} {...inputProps} />
-	  </span>
+	  	<span>
+	    	<input ref={(input) => { this.textInput = input; }} {...inputProps} />
+	  	</span>
 		);
+	},
+
+	onSuggestionSelected(event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) {
+		console.log('Selected suggestion!', suggestion);
+		this.props.updateMention({text: suggestion, type: 'file', meta: {}});
 	},
 
   render() {
@@ -91,9 +97,8 @@ export const SuggestComponent = React.createClass({
       onChange: this.handleChange
     };
 
-		console.log('these are the files!', files);
-
     return (
+			<span>
 				<Autosuggest
 					ref={'suggest'}
         	suggestions={files}
@@ -101,8 +106,10 @@ export const SuggestComponent = React.createClass({
 					onSuggestionsClearRequested={this.onSuggestionsClearRequested}
 					getSuggestionValue={this.getSuggestionValue}
 					renderSuggestion={this.renderSuggestion}
+					onSuggestionSelected={this.onSuggestionSelected}
 					inputProps={inputProps}
       	/>
+			</span>
     );
   },
 

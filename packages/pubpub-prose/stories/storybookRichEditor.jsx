@@ -11,11 +11,13 @@ require("../style/base.scss");
 
 export const StoryBookRichEditor = React.createClass({
 	onChange: function() {
+		/*
 		const markdown = this.refs.editor.getMarkdown();
 		const docJSON = markdownToJSON(markdown);
 		console.log('Got markdown!');
 		console.log(markdown);
 		console.log(JSON.stringify(docJSON));
+		*/
 	},
 	render: function() {
 		const mentionsComponent = {

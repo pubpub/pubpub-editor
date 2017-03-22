@@ -24,7 +24,7 @@ export const MentionComponent = React.createClass({
 
 	openEdit: function() {
 		this.setState({editing: true})
-		// setTimeout(() => this.refs.suggest.input.focus(), 0);
+		setTimeout(() => this.focus(), 0);
 	},
 
 	setSelected: function(selected) {
@@ -58,12 +58,23 @@ export const MentionComponent = React.createClass({
   changeToEditing: function() {
 		const {text, type, meta} = this.props;
     this.setState({editing: true, text, type, meta});
-    // setTimeout(() => this.refs.input.focus(), 0);
+    setTimeout(() => this.focus(), 0);
   },
 
   changeToNormal: function() {
     this.setState({editing: false});
   },
+
+	focus: function() {
+		if (this.refs.suggest && this.refs.suggest.focus) {
+			this.refs.suggest.focus();
+		}
+	},
+
+	updateMention: function(text) {
+		this.props.updateMention(text);
+		this.changeToNormal();
+	},
 
   renderDisplay() {
     const { text } = this.props;
@@ -80,7 +91,7 @@ export const MentionComponent = React.createClass({
     return (
       <span style={{position: 'relative'}}>
         @
-				{(SuggestComponent) ? <SuggestComponent revertToText={this.props.revertToText} updateMention={this.props.updateMention} {...this.props.suggestComponent.props}/> : null}
+				{(SuggestComponent) ? <SuggestComponent ref="suggest" revertToText={this.props.revertToText} updateMention={this.updateMention} {...this.props.suggestComponent.props}/> : null}
       </span>
     );
   },

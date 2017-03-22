@@ -38,8 +38,12 @@ var MentionComponent = exports.MentionComponent = _react2.default.createClass({
   componentDidMount: function componentDidMount() {},
 
   openEdit: function openEdit() {
+    var _this = this;
+
     this.setState({ editing: true });
-    // setTimeout(() => this.refs.suggest.input.focus(), 0);
+    setTimeout(function () {
+      return _this.focus();
+    }, 0);
   },
 
   setSelected: function setSelected(selected) {
@@ -75,17 +79,32 @@ var MentionComponent = exports.MentionComponent = _react2.default.createClass({
   },
 
   changeToEditing: function changeToEditing() {
+    var _this2 = this;
+
     var _props = this.props,
         text = _props.text,
         type = _props.type,
         meta = _props.meta;
 
     this.setState({ editing: true, text: text, type: type, meta: meta });
-    // setTimeout(() => this.refs.input.focus(), 0);
+    setTimeout(function () {
+      return _this2.focus();
+    }, 0);
   },
 
   changeToNormal: function changeToNormal() {
     this.setState({ editing: false });
+  },
+
+  focus: function focus() {
+    if (this.refs.suggest && this.refs.suggest.focus) {
+      this.refs.suggest.focus();
+    }
+  },
+
+  updateMention: function updateMention(text) {
+    this.props.updateMention(text);
+    this.changeToNormal();
   },
 
   renderDisplay: function renderDisplay() {
@@ -105,7 +124,7 @@ var MentionComponent = exports.MentionComponent = _react2.default.createClass({
       'span',
       { style: { position: 'relative' } },
       '@',
-      SuggestComponent ? _react2.default.createElement(SuggestComponent, _extends({ revertToText: this.props.revertToText, updateMention: this.props.updateMention }, this.props.suggestComponent.props)) : null
+      SuggestComponent ? _react2.default.createElement(SuggestComponent, _extends({ ref: 'suggest', revertToText: this.props.revertToText, updateMention: this.updateMention }, this.props.suggestComponent.props)) : null
     );
   },
 
