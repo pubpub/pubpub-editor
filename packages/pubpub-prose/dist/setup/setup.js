@@ -1,19 +1,6 @@
 "use strict";
 
 /*
-	const embedRule = new InputRule(/\[\[$/, '[', function(pm, match, pos) {
-		const start = pos - match[0].length;
-		pm.tr.delete(start, pos).apply();
-
-		function done(attrs) {
-			const newNode = pm.schema.nodes.embed.create(attrs);
-			pm.tr.insert(start, newNode).apply();
-		}
-		window.toggleMedia(pm, done, schema.nodes.embed);
-	});
-
-	result.push(embedRule);
-
 	// Block Cntrl-S from launching the Browser Save window
 	document.getElementsByClassName('ProseMirror')[0].addEventListener('keydown', function(evt) {
 		if (evt.keyCode === 83 && (navigator.platform.match('Mac') ? evt.metaKey : evt.ctrlKey)) {
@@ -21,7 +8,6 @@
 			evt.stopPropagation();
 		}
 	}, false);
-
 */
 
 var _require = require("prosemirror-inputrules"),
@@ -84,17 +70,6 @@ function buildInputRules(schema) {
   if (type = schema.nodes.bullet_list) result.push(bulletListRule(type));
   if (type = schema.nodes.code_block) result.push(codeBlockRule(type));
   if (type = schema.nodes.heading) result.push(headingRule(type, 6));
-
-  /*
-  if (type = schema.nodes.mention) {
-    const mentionRule = new InputRule(new RegExp("@.+$"), (state, match, start, end) => {
-      console.log('adding mention!');
-      return state.tr.replaceWith(start, end, type.create({}))
-    });
-    result.push(mentionRule);
-  }
-  */
-
   return result;
 }
 

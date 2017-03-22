@@ -7,6 +7,8 @@ exports.markdownParser = undefined;
 
 var _prosemirrorMarkdown = require('prosemirror-markdown');
 
+var _prosemirrorModel = require('prosemirror-model');
+
 var _markdownItEmbed = require('./markdown-it-embed');
 
 var _markdownItEmbed2 = _interopRequireDefault(_markdownItEmbed);
@@ -25,7 +27,13 @@ import sub from 'markdown-it-sub';
 import sup from 'markdown-it-sup';
 import emoji from 'markdown-it-emoji';
 */
-var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownParser(_setup.schema, (0, _markdownIt2.default)({ html: false }).disable(['table']),
+
+var newSpec = _setup.schema.spec;
+newSpec.topNode = "article";
+
+var markdownSchema = new _prosemirrorModel.Schema(newSpec);
+
+var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownParser(markdownSchema, (0, _markdownIt2.default)({ html: false }).disable(['table']),
 /*
 .use(emoji)
 .use(sub)
@@ -92,4 +100,4 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 	code_inline: { mark: 'code' },
 	sub: { mark: 'sub' },
 	sup: { mark: 'sup' }
-});'';
+});

@@ -29,10 +29,6 @@ var _require3 = require("prosemirror-commands"),
 var _require4 = require("prosemirror-schema-list"),
     wrapInList = _require4.wrapInList;
 
-var _require5 = require("./prompt"),
-    TextField = _require5.TextField,
-    openPrompt = _require5.openPrompt;
-
 // Helpers to create specific types of items
 
 function canInsert(state, nodeType, attrs) {
@@ -42,39 +38,6 @@ function canInsert(state, nodeType, attrs) {
     if ($from.node(d).canReplaceWith(index, index, nodeType, attrs)) return true;
   }
   return false;
-}
-
-function insertImageItem(nodeType) {
-  return new MenuItem({
-    title: "Insert image",
-    label: "Image",
-    select: function select(state) {
-      return canInsert(state, nodeType);
-    },
-    run: function run(state, _, view) {
-      var _state$selection = state.selection,
-          node = _state$selection.node,
-          from = _state$selection.from,
-          to = _state$selection.to,
-          attrs = nodeType && node && node.type == nodeType && node.attrs;
-
-      openPrompt({
-        title: "Insert image",
-        fields: {
-          src: new TextField({ label: "Location", required: true, value: attrs && attrs.src }),
-          title: new TextField({ label: "Title", value: attrs && attrs.title }),
-          alt: new TextField({ label: "Description",
-            value: attrs ? attrs.title : state.doc.textBetween(from, to, " ") })
-        },
-        // FIXME this (and similar uses) won't have the current state
-        // when it runs, leading to problems in, for example, a
-        // collaborative setup
-        callback: function callback(attrs) {
-          view.dispatch(view.state.tr.replaceSelection(nodeType.createAndFill(attrs)));
-        }
-      });
-    }
-  });
 }
 
 function insertImageEmbed(nodeType) {
@@ -219,11 +182,11 @@ function cmdItem(cmd, options) {
 }
 
 function markActive(state, type) {
-  var _state$selection2 = state.selection,
-      from = _state$selection2.from,
-      $from = _state$selection2.$from,
-      to = _state$selection2.to,
-      empty = _state$selection2.empty;
+  var _state$selection = state.selection,
+      from = _state$selection.from,
+      $from = _state$selection.$from,
+      to = _state$selection.to,
+      empty = _state$selection.empty;
 
   if (empty) return type.isInSet(state.storedMarks || $from.marks());else return state.doc.rangeHasMark(from, to, type);
 }
@@ -247,15 +210,9 @@ function linkItem(markType) {
     dialogCallback: true,
     run: function run(state, dispatch, view, openPrompt) {
       if (markActive(state, markType)) {
-        console.log('Got  existing typee');
         toggleMark(markType)(state, view.dispatch);
         return true;
       }
-      openPrompt({
-        callback: function callback(attrs) {
-          toggleMark(markType, attrs)(view.state, view.dispatch);
-        }
-      });
     }
   });
 }

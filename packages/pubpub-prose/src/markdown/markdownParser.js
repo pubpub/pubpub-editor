@@ -1,14 +1,21 @@
 import { MarkdownParser } from 'prosemirror-markdown';
+import { Schema } from 'prosemirror-model';
 import embed from './markdown-it-embed';
 import markdownit from 'markdown-it';
-import { schema } from '../setup';
+import { schema as pubSchema } from '../setup';
 /*
 import pagebreak from './markdown-it-pagebreak';
 import sub from 'markdown-it-sub';
 import sup from 'markdown-it-sup';
 import emoji from 'markdown-it-emoji';
 */
-export const markdownParser = new MarkdownParser(schema,
+
+const newSpec = pubSchema.spec;
+newSpec.topNode = "article";
+
+const markdownSchema = new Schema(newSpec);
+
+export const markdownParser = new MarkdownParser(markdownSchema,
 	markdownit({html: false})
 	.disable([ 'table' ]),
 		/*
@@ -66,4 +73,4 @@ export const markdownParser = new MarkdownParser(schema,
 		sub: {mark: 'sub'},
 		sup: {mark: 'sup'},
 	}
-);''
+);

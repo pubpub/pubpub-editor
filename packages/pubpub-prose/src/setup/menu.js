@@ -6,7 +6,6 @@ const {createTable, addColumnBefore, addColumnAfter,
        removeColumn, addRowBefore, addRowAfter, removeRow} = require("prosemirror-schema-table")
 const {toggleMark} = require("prosemirror-commands")
 const {wrapInList} = require("prosemirror-schema-list")
-const {TextField, openPrompt} = require("./prompt")
 
 // Helpers to create specific types of items
 
@@ -17,32 +16,6 @@ function canInsert(state, nodeType, attrs) {
     if ($from.node(d).canReplaceWith(index, index, nodeType, attrs)) return true
   }
   return false
-}
-
-function insertImageItem(nodeType) {
-  return new MenuItem({
-    title: "Insert image",
-    label: "Image",
-    select(state) { return canInsert(state, nodeType) },
-    run(state, _, view) {
-      let {node, from, to} = state.selection, attrs = nodeType && node && node.type == nodeType && node.attrs
-      openPrompt({
-        title: "Insert image",
-        fields: {
-          src: new TextField({label: "Location", required: true, value: attrs && attrs.src}),
-          title: new TextField({label: "Title", value: attrs && attrs.title}),
-          alt: new TextField({label: "Description",
-                              value: attrs ? attrs.title : state.doc.textBetween(from, to, " ")})
-        },
-        // FIXME this (and similar uses) won't have the current state
-        // when it runs, leading to problems in, for example, a
-        // collaborative setup
-        callback(attrs) {
-          view.dispatch(view.state.tr.replaceSelection(nodeType.createAndFill(attrs)));
-        }
-      })
-    }
-  })
 }
 
 function insertImageEmbed(nodeType) {
@@ -192,15 +165,9 @@ function linkItem(markType) {
     dialogCallback: true,
     run(state, dispatch, view, openPrompt) {
       if (markActive(state, markType)) {
-        console.log('Got  existing typee');
         toggleMark(markType)(state, view.dispatch)
         return true
       }
-      openPrompt({
-        callback(attrs) {
-          toggleMark(markType, attrs)(view.state, view.dispatch)
-        }
-      });
     }
   })
 }

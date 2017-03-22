@@ -7,7 +7,9 @@ const markdownToJSON = (markdown) => {
   const newState = EditorState.create({
   	doc: contents,
   });
-  const doc = newState.doc;
+  const article = newState.doc;
+  const citations = schema.nodes.citations.create({}, []);
+  const doc = schema.nodes.doc.create({}, [article, citations]);
   return doc.toJSON();
 };
 

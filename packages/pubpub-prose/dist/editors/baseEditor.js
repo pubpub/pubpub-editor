@@ -30,13 +30,6 @@ var BaseEditor = function () {
 
     _classCallCheck(this, BaseEditor);
 
-    this._createDecorations = function (editorState) {
-      var _require = require("prosemirror-view"),
-          DecorationSet = _require.DecorationSet;
-
-      return DecorationSet.empty;
-    };
-
     this.changeNode = function (currentFrom, nodeType, nodeAttrs) {
       var state = _this.pm;
       var transform = state.tr.setNodeType(currentFrom, nodeType, nodeAttrs);
@@ -58,16 +51,16 @@ var BaseEditor = function () {
     };
 
     this.toMarkdown = function () {
-      var _require2 = require("../markdown"),
-          markdownSerializer = _require2.markdownSerializer;
+      var _require = require("../markdown"),
+          markdownSerializer = _require.markdownSerializer;
 
       var markdown = markdownSerializer.serialize(_this.view.state.doc);
       return markdown;
     };
 
     this.setDoc = function (newJSONDoc) {
-      var _require3 = require('prosemirror-state'),
-          EditorState = _require3.EditorState;
+      var _require2 = require('prosemirror-state'),
+          EditorState = _require2.EditorState;
 
       var newState = EditorState.create({
         doc: _setup.schema.nodeFromJSON(newJSONDoc),
@@ -104,16 +97,16 @@ var BaseEditor = function () {
           onChange = _ref$handlers.onChange,
           captureError = _ref$handlers.captureError;
 
-      var _require4 = require('../setup'),
-          buildMenuItems = _require4.buildMenuItems,
-          clipboardParser = _require4.clipboardParser,
-          clipboardSerializer = _require4.clipboardSerializer;
+      var _require3 = require('../setup'),
+          buildMenuItems = _require3.buildMenuItems,
+          clipboardParser = _require3.clipboardParser,
+          clipboardSerializer = _require3.clipboardSerializer;
 
-      var _require5 = require('prosemirror-state'),
-          EditorState = _require5.EditorState;
+      var _require4 = require('prosemirror-state'),
+          EditorState = _require4.EditorState;
 
-      var _require6 = require('prosemirror-view'),
-          EditorView = _require6.EditorView;
+      var _require5 = require('prosemirror-view'),
+          EditorView = _require5.EditorView;
 
       var collabEditing = require('prosemirror-collab').collab;
 
@@ -178,21 +171,6 @@ var BaseEditor = function () {
 
       this.menuComponent = _reactDom2.default.render(_react2.default.createElement(_menus.BaseMenu, { createFile: createFile, menu: menu.fullMenu, view: this.view }), reactMenu);
     }
-
-    /*
-    _handleClick(view, pos, evt) {
-      if (evt.target.nodeName === "P") {
-        const selection = this.view.state.tr.selection;
-        if (selection.node) {
-          const resolvePos = this.view.state.doc.resolve(pos);
-          const newSelection = new TextSelection(resolvePos);
-          const action = this.view.state.tr.setSelection(newSelection).action();
-          this.view.props.onAction(action);
-        }
-      }
-    }
-    */
-
   }, {
     key: 'reconfigure',
     value: function reconfigure(plugins, config) {
@@ -226,10 +204,6 @@ var BaseEditor = function () {
       var newState = this.view.state.apply(action);
       this.view.updateState(newState);
       this.handlers.onChange();
-      /*
-      const {jsonToMarkdown} = require("../markdown");
-      console.log(jsonToMarkdown(this.toJSON()));
-      */
     }
   }]);
 

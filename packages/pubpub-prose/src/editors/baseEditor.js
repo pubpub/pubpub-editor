@@ -68,20 +68,6 @@ class BaseEditor {
     this.menuComponent = ReactDOM.render(<BaseMenu createFile={createFile} menu={menu.fullMenu} view={this.view}/>, reactMenu);
   }
 
-  /*
-  _handleClick(view, pos, evt) {
-    if (evt.target.nodeName === "P") {
-      const selection = this.view.state.tr.selection;
-      if (selection.node) {
-        const resolvePos = this.view.state.doc.resolve(pos);
-        const newSelection = new TextSelection(resolvePos);
-        const action = this.view.state.tr.setSelection(newSelection).action();
-        this.view.props.onAction(action);
-      }
-    }
-  }
-  */
-
   reconfigure(plugins, config) {
     const state = this.view.state;
     const newState = state.reconfigure({plugins: plugins, ...config});
@@ -113,15 +99,6 @@ class BaseEditor {
     const newState = this.view.state.apply(action);
     this.view.updateState(newState);
     this.handlers.onChange();
-    /*
-    const {jsonToMarkdown} = require("../markdown");
-    console.log(jsonToMarkdown(this.toJSON()));
-    */
-  }
-
-  _createDecorations = (editorState) => {
-    const {DecorationSet} = require("prosemirror-view");
-    return DecorationSet.empty;
   }
 
 	changeNode = (currentFrom, nodeType, nodeAttrs) => {
