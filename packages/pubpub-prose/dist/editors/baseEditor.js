@@ -99,7 +99,10 @@ var BaseEditor = function () {
           _ref$components = _ref.components;
       _ref$components = _ref$components === undefined ? {} : _ref$components;
       var suggestComponent = _ref$components.suggestComponent,
-          createFile = _ref.handlers.createFile;
+          _ref$handlers = _ref.handlers,
+          createFile = _ref$handlers.createFile,
+          onChange = _ref$handlers.onChange,
+          captureError = _ref$handlers.captureError;
 
       var _require4 = require('../setup'),
           buildMenuItems = _require4.buildMenuItems,
@@ -118,14 +121,13 @@ var BaseEditor = function () {
       // TO-DO: USE UNIQUE ID FOR USER AND VERSION NUMBER
 
       this.plugins = plugins;
+      this.handlers = { createFile: createFile, onChange: onChange, captureError: captureError };
 
       var stateConfig = _extends({
         doc: contents ? _setup.schema.nodeFromJSON(contents) : undefined,
         schema: _setup.schema,
         plugins: plugins
       }, config);
-
-      console.log('GOT CONFIG', stateConfig);
 
       var state = EditorState.create(stateConfig);
 
@@ -223,6 +225,7 @@ var BaseEditor = function () {
       */
       var newState = this.view.state.apply(action);
       this.view.updateState(newState);
+      this.handlers.onChange();
       /*
       const {jsonToMarkdown} = require("../markdown");
       console.log(jsonToMarkdown(this.toJSON()));

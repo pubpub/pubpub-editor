@@ -9,13 +9,18 @@ require("@blueprintjs/core/dist/blueprint.css");
 require("../style/base.scss");
 
 export const StoryBookRichEditor = React.createClass({
+	onChange: function() {
+		const markdown = this.refs.editor.getMarkdown();
+		console.log('Got markdown!');
+		console.log(markdown);
+	},
 	render: function() {
 		const mentionsComponent = {
 			component: suggestComponent,
 			props: {files: ['A', 'B', 'C']}
 		};
 		return (
-			<RichEditor mentionsComponent={mentionsComponent} {...this.props} />
+			<RichEditor ref="editor" onChange={this.onChange} mentionsComponent={mentionsComponent} {...this.props} />
 		);
 	}
 });

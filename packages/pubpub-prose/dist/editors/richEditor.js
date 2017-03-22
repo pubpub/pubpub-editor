@@ -24,7 +24,9 @@ var RichEditor = function (_BaseEditor) {
     var suggestComponent = _ref$components.suggestComponent,
         _ref$handlers = _ref.handlers;
     _ref$handlers = _ref$handlers === undefined ? {} : _ref$handlers;
-    var createFile = _ref$handlers.createFile;
+    var createFile = _ref$handlers.createFile,
+        onChange = _ref$handlers.onChange,
+        captureError = _ref$handlers.captureError;
 
     _classCallCheck(this, RichEditor);
 
@@ -43,7 +45,7 @@ var RichEditor = function (_BaseEditor) {
     } else {
       docJSON = contents;
     }
-    _this.create({ place: place, contents: docJSON, plugins: plugins, components: { suggestComponent: suggestComponent }, handlers: { createFile: createFile } });
+    _this.create({ place: place, contents: docJSON, plugins: plugins, components: { suggestComponent: suggestComponent }, handlers: { createFile: createFile, onChange: onChange, captureError: captureError } });
     return _this;
   }
 

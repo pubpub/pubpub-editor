@@ -13,7 +13,7 @@ class BaseEditor {
     this.reconfigure = this.reconfigure.bind(this);
   }
 
-  create({place, contents, plugins, config, components: {suggestComponent} = {}, handlers: { createFile }}) {
+  create({place, contents, plugins, config, components: {suggestComponent} = {}, handlers: { createFile, onChange, captureError }}) {
     const {buildMenuItems, clipboardParser, clipboardSerializer} = require('../setup');
     const {EditorState} = require('prosemirror-state');
     const {EditorView} = require('prosemirror-view');
@@ -23,6 +23,7 @@ class BaseEditor {
     // TO-DO: USE UNIQUE ID FOR USER AND VERSION NUMBER
 
     this.plugins = plugins;
+    this.handlers = { createFile, onChange, captureError };
 
     const stateConfig = {
     	doc: (contents) ? pubSchema.nodeFromJSON(contents) : undefined,
@@ -30,8 +31,6 @@ class BaseEditor {
     	plugins: plugins,
       ...config
     };
-
-    console.log('GOT CONFIG', stateConfig);
 
     const state = EditorState.create(stateConfig);
 
@@ -113,6 +112,7 @@ class BaseEditor {
     */
     const newState = this.view.state.apply(action);
     this.view.updateState(newState);
+    this.handlers.onChange();
     /*
     const {jsonToMarkdown} = require("../markdown");
     console.log(jsonToMarkdown(this.toJSON()));

@@ -46,7 +46,12 @@ var RichEditorWrapper = exports.RichEditorWrapper = _react2.default.createClass(
 	componentWillUpdate: function componentWillUpdate(nextProps) {
 		if (this.props) {}
 	},
-	onChange: function onChange(editorState) {},
+	onChange: function onChange(editorState) {
+		this.props.onChange();
+	},
+	getMarkdown: function getMarkdown() {
+		return this.editor.toMarkdown();
+	},
 	createEditor: function createEditor(docJSON) {
 		var _props = this.props,
 		    handleFileUpload = _props.handleFileUpload,
@@ -54,11 +59,11 @@ var RichEditorWrapper = exports.RichEditorWrapper = _react2.default.createClass(
 		    mentionsComponent = _props.mentionsComponent;
 
 
-		if (this.editor1) {
+		if (this.editor) {
 			this.editor1.remove();
 		}
 		var place = _reactDom2.default.findDOMNode(this.refs.container);
-		this.editor1 = new _index.RichEditor({
+		this.editor = new _index.RichEditor({
 			place: place,
 			contents: docJSON,
 			components: {

@@ -40,17 +40,21 @@ export const RichEditorWrapper = React.createClass({
   },
 
   onChange(editorState) {
-
+		this.props.onChange();
   },
+
+	getMarkdown() {
+		return this.editor.toMarkdown();
+	},
 
 	createEditor(docJSON) {
     const {handleFileUpload, onError, mentionsComponent} = this.props;
 
-    if (this.editor1) {
+    if (this.editor) {
       this.editor1.remove();
     }
     const place = ReactDOM.findDOMNode(this.refs.container);
-		this.editor1 = new RichEditor({
+		this.editor = new RichEditor({
 			place: place,
 			contents: docJSON,
 			components: {
