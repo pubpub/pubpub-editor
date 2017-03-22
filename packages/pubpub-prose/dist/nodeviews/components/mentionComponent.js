@@ -5,8 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.MentionComponent = undefined;
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -14,10 +12,6 @@ var _react2 = _interopRequireDefault(_react);
 var _reactAutosuggest = require('react-autosuggest');
 
 var _reactAutosuggest2 = _interopRequireDefault(_reactAutosuggest);
-
-var _katexCss = require('./katex.css.js');
-
-var _katexCss2 = _interopRequireDefault(_katexCss);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -27,11 +21,12 @@ var MentionComponent = exports.MentionComponent = _react2.default.createClass({
   displayName: 'MentionComponent',
 
   propTypes: {
-    value: _react.PropTypes.string,
-    block: _react.PropTypes.bool,
-    updateValue: _react.PropTypes.func,
-    changeToBlock: _react.PropTypes.func,
-    changeToInline: _react.PropTypes.func
+    text: _react.PropTypes.string,
+    type: _react.PropTypes.string,
+    meta: _react.PropTypes.object,
+    revertToText: _react.PropTypes.func,
+    updateMention: _react.PropTypes.func,
+    suggestComponent: _react.PropTypes.any
   },
   getInitialState: function getInitialState() {
     return { editing: false };
@@ -41,12 +36,8 @@ var MentionComponent = exports.MentionComponent = _react2.default.createClass({
   componentDidMount: function componentDidMount() {},
 
   openEdit: function openEdit() {
-    var _this = this;
-
     this.setState({ editing: true });
-    setTimeout(function () {
-      return _this.refs.suggest.input.focus();
-    }, 0);
+    // setTimeout(() => this.refs.suggest.input.focus(), 0);
   },
 
   setSelected: function setSelected(selected) {
@@ -95,15 +86,8 @@ var MentionComponent = exports.MentionComponent = _react2.default.createClass({
     this.setState({ editing: false });
   },
 
-  getAutocompleteContent: function getAutocompleteContent() {
-    var results = ['a', 'b'];
-  },
-
   renderDisplay: function renderDisplay() {
-    var displayHTML = this.state.displayHTML;
-    var _props2 = this.props,
-        text = _props2.text,
-        block = _props2.block;
+    var text = this.props.text;
 
     return _react2.default.createElement(
       'span',
@@ -112,67 +96,14 @@ var MentionComponent = exports.MentionComponent = _react2.default.createClass({
       text
     );
   },
-  onSuggestionsFetchRequested: function onSuggestionsFetchRequested(_ref2) {
-    var value = _ref2.value;
-
-    return;
-  },
-
-
-  // Autosuggest will call this function every time you need to clear suggestions.
-  onSuggestionsClearRequested: function onSuggestionsClearRequested() {
-    this.setState({
-      suggestions: []
-    });
-  },
-  getSuggestionValue: function getSuggestionValue(suggestion) {
-    return suggestion;
-  },
-  renderSuggestion: function renderSuggestion(suggestion) {
-    return _react2.default.createElement(
-      'div',
-      null,
-      suggestion
-    );
-  },
-  renderInputComponent: function renderInputComponent(inputProps) {
-    var _this2 = this;
-
-    return _react2.default.createElement(
-      'span',
-      null,
-      _react2.default.createElement('input', _extends({ ref: function ref(input) {
-          _this2.textInput = input;
-        } }, inputProps))
-    );
-  },
   renderEdit: function renderEdit() {
-    var clientWidth = this.state.clientWidth;
-    var block = this.props.block;
-
-    var text = this.state.text || this.props.text;
-
-    var files = ['A', 'B', 'C'];
-
-    var inputProps = {
-      placeholder: 'Type a programming language',
-      value: text,
-      onChange: this.handleChange
-    };
+    var SuggestComponent = this.props.suggestComponent ? this.props.suggestComponent.component : null;
 
     return _react2.default.createElement(
       'span',
       { style: { position: 'relative' } },
       '@',
-      _react2.default.createElement(_reactAutosuggest2.default, {
-        ref: 'suggest',
-        suggestions: files,
-        onSuggestionsFetchRequested: this.onSuggestionsFetchRequested,
-        onSuggestionsClearRequested: this.onSuggestionsClearRequested,
-        getSuggestionValue: this.getSuggestionValue,
-        renderSuggestion: this.renderSuggestion,
-        inputProps: inputProps
-      })
+      SuggestComponent ? _react2.default.createElement(SuggestComponent, this.props.suggestComponent.props) : null
     );
   },
 
@@ -186,26 +117,5 @@ var MentionComponent = exports.MentionComponent = _react2.default.createClass({
     return this.renderDisplay();
   }
 });
-
-styles = {
-  wrapper: {
-    backgroundColor: 'blue'
-  },
-  display: {},
-  editing: function editing(_ref3) {
-    var clientWidth = _ref3.clientWidth;
-
-    return {
-      display: 'inline',
-      minWidth: '100px',
-      fontSize: '12px',
-      margin: '0px',
-      padding: '0px',
-      lineHeight: '1em',
-      border: '2px solid #BBBDC0',
-      borderRadius: '2px'
-    };
-  }
-};
 
 exports.default = MentionComponent;

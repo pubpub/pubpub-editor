@@ -1,17 +1,17 @@
 import React, {PropTypes} from 'react';
 
 import Autosuggest from 'react-autosuggest';
-import katexStyles from './katex.css.js';
 
 let styles = {};
 
 export const MentionComponent = React.createClass({
 	propTypes: {
-		value: PropTypes.string,
-    block: PropTypes.bool,
-    updateValue: PropTypes.func,
-    changeToBlock: PropTypes.func,
-    changeToInline: PropTypes.func,
+		text: PropTypes.string,
+		type: PropTypes.string,
+		meta: PropTypes.object,
+    revertToText: PropTypes.func,
+    updateMention: PropTypes.func,
+    suggestComponent: PropTypes.any,
 	},
 	getInitialState: function() {
     return {editing: false};
@@ -24,7 +24,7 @@ export const MentionComponent = React.createClass({
 
 	openEdit: function() {
 		this.setState({editing: true})
-		setTimeout(() => this.refs.suggest.input.focus(), 0);
+		// setTimeout(() => this.refs.suggest.input.focus(), 0);
 	},
 
 	setSelected: function(selected) {
@@ -65,13 +65,8 @@ export const MentionComponent = React.createClass({
     this.setState({editing: false});
   },
 
-	getAutocompleteContent: function() {
-		const results = ['a', 'b'];
-	},
-
   renderDisplay() {
-    const {displayHTML} = this.state;
-    const {text, block} = this.props;
+    const { text } = this.props;
     return (
       <span className={'mention'} onDoubleClick={this.changeToEditing} style={styles.display}>
 				@{text}
@@ -79,78 +74,20 @@ export const MentionComponent = React.createClass({
     );
   },
 
-	onSuggestionsFetchRequested({ value }) {
-		return;
-	},
-
-	// Autosuggest will call this function every time you need to clear suggestions.
-	onSuggestionsClearRequested() {
-		this.setState({
-			suggestions: []
-		});
-	},
-
-	getSuggestionValue(suggestion) {
-		return suggestion;
-	},
-
-	renderSuggestion(suggestion) {
-		return (<div>{suggestion}</div>);
-	},
-
-	renderInputComponent(inputProps){
-		return (
-	  <span>
-	    <input ref={(input) => { this.textInput = input; }} {...inputProps} />
-	  </span>
-		);
-	},
-
   renderEdit() {
-    const {clientWidth} = this.state;
-    const {block} = this.props;
-		const text = this.state.text || this.props.text;
-
-		const files = ['A', 'B', 'C'];
-
-		const inputProps = {
-      placeholder: 'Type a programming language',
-      value: text,
-      onChange: this.handleChange
-    };
+    const SuggestComponent = (this.props.suggestComponent) ? this.props.suggestComponent.component : null;
 
     return (
       <span style={{position: 'relative'}}>
         @
-				<Autosuggest
-					ref={'suggest'}
-        	suggestions={files}
-					onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-					onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-					getSuggestionValue={this.getSuggestionValue}
-					renderSuggestion={this.renderSuggestion}
-					inputProps={inputProps}
-      	/>
-			{/*
-        <input
-					className="pt-input"
-          id="test"
-          ref="input"
-          style={styles.editing({clientWidth})}
-          onDoubleClick={this.changeToNormal}
-          onChange={this.handleChange}
-          onKeyPress={this.handleKeyPress}
-          type="text"
-					name="name"
-          value={text} />
-					*/}
+				{(SuggestComponent) ? <SuggestComponent {...this.props.suggestComponent.props}/> : null}
       </span>
     );
   },
 
 
   render: function() {
-    const {editing} = this.state;
+    const { editing } = this.state;
     if (editing) {
       return this.renderEdit();
     }
@@ -158,25 +95,5 @@ export const MentionComponent = React.createClass({
 	}
 });
 
-styles = {
-  wrapper: {
-    backgroundColor: 'blue',
-  },
-  display: {
-
-  },
-  editing: function({clientWidth}) {
-    return {
-      display: 'inline',
-      minWidth: '100px',
-      fontSize: '12px',
-      margin: '0px',
-      padding: '0px',
-      lineHeight: '1em',
-      border: '2px solid #BBBDC0',
-      borderRadius: '2px',
-    }
-  },
-};
 
 export default MentionComponent;

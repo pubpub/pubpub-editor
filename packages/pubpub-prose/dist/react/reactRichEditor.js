@@ -50,7 +50,8 @@ var RichEditorWrapper = exports.RichEditorWrapper = _react2.default.createClass(
 	createEditor: function createEditor(docJSON) {
 		var _props = this.props,
 		    handleFileUpload = _props.handleFileUpload,
-		    onError = _props.onError;
+		    onError = _props.onError,
+		    mentionsComponent = _props.mentionsComponent;
 
 
 		if (this.editor1) {
@@ -60,6 +61,9 @@ var RichEditorWrapper = exports.RichEditorWrapper = _react2.default.createClass(
 		this.editor1 = new _index.RichEditor({
 			place: place,
 			contents: docJSON,
+			components: {
+				suggestComponent: mentionsComponent
+			},
 			handlers: {
 				createFile: handleFileUpload,
 				captureError: onError,

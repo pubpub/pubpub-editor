@@ -96,6 +96,9 @@ var BaseEditor = function () {
           contents = _ref.contents,
           plugins = _ref.plugins,
           config = _ref.config,
+          _ref$components = _ref.components;
+      _ref$components = _ref$components === undefined ? {} : _ref$components;
+      var suggestComponent = _ref$components.suggestComponent,
           createFile = _ref.handlers.createFile;
 
       var _require4 = require('../setup'),
@@ -161,7 +164,7 @@ var BaseEditor = function () {
             return new _nodeviews.LatexView(node, view, getPos, { block: true });
           },
           mention: function mention(node, view, getPos) {
-            return new _nodeviews.MentionView(node, view, getPos, { block: false });
+            return new _nodeviews.MentionView(node, view, getPos, { block: false, suggestComponent: suggestComponent });
           },
           reference: function reference(node, view, getPos, decorations) {
             return new _nodeviews.ReferenceView(node, view, getPos, { decorations: decorations, block: false });

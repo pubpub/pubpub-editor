@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 import ReactDOM from 'react-dom';
 import RichEditor from '../src/react/reactRichEditor';
-import mentionsComponent from '../src/react/basicMention';
+import suggestComponent from '../src/react/baseSuggest';
 
 // requires style attributes that would normally be up to the wrapping library to require
 require("@blueprintjs/core/dist/blueprint.css");
@@ -10,6 +10,10 @@ require("../style/base.scss");
 
 export const StoryBookRichEditor = React.createClass({
 	render: function() {
+		const mentionsComponent = {
+			component: suggestComponent,
+			props: {files: ['A', 'B', 'C']}
+		};
 		return (
 			<RichEditor mentionsComponent={mentionsComponent} {...this.props} />
 		);

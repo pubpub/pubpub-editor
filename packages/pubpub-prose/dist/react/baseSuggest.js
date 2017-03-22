@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.MentionComponent = undefined;
+exports.SuggestComponent = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -17,10 +17,15 @@ var _reactAutosuggest2 = _interopRequireDefault(_reactAutosuggest);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var MentionComponent = exports.MentionComponent = _react2.default.createClass({
-	displayName: 'MentionComponent',
+var SuggestComponent = exports.SuggestComponent = _react2.default.createClass({
+	displayName: 'SuggestComponent',
 
 	propTypes: {},
+	getInitialState: function getInitialState() {
+		return {};
+	},
+
+
 	getDefaultProps: function getDefaultProps() {},
 
 	componentDidMount: function componentDidMount() {},
@@ -101,18 +106,17 @@ var MentionComponent = exports.MentionComponent = _react2.default.createClass({
 		);
 	},
 	render: function render() {
-		var clientWidth = this.state.clientWidth;
-		var block = this.props.block;
+		var files = this.props.files;
 
-		var text = this.state.text || this.props.text;
-
-		var files = ['A', 'B', 'C'];
+		var text = this.state.text || this.props.text || '';
 
 		var inputProps = {
 			placeholder: 'Type a programming language',
 			value: text,
 			onChange: this.handleChange
 		};
+
+		console.log('these are the files!', files);
 
 		return _react2.default.createElement(_reactAutosuggest2.default, {
 			ref: 'suggest',
@@ -126,4 +130,4 @@ var MentionComponent = exports.MentionComponent = _react2.default.createClass({
 	}
 });
 
-exports.default = MentionComponent;
+exports.default = SuggestComponent;

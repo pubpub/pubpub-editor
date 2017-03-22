@@ -19,7 +19,12 @@ var RichEditor = function (_BaseEditor) {
     var place = _ref.place,
         text = _ref.text,
         contents = _ref.contents,
-        createFile = _ref.handlers.createFile;
+        _ref$components = _ref.components;
+    _ref$components = _ref$components === undefined ? {} : _ref$components;
+    var suggestComponent = _ref$components.suggestComponent,
+        _ref$handlers = _ref.handlers;
+    _ref$handlers = _ref$handlers === undefined ? {} : _ref$handlers;
+    var createFile = _ref$handlers.createFile;
 
     _classCallCheck(this, RichEditor);
 
@@ -38,7 +43,7 @@ var RichEditor = function (_BaseEditor) {
     } else {
       docJSON = contents;
     }
-    _this.create({ place: place, contents: docJSON, plugins: plugins, handlers: { createFile: createFile } });
+    _this.create({ place: place, contents: docJSON, plugins: plugins, components: { suggestComponent: suggestComponent }, handlers: { createFile: createFile } });
     return _this;
   }
 

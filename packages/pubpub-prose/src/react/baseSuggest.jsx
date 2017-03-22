@@ -1,12 +1,13 @@
 import React, {PropTypes} from 'react';
 
 import Autosuggest from 'react-autosuggest';
-import katexStyles from './katex.css.js';
 
-let styles = {};
-
-export const MentionComponent = React.createClass({
+export const SuggestComponent = React.createClass({
 	propTypes: { },
+	getInitialState() {
+		return { };
+	},
+
 	getDefaultProps: function() {
 	},
 
@@ -80,18 +81,17 @@ export const MentionComponent = React.createClass({
 		);
 	},
 
-  renderEdit() {
-    const {clientWidth} = this.state;
-    const {block} = this.props;
-		const text = this.state.text || this.props.text;
-
-		const files = ['A', 'B', 'C'];
+  render() {
+    const {files} = this.props;
+		const text = this.state.text || this.props.text || '';
 
 		const inputProps = {
       placeholder: 'Type a programming language',
       value: text,
       onChange: this.handleChange
     };
+
+		console.log('these are the files!', files);
 
     return (
 				<Autosuggest
@@ -107,34 +107,6 @@ export const MentionComponent = React.createClass({
   },
 
 
-  render: function() {
-    const {editing} = this.state;
-    if (editing) {
-      return this.renderEdit();
-    }
-		return this.renderDisplay();
-	}
 });
 
-styles = {
-  wrapper: {
-    backgroundColor: 'blue',
-  },
-  display: {
-
-  },
-  editing: function({clientWidth}) {
-    return {
-      display: 'inline',
-      minWidth: '100px',
-      fontSize: '12px',
-      margin: '0px',
-      padding: '0px',
-      lineHeight: '1em',
-      border: '2px solid #BBBDC0',
-      borderRadius: '2px',
-    }
-  },
-};
-
-export default MentionComponent;
+export default SuggestComponent;

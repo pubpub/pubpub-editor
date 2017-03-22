@@ -44,7 +44,7 @@ export const RichEditorWrapper = React.createClass({
   },
 
 	createEditor(docJSON) {
-    const {handleFileUpload, onError} = this.props;
+    const {handleFileUpload, onError, mentionsComponent} = this.props;
 
     if (this.editor1) {
       this.editor1.remove();
@@ -53,6 +53,9 @@ export const RichEditorWrapper = React.createClass({
 		this.editor1 = new RichEditor({
 			place: place,
 			contents: docJSON,
+			components: {
+				suggestComponent: mentionsComponent,
+			},
 			handlers: {
         createFile: handleFileUpload,
         captureError: onError,

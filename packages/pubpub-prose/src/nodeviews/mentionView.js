@@ -9,6 +9,7 @@ import {schema} from '../setup';
 class MentionView extends ReactView {
   constructor(node, view, getPos, options) {
     super(node, view, getPos, options);
+    this.suggestComponent = options.suggestComponent;
     setTimeout(() => this.checkPos(), 0);
   }
 
@@ -53,6 +54,7 @@ class MentionView extends ReactView {
     }
 
     const renderedElem = ReactDOM.render(<MentionComponent key="mention"
+    suggestComponent={this.options.suggestComponent}
     updateMention={this.updateMention}
     revertToText={this.revertToText}
     allFiles={allFiles}

@@ -5,7 +5,7 @@ import { schema } from '../setup';
 
 class RichEditor extends BaseEditor {
 
-  constructor({place, text, contents, handlers: { createFile } }) {
+  constructor({place, text, contents, components: { suggestComponent } = {}, handlers: { createFile } = {} }) {
     super();
     const {pubpubSetup} = require('../setup');
     const {markdownParser} = require("../markdown");
@@ -17,7 +17,7 @@ class RichEditor extends BaseEditor {
     } else {
       docJSON = contents;
     }
-    this.create({place, contents: docJSON, plugins, handlers: { createFile }});
+    this.create({place, contents: docJSON, plugins, components: { suggestComponent }, handlers: { createFile }});
   }
 }
 

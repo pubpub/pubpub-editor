@@ -42,6 +42,7 @@ var MentionView = function (_ReactView) {
 
     var _this = _possibleConstructorReturn(this, (MentionView.__proto__ || Object.getPrototypeOf(MentionView)).call(this, node, view, getPos, options));
 
+    _this.suggestComponent = options.suggestComponent;
     setTimeout(function () {
       return _this.checkPos();
     }, 0);
@@ -99,6 +100,7 @@ var MentionView = function (_ReactView) {
       }
 
       var renderedElem = _reactDom2.default.render(_react2.default.createElement(_components.MentionComponent, { key: 'mention',
+        suggestComponent: this.options.suggestComponent,
         updateMention: this.updateMention,
         revertToText: this.revertToText,
         allFiles: allFiles,

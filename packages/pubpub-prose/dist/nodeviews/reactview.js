@@ -39,6 +39,7 @@ var ReactView = function () {
     _classCallCheck(this, ReactView);
 
     this.bindFunctions();
+    this.options = options;
     this.block = options.block;
     this.node = node;
     this.view = view;

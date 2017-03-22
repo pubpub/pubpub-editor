@@ -14,6 +14,7 @@ function computeChange(oldVal, newVal) {
 class ReactView {
   constructor(node, view, getPos, options) {
     this.bindFunctions();
+    this.options = options;
     this.block = options.block;
     this.node = node
     this.view = view

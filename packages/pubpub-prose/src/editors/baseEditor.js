@@ -13,7 +13,7 @@ class BaseEditor {
     this.reconfigure = this.reconfigure.bind(this);
   }
 
-  create({place, contents, plugins, config, handlers: { createFile }}) {
+  create({place, contents, plugins, config, components: {suggestComponent} = {}, handlers: { createFile }}) {
     const {buildMenuItems, clipboardParser, clipboardSerializer} = require('../setup');
     const {EditorState} = require('prosemirror-state');
     const {MenuBarEditorView, MenuItem} = require('prosemirror-menu');
@@ -60,7 +60,7 @@ class BaseEditor {
         embed: (node, view, getPos) => new EmbedView(node, view, getPos, {block: true}),
         equation: (node, view, getPos) => new LatexView(node, view, getPos, {block: false}),
         block_equation: (node, view, getPos) => new LatexView(node, view, getPos, {block: true}),
-        mention: (node, view, getPos) => new MentionView(node, view, getPos, {block: false}),
+        mention: (node, view, getPos) => new MentionView(node, view, getPos, {block: false, suggestComponent}),
         reference: (node, view, getPos, decorations) => new ReferenceView(node, view, getPos, {decorations, block: false}),
         citations: (node, view, getPos) => new CitationsView(node, view, getPos, {block: false}),
         iframe: (node, view, getPos) => new IframeView(node, view, getPos,{}),
