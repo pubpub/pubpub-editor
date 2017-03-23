@@ -40,7 +40,7 @@ A converter from PubPub (ProseMirror) to Pandoc.
 ```
 authors (an array of strings)
 title
-university
+institute
 degree
 date
 supervisor-name

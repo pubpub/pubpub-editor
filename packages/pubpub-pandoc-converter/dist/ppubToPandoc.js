@@ -500,7 +500,7 @@ function ppubToPandoc(ppub, options) {
 				};
 			}
 			if (metadata['university']) {
-				pandocJSON.meta.pubuniversity = {
+				pandocJSON.meta.institute = {
 					t: 'MetaInlines',
 					c: createTextNodes(metadata['university'])
 				};

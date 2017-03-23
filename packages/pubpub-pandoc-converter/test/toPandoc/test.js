@@ -341,7 +341,7 @@ describe('Convert docJSON to PandocAST', function() {
 				title: 'Encoding Data into Physical Objects with Digitally Fabricated Textures',
 				authors: ['Travis Rich'],
 				degree: 'Master of Science in Media Arts and Sciences',
-				university: 'Massachussets Institute of Technology',
+				institute: 'Massachussets Institute of Technology',
 				// date: '05/09/1991',
 				'supervisor-name': 'Andrew Lippman',
 				'supervisor-title': 'Associate Director & Senior Research Scientist, MIT Media Lab',
