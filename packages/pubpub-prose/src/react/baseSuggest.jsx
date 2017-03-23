@@ -7,7 +7,7 @@ require('../../style/autosuggest.scss');
 export const SuggestComponent = React.createClass({
 	propTypes: { },
 	getInitialState() {
-		return { suggestionCategory: null };
+		return { suggestionCategory: null, renderedSuggestions: [] };
 	},
 
 	getDefaultProps: function() {
@@ -55,8 +55,35 @@ export const SuggestComponent = React.createClass({
 		const results = ['a', 'b'];
 	},
 
+	getSuggestions({value, suggestionCategory, suggestions}) {
+
+		const inputValue = value.trim().toLowerCase();
+		const inputLength = inputValue.length;
+
+		let suggestionsSource;
+
+		if (suggestionCategory === null && !!suggestions[value]) {
+			return suggestions[value];
+		} else if (suggestionCategory === null) {
+			suggestionsSource = Object.keys(suggestions);
+		} else {
+			suggestionsSource = suggestions[suggestionCategory];
+		}
+
+		const filteredSuggestions = inputLength === 0 ? suggestionsSource : suggestionsSource.filter(lang =>
+			lang.toLowerCase().slice(0, inputLength) === inputValue
+		);
+
+		return filteredSuggestions;
+	},
+
 	onSuggestionsFetchRequested({ value }) {
-		return;
+		const { suggestions } = this.props;
+		const { suggestionCategory } = this.state;
+
+		const filteredSuggestions = this.getSuggestions({value, suggestionCategory, suggestions});
+		console.log('Fetched suggestions!');
+		this.setState({renderedSuggestions: filteredSuggestions})
 	},
 
 	// Autosuggest will call this function every time you need to clear suggestions.
@@ -83,9 +110,11 @@ export const SuggestComponent = React.createClass({
 	},
 
 	onSuggestionSelected(event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) {
-		console.log('Selected suggestion!', suggestion);
 		if (this.state.suggestionCategory === null) {
-			this.setState({suggestionCategory: suggestion});
+			const { suggestions } = this.props;
+			const renderedSuggestions = this.getSuggestions({value: '', suggestionCategory: suggestion, suggestions});
+			console.log('Set suggestions!');
+			this.setState({suggestionCategory: suggestion, text: '', renderedSuggestions});
 		} else {
 			this.props.updateMention({text: suggestion, type: 'file', meta: {}});
 		}
@@ -93,18 +122,8 @@ export const SuggestComponent = React.createClass({
 
   render() {
     const { suggestions } = this.props;
-		const { suggestionCategory } = this.state;
+		const { suggestionCategory, renderedSuggestions } = this.state;
 		const text = this.state.text || this.props.text || '';
-
-		let renderedSuggestions;
-
-		if (suggestionCategory === null) {
-			renderedSuggestions = Object.keys(suggestions);
-		} else {
-			renderedSuggestions = suggestions[suggestionCategory];
-		}
-
-		console.log('Got suggestions!', renderedSuggestions, suggestions);
 
 		const shouldRenderSuggestions = (suggestionCategory !== null);
 
@@ -124,7 +143,7 @@ export const SuggestComponent = React.createClass({
 					getSuggestionValue={this.getSuggestionValue}
 					renderSuggestion={this.renderSuggestion}
 					onSuggestionSelected={this.onSuggestionSelected}
-					alwaysRenderSuggestions={shouldRenderSuggestions}
+					alwaysRenderSuggestions={true}
 					inputProps={inputProps}
       	/>
 			</span>

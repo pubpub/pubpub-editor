@@ -24,7 +24,7 @@ var SuggestComponent = exports.SuggestComponent = _react2.default.createClass({
 
 	propTypes: {},
 	getInitialState: function getInitialState() {
-		return { suggestionCategory: null };
+		return { suggestionCategory: null, renderedSuggestions: [] };
 	},
 
 
@@ -72,10 +72,40 @@ var SuggestComponent = exports.SuggestComponent = _react2.default.createClass({
 		var results = ['a', 'b'];
 	},
 
-	onSuggestionsFetchRequested: function onSuggestionsFetchRequested(_ref2) {
-		var value = _ref2.value;
+	getSuggestions: function getSuggestions(_ref2) {
+		var value = _ref2.value,
+		    suggestionCategory = _ref2.suggestionCategory,
+		    suggestions = _ref2.suggestions;
 
-		return;
+
+		var inputValue = value.trim().toLowerCase();
+		var inputLength = inputValue.length;
+
+		var suggestionsSource = void 0;
+
+		if (suggestionCategory === null && !!suggestions[value]) {
+			return suggestions[value];
+		} else if (suggestionCategory === null) {
+			suggestionsSource = Object.keys(suggestions);
+		} else {
+			suggestionsSource = suggestions[suggestionCategory];
+		}
+
+		var filteredSuggestions = inputLength === 0 ? suggestionsSource : suggestionsSource.filter(function (lang) {
+			return lang.toLowerCase().slice(0, inputLength) === inputValue;
+		});
+
+		return filteredSuggestions;
+	},
+	onSuggestionsFetchRequested: function onSuggestionsFetchRequested(_ref3) {
+		var value = _ref3.value;
+		var suggestions = this.props.suggestions;
+		var suggestionCategory = this.state.suggestionCategory;
+
+
+		var filteredSuggestions = this.getSuggestions({ value: value, suggestionCategory: suggestionCategory, suggestions: suggestions });
+		console.log('Fetched suggestions!');
+		this.setState({ renderedSuggestions: filteredSuggestions });
 	},
 
 
@@ -106,35 +136,30 @@ var SuggestComponent = exports.SuggestComponent = _react2.default.createClass({
 				} }, inputProps))
 		);
 	},
-	onSuggestionSelected: function onSuggestionSelected(event, _ref3) {
-		var suggestion = _ref3.suggestion,
-		    suggestionValue = _ref3.suggestionValue,
-		    suggestionIndex = _ref3.suggestionIndex,
-		    sectionIndex = _ref3.sectionIndex,
-		    method = _ref3.method;
+	onSuggestionSelected: function onSuggestionSelected(event, _ref4) {
+		var suggestion = _ref4.suggestion,
+		    suggestionValue = _ref4.suggestionValue,
+		    suggestionIndex = _ref4.suggestionIndex,
+		    sectionIndex = _ref4.sectionIndex,
+		    method = _ref4.method;
 
-		console.log('Selected suggestion!', suggestion);
 		if (this.state.suggestionCategory === null) {
-			this.setState({ suggestionCategory: suggestion });
+			var suggestions = this.props.suggestions;
+
+			var renderedSuggestions = this.getSuggestions({ value: '', suggestionCategory: suggestion, suggestions: suggestions });
+			console.log('Set suggestions!');
+			this.setState({ suggestionCategory: suggestion, text: '', renderedSuggestions: renderedSuggestions });
 		} else {
 			this.props.updateMention({ text: suggestion, type: 'file', meta: {} });
 		}
 	},
 	render: function render() {
 		var suggestions = this.props.suggestions;
-		var suggestionCategory = this.state.suggestionCategory;
+		var _state2 = this.state,
+		    suggestionCategory = _state2.suggestionCategory,
+		    renderedSuggestions = _state2.renderedSuggestions;
 
 		var text = this.state.text || this.props.text || '';
-
-		var renderedSuggestions = void 0;
-
-		if (suggestionCategory === null) {
-			renderedSuggestions = Object.keys(suggestions);
-		} else {
-			renderedSuggestions = suggestions[suggestionCategory];
-		}
-
-		console.log('Got suggestions!', renderedSuggestions, suggestions);
 
 		var shouldRenderSuggestions = suggestionCategory !== null;
 
@@ -155,7 +180,7 @@ var SuggestComponent = exports.SuggestComponent = _react2.default.createClass({
 				getSuggestionValue: this.getSuggestionValue,
 				renderSuggestion: this.renderSuggestion,
 				onSuggestionSelected: this.onSuggestionSelected,
-				alwaysRenderSuggestions: shouldRenderSuggestions,
+				alwaysRenderSuggestions: true,
 				inputProps: inputProps
 			})
 		);
