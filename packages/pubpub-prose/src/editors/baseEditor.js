@@ -118,6 +118,7 @@ class BaseEditor {
 	}
 
   toJSON = () => {
+    console.log('Got schema', pubSchema, pubSchema.topNode);
     return this.view.state.doc.toJSON();
   }
 

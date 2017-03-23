@@ -71,7 +71,7 @@ var tableSchema = (0, _prosemirrorSchemaTable.addTableNodes)(listSchema, "paragr
 var schema = exports.schema = new _prosemirrorModel.Schema({
 	nodes: tableSchema,
 	marks: _schemaBasic.schema.spec.marks.addBefore('code', 'sub', SubMark).addBefore('code', 'sup', SupMark).addBefore('code', 'strike', StrikeThroughMark),
-	topNode: 'article'
+	topNode: 'doc'
 });
 
 var createSchema = exports.createSchema = function createSchema() {

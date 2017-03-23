@@ -93,7 +93,7 @@ const nodes = {
 
 
   citations: {
-    content: "citation+",
+    content: "citation*",
     group: "footer",
     parseDOM: [{tag: "hr.citations"}],
     selectable: false,
@@ -290,5 +290,5 @@ exports.marks = marks
 // To reuse elements from this schema, extend or read from its
 // [`nodeSpec`](#model.Schema.nodeSpec) and
 // [`markSpec`](#model.Schema.markSpec) properties.
-const schema = new Schema({nodes, marks})
+const schema = new Schema({nodes, marks, topNode: "doc"})
 exports.schema = schema

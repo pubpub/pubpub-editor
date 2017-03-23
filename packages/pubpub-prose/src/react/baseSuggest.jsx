@@ -7,7 +7,7 @@ require('../../style/autosuggest.scss');
 export const SuggestComponent = React.createClass({
 	propTypes: { },
 	getInitialState() {
-		return { };
+		return { suggestionCategory: null };
 	},
 
 	getDefaultProps: function() {
@@ -84,12 +84,29 @@ export const SuggestComponent = React.createClass({
 
 	onSuggestionSelected(event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) {
 		console.log('Selected suggestion!', suggestion);
-		this.props.updateMention({text: suggestion, type: 'file', meta: {}});
+		if (this.state.suggestionCategory === null) {
+			this.setState({suggestionCategory: suggestion});
+		} else {
+			this.props.updateMention({text: suggestion, type: 'file', meta: {}});
+		}
 	},
 
   render() {
-    const {files} = this.props;
+    const { suggestions } = this.props;
+		const { suggestionCategory } = this.state;
 		const text = this.state.text || this.props.text || '';
+
+		let renderedSuggestions;
+
+		if (suggestionCategory === null) {
+			renderedSuggestions = Object.keys(suggestions);
+		} else {
+			renderedSuggestions = suggestions[suggestionCategory];
+		}
+
+		console.log('Got suggestions!', renderedSuggestions, suggestions);
+
+		const shouldRenderSuggestions = (suggestionCategory !== null);
 
 		const inputProps = {
       placeholder: 'Type a programming language',
@@ -101,12 +118,13 @@ export const SuggestComponent = React.createClass({
 			<span>
 				<Autosuggest
 					ref={'suggest'}
-        	suggestions={files}
+        	suggestions={renderedSuggestions}
 					onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
 					onSuggestionsClearRequested={this.onSuggestionsClearRequested}
 					getSuggestionValue={this.getSuggestionValue}
 					renderSuggestion={this.renderSuggestion}
 					onSuggestionSelected={this.onSuggestionSelected}
+					alwaysRenderSuggestions={shouldRenderSuggestions}
 					inputProps={inputProps}
       	/>
 			</span>

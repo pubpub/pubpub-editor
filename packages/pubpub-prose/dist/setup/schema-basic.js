@@ -92,7 +92,7 @@ var nodes = {
   },
 
   citations: {
-    content: "citation+",
+    content: "citation*",
     group: "footer",
     parseDOM: [{ tag: "hr.citations" }],
     selectable: false,
@@ -320,5 +320,5 @@ exports.marks = marks;
 // To reuse elements from this schema, extend or read from its
 // [`nodeSpec`](#model.Schema.nodeSpec) and
 // [`markSpec`](#model.Schema.markSpec) properties.
-var schema = new Schema({ nodes: nodes, marks: marks });
+var schema = new Schema({ nodes: nodes, marks: marks, topNode: "doc" });
 exports.schema = schema;

@@ -52,11 +52,15 @@ var RichEditorWrapper = exports.RichEditorWrapper = _react2.default.createClass(
 	getMarkdown: function getMarkdown() {
 		return this.editor.toMarkdown();
 	},
+	getJSON: function getJSON() {
+		return this.editor.toJSON();
+	},
 	createEditor: function createEditor(docJSON) {
 		var _props = this.props,
 		    handleFileUpload = _props.handleFileUpload,
 		    onError = _props.onError,
-		    mentionsComponent = _props.mentionsComponent;
+		    mentionsComponent = _props.mentionsComponent,
+		    initialState = _props.initialState;
 
 
 		if (this.editor) {
@@ -65,7 +69,7 @@ var RichEditorWrapper = exports.RichEditorWrapper = _react2.default.createClass(
 		var place = _reactDom2.default.findDOMNode(this.refs.container);
 		this.editor = new _index.RichEditor({
 			place: place,
-			contents: docJSON,
+			contents: initialState,
 			components: {
 				suggestComponent: mentionsComponent
 			},
