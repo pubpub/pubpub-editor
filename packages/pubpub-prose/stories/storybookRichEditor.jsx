@@ -11,7 +11,6 @@ require("../style/base.scss");
 
 export const StoryBookRichEditor = React.createClass({
 	onChange: function() {
-		console.log('Got json!');
 		console.log(JSON.stringify(this.refs.editor.getJSON()));
 		/*
 		const markdown = this.refs.editor.getMarkdown();

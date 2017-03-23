@@ -16,8 +16,8 @@ class ReferenceView extends ReactView {
 
   renderDecorations(decorations) {
     for (const decoration of decorations) {
-      if (decoration.type.options && decoration.type.options.label) {
-        this.reactElement.updateLabel(decoration.type.options.label);
+      if (decoration.type.spec && decoration.type.spec.label) {
+        this.reactElement.updateLabel(decoration.type.spec.label);
       }
     }
   }
