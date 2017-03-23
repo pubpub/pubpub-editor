@@ -11,6 +11,8 @@ require("../style/base.scss");
 
 export const StoryBookRichEditor = React.createClass({
 	onChange: function() {
+		console.log('Got json!');
+		console.log(JSON.stringify(this.refs.editor.getJSON()));
 		/*
 		const markdown = this.refs.editor.getMarkdown();
 		const docJSON = markdownToJSON(markdown);
@@ -22,7 +24,14 @@ export const StoryBookRichEditor = React.createClass({
 	render: function() {
 		const mentionsComponent = {
 			component: suggestComponent,
-			props: {files: ['A', 'B', 'C']}
+			props: {
+				suggestions: {
+					'files': ['A.jpg','B.jpg'],
+					'references':['Design & Science - Joi Ito','Design as Participation - Kevin Slavin'],
+					'users': ['Thariq','Travis', 'Hassan'],
+					'figures': ['Figure 1', 'Figure 2']
+				}
+			}
 		};
 		return (
 			<RichEditor ref="editor" onChange={this.onChange} mentionsComponent={mentionsComponent} {...this.props} />
