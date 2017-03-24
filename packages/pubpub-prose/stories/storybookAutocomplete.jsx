@@ -41,7 +41,7 @@ export const StorybookAutocomplete = React.createClass({
 
 		return (
       <div>
-  			<div>Autocomplete value: {value}</div>
+  			<div>Autocomplete value: <strong>{(value) ? value : 'Not Selected'}</strong></div>
   			<SuggestComponent
   				ref="suggest"
   				onCancel={this.onCancel}
