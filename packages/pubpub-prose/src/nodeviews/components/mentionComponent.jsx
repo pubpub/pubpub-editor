@@ -37,9 +37,9 @@ export const MentionComponent = React.createClass({
 
   handleKeyPress: function(e) {
      if (e.key === 'Enter' && !this.props.block) {
-			const {text, type, meta} = this.state;
+			const {text} = this.state;
 			// this.refs.input.blur();
-			this.props.updateMention({text, type, meta});
+			this.props.updateMention(text);
       this.changeToNormal();
      }
   },
@@ -91,7 +91,7 @@ export const MentionComponent = React.createClass({
     return (
       <span style={{position: 'relative'}}>
         @
-				{(SuggestComponent) ? <SuggestComponent ref="suggest" revertToText={this.props.revertToText} updateMention={this.updateMention} {...this.props.suggestComponent.props}/> : null}
+				{(SuggestComponent) ? <SuggestComponent ref="suggest" onCancel={this.props.revertToText} onSelected={this.updateMention} {...this.props.suggestComponent.props}/> : null}
       </span>
     );
   },

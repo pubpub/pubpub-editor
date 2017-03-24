@@ -110,15 +110,11 @@ var MentionView = function (_ReactView) {
     }
   }, {
     key: 'updateMention',
-    value: function updateMention(_ref) {
-      var text = _ref.text,
-          type = _ref.type,
-          meta = _ref.meta;
-
+    value: function updateMention(text) {
       var start = this.getPos();
       var nodeType = _setup.schema.nodes.mention;
       var oldNodeAttrs = this.node.attrs;
-      var transaction = this.view.state.tr.setNodeType(start, nodeType, { text: text, type: type, meta: meta });
+      var transaction = this.view.state.tr.setNodeType(start, nodeType, { text: text });
       this.view.dispatch(transaction);
     }
   }, {

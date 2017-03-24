@@ -28,27 +28,15 @@ var SuggestComponent = exports.SuggestComponent = _react2.default.createClass({
 	},
 
 
-	getDefaultProps: function getDefaultProps() {},
-
-	componentDidMount: function componentDidMount() {},
-
 	focus: function focus() {
 		this.refs.suggest.input.focus();
 	},
 
-	setSelected: function setSelected(selected) {},
-
-	componentWillUnmount: function componentWillUnmount() {},
-
 	handleKeyPress: function handleKeyPress(e) {
-		if (e.key === 'Enter' && !this.props.block) {
-			var _state = this.state,
-			    text = _state.text,
-			    type = _state.type,
-			    meta = _state.meta;
-			// this.refs.input.blur();
+		if (e.key === 'Enter') {
+			var text = this.state.text;
 
-			this.props.updateMention({ text: text, type: type, meta: meta });
+			this.props.onSelected(text);
 		}
 	},
 
@@ -57,55 +45,67 @@ var SuggestComponent = exports.SuggestComponent = _react2.default.createClass({
 
 		var value = newValue;
 		if (value.length === 0) {
-			this.props.revertToText();
+			this.props.onCancel();
 			return;
 		}
-		this.setState({ text: newValue, type: 'file', meta: {} });
-		// this.props.updateMention({text: value, type: 'file', meta: {}});
+		this.setState({ text: newValue });
 	},
 
-	changeToNormal: function changeToNormal() {
-		this.setState({ editing: false });
-	},
-
-	getAutocompleteContent: function getAutocompleteContent() {
-		var results = ['a', 'b'];
-	},
-
+	// Either searches through the list of suggestionsCategories or calls
+	// getSuggestionsByCategory to fetch the data within a category
+	// All results are filtered to match the value`
 	getSuggestions: function getSuggestions(_ref2) {
+		var _this = this;
+
 		var value = _ref2.value,
-		    suggestionCategory = _ref2.suggestionCategory,
-		    suggestions = _ref2.suggestions;
+		    suggestionCategory = _ref2.suggestionCategory;
 
 
-		var inputValue = value.trim().toLowerCase();
-		var inputLength = inputValue.length;
+		return new Promise(function (resolve, reject) {
+			var _props = _this.props,
+			    getSuggestionsByCategory = _props.getSuggestionsByCategory,
+			    suggestionCategories = _props.suggestionCategories;
 
-		var suggestionsSource = void 0;
 
-		if (suggestionCategory === null && !!suggestions[value]) {
-			return suggestions[value];
-		} else if (suggestionCategory === null) {
-			suggestionsSource = Object.keys(suggestions);
-		} else {
-			suggestionsSource = suggestions[suggestionCategory];
-		}
+			var inputValue = value.trim().toLowerCase();
+			var inputLength = inputValue.length;
 
-		var filteredSuggestions = inputLength === 0 ? suggestionsSource : suggestionsSource.filter(function (lang) {
-			return lang.toLowerCase().slice(0, inputLength) === inputValue;
+			var suggestionsSource = void 0;
+			var shouldFilter = true;
+
+			// a hack for the edgecase where you've selected a value but the state of suggestionCategory hasn't updated yet
+			// in this case, check if the value is the same as a category, and if so, use that as the category
+			if (suggestionCategory === null && suggestionCategories.indexOf(value) !== -1) {
+				shouldFilter = false;
+				suggestionsSource = getSuggestionsByCategory({ value: value, suggestionCategory: value });
+			} else if (suggestionCategory === null) {
+				suggestionsSource = Promise.resolve(suggestionCategories);
+			} else {
+				suggestionsSource = getSuggestionsByCategory({ value: value, suggestionCategory: suggestionCategory });
+			}
+
+			suggestionsSource.then(function (suggestionResults) {
+				if (shouldFilter) {
+					var filteredSuggestions = inputLength === 0 ? suggestionResults : suggestionResults.filter(function (lang) {
+						return lang.toLowerCase().slice(0, inputLength) === inputValue;
+					});
+					resolve(filteredSuggestions);
+				} else {
+					resolve(suggestionResults);
+				}
+			});
 		});
-
-		return filteredSuggestions;
 	},
 	onSuggestionsFetchRequested: function onSuggestionsFetchRequested(_ref3) {
+		var _this2 = this;
+
 		var value = _ref3.value;
-		var suggestions = this.props.suggestions;
 		var suggestionCategory = this.state.suggestionCategory;
 
 
-		var filteredSuggestions = this.getSuggestions({ value: value, suggestionCategory: suggestionCategory, suggestions: suggestions });
-		console.log('Fetched suggestions!');
-		this.setState({ renderedSuggestions: filteredSuggestions });
+		this.getSuggestions({ value: value, suggestionCategory: suggestionCategory }).then(function (filteredSuggestions) {
+			_this2.setState({ renderedSuggestions: filteredSuggestions });
+		});
 	},
 
 
@@ -126,13 +126,13 @@ var SuggestComponent = exports.SuggestComponent = _react2.default.createClass({
 		);
 	},
 	renderInputComponent: function renderInputComponent(inputProps) {
-		var _this = this;
+		var _this3 = this;
 
 		return _react2.default.createElement(
 			'span',
 			null,
 			_react2.default.createElement('input', _extends({ ref: function ref(input) {
-					_this.textInput = input;
+					_this3.textInput = input;
 				} }, inputProps))
 		);
 	},
@@ -144,27 +144,23 @@ var SuggestComponent = exports.SuggestComponent = _react2.default.createClass({
 		    method = _ref4.method;
 
 		if (this.state.suggestionCategory === null) {
-			var suggestions = this.props.suggestions;
-
-			var renderedSuggestions = this.getSuggestions({ value: '', suggestionCategory: suggestion, suggestions: suggestions });
-			console.log('Set suggestions!');
-			this.setState({ suggestionCategory: suggestion, text: '', renderedSuggestions: renderedSuggestions });
+			this.setState({ suggestionCategory: suggestion, text: '' });
 		} else {
-			this.props.updateMention({ text: suggestion, type: 'file', meta: {} });
+			this.props.onSelected(suggestion);
+			this.setState({ suggestionCategory: null, text: '', renderedSuggestions: [] });
 		}
 	},
 	render: function render() {
-		var suggestions = this.props.suggestions;
-		var _state2 = this.state,
-		    suggestionCategory = _state2.suggestionCategory,
-		    renderedSuggestions = _state2.renderedSuggestions;
+		var _state = this.state,
+		    suggestionCategory = _state.suggestionCategory,
+		    renderedSuggestions = _state.renderedSuggestions;
 
 		var text = this.state.text || this.props.text || '';
 
 		var shouldRenderSuggestions = suggestionCategory !== null;
 
 		var inputProps = {
-			placeholder: 'Type a programming language',
+			placeholder: '',
 			value: text,
 			onChange: this.handleChange
 		};

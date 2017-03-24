@@ -10,80 +10,74 @@ export const SuggestComponent = React.createClass({
 		return { suggestionCategory: null, renderedSuggestions: [] };
 	},
 
-	getDefaultProps: function() {
-	},
-
-  componentDidMount: function() {
-  },
-
   focus: function() {
     this.refs.suggest.input.focus();
   },
 
-	setSelected: function(selected) {
-
-	},
-
-	componentWillUnmount: function() {
-	},
-
   handleKeyPress: function(e) {
-     if (e.key === 'Enter' && !this.props.block) {
-			const {text, type, meta} = this.state;
-			// this.refs.input.blur();
-			this.props.updateMention({text, type, meta});
+     if (e.key === 'Enter') {
+			const {text} = this.state;
+			this.props.onSelected(text);
      }
   },
-
 
   handleChange: function(event, {newValue}) {
     const value = newValue;
 		if (value.length === 0) {
-			this.props.revertToText();
+			this.props.onCancel();
 			return;
 		}
-		this.setState({text: newValue, type: 'file', meta: {}});
-    // this.props.updateMention({text: value, type: 'file', meta: {}});
+		this.setState({text: newValue});
   },
 
 
-  changeToNormal: function() {
-    this.setState({editing: false});
-  },
+	// Either searches through the list of suggestionsCategories or calls
+	// getSuggestionsByCategory to fetch the data within a category
+	// All results are filtered to match the value`
+	getSuggestions({value, suggestionCategory}) {
 
-	getAutocompleteContent: function() {
-		const results = ['a', 'b'];
-	},
+		return new Promise((resolve, reject) => {
 
-	getSuggestions({value, suggestionCategory, suggestions}) {
+			const {getSuggestionsByCategory, suggestionCategories} = this.props;
 
-		const inputValue = value.trim().toLowerCase();
-		const inputLength = inputValue.length;
+			const inputValue = value.trim().toLowerCase();
+			const inputLength = inputValue.length;
 
-		let suggestionsSource;
+			let suggestionsSource;
+			let shouldFilter = true;
 
-		if (suggestionCategory === null && !!suggestions[value]) {
-			return suggestions[value];
-		} else if (suggestionCategory === null) {
-			suggestionsSource = Object.keys(suggestions);
-		} else {
-			suggestionsSource = suggestions[suggestionCategory];
-		}
+			// a hack for the edgecase where you've selected a value but the state of suggestionCategory hasn't updated yet
+			// in this case, check if the value is the same as a category, and if so, use that as the category
+			if (suggestionCategory === null && suggestionCategories.indexOf(value) !== -1) {
+				shouldFilter = false;
+				suggestionsSource = getSuggestionsByCategory({value, suggestionCategory: value});
+			} else if (suggestionCategory === null) {
+				suggestionsSource = Promise.resolve(suggestionCategories);
+			} else {
+				suggestionsSource = getSuggestionsByCategory({value, suggestionCategory});
+			}
 
-		const filteredSuggestions = inputLength === 0 ? suggestionsSource : suggestionsSource.filter(lang =>
-			lang.toLowerCase().slice(0, inputLength) === inputValue
-		);
+			suggestionsSource.then((suggestionResults) => {
+				if (shouldFilter) {
+					const filteredSuggestions = inputLength === 0 ? suggestionResults : suggestionResults.filter(lang =>
+						lang.toLowerCase().slice(0, inputLength) === inputValue
+					);
+					resolve(filteredSuggestions);
+				} else {
+					resolve(suggestionResults);
+				}
+			});
 
-		return filteredSuggestions;
+		});
 	},
 
 	onSuggestionsFetchRequested({ value }) {
-		const { suggestions } = this.props;
 		const { suggestionCategory } = this.state;
 
-		const filteredSuggestions = this.getSuggestions({value, suggestionCategory, suggestions});
-		console.log('Fetched suggestions!');
-		this.setState({renderedSuggestions: filteredSuggestions})
+		this.getSuggestions({value, suggestionCategory}).then((filteredSuggestions) => {
+			this.setState({renderedSuggestions: filteredSuggestions});
+		});
+
 	},
 
 	// Autosuggest will call this function every time you need to clear suggestions.
@@ -111,24 +105,21 @@ export const SuggestComponent = React.createClass({
 
 	onSuggestionSelected(event, { suggestion, suggestionValue, suggestionIndex, sectionIndex, method }) {
 		if (this.state.suggestionCategory === null) {
-			const { suggestions } = this.props;
-			const renderedSuggestions = this.getSuggestions({value: '', suggestionCategory: suggestion, suggestions});
-			console.log('Set suggestions!');
-			this.setState({suggestionCategory: suggestion, text: '', renderedSuggestions});
+			this.setState({suggestionCategory: suggestion, text: ''});
 		} else {
-			this.props.updateMention({text: suggestion, type: 'file', meta: {}});
+			this.props.onSelected(suggestion);
+			this.setState({suggestionCategory: null, text: '', renderedSuggestions: []});
 		}
 	},
 
   render() {
-    const { suggestions } = this.props;
 		const { suggestionCategory, renderedSuggestions } = this.state;
 		const text = this.state.text || this.props.text || '';
 
 		const shouldRenderSuggestions = (suggestionCategory !== null);
 
 		const inputProps = {
-      placeholder: 'Type a programming language',
+      placeholder: '',
       value: text,
       onChange: this.handleChange
     };

@@ -63,11 +63,11 @@ class MentionView extends ReactView {
     return renderedElem;
   }
 
-  updateMention({text, type, meta}) {
+  updateMention(text) {
     const start = this.getPos();
     const nodeType = schema.nodes.mention;
     const oldNodeAttrs = this.node.attrs;
-    const transaction = this.view.state.tr.setNodeType(start, nodeType, {text, type, meta});
+    const transaction = this.view.state.tr.setNodeType(start, nodeType, {text});
     this.view.dispatch(transaction);
   }
 

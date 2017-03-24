@@ -55,13 +55,10 @@ var MentionComponent = exports.MentionComponent = _react2.default.createClass({
 
   handleKeyPress: function handleKeyPress(e) {
     if (e.key === 'Enter' && !this.props.block) {
-      var _state = this.state,
-          text = _state.text,
-          type = _state.type,
-          meta = _state.meta;
+      var text = this.state.text;
       // this.refs.input.blur();
 
-      this.props.updateMention({ text: text, type: type, meta: meta });
+      this.props.updateMention(text);
       this.changeToNormal();
     }
   },
@@ -124,7 +121,7 @@ var MentionComponent = exports.MentionComponent = _react2.default.createClass({
       'span',
       { style: { position: 'relative' } },
       '@',
-      SuggestComponent ? _react2.default.createElement(SuggestComponent, _extends({ ref: 'suggest', revertToText: this.props.revertToText, updateMention: this.updateMention }, this.props.suggestComponent.props)) : null
+      SuggestComponent ? _react2.default.createElement(SuggestComponent, _extends({ ref: 'suggest', onCancel: this.props.revertToText, onSelected: this.updateMention }, this.props.suggestComponent.props)) : null
     );
   },
 

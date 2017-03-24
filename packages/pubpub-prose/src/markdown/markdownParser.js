@@ -11,7 +11,7 @@ import emoji from 'markdown-it-emoji';
 */
 
 const newSpec = pubSchema.spec;
-// newSpec.topNode = "article";
+newSpec.topNode = "article";
 
 const markdownSchema = new Schema(newSpec);
 

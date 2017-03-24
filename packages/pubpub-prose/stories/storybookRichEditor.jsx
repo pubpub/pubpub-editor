@@ -12,27 +12,43 @@ require("../style/base.scss");
 export const StoryBookRichEditor = React.createClass({
 	onChange: function() {
 		console.log(JSON.stringify(this.refs.editor.getJSON()));
-		/*
 		const markdown = this.refs.editor.getMarkdown();
 		const docJSON = markdownToJSON(markdown);
 		console.log('Got markdown!');
 		console.log(markdown);
 		console.log(JSON.stringify(docJSON));
-		*/
 	},
 	render: function() {
 		const mentionsComponent = {
 			component: suggestComponent,
 			props: {
-				suggestions: {
-					'files': ['A.jpg','B.jpg'],
-					'references':['Design & Science - Joi Ito','Design as Participation - Kevin Slavin'],
-					'users': ['Thariq','Travis', 'Hassan'],
-					'figures': ['Figure 1', 'Figure 2']
-				}
+				suggestionCategories: ['files', 'references', 'users', 'figures'],
+				getSuggestionsByCategory: function ({value, suggestionCategory}) {
+					// this will automatically be filtered
+					return new Promise((resolve, reject) => {
+						let result;
+						switch (suggestionCategory) {
+							case 'files':
+								result = ['A.jpg','B.jpg'];
+								break;
+							case 'references':
+								result = ['Design & Science - Joi Ito','Design as Participation - Kevin Slavin'];
+								break;
+							case 'users':
+								result = ['Thariq', 'Travis', 'Hassan'];
+								break;
+							case 'figures':
+								result = ['Figure 1', 'Figure 2'];
+								break;
+						}
+						console.log('getting', result, suggestionCategory);
+						resolve(result);
+					});
+				},
 			}
 		};
 		return (
+			
 			<RichEditor ref="editor" onChange={this.onChange} mentionsComponent={mentionsComponent} {...this.props} />
 		);
 	}
