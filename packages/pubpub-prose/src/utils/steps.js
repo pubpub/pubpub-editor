@@ -1,6 +1,6 @@
 import { Step, Transform } from 'prosemirror-transform';
 
-import { migrateDiffs } from '../setup';
+import { migrateDiffs } from '../migrate/migrateDiffs';
 
 const applyDiffs = ({ state, diffs, schema }) => {
 

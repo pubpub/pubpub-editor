@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
 
 import ReactDOM from 'react-dom';
-import RichEditor from '../src/react/reactRichEditor';
+import RichEditor from '../src/react-editors//reactRichEditor';
 import { markdownToJSON } from '../src/markdown/markdownToJson';
-import suggestComponent from '../src/react/baseSuggest';
+import suggestComponent from '../src/react-editors/baseSuggest';
 
 // requires style attributes that would normally be up to the wrapping library to require
 require("@blueprintjs/core/dist/blueprint.css");
@@ -48,7 +48,7 @@ export const StoryBookRichEditor = React.createClass({
 			}
 		};
 		return (
-			
+
 			<RichEditor ref="editor" onChange={this.onChange} mentionsComponent={mentionsComponent} {...this.props} />
 		);
 	}

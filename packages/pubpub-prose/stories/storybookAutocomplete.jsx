@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 
 import ReactDOM from 'react-dom';
-import SuggestComponent from '../src/react/baseSuggest';
+import SuggestComponent from '../src/react-editors/baseSuggest';
 
 export const StorybookAutocomplete = React.createClass({
   getInitialState: function() {

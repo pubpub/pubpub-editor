@@ -1,2 +1,2 @@
-export { RichEditor } from './editors/richEditor';
-export { CollaborativeEditor } from './editors/collaborativeEditor';
+export RichEditor from './react-editors/reactRichEditor';
+export BaseSuggest from './react-editors/baseSuggest';

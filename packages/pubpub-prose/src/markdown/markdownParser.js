@@ -2,7 +2,7 @@ import { MarkdownParser } from 'prosemirror-markdown';
 import { Schema } from 'prosemirror-model';
 import embed from './markdown-it-embed';
 import markdownit from 'markdown-it';
-import { schema as pubSchema } from '../setup';
+import { schema as pubSchema } from '../prosemirror-setup/schema';
 /*
 import pagebreak from './markdown-it-pagebreak';
 import sub from 'markdown-it-sub';

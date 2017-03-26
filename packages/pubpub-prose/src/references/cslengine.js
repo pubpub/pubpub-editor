@@ -1,6 +1,6 @@
 import { locales, sampleData, styles } from './csldata';
 
-import { CSL } from  '../citeproc/citeproc';
+import { CSL } from  './citeproc';
 import parseBibTeX from './bibtextocsl';
 import striptags from 'striptags';
 
