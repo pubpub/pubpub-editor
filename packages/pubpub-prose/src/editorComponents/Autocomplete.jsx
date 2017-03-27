@@ -40,7 +40,7 @@ export const Autocomplete = React.createClass({
 
 	onKeyEvents(evt) {
 		if (!this.props.visible) { return null; }
-		
+
 		if (evt.key === 'ArrowUp') {
 			return this.setCurrentIndex(Math.max(this.state._selectedIndex - 1, 0));
 		}
@@ -82,7 +82,7 @@ export const Autocomplete = React.createClass({
 	},
 
 	selectResult: function(index) {
-		console.log('Selected ', index);
+		this.props.onSelection(this.state._currentSuggestions[index]);
 	},
 
 	render() {

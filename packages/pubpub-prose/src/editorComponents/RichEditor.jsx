@@ -97,14 +97,15 @@ export const RichEditor = React.createClass({
 	},
 
 
-	createMention: function(text) {
+	onSelection: function(selectedObject) {
+		console.log(selectedObject)
 		return this.editor.createMention();
 	},
 
 	render: function() {
 		return (
 			<div style={{ position: 'relative' }} id={'rich-editor-container'}>
-				<Autocomplete top={this.state.top} left={this.state.left} visible={this.state.visible} input={this.state.input} />
+				<Autocomplete top={this.state.top} left={this.state.left} visible={this.state.visible} input={this.state.input} onSelection={this.onSelection}/>
 				<div ref="container" className="pubEditor" id="pubEditor"></div>
 			</div>
 		);

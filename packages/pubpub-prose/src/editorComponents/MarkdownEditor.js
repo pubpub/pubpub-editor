@@ -92,6 +92,7 @@ export const MarkdownEditor = React.createClass({
 				Up: this.handleArrow,
 				Down: this.handleArrow,
 				Esc: this.handleEscape,
+				Enter: this.handleEnter,
 			});
 		}
 	},
@@ -112,10 +113,19 @@ export const MarkdownEditor = React.createClass({
 		return CodeMirror.Pass;
 	},
 
+	handleEnter: function(cm) {
+		if (!this.state.visible) { return CodeMirror.Pass; }
+		return null;
+	},
+
+	onSelection: function(selectedObject) {
+		console.log('Got ', selectedObject);
+	},
+
 	render() {
 		return (
 			<div id={'markdown-editor-container'} style={styles.container}>
-				<Autocomplete top={this.state.top} left={this.state.left} visible={this.state.visible} input={this.state.input} />
+				<Autocomplete top={this.state.top} left={this.state.left} visible={this.state.visible} input={this.state.input} onSelection={this.onSelection}/>
 				<textarea id={'myMarkdownEditor'} />
 			</div>
 		);
