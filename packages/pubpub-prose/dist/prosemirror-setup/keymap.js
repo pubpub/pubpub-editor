@@ -104,19 +104,53 @@ function buildKeymap(schema, mapKeys) {
     })();
   }
 
+  /*
+  if (schema.nodes.citations) {
+    bind("ArrowDown", (state, onAction) => {
+      onAction(state.tr.replaceSelectionWith(hr.create()).scrollAction())
+      return true
+    })
+  }
+  */
+
   if (schema.nodes.table_row) {
     bind("Tab", selectNextCell);
     bind("Shift-Tab", selectPreviousCell);
   }
 
-  if (schema.nodes.mention) {
+  if (false) {
     bind("@", function (state, onAction) {
       var sel = state.selection;
+      if (!sel.empty) {
+        return false;
+      }
+      var doc = state.doc;
+      var pos = sel.$from.pos;
+      var txt = doc.textBetween(pos - 1, pos, '|', '|');
+      if (txt.trim() !== '') {
+        return false;
+      }
+
       var newSelection = TextSelection.create(state.doc, sel.from, sel.from);
       var transaction = state.tr.replaceSelectionWith(schema.nodes.mention.create({ editing: true }));
       transaction = transaction.setSelection(newSelection);
       var result = onAction(transaction);
       return true;
+    });
+
+    bind("ArrowLeft", function (state, onAction) {
+      var sel = state.selection;
+      if (!sel.empty) {
+        return false;
+      }
+      var doc = state.doc;
+      var pos = sel.$from.pos;
+      var txt = doc.textBetween(pos - 2, pos, '|', '|');
+      console.log(txt);
+      if (txt === ' @') {
+        console.log('GOT THAT TEXT');
+      }
+      return false;
     });
   }
   return keys;

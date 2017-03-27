@@ -32,15 +32,11 @@ var nodes = {
   highlight: {
     group: 'inline',
     content: "text*",
-    /*
-    attrs: {
-      content: {default: ''},
-    },
-    */
     inline: true
   },
 
   mention: {
+    atom: true,
     group: 'inline',
     attrs: {
       text: { default: '' },
@@ -51,6 +47,7 @@ var nodes = {
   },
 
   equation: {
+    atom: true,
     group: 'inline',
     content: "inline<_>*",
     attrs: {
@@ -60,6 +57,7 @@ var nodes = {
   },
 
   block_equation: {
+    atom: true,
     group: 'block',
     content: "inline<_>*",
     attrs: {
@@ -68,6 +66,7 @@ var nodes = {
   },
 
   citations: {
+    atom: true,
     content: "citation*",
     group: "footer",
     parseDOM: [{ tag: "hr.citations" }],
@@ -90,6 +89,7 @@ var nodes = {
   },
 
   reference: {
+    atom: true,
     inline: true,
     attrs: {
       citationID: { default: null },
@@ -109,6 +109,7 @@ var nodes = {
   },
 
   embed: {
+    atom: true,
     content: "caption?",
     attrs: {
       filename: { default: '' },
@@ -121,16 +122,6 @@ var nodes = {
     group: 'block',
     draggable: false,
     selectable: true
-  },
-
-  figure: {
-    /*
-    attrs: {
-      size, image, etc.
-    }
-    */
-    content: "embed caption",
-    group: "block"
   },
 
   caption: {
@@ -229,16 +220,6 @@ var nodes = {
 };
 exports.nodes = nodes;
 
-// :: Object
-//
-//  em:: MarkSpec An emphasis mark.
-//
-//  strong:: MarkSpec A strong mark.
-//
-//  link:: MarkSpec A link. Has `href` and `title` attributes.
-//  `title` defaults to the empty string.
-//
-//  code:: MarkSpec Code font mark.
 var marks = {
   em: {
     parseDOM: [{ tag: "i" }, { tag: "em" }, { style: "font-style", getAttrs: function getAttrs(value) {
@@ -288,13 +269,5 @@ var marks = {
 };
 exports.marks = marks;
 
-// :: Schema
-// This schema rougly corresponds to the document schema used by
-// CommonMark, minus the list elements, which are defined in the
-// [schema-list](#schema-list) module.
-//
-// To reuse elements from this schema, extend or read from its
-// [`nodeSpec`](#model.Schema.nodeSpec) and
-// [`markSpec`](#model.Schema.markSpec) properties.
 var schema = new Schema({ nodes: nodes, marks: marks, topNode: "doc" });
 exports.schema = schema;

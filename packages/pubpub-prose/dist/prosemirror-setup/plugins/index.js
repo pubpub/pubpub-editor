@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getPlugin = exports.getPluginState = exports.keys = exports.RelativeFilesPlugin = exports.SelectPlugin = exports.CitationsPlugin = exports.DiffPlugin = undefined;
+exports.getPlugin = exports.getPluginState = exports.keys = exports.MentionsPlugin = exports.RelativeFilesPlugin = exports.SelectPlugin = exports.CitationsPlugin = exports.DiffPlugin = undefined;
 
 var _pluginKeys = require('./pluginKeys');
 
@@ -42,9 +42,14 @@ var _relativeFilesPlugin = require('./relativeFilesPlugin');
 
 var _relativeFilesPlugin2 = _interopRequireDefault(_relativeFilesPlugin);
 
+var _mentionsPlugin = require('./mentionsPlugin');
+
+var _mentionsPlugin2 = _interopRequireDefault(_mentionsPlugin);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.DiffPlugin = _diffPlugin2.default;
 exports.CitationsPlugin = _citationsPlugin2.default;
 exports.SelectPlugin = _selectPlugin2.default;
 exports.RelativeFilesPlugin = _relativeFilesPlugin2.default;
+exports.MentionsPlugin = _mentionsPlugin2.default;

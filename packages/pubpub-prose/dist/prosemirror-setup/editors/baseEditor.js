@@ -95,7 +95,8 @@ var BaseEditor = function () {
           _ref$handlers = _ref.handlers,
           createFile = _ref$handlers.createFile,
           onChange = _ref$handlers.onChange,
-          captureError = _ref$handlers.captureError;
+          captureError = _ref$handlers.captureError,
+          updateMentions = _ref$handlers.updateMentions;
 
       var _require3 = require('../clipboard'),
           clipboardParser = _require3.clipboardParser,
@@ -145,6 +146,9 @@ var BaseEditor = function () {
             evt.preventDefault();
             return true;
           }
+        },
+        viewHandlers: {
+          updateMentions: updateMentions
         },
         nodeViews: {
           embed: function embed(node, view, getPos) {

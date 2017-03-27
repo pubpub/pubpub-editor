@@ -26,7 +26,8 @@ var RichEditor = function (_BaseEditor) {
     _ref$handlers = _ref$handlers === undefined ? {} : _ref$handlers;
     var createFile = _ref$handlers.createFile,
         onChange = _ref$handlers.onChange,
-        captureError = _ref$handlers.captureError;
+        captureError = _ref$handlers.captureError,
+        updateMentions = _ref$handlers.updateMentions;
 
     _classCallCheck(this, RichEditor);
 
@@ -38,14 +39,14 @@ var RichEditor = function (_BaseEditor) {
     var _require2 = require("../../markdown"),
         markdownParser = _require2.markdownParser;
 
-    var plugins = pubpubSetup({ schema: _schema.schema }).concat(_plugins.CitationsPlugin).concat(_plugins.SelectPlugin).concat(_plugins.RelativeFilesPlugin);
+    var plugins = pubpubSetup({ schema: _schema.schema }).concat(_plugins.CitationsPlugin).concat(_plugins.SelectPlugin).concat(_plugins.RelativeFilesPlugin).concat(_plugins.MentionsPlugin);
     var docJSON = void 0;
     if (text) {
       docJSON = markdownParser.parse(text).toJSON();
     } else {
       docJSON = contents;
     }
-    _this.create({ place: place, contents: docJSON, plugins: plugins, components: { suggestComponent: suggestComponent }, handlers: { createFile: createFile, onChange: onChange, captureError: captureError } });
+    _this.create({ place: place, contents: docJSON, plugins: plugins, components: { suggestComponent: suggestComponent }, handlers: { createFile: createFile, onChange: onChange, captureError: captureError, updateMentions: updateMentions } });
     return _this;
   }
 

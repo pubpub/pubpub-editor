@@ -84,20 +84,55 @@ function buildKeymap(schema, mapKeys) {
     })
   }
 
+  /*
+  if (schema.nodes.citations) {
+    bind("ArrowDown", (state, onAction) => {
+      onAction(state.tr.replaceSelectionWith(hr.create()).scrollAction())
+      return true
+    })
+  }
+  */
+
   if (schema.nodes.table_row) {
     bind("Tab", selectNextCell)
     bind("Shift-Tab", selectPreviousCell)
   }
 
-  if (schema.nodes.mention) {
+  if (false) {
     bind("@", (state, onAction) => {
       const sel = state.selection;
+      if (!sel.empty) {
+        return false;
+      }
+      const doc = state.doc;
+      const pos = sel.$from.pos;
+      const txt = doc.textBetween(pos - 1, pos, '|', '|');
+      if (txt.trim() !== '') {
+        return false;
+      }
+
       const newSelection = TextSelection.create(state.doc, sel.from, sel.from);
       let transaction = state.tr.replaceSelectionWith(schema.nodes.mention.create({editing: true}));
       transaction = transaction.setSelection(newSelection);
       const result = onAction(transaction);
       return true
     })
+
+    bind("ArrowLeft", (state, onAction) => {
+      const sel = state.selection;
+      if (!sel.empty) {
+        return false;
+      }
+      const doc = state.doc;
+      const pos = sel.$from.pos;
+      const txt = doc.textBetween(pos - 2, pos, '|', '|');
+      console.log(txt)
+      if (txt === ' @') {
+        console.log('GOT THAT TEXT');
+      }
+      return false;
+    })
+
   }
   return keys
 }

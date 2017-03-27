@@ -11,12 +11,14 @@ require("../style/base.scss");
 
 export const StoryBookRichEditor = React.createClass({
 	onChange: function() {
-		console.log(JSON.stringify(this.refs.editor.getJSON()));
 		const markdown = this.refs.editor.getMarkdown();
 		const docJSON = markdownToJSON(markdown);
+		/*
+		console.log(JSON.stringify(this.refs.editor.getJSON()));
 		console.log('Got markdown!');
 		console.log(markdown);
 		console.log(JSON.stringify(docJSON));
+		*/
 	},
 	render: function() {
 		const mentionsComponent = {
@@ -41,7 +43,6 @@ export const StoryBookRichEditor = React.createClass({
 								result = ['Figure 1', 'Figure 2'];
 								break;
 						}
-						console.log('getting', result, suggestionCategory);
 						resolve(result);
 					});
 				},

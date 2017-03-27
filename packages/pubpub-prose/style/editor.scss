@@ -49,6 +49,18 @@
 }
 
 
+.pub-body :focus {
+  outline: none !important;
+}
+
+.mention::selection {
+  background: none !important;
+}
+
+.mentionComponent::selection {
+  background: none !important;
+}
+
 .ProseMirror-menubar-wrapper{
   width: 100vw;
 }

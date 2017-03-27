@@ -18,6 +18,7 @@ var _prosemirrorSetup = require('../prosemirror-setup');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /*
+Props outline:
 <Editor
     mentionsComponent={component}
     files={array}, // Array of file objects.
@@ -76,16 +77,27 @@ var RichEditorWrapper = exports.RichEditorWrapper = _react2.default.createClass(
 			handlers: {
 				createFile: handleFileUpload,
 				captureError: onError,
-				onChange: this.onChange
+				onChange: this.onChange,
+				updateMentions: this.updateMentions
 			}
 		});
+	},
+	updateMentions: function updateMentions(mentions) {
+		this.setState({ mentions: mentions });
 	},
 
 
 	render: function render() {
+		var mentions = this.state.mentions;
+
 		return _react2.default.createElement(
 			'div',
 			null,
+			_react2.default.createElement(
+				'div',
+				null,
+				mentions
+			),
 			_react2.default.createElement('div', { ref: 'container', className: 'pubEditor', id: 'pubEditor' })
 		);
 	}

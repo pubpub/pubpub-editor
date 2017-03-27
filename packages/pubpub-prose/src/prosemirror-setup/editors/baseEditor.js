@@ -13,7 +13,7 @@ class BaseEditor {
     this.reconfigure = this.reconfigure.bind(this);
   }
 
-  create({place, contents, plugins, config, components: {suggestComponent} = {}, handlers: { createFile, onChange, captureError }}) {
+  create({place, contents, plugins, config, components: {suggestComponent} = {}, handlers: { createFile, onChange, captureError, updateMentions }}) {
     const {clipboardParser, clipboardSerializer} = require('../clipboard');
     const {buildMenuItems} = require('../menu-config');
     const {EditorState} = require('prosemirror-state');
@@ -54,6 +54,9 @@ class BaseEditor {
           evt.preventDefault();
           return true;
         },
+      },
+      viewHandlers: {
+        updateMentions: updateMentions,
       },
       nodeViews: {
         embed: (node, view, getPos) => new EmbedView(node, view, getPos, {block: true}),

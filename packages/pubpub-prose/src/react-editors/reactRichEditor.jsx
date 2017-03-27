@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { RichEditor } from '../prosemirror-setup';
 
 /*
+Props outline:
 <Editor
     mentionsComponent={component}
     files={array}, // Array of file objects.
@@ -68,13 +69,20 @@ export const RichEditorWrapper = React.createClass({
         createFile: handleFileUpload,
         captureError: onError,
         onChange: this.onChange,
+				updateMentions: this.updateMentions,
       }
 		});
 	},
 
+	updateMentions(mentions) {
+		this.setState({mentions});
+	},
+
 	render: function() {
+		const {mentions} = this.state;
 		return (
 			<div>
+				<div>{mentions}</div>
 				<div ref="container" className="pubEditor" id="pubEditor"></div>
 			</div>
 		);
