@@ -1,6 +1,6 @@
 {
   "name": "@pubpub/pubpub-pandoc-converter",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Convert PubPub (ProseMirror) to Pandoc JSON",
   "main": "dist/index.js",
   "scripts": {
@@ -15,8 +15,8 @@
   "author": "Hassan Shaikley <hassan.shaikley@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "@pubpub/prose": "^1.2.0",
-    "@pubpub/render-files": "^1.2.0",
+    "@pubpub/prose": "^2.0.0",
+    "@pubpub/render-files": "^2.0.0",
     "chai": "^3.5.0",
     "child-process-promise": "^2.2.0",
     "colors": "^1.1.2",
