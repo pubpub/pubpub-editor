@@ -1,6 +1,6 @@
 {
   "name": "@pubpub/pubpub-pandoc-converter",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Convert PubPub (ProseMirror) to Pandoc JSON",
   "main": "dist/index.js",
   "scripts": {
@@ -34,6 +34,7 @@
     "babel-preset-es2015": "^6.13.2",
     "babel-preset-react": "^6.11.1",
     "babel-preset-stage-0": "^6.5.0",
+    "cross-env": "^3.2.4",
     "eslint": "^3.13.1",
     "eslint-config-airbnb": "^14.0.0",
     "eslint-plugin-import": "^2.2.0",
