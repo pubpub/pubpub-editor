@@ -18,6 +18,8 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _prosemirrorState = require('prosemirror-state');
 
+var _plugins = require('../plugins');
+
 var _schema = require('../schema');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -190,6 +192,14 @@ var BaseEditor = function () {
       this.menuElem.remove();
       if (this.view) {
         this.view.destroy();
+      }
+    }
+  }, {
+    key: 'saveMention',
+    value: function saveMention(text) {
+      var mentionsPlugin = void 0;
+      if (mentionsPlugin = (0, _plugins.getPlugin)('mentions', this.view.state)) {
+        mentionsPlugin.props.createMention(this.view, text);
       }
     }
   }, {

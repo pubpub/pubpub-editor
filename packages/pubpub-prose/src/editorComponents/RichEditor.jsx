@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
-import { RichEditor as ProseEditor } from '../prosemirror-setup';
+
 import Autocomplete from './Autocomplete';
+import { RichEditor as ProseEditor } from '../prosemirror-setup';
+import ReactDOM from 'react-dom';
 
 /*
 Props outline:
@@ -39,7 +40,7 @@ export const RichEditor = React.createClass({
 	},
 
 	componentWillUpdate(nextProps) {
-		
+
 	},
 
 	onChange(editorState) {
@@ -95,14 +96,18 @@ export const RichEditor = React.createClass({
 		}
 	},
 
+	createMention: function(text) {
+		return this.editor.createMention();
+	},
+
 	mentionStyle: function(top, left, visible) {
 		return {
-			zIndex: 10, 
-			position: 'absolute', 
-			left: left, 
-			top: top, 
-			opacity: visible ? 1 : 0, 
-			pointerEvents: visible ? 'auto' : 'none', 
+			zIndex: 10,
+			position: 'absolute',
+			left: left,
+			top: top,
+			opacity: visible ? 1 : 0,
+			pointerEvents: visible ? 'auto' : 'none',
 			transition: '.1s linear opacity'
 		};
 	},

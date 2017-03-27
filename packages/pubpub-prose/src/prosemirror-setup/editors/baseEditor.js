@@ -4,6 +4,7 @@ import { BaseMenu } from '../../menubar';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { TextSelection } from 'prosemirror-state';
+import { getPlugin } from '../plugins';
 import {schema as pubSchema} from '../schema';
 
 class BaseEditor {
@@ -85,7 +86,12 @@ class BaseEditor {
     }
   }
 
-
+  saveMention(text) {
+    let mentionsPlugin;
+    if (mentionsPlugin = getPlugin('mentions', this.view.state)) {
+      mentionsPlugin.props.createMention(this.view, text);
+    }
+  }
 
   _onAction (action) {
     /*
