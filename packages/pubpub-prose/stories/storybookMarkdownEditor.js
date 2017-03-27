@@ -1,16 +1,16 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import RichEditor from '../src/editorComponents/RichEditor';
+import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
 import { markdownToJSON } from '../src/markdown/markdownToJson';
 
 // requires style attributes that would normally be up to the wrapping library to require
 require("@blueprintjs/core/dist/blueprint.css");
-require("../style/base.scss");
+require("../style/markdown.scss");
 
-export const StoryBookRichEditor = React.createClass({
+export const StoryBookMarkdownEditor = React.createClass({
 	onChange: function() {
-		const markdown = this.refs.editor.getMarkdown();
-		const docJSON = markdownToJSON(markdown);
+		// const markdown = this.refs.editor.getMarkdown();
+		// const docJSON = markdownToJSON(markdown);
 		/*
 		console.log(JSON.stringify(this.refs.editor.getJSON()));
 		console.log('Got markdown!');
@@ -20,9 +20,9 @@ export const StoryBookRichEditor = React.createClass({
 	},
 	render: function() {
 		return (
-			<RichEditor ref="editor" onChange={this.onChange} {...this.props} />
+			<MarkdownEditor ref="editor" onChange={this.onChange} {...this.props} />
 		);
 	}
 });
 
-export default StoryBookRichEditor;
+export default StoryBookMarkdownEditor;

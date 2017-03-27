@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
-
 import ReactDOM from 'react-dom';
-import { RichEditor } from '../prosemirror-setup';
+import { RichEditor as ProseEditor } from '../prosemirror-setup';
+import Autocomplete from './Autocomplete';
 
 /*
 Props outline:
@@ -16,17 +16,18 @@ Props outline:
 */
 
 
-export const RichEditorWrapper = React.createClass({
+export const RichEditor = React.createClass({
 	propTypes: {
 	},
 
 	getInitialState() {
 		return {
-			docJSON: null,
-			fileMap: null,
+			// docJSON: null,
+			// fileMap: null,
 			visible: undefined,
 			top: 0,
 			left: 0,
+			input: '',
 		};
 	},
 
@@ -60,23 +61,23 @@ export const RichEditorWrapper = React.createClass({
 	  this.editor1.remove();
 	}
 	const place = ReactDOM.findDOMNode(this.refs.container);
-		this.editor = new RichEditor({
+		this.editor = new ProseEditor({
 			place: place,
 			contents: initialState,
-			components: {
-				suggestComponent: mentionsComponent,
-			},
+			// components: {
+			// 	suggestComponent: mentionsComponent,
+			// },
 			handlers: {
-		createFile: handleFileUpload,
-		captureError: onError,
-		onChange: this.onChange,
+				createFile: handleFileUpload,
+				captureError: onError,
+				onChange: this.onChange,
 				updateMentions: this.updateMentions,
-	  }
+			}
 		});
 	},
 
-	updateMentions(mentions) {
-		if (mentions === 'active') {
+	updateMentions(mentionInput) {
+		if (!!mentionInput) {
 			setTimeout(()=>{
 				const container = document.getElementById('rich-editor-container');
 				const mark = document.getElementsByClassName('mention-marker')[0];
@@ -86,6 +87,7 @@ export const RichEditorWrapper = React.createClass({
 					visible: true,
 					top: top,
 					left: left,
+					input: mentionInput,
 				});
 			}, 0);
 		} else {
@@ -106,12 +108,10 @@ export const RichEditorWrapper = React.createClass({
 	},
 
 	render: function() {
-		const {mentions} = this.state;
+		const autocompleteStyle = this.mentionStyle(this.state.top, this.state.left, this.state.visible);
 		return (
 			<div style={{ position: 'relative' }} id={'rich-editor-container'}>
-				<div className={'pt-card pt-elevation-4'} style={this.mentionStyle(this.state.top, this.state.left, this.state.visible)}>
-					Autocomplete me!
-				</div>
+				<Autocomplete style={autocompleteStyle} input={this.state.input} />
 				<div ref="container" className="pubEditor" id="pubEditor"></div>
 			</div>
 		);
@@ -119,4 +119,4 @@ export const RichEditorWrapper = React.createClass({
 
 });
 
-export default RichEditorWrapper;
+export default RichEditor;

@@ -1,2 +1,3 @@
-export RichEditor from './react-editors/reactRichEditor';
-export BaseSuggest from './react-editors/baseSuggest';
+export Autocomplete from './editorComponents/Autocomplete';
+export MarkdownEditor from './editorComponents/MarkdownEditor';
+export RichEditor from './editorComponents/RichEditor';

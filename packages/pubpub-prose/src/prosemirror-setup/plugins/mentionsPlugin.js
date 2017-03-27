@@ -13,7 +13,7 @@ const mentionsPlugin = new Plugin({
 			const updateMentions = this.spec.editorView.props.viewHandlers.updateMentions;
 
 			if (!sel.empty) {
-				updateMentions('inactive');
+				updateMentions('');
 				return {decos: DecorationSet.empty, start: null, };
 			}
 
@@ -34,12 +34,12 @@ const mentionsPlugin = new Plugin({
 					const decorations = [Decoration.inline(start, end, {class: 'mention-marker'})];
 					const decos = DecorationSet.create(editorState.doc, decorations);
 
-					updateMentions('active');
+					updateMentions(currentLine.substring(start - 1, currentPos.pos));
 					return {decos: decos, start, end};
 				}
 					
 			}
-			updateMentions('inactive');
+			updateMentions('');
 			return {decos: DecorationSet.empty, start: null, };
 		}
 	},

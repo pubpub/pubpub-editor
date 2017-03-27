@@ -54,6 +54,7 @@
     "react-dom": "^15.4.1",
     "react-dropzone": "^3.7.3",
     "react-resizable-box": "^1.8.1",
+    "simplemde": "^1.11.2",
     "striptags": "^3.0.1",
     "superagent": "^3.0.0"
   },

@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 
 import ReactDOM from 'react-dom';
-import SuggestComponent from '../src/react-editors/baseSuggest';
+import SuggestComponent from '../src/editorComponents/Autocomplete';
 
 export const StorybookAutocomplete = React.createClass({
   getInitialState: function() {
@@ -42,12 +42,12 @@ export const StorybookAutocomplete = React.createClass({
 		return (
       <div>
   			<div>Autocomplete value: <strong>{(value) ? value : 'Not Selected'}</strong></div>
-  			<SuggestComponent
+  			{/*<Autocomplete
   				ref="suggest"
   				onCancel={this.onCancel}
   				onSelected={this.onSelected}
   				suggestionCategories={suggestionCategories}
-  				getSuggestionsByCategory={getSuggestionsByCategory} />
+  				getSuggestionsByCategory={getSuggestionsByCategory} />*/}
       </div>
 		);
 	}
