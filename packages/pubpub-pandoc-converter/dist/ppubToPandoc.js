@@ -499,10 +499,10 @@ function ppubToPandoc(ppub, options) {
 					c: createTextNodes(metadata['degree'])
 				};
 			}
-			if (metadata['university']) {
+			if (metadata['institute']) {
 				pandocJSON.meta.institute = {
 					t: 'MetaInlines',
-					c: createTextNodes(metadata['university'])
+					c: createTextNodes(metadata['institute'])
 				};
 			}
 			if (metadata['date']) {
