@@ -1,11 +1,14 @@
-import {Plugin} from 'prosemirror-state';
+import { Plugin } from 'prosemirror-state';
+import { keys } from './pluginKeys';
 import { schema } from '../schema';
+
 const { DecorationSet, Decoration } = require("prosemirror-view");
 
 const mentionsPlugin = new Plugin({
 	state: {
 		init(config, instance) {
 			const set = DecorationSet.empty;
+			return {decos: DecorationSet.empty, start: null };
 		},
 		apply(transaction, state, prevEditorState, editorState) {
 
@@ -37,7 +40,7 @@ const mentionsPlugin = new Plugin({
 					updateMentions(currentLine.substring(start - 1, currentPos.pos));
 					return {decos: decos, start, end};
 				}
-					
+
 			}
 			updateMentions('');
 			return {decos: DecorationSet.empty, start: null, };
@@ -55,6 +58,19 @@ const mentionsPlugin = new Plugin({
 		}
 	},
 	props: {
+		createMention(view) {
+			const state = view.state;
+			const pluginState = this.getState(view.state);
+			if (this.editorView && pluginState) {
+				const {start, end} = pluginState;
+				if (start === null) {
+					return nulll;
+				}
+	      let transaction = state.tr.replaceRangeWith(start, end, schema.nodes.mention.create({editing: true}));
+	      return view.dispatch(transaction);
+			}
+			return null;
+		},
 		decorations(state) {
 			if (state && this.getState(state) && this.getState(state).decos) {
 				return this.getState(state).decos;
@@ -66,10 +82,11 @@ const mentionsPlugin = new Plugin({
 			if (sel.empty && evt.type === 'keydown' && (evt.key === 'ArrowUp' || evt.key === 'ArrowDown')) {
 				const pluginState = this.getState(view.state);
 				const {start, end} = pluginState;
-				if (start) { return true; }
+				if (start !== null) { return true; }
 			}
 		}
-	}
+	},
+	key: keys.mentions
 });
 
 export default mentionsPlugin;

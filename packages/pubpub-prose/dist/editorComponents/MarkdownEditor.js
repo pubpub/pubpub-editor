@@ -70,6 +70,7 @@ var MarkdownEditor = exports.MarkdownEditor = _react2.default.createClass({
 			this.simpleMDE.value(this.props.initialContent || '');
 			this.simpleMDE.codemirror.on('cursorActivity', function () {
 				if (_this.props.onChange) {
+<<<<<<< HEAD
 					_this.props.onChange(_this.simpleMDE.value());
 					var cm = _this.simpleMDE.codemirror;
 					var currentCursor = cm.getCursor();
@@ -110,6 +111,57 @@ var MarkdownEditor = exports.MarkdownEditor = _react2.default.createClass({
 						});
 					}
 					// console.log(startLetter, nextCh);
+=======
+					(function () {
+						_this.props.onChange(_this.simpleMDE.value());
+						var cm = _this.simpleMDE.codemirror;
+						var currentCursor = cm.getCursor();
+						var currentLine = cm.getLine(currentCursor.line);
+						var nextChIndex = currentCursor.ch;
+						var nextCh = currentLine.length > nextChIndex ? currentLine.charAt(nextChIndex) : ' ';
+						// console.log(currentCursor);
+						var prevChars = currentLine.substring(0, currentCursor.ch);
+						var startIndex = prevChars.lastIndexOf(' ') + 1;
+						var startLetter = currentLine.charAt(startIndex);
+						// console.log(prevChars.lastIndexOf(' ') + 1, currentCursor.ch);
+						var shouldMark = startLetter === '@' && nextCh === ' ' && !cm.getSelection();
+
+						// console.log('Heyo ', startLetter, nextCh, currentCursor.ch, startIndex, currentCursor, cm.getSelection());
+						if (shouldMark && !_this.autocompleteMarker) {
+							// console.log('Add it')
+							_this.autocompleteMarker = cm.markText({ line: currentCursor.line, ch: prevChars.lastIndexOf(' ') + 1 }, { line: currentCursor.line, ch: prevChars.lastIndexOf(' ') + 2 }, { className: 'testmarker' });
+
+							// console.log(document.getElementsByClassName('testmarker'), document.getElementsByClassName('testmarker')[0]);
+							setTimeout(function () {
+								var container = document.getElementById('markdown-editor-container');
+								var mark = document.getElementsByClassName('testmarker')[0];
+								// console.log(container, mark);
+								var top = mark.getBoundingClientRect().bottom - container.getBoundingClientRect().top;
+								var left = mark.getBoundingClientRect().left - container.getBoundingClientRect().left;
+
+								console.log(startIndex, nextChIndex);
+								_this.setState({
+									visible: true,
+									top: top,
+									left: left,
+									input: currentLine.substring(startIndex + 1, nextChIndex)
+								});
+							}, 0);
+						} else if (shouldMark) {
+							_this.setState({
+								input: currentLine.substring(startIndex + 1, nextChIndex)
+							});
+						} else if (!shouldMark && _this.autocompleteMarker) {
+							// console.log('Clearing!');
+							_this.autocompleteMarker.clear();
+							_this.autocompleteMarker = undefined;
+							_this.setState({
+								visible: false
+							});
+						}
+						// console.log(startLetter, nextCh);
+					})();
+>>>>>>> d54fbe8dbbcf3c879e713ad0e2811aa5ac72c923
 				}
 			});
 			// this.simpleMDE.codemirror.on('keyHandled', this.handleKey);

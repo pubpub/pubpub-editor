@@ -2,7 +2,8 @@ import { PluginKey } from 'prosemirror-state';
 
 const keys = {
   citations: new PluginKey('citations'),
-  relativefiles: new PluginKey('relativefiles')
+  relativefiles: new PluginKey('relativefiles'),
+  mentions: new PluginKey('mentions'),
 };
 
 exports.keys = keys;

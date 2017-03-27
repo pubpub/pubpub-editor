@@ -9,6 +9,7 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+<<<<<<< HEAD
 var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
@@ -18,6 +19,17 @@ var _prosemirrorSetup = require('../prosemirror-setup');
 var _Autocomplete = require('./Autocomplete');
 
 var _Autocomplete2 = _interopRequireDefault(_Autocomplete);
+=======
+var _Autocomplete = require('./Autocomplete');
+
+var _Autocomplete2 = _interopRequireDefault(_Autocomplete);
+
+var _prosemirrorSetup = require('../prosemirror-setup');
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+>>>>>>> d54fbe8dbbcf3c879e713ad0e2811aa5ac72c923
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -110,6 +122,13 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 	},
 
 
+<<<<<<< HEAD
+=======
+	createMention: function createMention(text) {
+		return this.editor.createMention();
+	},
+
+>>>>>>> d54fbe8dbbcf3c879e713ad0e2811aa5ac72c923
 	mentionStyle: function mentionStyle(top, left, visible) {
 		return {
 			zIndex: 10,

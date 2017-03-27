@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _prosemirrorState = require('prosemirror-state');
 
+var _pluginKeys = require('./pluginKeys');
+
 var _schema = require('../schema');
 
 var _require = require("prosemirror-view"),
@@ -16,6 +18,10 @@ var mentionsPlugin = new _prosemirrorState.Plugin({
 	state: {
 		init: function init(config, instance) {
 			var set = DecorationSet.empty;
+<<<<<<< HEAD
+=======
+			return { decos: DecorationSet.empty, start: null };
+>>>>>>> d54fbe8dbbcf3c879e713ad0e2811aa5ac72c923
 		},
 		apply: function apply(transaction, state, prevEditorState, editorState) {
 
@@ -66,6 +72,7 @@ var mentionsPlugin = new _prosemirrorState.Plugin({
 		};
 	},
 	props: {
+<<<<<<< HEAD
 		decorations: function decorations(state) {
 			if (state && this.getState(state) && this.getState(state).decos) {
 				return this.getState(state).decos;
@@ -80,11 +87,47 @@ var mentionsPlugin = new _prosemirrorState.Plugin({
 				    end = pluginState.end;
 
 				if (start) {
+=======
+		createMention: function createMention(view) {
+			var state = view.state;
+			var pluginState = this.getState(view.state);
+			if (this.editorView && pluginState) {
+				var start = pluginState.start,
+				    end = pluginState.end;
+
+				if (start === null) {
+					return nulll;
+				}
+				var transaction = state.tr.replaceRangeWith(start, end, _schema.schema.nodes.mention.create({ editing: true }));
+				return view.dispatch(transaction);
+			}
+			return null;
+		},
+		decorations: function decorations(state) {
+			if (state && this.getState(state) && this.getState(state).decos) {
+				return this.getState(state).decos;
+			}
+			return null;
+		},
+		handleKeyDown: function handleKeyDown(view, evt) {
+			var sel = view.state.selection;
+			if (sel.empty && evt.type === 'keydown' && (evt.key === 'ArrowUp' || evt.key === 'ArrowDown')) {
+				var pluginState = this.getState(view.state);
+				var start = pluginState.start,
+				    end = pluginState.end;
+
+				if (start !== null) {
+>>>>>>> d54fbe8dbbcf3c879e713ad0e2811aa5ac72c923
 					return true;
 				}
 			}
 		}
+<<<<<<< HEAD
 	}
+=======
+	},
+	key: _pluginKeys.keys.mentions
+>>>>>>> d54fbe8dbbcf3c879e713ad0e2811aa5ac72c923
 });
 
 exports.default = mentionsPlugin;

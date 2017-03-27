@@ -9,10 +9,13 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+<<<<<<< HEAD
 var _requestPromise = require('request-promise');
 
 var _requestPromise2 = _interopRequireDefault(_requestPromise);
 
+=======
+>>>>>>> d54fbe8dbbcf3c879e713ad0e2811aa5ac72c923
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 require('../../style/autosuggest.scss');
@@ -29,6 +32,7 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 
 	getInitialState: function getInitialState() {
 		return {
+<<<<<<< HEAD
 			_suggestionCategory: null,
 			_currentSuggestions: [],
 			_selectedIndex: 0,
@@ -51,6 +55,12 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 			console.log(err);
 		});
 	},
+=======
+			suggestionCategory: null,
+			renderedSuggestions: []
+		};
+	},
+>>>>>>> d54fbe8dbbcf3c879e713ad0e2811aa5ac72c923
 	render: function render() {
 		return _react2.default.createElement(
 			'div',
