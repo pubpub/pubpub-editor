@@ -5,6 +5,7 @@ import Autocomplete from './storybookAutocomplete';
 import React from 'react';
 import RichEditor from './storybookRichEditor';
 import MarkdownEditor from './storybookMarkdownEditor';
+import FullEditor from './storybookFullEditor';
 
 storiesOf('Rich Editor', module)
 	.add('basic ', () => (
@@ -23,7 +24,12 @@ storiesOf('Rich Editor', module)
 		<MarkdownEditor/>
 	));
 
-	storiesOf('Autocomplete', module)
+	storiesOf('Full Editor', module)
 	.add('basic ', () => (
-		<Autocomplete/>
+		<FullEditor/>
 	));
+
+	// storiesOf('Autocomplete', module)
+	// .add('basic ', () => (
+	// 	<Autocomplete/>
+	// ));

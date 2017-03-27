@@ -19,6 +19,8 @@ Props outline:
 
 export const RichEditor = React.createClass({
 	propTypes: {
+		initialContent: PropTypes.object,
+		onChange: PropTypes.func,
 	},
 
 	getInitialState() {
@@ -29,6 +31,9 @@ export const RichEditor = React.createClass({
 			top: 0,
 			left: 0,
 			input: '',
+			menuTop: 0,
+			inlineCenter: 0, 
+			inlineTop: 0,
 		};
 	},
 
@@ -43,8 +48,36 @@ export const RichEditor = React.createClass({
 
 	},
 
-	onChange(editorState) {
-		this.props.onChange();
+	onChange() {
+		this.props.onChange(this.editor.view.state.toJSON().doc);
+		// this.props.onChange(this.editor.view.state.doc);
+		this.updateCoordsForMenus();
+	},
+
+	updateCoordsForMenus: function() {
+		const currentPos = this.editor.view.state.selection.$to.pos;
+		const container = document.getElementById('rich-editor-container');
+		const menuTop = this.editor.view.coordsAtPos(currentPos).top - container.getBoundingClientRect().top + 5;
+		
+		if (!this.editor.view.state.selection.$cursor) {
+			const currentFromPos = this.editor.view.state.selection.$from.pos;
+			const currentToPos = this.editor.view.state.selection.$to.pos;
+			const left = this.editor.view.coordsAtPos(currentFromPos).left - container.getBoundingClientRect().left;
+			const right = this.editor.view.coordsAtPos(currentToPos).right - container.getBoundingClientRect().left;
+			const inlineCenter = left + ((right - left) / 2);
+			const inlineTop = this.editor.view.coordsAtPos(currentFromPos).top - container.getBoundingClientRect().top;
+			return this.setState({
+				menuTop: menuTop,
+				inlineCenter: inlineCenter,
+				inlineTop: inlineTop,
+			});			
+		}
+
+		return this.setState({ 
+			menuTop: menuTop,
+			inlineTop: 0,
+			inlineCenter: 0,
+		});
 	},
 
 	getMarkdown() {
@@ -56,7 +89,7 @@ export const RichEditor = React.createClass({
 	},
 
 	createEditor(docJSON) {
-	const {handleFileUpload, onError, mentionsComponent, initialState} = this.props;
+	const {handleFileUpload, onError, mentionsComponent, initialContent} = this.props;
 
 	if (this.editor) {
 	  this.editor1.remove();
@@ -64,7 +97,7 @@ export const RichEditor = React.createClass({
 	const place = ReactDOM.findDOMNode(this.refs.container);
 		this.editor = new ProseEditor({
 			place: place,
-			contents: initialState,
+			contents: initialContent,
 			// components: {
 			// 	suggestComponent: mentionsComponent,
 			// },
@@ -106,6 +139,14 @@ export const RichEditor = React.createClass({
 		return (
 			<div style={{ position: 'relative' }} id={'rich-editor-container'}>
 				<Autocomplete top={this.state.top} left={this.state.left} visible={this.state.visible} input={this.state.input} onSelection={this.onSelection}/>
+				
+				{!!this.state.menuTop &&
+					<span style={{ position: 'absolute', left: '-24px', top: this.state.menuTop, cursor: 'pointer' }} className={'pt-icon-standard pt-icon-add'} />
+				}
+				{!!this.state.inlineTop &&
+					<div className={'pt-card pt-elevation-0 pt-dark'} style={{ position: 'absolute', height: '35px', lineHeight: '35px', padding: '0px 1em', top: (this.state.inlineTop - 40), left: this.state.inlineCenter }}>Formatting</div>
+				}
+
 				<div ref="container" className="pubEditor" id="pubEditor"></div>
 			</div>
 		);

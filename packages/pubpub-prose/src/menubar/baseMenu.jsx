@@ -44,10 +44,10 @@ export const BaseMenu = React.createClass({
 	renderMenu: function(menu, inDropdown=false) {
 		const editorState = this.props.view.state;
 
-		let menuItems = menu.map((menuItem) => {
+		let menuItems = menu.map((menuItem, index) => {
 			if (Array.isArray(menuItem)) {
 				const m = this.renderMenu(menuItem);
-				m.concat((<div className="editorMenuSeperator"></div>));
+				m.concat((<div className="editorMenuSeperator" key={`menuItem-${index}`}></div>));
 				return m;
 			} else if (menuItem.content && menuItem.content.length > 0)  {
 				let renderedSubMenu = this.renderMenu(menuItem.content, true);
@@ -108,14 +108,14 @@ export const BaseMenu = React.createClass({
 						fontSize: `${levels[level]}em`,
 						lineHeight: `${levels[level]}em`,
 					};
-					return (<div disabled={!active} style={buttonStyle}><MenuItem disabled={!active} iconName={icon} onClick={run} text={text}/> </div>);
+					return (<div key={`menuItem-${index}`} disabled={!active} style={buttonStyle}><MenuItem disabled={!active} iconName={icon} onClick={run} text={text}/> </div>);
 				} else {
 					const buttonStyle = {};
 					if (!text) {
 						buttonStyle.maxWidth = 50;
 						buttonStyle.width = 40;
 					}
-					return (<Button disabled={!active} style={buttonStyle} iconName={icon} onClick={run}>{text}</Button>);
+					return (<Button key={`menuItem-${index}`} disabled={!active} style={buttonStyle} iconName={icon} onClick={run}>{text}</Button>);
 				}
 			}
 		});
@@ -236,6 +236,7 @@ export const BaseMenu = React.createClass({
 	},
 
   render: function() {
+  	console.log('Rendering')
     const {editing} = this.state;
 		return this.renderDisplay();
 	}

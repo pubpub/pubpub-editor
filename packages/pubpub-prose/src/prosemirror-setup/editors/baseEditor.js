@@ -50,6 +50,9 @@ class BaseEditor {
     	spellcheck: true,
     	clipboardParser: clipboardParser,
     	clipboardSerializer: clipboardSerializer,
+      handleContextMenu: (evt, thing, thing2)=> {
+        console.log(evt, thing, thing2);
+      },
       handleDOMEvents: {
         dragstart: (view, evt) => {
           evt.preventDefault();
