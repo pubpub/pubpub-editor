@@ -95,23 +95,10 @@ export const RichEditor = React.createClass({
 		}
 	},
 
-	mentionStyle: function(top, left, visible) {
-		return {
-			zIndex: 10, 
-			position: 'absolute', 
-			left: left, 
-			top: top, 
-			opacity: visible ? 1 : 0, 
-			pointerEvents: visible ? 'auto' : 'none', 
-			transition: '.1s linear opacity'
-		};
-	},
-
 	render: function() {
-		const autocompleteStyle = this.mentionStyle(this.state.top, this.state.left, this.state.visible);
 		return (
 			<div style={{ position: 'relative' }} id={'rich-editor-container'}>
-				<Autocomplete style={autocompleteStyle} input={this.state.input} />
+				<Autocomplete top={this.state.top} left={this.state.left} visible={this.state.visible} input={this.state.input} />
 				<div ref="container" className="pubEditor" id="pubEditor"></div>
 			</div>
 		);

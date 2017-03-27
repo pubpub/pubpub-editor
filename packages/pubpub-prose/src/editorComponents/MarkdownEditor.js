@@ -50,27 +50,20 @@ export const MarkdownEditor = React.createClass({
 					const currentLine = cm.getLine(currentCursor.line);
 					const nextChIndex = currentCursor.ch;
 					const nextCh = currentLine.length > nextChIndex ? currentLine.charAt(nextChIndex) : ' ';
-					// console.log(currentCursor);
 					const prevChars = currentLine.substring(0, currentCursor.ch);
 					const startIndex = prevChars.lastIndexOf(' ') + 1;
 					const startLetter = currentLine.charAt(startIndex);
-					// console.log(prevChars.lastIndexOf(' ') + 1, currentCursor.ch);
 					const shouldMark = startLetter === '@' && nextCh === ' ' && !cm.getSelection();
 
-					// console.log('Heyo ', startLetter, nextCh, currentCursor.ch, startIndex, currentCursor, cm.getSelection());
 					if (shouldMark && !this.autocompleteMarker) {
-						// console.log('Add it')
 						this.autocompleteMarker = cm.markText({ line: currentCursor.line, ch: (prevChars.lastIndexOf(' ') + 1 )}, { line: currentCursor.line, ch: (prevChars.lastIndexOf(' ') + 2)}, {className: 'testmarker'});
 						
-						// console.log(document.getElementsByClassName('testmarker'), document.getElementsByClassName('testmarker')[0]);
 						setTimeout(()=>{
 							const container = document.getElementById('markdown-editor-container');
 							const mark = document.getElementsByClassName('testmarker')[0];
-							// console.log(container, mark);
 							const top = mark.getBoundingClientRect().bottom - container.getBoundingClientRect().top;
 							const left = mark.getBoundingClientRect().left - container.getBoundingClientRect().left;
 							
-							console.log(startIndex, nextChIndex);
 							this.setState({
 								visible: true,
 								top: top,
@@ -119,23 +112,10 @@ export const MarkdownEditor = React.createClass({
 		return CodeMirror.Pass;
 	},
 
-	mentionStyle: function(top, left, visible) {
-		return {
-			zIndex: 10, 
-			position: 'absolute', 
-			left: left, 
-			top: top, 
-			opacity: visible ? 1 : 0, 
-			pointerEvents: visible ? 'auto' : 'none', 
-			transition: '.1s linear opacity'
-		};
-	},
-
 	render() {
-		const autocompleteStyle = this.mentionStyle(this.state.top, this.state.left, this.state.visible);
 		return (
 			<div id={'markdown-editor-container'} style={styles.container}>
-				<Autocomplete style={autocompleteStyle} input={this.state.input} />
+				<Autocomplete top={this.state.top} left={this.state.left} visible={this.state.visible} input={this.state.input} />
 				<textarea id={'myMarkdownEditor'} />
 			</div>
 		);
@@ -149,15 +129,4 @@ styles = {
 	container: {
 		position: 'relative',
 	},
-	// autocompleteWrapper: function(top, left, visible) {
-	// 	return {
-	// 		zIndex: 10, 
-	// 		position: 'absolute', 
-	// 		left: left, 
-	// 		top: top, 
-	// 		opacity: visible ? 1 : 0, 
-	// 		pointerEvents: visible ? 'auto' : 'none', 
-	// 		transition: '.1s linear opacity'
-	// 	};
-	// },
 };

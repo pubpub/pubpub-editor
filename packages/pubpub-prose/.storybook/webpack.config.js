@@ -6,12 +6,12 @@ module.exports = {
 			{
 				test: /\.css$/,
 				loaders: ['style-loader', 'css-loader'],
-        include: path.resolve(__dirname, '../')
+				include: path.resolve(__dirname, '../')
 			},
 			{
 				test: /\.scss$/,
 				loaders: ['style-loader', 'css-loader', 'sass-loader'],
-        include: path.resolve(__dirname, '../')
+				include: path.resolve(__dirname, '../')
 			},
 			{ test: /\.svg$/, loader: 'file-loader', include: path.resolve(__dirname, '../') },
 			{ test: /\.svg$/, loader: 'file-loader', include: path.resolve(__dirname, '../')  },
@@ -19,14 +19,14 @@ module.exports = {
 			{ test: /\.jpg$/, loader: 'file-loader', include: path.resolve(__dirname, '../')  },
 			{ test: /\.json$/, loader: 'json-loader', include: path.resolve(__dirname, '../../')  },
 			{ test: /\.html$/, loader: 'html', include: path.resolve(__dirname, '../')  },
-      { test: /\.(woff|woff2)$/, loader: 'url-loader', include: path.resolve(__dirname, '../'), options: { name: 'fonts/[hash].[ext]', limit: 5000, mimetype: 'application/font-woff' } },
-			{ test: /\.(ttf|eot|svg)$/,
-        loader: 'file-loader',
-         options: {
-           name: 'fonts/[hash].[ext]',
-           include: path.resolve(__dirname, '../../')
-         }
-     }
+			{ test: /\.(woff|woff2)$/, loader: 'url-loader', include: path.resolve(__dirname, '../'), options: { name: 'fonts/[hash].[ext]', limit: 5000, mimetype: 'application/font-woff' } },
+			{ test: /\.(ttf|eot|svg)$/, loader: 'file-loader', options: { name: 'fonts/[hash].[ext]', include: path.resolve(__dirname, '../../') } }
 		]
+	},
+	node: {
+		net: 'empty',
+		tls: 'empty',
+		dns: 'empty',
+		fs: 'empty',
 	}
 };

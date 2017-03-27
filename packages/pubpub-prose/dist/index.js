@@ -3,17 +3,22 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.BaseSuggest = exports.RichEditor = undefined;
+exports.RichEditor = exports.MarkdownEditor = exports.Autocomplete = undefined;
 
-var _reactRichEditor = require('./react-editors/reactRichEditor');
+var _Autocomplete2 = require('./editorComponents/Autocomplete');
 
-var _reactRichEditor2 = _interopRequireDefault(_reactRichEditor);
+var _Autocomplete3 = _interopRequireDefault(_Autocomplete2);
 
-var _baseSuggest = require('./react-editors/baseSuggest');
+var _MarkdownEditor2 = require('./editorComponents/MarkdownEditor');
 
-var _baseSuggest2 = _interopRequireDefault(_baseSuggest);
+var _MarkdownEditor3 = _interopRequireDefault(_MarkdownEditor2);
+
+var _RichEditor2 = require('./editorComponents/RichEditor');
+
+var _RichEditor3 = _interopRequireDefault(_RichEditor2);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.RichEditor = _reactRichEditor2.default;
-exports.BaseSuggest = _baseSuggest2.default;
+exports.Autocomplete = _Autocomplete3.default;
+exports.MarkdownEditor = _MarkdownEditor3.default;
+exports.RichEditor = _RichEditor3.default;
