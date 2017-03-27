@@ -11,7 +11,7 @@ var _prosemirrorSchemaList = require('prosemirror-schema-list');
 
 var _prosemirrorSchemaTable = require('prosemirror-schema-table');
 
-var _schemaBasic = require('./schema-basic');
+var _schemaDefinition = require('./schemaDefinition');
 
 var SubMark = {
 	parseDOM: [{ tag: "sub" }],
@@ -53,30 +53,25 @@ var Emoji = {
 	inline: true
 };
 
-var schemaNodes = _schemaBasic.schema.spec.nodes.addBefore('horizontal_rule', 'page_break', PageBreak).addBefore('image', 'emoji', Emoji);
+var schemaNodes = _schemaDefinition.schema.spec.nodes.addBefore('horizontal_rule', 'page_break', PageBreak).addBefore('image', 'emoji', Emoji);
 
 var listSchema = (0, _prosemirrorSchemaList.addListNodes)(schemaNodes, "paragraph block*", "block");
 var tableSchema = (0, _prosemirrorSchemaTable.addTableNodes)(listSchema, "paragraph block*", "block");
 
 var schema = exports.schema = new _prosemirrorModel.Schema({
 	nodes: tableSchema,
-	marks: _schemaBasic.schema.spec.marks.addBefore('code', 'sub', SubMark).addBefore('code', 'sup', SupMark).addBefore('code', 'strike', StrikeThroughMark),
+	marks: _schemaDefinition.schema.spec.marks.addBefore('code', 'sub', SubMark).addBefore('code', 'sup', SupMark).addBefore('code', 'strike', StrikeThroughMark),
 	topNode: 'doc'
 });
 
 var createSchema = exports.createSchema = function createSchema() {
 	return new _prosemirrorModel.Schema({
 		nodes: tableSchema,
-		marks: _schemaBasic.schema.markSpec.addBefore('code', 'sub', SubMark).addBefore('code', 'sup', SupMark).addBefore('code', 'strike', StrikeThroughMark)
+		marks: _schemaDefinition.schema.markSpec.addBefore('code', 'sub', SubMark).addBefore('code', 'sup', SupMark).addBefore('code', 'strike', StrikeThroughMark)
 	});
 };
 
-var EmbedType = schema.nodes.embed;
-
-exports.Embed = EmbedType;
-
 var migrateMarks = function migrateMarks(node) {
-	// console.log('Node', node);
 	if (!node) {
 		return null;
 	}

@@ -3,21 +3,17 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.BaseSuggest = exports.RichEditor = undefined;
 
-var _richEditor = require('./editors/richEditor');
+var _reactRichEditor = require('./react-editors/reactRichEditor');
 
-Object.defineProperty(exports, 'RichEditor', {
-  enumerable: true,
-  get: function get() {
-    return _richEditor.RichEditor;
-  }
-});
+var _reactRichEditor2 = _interopRequireDefault(_reactRichEditor);
 
-var _collaborativeEditor = require('./editors/collaborativeEditor');
+var _baseSuggest = require('./react-editors/baseSuggest');
 
-Object.defineProperty(exports, 'CollaborativeEditor', {
-  enumerable: true,
-  get: function get() {
-    return _collaborativeEditor.CollaborativeEditor;
-  }
-});
+var _baseSuggest2 = _interopRequireDefault(_baseSuggest);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.RichEditor = _reactRichEditor2.default;
+exports.BaseSuggest = _baseSuggest2.default;

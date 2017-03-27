@@ -1,0 +1,22 @@
+{
+   "type":"doc",
+   "content":[
+      {
+         "type":"paragraph",
+         "content":[
+            {
+               "type":"text",
+               "marks":[
+                  {
+                     "type":"strike"
+                  }
+               ],
+               "text":"strikethrough text"
+            }
+         ]
+      },
+      {
+         "type":"citations"
+      }
+   ]
+}

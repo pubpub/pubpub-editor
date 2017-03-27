@@ -10,7 +10,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _csldata = require('./csldata');
 
-var _citeproc = require('../citeproc/citeproc');
+var _citeproc = require('./citeproc');
 
 var _bibtextocsl = require('./bibtextocsl');
 

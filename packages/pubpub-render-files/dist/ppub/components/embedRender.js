@@ -59,9 +59,7 @@ var EmbedRender = exports.EmbedRender = _react2.default.createClass({
 		var file = { name: '', url: url, type: type };
 
 		var captionNode = children ? children[0] : null;
-		console.log('Got children!', captionNode);
 		var captionText = captionNode ? captionNode.text : '';
-		console.log('GOT CAPTION TEXTv2');
 
 		return _react2.default.createElement(
 			'div',
@@ -80,7 +78,7 @@ var EmbedRender = exports.EmbedRender = _react2.default.createClass({
 					_react2.default.createElement(
 						'div',
 						{ style: styles.captionInput, ref: 'captioninsert' },
-						captionText
+						children
 					)
 				)
 			)

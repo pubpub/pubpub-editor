@@ -1,0 +1,30 @@
+{
+   "type":"doc",
+   "content":[
+      {
+         "type":"paragraph",
+         "content":[
+            {
+               "type":"latex",
+               "content":[
+                  {
+                     "type":"text",
+                     "text":"2x2"
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "type":"citations",
+         "content":[
+            {
+               "type":"citation",
+               "attrs":{
+                  "title":null
+               }
+            }
+         ]
+      }
+   ]
+}

@@ -13,7 +13,7 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _index = require('../index');
+var _prosemirrorSetup = require('../prosemirror-setup');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -67,7 +67,7 @@ var RichEditorWrapper = exports.RichEditorWrapper = _react2.default.createClass(
 			this.editor1.remove();
 		}
 		var place = _reactDom2.default.findDOMNode(this.refs.container);
-		this.editor = new _index.RichEditor({
+		this.editor = new _prosemirrorSetup.RichEditor({
 			place: place,
 			contents: initialState,
 			components: {

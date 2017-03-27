@@ -1,0 +1,22 @@
+{
+   "type":"doc",
+   "content":[
+      {
+         "type":"paragraph",
+         "content":[
+            {
+               "type":"text",
+               "marks":[
+                  {
+                     "type":"code"
+                  }
+               ],
+               "text":"some code"
+            }
+         ]
+      },
+      {
+         "type":"citations"
+      }
+   ]
+}

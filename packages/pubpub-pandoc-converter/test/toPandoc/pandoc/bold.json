@@ -1,0 +1,69 @@
+{
+	"blocks": [
+		{
+			"t": "Para",
+			"c": [
+				{
+					"t": "Str",
+					"c": ""
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": ""
+				},
+				{
+					"t": "Strong",
+					"c": [
+						{
+							"t": "Str",
+							"c": "Simple"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "bold"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "example"
+						}
+					]
+				}
+			]
+		},
+		{
+			"t": "Header",
+			"c": [
+				1,
+				[
+					"references",
+					[
+						"unnumbered"
+					],
+					[]
+				],
+				[
+					{
+						"t": "Str",
+						"c": "References"
+					}
+				]
+			]
+		}
+	],
+	"pandoc-api-version": [
+		1,
+		17,
+		0,
+		4
+	],
+	"meta": {}
+}

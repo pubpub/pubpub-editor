@@ -1,0 +1,58 @@
+{
+	"blocks": [
+		{
+			"t": "BlockQuote",
+			"c": [
+				{
+					"t": "Para",
+					"c": [
+						{
+							"t": "Str",
+							"c": "Some"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "quoted"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "text"
+						}
+					]
+				}
+			]
+		},
+		{
+			"t": "Header",
+			"c": [
+				1,
+				[
+					"references",
+					[
+						"unnumbered"
+					],
+					[]
+				],
+				[
+					{
+						"t": "Str",
+						"c": "References"
+					}
+				]
+			]
+		}
+	],
+	"pandoc-api-version": [
+		1,
+		17,
+		0,
+		4
+	],
+	"meta": {}
+}

@@ -21,3 +21,7 @@ Used for rendering files on PubPub, includes support for markdown files and ppub
 
 ### How to test and develop
 - To build and watch run `npm run watch`
+
+## PubPub Pandoc Converter
+
+Converts from PubPub JSON to Pandoc JSON.

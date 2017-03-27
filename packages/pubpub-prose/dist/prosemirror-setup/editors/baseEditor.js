@@ -4,11 +4,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _nodeviews = require('../nodeviews');
+var _richNodes = require('../rich-nodes');
 
-var _setup = require('../setup');
-
-var _menus = require('../menus');
+var _menubar = require('../../menubar');
 
 var _react = require('react');
 
@@ -19,6 +17,8 @@ var _reactDom = require('react-dom');
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _prosemirrorState = require('prosemirror-state');
+
+var _schema = require('../schema');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51,7 +51,7 @@ var BaseEditor = function () {
     };
 
     this.toMarkdown = function () {
-      var _require = require("../markdown"),
+      var _require = require("../../markdown"),
           markdownSerializer = _require.markdownSerializer;
 
       var markdown = markdownSerializer.serialize(_this.view.state.doc);
@@ -63,7 +63,7 @@ var BaseEditor = function () {
           EditorState = _require2.EditorState;
 
       var newState = EditorState.create({
-        doc: _setup.schema.nodeFromJSON(newJSONDoc),
+        doc: _schema.schema.nodeFromJSON(newJSONDoc),
         plugins: _this.plugins
       });
       _this.view.updateState(newState);
@@ -97,28 +97,30 @@ var BaseEditor = function () {
           onChange = _ref$handlers.onChange,
           captureError = _ref$handlers.captureError;
 
-      var _require3 = require('../setup'),
-          buildMenuItems = _require3.buildMenuItems,
+      var _require3 = require('../clipboard'),
           clipboardParser = _require3.clipboardParser,
           clipboardSerializer = _require3.clipboardSerializer;
 
-      var _require4 = require('prosemirror-state'),
-          EditorState = _require4.EditorState;
+      var _require4 = require('../menu-config'),
+          buildMenuItems = _require4.buildMenuItems;
 
-      var _require5 = require('prosemirror-view'),
-          EditorView = _require5.EditorView;
+      var _require5 = require('prosemirror-state'),
+          EditorState = _require5.EditorState;
+
+      var _require6 = require('prosemirror-view'),
+          EditorView = _require6.EditorView;
 
       var collabEditing = require('prosemirror-collab').collab;
 
-      var menu = buildMenuItems(_setup.schema);
+      var menu = buildMenuItems(_schema.schema);
       // TO-DO: USE UNIQUE ID FOR USER AND VERSION NUMBER
 
       this.plugins = plugins;
       this.handlers = { createFile: createFile, onChange: onChange, captureError: captureError };
 
       var stateConfig = _extends({
-        doc: contents ? _setup.schema.nodeFromJSON(contents) : undefined,
-        schema: _setup.schema,
+        doc: contents ? _schema.schema.nodeFromJSON(contents) : undefined,
+        schema: _schema.schema,
         plugins: plugins
       }, config);
 
@@ -146,30 +148,30 @@ var BaseEditor = function () {
         },
         nodeViews: {
           embed: function embed(node, view, getPos) {
-            return new _nodeviews.EmbedView(node, view, getPos, { block: true });
+            return new _richNodes.EmbedView(node, view, getPos, { block: true });
           },
           equation: function equation(node, view, getPos) {
-            return new _nodeviews.LatexView(node, view, getPos, { block: false });
+            return new _richNodes.LatexView(node, view, getPos, { block: false });
           },
           block_equation: function block_equation(node, view, getPos) {
-            return new _nodeviews.LatexView(node, view, getPos, { block: true });
+            return new _richNodes.LatexView(node, view, getPos, { block: true });
           },
           mention: function mention(node, view, getPos) {
-            return new _nodeviews.MentionView(node, view, getPos, { block: false, suggestComponent: suggestComponent });
+            return new _richNodes.MentionView(node, view, getPos, { block: false, suggestComponent: suggestComponent });
           },
           reference: function reference(node, view, getPos, decorations) {
-            return new _nodeviews.ReferenceView(node, view, getPos, { decorations: decorations, block: false });
+            return new _richNodes.ReferenceView(node, view, getPos, { decorations: decorations, block: false });
           },
           citations: function citations(node, view, getPos) {
-            return new _nodeviews.CitationsView(node, view, getPos, { block: false });
+            return new _richNodes.CitationsView(node, view, getPos, { block: false });
           },
           iframe: function iframe(node, view, getPos) {
-            return new _nodeviews.IframeView(node, view, getPos, {});
+            return new _richNodes.IframeView(node, view, getPos, {});
           }
         }
       });
 
-      this.menuComponent = _reactDom2.default.render(_react2.default.createElement(_menus.BaseMenu, { createFile: createFile, menu: menu.fullMenu, view: this.view }), reactMenu);
+      this.menuComponent = _reactDom2.default.render(_react2.default.createElement(_menubar.BaseMenu, { createFile: createFile, menu: menu.fullMenu, view: this.view }), reactMenu);
     }
   }, {
     key: 'reconfigure',

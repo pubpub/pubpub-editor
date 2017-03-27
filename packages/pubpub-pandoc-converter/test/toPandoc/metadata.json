@@ -1,0 +1,179 @@
+{
+  "type": "doc",
+  "attrs": {
+    "meta": {}
+  },
+  "content": [
+    {
+      "type": "article",
+      "content": [
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 1
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "A Complete Pub"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A pub with many citations"
+            },
+            {
+              "type": "reference",
+              "attrs": {
+                "citationID": 73599909,
+                "referenceID": 50794430
+              }
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The Alligator"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The alligator "
+            },
+            {
+              "type": "reference",
+              "attrs": {
+                "citationID": 28675934,
+                "referenceID": 76381089
+              }
+            },
+            {
+              "type": "text",
+              "text": " is scary."
+            }
+          ]
+        },
+        {
+          "type": "bullet_list",
+          "content": [
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Because it is big"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "It is old"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "It is like dinosaur."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "It is only known animal to breed with the robot"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "citations",
+      "content": [
+        {
+          "type": "citation",
+          "attrs": {
+            "data": {
+              "type": "article-journal",
+              "id": 28675934,
+              "author": [
+                {
+                  "family": "Gator",
+                  "given": "Maester Le"
+                }
+              ],
+              "title": "Alligator, the Bird",
+              "year": "1991",
+              "container-title": "Journal of OK Bro"
+            },
+            "citationID": 28675934
+          }
+        },
+        {
+          "type": "citation",
+          "attrs": {
+            "data": {
+              "type": "article-journal",
+              "id": 73599909,
+              "author": [
+                {
+                  "given": "a good author jason"
+                }
+              ],
+              "title": "a good book",
+              "year": "2019",
+              "container-title": "journal of good"
+            },
+            "citationID": 73599909
+          }
+        }
+      ]
+    }
+  ]
+}

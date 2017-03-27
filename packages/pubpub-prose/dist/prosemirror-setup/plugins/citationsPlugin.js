@@ -4,9 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _docOperations = require('../utils/doc-operations');
+var _docOperations = require('../../utils/doc-operations');
 
-var _references = require('../references');
+var _references = require('../../references');
 
 var _prosemirrorState = require('prosemirror-state');
 
@@ -16,7 +16,7 @@ var _prosemirrorTransform = require('prosemirror-transform');
 
 var _pluginKeys = require('./pluginKeys');
 
-var _setup = require('../setup');
+var _schema = require('../schema');
 
 var _require = require("prosemirror-view"),
     DecorationSet = _require.DecorationSet,
@@ -85,18 +85,18 @@ var createReference = function createReference(citationData, state, engine) {
   var randomCitationId = !citationData.id || isNaN(citationData.id) ? Math.round(Math.random() * 100000000) : citationData.id;
   var randomReferenceId = Math.round(Math.random() * 100000000);
 
-  var referenceNode = _setup.schema.nodes.reference.create({
+  var referenceNode = _schema.schema.nodes.reference.create({
     citationID: randomCitationId,
     referenceID: randomReferenceId
   });
   citationData.id = randomCitationId;
 
-  var newNode = _setup.schema.nodes.citation.create({ data: citationData, citationID: randomCitationId });
+  var newNode = _schema.schema.nodes.citation.create({ data: citationData, citationID: randomCitationId });
   var citationsNode = (0, _docOperations.findNodesWithIndex)(state.doc, 'citations');
   var pos = citationsNode[0].index + 1;
 
   // tries to find the closest place to insert this note
-  var newPoint = (0, _prosemirrorTransform.insertPoint)(state.doc, pos, _setup.schema.nodes.citation, { data: citationData });
+  var newPoint = (0, _prosemirrorTransform.insertPoint)(state.doc, pos, _schema.schema.nodes.citation, { data: citationData });
   var tr = state.tr.insert(newPoint, newNode);
 
   tr = tr.replaceSelectionWith(referenceNode);

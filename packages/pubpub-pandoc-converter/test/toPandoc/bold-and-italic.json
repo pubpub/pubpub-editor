@@ -1,0 +1,25 @@
+{
+   "type":"doc",
+   "content":[
+      {
+         "type":"paragraph",
+         "content":[
+            {
+               "type":"text",
+               "marks":[
+                  {
+                     "type":"em"
+                  },
+                  {
+                     "type":"strong"
+                  }
+               ],
+               "text":" Simple bold italic example"
+            }
+         ]
+      },
+      {
+         "type":"citations"
+      }
+   ]
+}

@@ -22,24 +22,12 @@ Object.defineProperty(exports, 'CollaborativeEditor', {
   }
 });
 
-var _schema = require('./schema/schema');
+var _schema = require('./schema');
 
 Object.defineProperty(exports, 'schema', {
   enumerable: true,
   get: function get() {
     return _schema.schema;
-  }
-});
-Object.defineProperty(exports, 'migrateDiffs', {
-  enumerable: true,
-  get: function get() {
-    return _schema.migrateDiffs;
-  }
-});
-Object.defineProperty(exports, 'migrateMarks', {
-  enumerable: true,
-  get: function get() {
-    return _schema.migrateMarks;
   }
 });
 

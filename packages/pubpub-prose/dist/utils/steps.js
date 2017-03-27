@@ -2,7 +2,7 @@
 
 var _prosemirrorTransform = require('prosemirror-transform');
 
-var _setup = require('../setup');
+var _migrateDiffs = require('../migrate/migrateDiffs');
 
 var applyDiffs = function applyDiffs(_ref) {
   var state = _ref.state,
@@ -10,7 +10,7 @@ var applyDiffs = function applyDiffs(_ref) {
       schema = _ref.schema;
 
 
-  (0, _setup.migrateDiffs)(diffs);
+  (0, _migrateDiffs.migrateDiffs)(diffs);
   var tr = state.tr;
   var steps = diffs.map(function (jIndex) {
     return _prosemirrorTransform.Step.fromJSON(schema, jIndex);

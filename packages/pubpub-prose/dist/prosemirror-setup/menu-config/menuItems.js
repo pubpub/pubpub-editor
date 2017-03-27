@@ -15,6 +15,12 @@ var _require2 = require("prosemirror-history"),
     undo = _require2.undo,
     redo = _require2.redo;
 
+var _require3 = require("prosemirror-commands"),
+    toggleMark = _require3.toggleMark;
+
+var _require4 = require("prosemirror-schema-list"),
+    wrapInList = _require4.wrapInList;
+
 var MenuItem = function MenuItem(spec) {
   _classCallCheck(this, MenuItem);
 
@@ -36,28 +42,7 @@ function isMenuEvent(wrapper) {
   return Date.now() - 100 < lastMenuEvent.time && lastMenuEvent.node && wrapper.contains(lastMenuEvent.node);
 }
 
-// ::- A drop-down menu, displayed as a label with a downwards-pointing
-// triangle to the right of it.
-
-var Dropdown =
-// :: ([MenuElement], ?Object)
-// Create a dropdown wrapping the elements. Options may include
-// the following properties:
-//
-// **`label`**`: string`
-//   : The label to show on the drop-down control.
-//
-// **`title`**`: string`
-//   : Sets the
-//     [`title`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/title)
-//     attribute given to the menu control.
-//
-// **`class`**`: string`
-//   : When given, adds an extra CSS class to the menu control.
-//
-// **`css`**`: string`
-//   : When given, adds an extra set of CSS styles to the menu control.
-function Dropdown(content, options) {
+var Dropdown = function Dropdown(content, options) {
   _classCallCheck(this, Dropdown);
 
   this.options = options || {};
@@ -406,7 +391,7 @@ function markItem(markType, options) {
   }return cmdItem(toggleMark(markType), passedOptions);
 }
 
-exports.markItem = linkItem;
+exports.markItem = markItem;
 
 function linkItem(markType) {
   return markItem(markType, {
@@ -415,10 +400,16 @@ function linkItem(markType) {
     dialogType: "link",
     dialogCallback: true,
     run: function run(state, dispatch, view, openPrompt) {
+
       if (markActive(state, markType)) {
         toggleMark(markType)(state, view.dispatch);
         return true;
       }
+      openPrompt({
+        callback: function callback(attrs) {
+          toggleMark(markType, attrs)(view.state, view.dispatch);
+        }
+      });
     }
   });
 }

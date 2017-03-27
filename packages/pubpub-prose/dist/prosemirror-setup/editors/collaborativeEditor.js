@@ -6,11 +6,13 @@ var _get = function get(object, property, receiver) { if (object === null) objec
 
 var _plugins = require('../plugins');
 
-var _setup = require('../setup');
+var _migrateDiffs = require('../../migrate/migrateDiffs');
 
 var _baseEditor = require('./baseEditor');
 
 var _objectHash = require('object-hash');
+
+var _schema = require('../schema');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -33,7 +35,9 @@ var CollaborativeEditor = function (_BaseEditor) {
 		    docID = _ref$collab.docID,
 		    repoID = _ref$collab.repoID,
 		    serverURL = _ref$collab.serverURL,
-		    createFile = _ref.handlers.createFile;
+		    _ref$handlers = _ref.handlers,
+		    createFile = _ref$handlers.createFile,
+		    captureError = _ref$handlers.captureError;
 
 		_classCallCheck(this, CollaborativeEditor);
 
@@ -73,7 +77,7 @@ var CollaborativeEditor = function (_BaseEditor) {
 		};
 		collab.mod = {};
 		collab.waitingForDocument = true;
-		collab.schema = _setup.schema;
+		collab.schema = _schema.schema;
 		collab.receiveDocument = _this.receiveDocument;
 		collab.receiveDocumentValues = _this.receiveDocumentValues;
 		collab.askForDocument = _this.askForDocument;
@@ -109,12 +113,12 @@ var CollaborativeEditor = function (_BaseEditor) {
 		var _require3 = require('../setup'),
 		    pubpubSetup = _require3.pubpubSetup;
 
-		var _require4 = require("../markdown"),
+		var _require4 = require("../../markdown"),
 		    markdownParser = _require4.markdownParser;
 
 		var collabEditing = require('prosemirror-collab').collab;
 
-		var plugins = pubpubSetup({ schema: _setup.schema }).concat(_plugins.CitationsPlugin).concat(_plugins.SelectPlugin).concat(_plugins.RelativeFilesPlugin).concat(collabEditing({ version: 0, clientID: clientID }));
+		var plugins = pubpubSetup({ schema: _schema.schema }).concat(_plugins.CitationsPlugin).concat(_plugins.SelectPlugin).concat(_plugins.RelativeFilesPlugin).concat(collabEditing({ version: 0, clientID: clientID }));
 
 		var docJSON = void 0;
 		if (text) {
@@ -171,7 +175,7 @@ var _initialiseProps = function _initialiseProps() {
 	this.loadDocument = function () {
 
 		_this2.collab.waitingForDocument = false;
-		(0, _setup.migrateMarks)(_this2.collab.doc.contents);
+		(0, _migrateDiffs.migrateMarks)(_this2.collab.doc.contents);
 
 		var docJSON = _this2.collab.doc.contents;
 		if (docJSON.content && docJSON.content[docJSON.content.length - 1].type !== "citations") {
@@ -182,14 +186,17 @@ var _initialiseProps = function _initialiseProps() {
 		_this2.create({ place: _this2.place, contents: docJSON, config: { fileMap: _this2.fileMap }, plugins: _this2.plugins, handlers: { createFile: _this2.createFile } });
 		// console.log(docJSON);
 
-		(0, _setup.migrateDiffs)(_this2.collab.docInfo.last_diffs);
+		(0, _migrateDiffs.migrateDiffs)(_this2.collab.docInfo.last_diffs);
 		// console.log('Got diffs!', this.collab.docInfo.last_diffs);
 		var couldApplyAction = _this2.collab.mod.collab.docChanges.applyAllDiffs(_this2.collab.docInfo.last_diffs);
 		// const couldApplyAction = this.collab.mod.collab.docChanges.applyAllSafeDiffs(this.view, this.view.state, this.collab.docInfo.last_diffs);
 		if (couldApplyAction) {
 			// this.applyAction(appliedAction);
 		} else {
-			console.log('COULD NOT APPLY ACTIONS!');
+			// indicates that the DOM is broken and cannot be repaired
+			if (_this2.handlers && _this2.handlers.captureError) {
+				_this2.captureError('DOM Broken ' + err);
+			}
 			_this2.collab.mod.serverCommunications.disconnect();
 		}
 	};

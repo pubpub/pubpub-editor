@@ -12,7 +12,7 @@ var _prosemirrorTransform = require('prosemirror-transform');
 
 var _pluginKeys = require('./pluginKeys');
 
-var _setup = require('../setup');
+var _schema = require('../schema');
 
 var _require = require("prosemirror-view"),
     DecorationSet = _require.DecorationSet,
@@ -36,17 +36,17 @@ var autocompletePlugin = new _prosemirrorState.Plugin({
       return null;
     },
     createCitation: function createCitation(state, onAction, citationData) {
-      var referenceNode = _setup.schema.nodes.reference.create({
+      var referenceNode = _schema.schema.nodes.reference.create({
         citationID: '1'
       });
-      var newNode = _setup.schema.nodes.citation.create({ data: citationData });
+      var newNode = _schema.schema.nodes.citation.create({ data: citationData });
 
       var citationsNode = (0, _docOperations.findNodesWithIndex)(state.doc, 'citations');
 
       var pos = citationsNode[0].index + 1;
 
       // tries to find the closest place to insert this note
-      var newPoint = (0, _prosemirrorTransform.insertPoint)(state.doc, pos, _setup.schema.nodes.citation, { data: citationData });
+      var newPoint = (0, _prosemirrorTransform.insertPoint)(state.doc, pos, _schema.schema.nodes.citation, { data: citationData });
       var tr = state.tr.insert(newPoint, newNode);
 
       tr = tr.replaceSelectionWith(referenceNode);

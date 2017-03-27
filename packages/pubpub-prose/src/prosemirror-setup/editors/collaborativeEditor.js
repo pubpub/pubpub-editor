@@ -9,7 +9,7 @@ class CollaborativeEditor extends BaseEditor {
 
   constructor({ place, contents, text, fileMap,
     collab: { userID, token, username, docID, repoID, serverURL },
-    handlers: { createFile },
+    handlers: { createFile, captureError },
 
   }) {
 
@@ -128,7 +128,10 @@ class CollaborativeEditor extends BaseEditor {
     if (couldApplyAction) {
     		// this.applyAction(appliedAction);
     } else {
-        console.log('COULD NOT APPLY ACTIONS!');
+    		// indicates that the DOM is broken and cannot be repaired
+        if (this.handlers && this.handlers.captureError) {
+          this.captureError('DOM Broken ' + err);
+        }
     		this.collab.mod.serverCommunications.disconnect();
     }
 

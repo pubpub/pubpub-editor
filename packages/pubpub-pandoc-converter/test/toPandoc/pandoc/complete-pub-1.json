@@ -1,0 +1,357 @@
+{
+	"blocks": [
+		{
+			"t": "Header",
+			"c": [
+				1,
+				[
+					"",
+					[],
+					[]
+				],
+				[
+					{
+						"t": "Str",
+						"c": "A"
+					},
+					{
+						"t": "Space"
+					},
+					{
+						"t": "Str",
+						"c": "Complete"
+					},
+					{
+						"t": "Space"
+					},
+					{
+						"t": "Str",
+						"c": "Pub"
+					}
+				]
+			]
+		},
+		{
+			"t": "Para",
+			"c": [
+				{
+					"t": "Str",
+					"c": "A"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "pub"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "with"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "many"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "citations"
+				},
+				{
+					"t": "Cite",
+					"c": [
+						[
+							{
+								"citationSuffix": [],
+								"citationNoteNum": 0,
+								"citationMode": {
+									"t": "AuthorInText"
+								},
+								"citationPrefix": [],
+								"citationId": "73599909",
+								"citationHash": 1
+							}
+						],
+						[]
+					]
+				}
+			]
+		},
+		{
+			"t": "Para",
+			"c": []
+		},
+		{
+			"t": "Header",
+			"c": [
+				2,
+				[
+					"",
+					[],
+					[]
+				],
+				[
+					{
+						"t": "Str",
+						"c": "The"
+					},
+					{
+						"t": "Space"
+					},
+					{
+						"t": "Str",
+						"c": "Alligator"
+					}
+				]
+			]
+		},
+		{
+			"t": "Para",
+			"c": [
+				{
+					"t": "Str",
+					"c": "The"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "alligator "
+				},
+				{
+					"t": "Cite",
+					"c": [
+						[
+							{
+								"citationSuffix": [],
+								"citationNoteNum": 0,
+								"citationMode": {
+									"t": "AuthorInText"
+								},
+								"citationPrefix": [],
+								"citationId": "28675934",
+								"citationHash": 1
+							}
+						],
+						[]
+					]
+				},
+				{
+					"t": "Str",
+					"c": " is"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "scary."
+				}
+			]
+		},
+		{
+			"t": "BulletList",
+			"c": [
+				[
+					{
+						"t": "Plain",
+						"c": [
+							{
+								"t": "Str",
+								"c": "Because"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "it"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "is"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "big"
+							}
+						]
+					}
+				],
+				[
+					{
+						"t": "Plain",
+						"c": [
+							{
+								"t": "Str",
+								"c": "It"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "is"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "old"
+							}
+						]
+					}
+				],
+				[
+					{
+						"t": "Plain",
+						"c": [
+							{
+								"t": "Str",
+								"c": "It"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "is"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "like"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "dinosaur."
+							}
+						]
+					}
+				],
+				[
+					{
+						"t": "Plain",
+						"c": [
+							{
+								"t": "Str",
+								"c": "It"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "is"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "only"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "known"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "animal"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "to"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "breed"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "with"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "the"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "robot"
+							}
+						]
+					}
+				]
+			]
+		},
+		{
+			"t": "Header",
+			"c": [
+				1,
+				[
+					"references",
+					[
+						"unnumbered"
+					],
+					[]
+				],
+				[
+					{
+						"t": "Str",
+						"c": "References"
+					}
+				]
+			]
+		}
+	],
+	"pandoc-api-version": [
+		1,
+		17,
+		0,
+		4
+	],
+	"meta": {}
+}

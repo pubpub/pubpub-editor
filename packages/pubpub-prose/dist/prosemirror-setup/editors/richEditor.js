@@ -4,7 +4,7 @@ var _plugins = require('../plugins');
 
 var _baseEditor = require('./baseEditor');
 
-var _setup = require('../setup');
+var _schema = require('../schema');
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -35,10 +35,10 @@ var RichEditor = function (_BaseEditor) {
     var _require = require('../setup'),
         pubpubSetup = _require.pubpubSetup;
 
-    var _require2 = require("../markdown"),
+    var _require2 = require("../../markdown"),
         markdownParser = _require2.markdownParser;
 
-    var plugins = pubpubSetup({ schema: _setup.schema }).concat(_plugins.CitationsPlugin).concat(_plugins.SelectPlugin).concat(_plugins.RelativeFilesPlugin);
+    var plugins = pubpubSetup({ schema: _schema.schema }).concat(_plugins.CitationsPlugin).concat(_plugins.SelectPlugin).concat(_plugins.RelativeFilesPlugin);
     var docJSON = void 0;
     if (text) {
       docJSON = markdownParser.parse(text).toJSON();

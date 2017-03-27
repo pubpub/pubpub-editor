@@ -1,0 +1,92 @@
+{
+	"blocks": [
+		{
+			"t": "Para",
+			"c": [
+				{
+					"t": "Image",
+					"c": [
+						[
+							"",
+							[],
+							[
+								[
+									"width",
+									"50%"
+								],
+								[
+									"height",
+									"50%"
+								]
+							]
+						],
+						[
+							{
+								"t": "Str",
+								"c": "Hi"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "this"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "is"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "a"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "caption"
+							}
+						],
+						[
+							"https://assets.pubpub.org/ozevzqjn/1484174143170.jpg",
+							""
+						]
+					]
+				}
+			]
+		},
+		{
+			"t": "Header",
+			"c": [
+				1,
+				[
+					"references",
+					[
+						"unnumbered"
+					],
+					[]
+				],
+				[
+					{
+						"t": "Str",
+						"c": "References"
+					}
+				]
+			]
+		}
+	],
+	"pandoc-api-version": [
+		1,
+		17,
+		0,
+		4
+	],
+	"meta": {}
+}

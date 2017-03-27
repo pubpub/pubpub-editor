@@ -1,0 +1,32 @@
+{
+   "type":"doc",
+   "content":[
+      {
+         "type":"paragraph",
+         "content":[
+            {
+               "type":"text",
+               "text":"some text"
+            }
+         ]
+      },
+      {
+         "type":"paragraph"
+      },
+      {
+         "type":"paragraph"
+      },
+      {
+         "type":"paragraph",
+         "content":[
+            {
+               "type":"text",
+               "text":"more text"
+            }
+         ]
+      },
+      {
+         "type":"citations"
+      }
+   ]
+}

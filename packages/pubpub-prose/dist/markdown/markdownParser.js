@@ -17,7 +17,7 @@ var _markdownIt = require('markdown-it');
 
 var _markdownIt2 = _interopRequireDefault(_markdownIt);
 
-var _setup = require('../setup');
+var _schema = require('../prosemirror-setup/schema');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -28,7 +28,7 @@ import sup from 'markdown-it-sup';
 import emoji from 'markdown-it-emoji';
 */
 
-var newSpec = _setup.schema.spec;
+var newSpec = _schema.schema.spec;
 newSpec.topNode = "article";
 
 var markdownSchema = new _prosemirrorModel.Schema(newSpec);

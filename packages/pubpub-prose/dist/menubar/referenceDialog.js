@@ -13,7 +13,7 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _bibtextocsl = require('../plugins/bibtextocsl');
+var _bibtextocsl = require('../references/bibtextocsl');
 
 var _bibtextocsl2 = _interopRequireDefault(_bibtextocsl);
 

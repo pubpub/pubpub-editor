@@ -1,0 +1,5121 @@
+{
+	"blocks": [
+		{
+			"t": "Header",
+			"c": [
+				1,
+				[
+					"",
+					[],
+					[]
+				],
+				[
+					{
+						"t": "Str",
+						"c": "A"
+					},
+					{
+						"t": "Space"
+					},
+					{
+						"t": "Str",
+						"c": "Complete"
+					},
+					{
+						"t": "Space"
+					},
+					{
+						"t": "Str",
+						"c": "Pub"
+					}
+				]
+			]
+		},
+		{
+			"t": "Para",
+			"c": [
+				{
+					"t": "Str",
+					"c": "A"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "pub"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "with"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "many"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "citations"
+				},
+				{
+					"t": "Cite",
+					"c": [
+						[
+							{
+								"citationSuffix": [],
+								"citationNoteNum": 0,
+								"citationMode": {
+									"t": "AuthorInText"
+								},
+								"citationPrefix": [],
+								"citationId": "73599909",
+								"citationHash": 1
+							}
+						],
+						[]
+					]
+				}
+			]
+		},
+		{
+			"t": "Para",
+			"c": []
+		},
+		{
+			"t": "Header",
+			"c": [
+				2,
+				[
+					"",
+					[],
+					[]
+				],
+				[
+					{
+						"t": "Str",
+						"c": "The"
+					},
+					{
+						"t": "Space"
+					},
+					{
+						"t": "Str",
+						"c": "Alligator"
+					}
+				]
+			]
+		},
+		{
+			"t": "Para",
+			"c": [
+				{
+					"t": "Str",
+					"c": "The"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "alligator "
+				},
+				{
+					"t": "Cite",
+					"c": [
+						[
+							{
+								"citationSuffix": [],
+								"citationNoteNum": 0,
+								"citationMode": {
+									"t": "AuthorInText"
+								},
+								"citationPrefix": [],
+								"citationId": "28675934",
+								"citationHash": 1
+							}
+						],
+						[]
+					]
+				},
+				{
+					"t": "Str",
+					"c": " is"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "scary."
+				}
+			]
+		},
+		{
+			"t": "BulletList",
+			"c": [
+				[
+					{
+						"t": "Plain",
+						"c": [
+							{
+								"t": "Str",
+								"c": "Because"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "it"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "is"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "big"
+							}
+						]
+					}
+				],
+				[
+					{
+						"t": "Plain",
+						"c": [
+							{
+								"t": "Str",
+								"c": "It"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "is"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "old"
+							}
+						]
+					}
+				],
+				[
+					{
+						"t": "Plain",
+						"c": [
+							{
+								"t": "Str",
+								"c": "It"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "is"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "like"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "dinosaur."
+							}
+						]
+					}
+				],
+				[
+					{
+						"t": "Plain",
+						"c": [
+							{
+								"t": "Str",
+								"c": "It"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "is"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "only"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "known"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "animal"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "to"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "breed"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "with"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "the"
+							},
+							{
+								"t": "Space"
+							},
+							{
+								"t": "Str",
+								"c": "robot"
+							}
+						]
+					}
+				]
+			]
+		},
+		{
+			"t": "Header",
+			"c": [
+				1,
+				[
+					"references",
+					[
+						"unnumbered"
+					],
+					[]
+				],
+				[
+					{
+						"t": "Str",
+						"c": "References"
+					}
+				]
+			]
+		}
+	],
+	"pandoc-api-version": [
+		1,
+		17,
+		0,
+		4
+	],
+	"meta": {
+		"author": {
+			"t": "MetaList",
+			"c": [
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "Travis"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "Rich"
+						}
+					]
+				}
+			]
+		},
+		"pubprevdegrees": {
+			"t": "MetaList",
+			"c": [
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "B.S."
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "Boston"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "University"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "(2010)"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "M.S.,"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "Boston"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "University"
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": "(2011)"
+						}
+					]
+				}
+			]
+		},
+		"title": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Encoding"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Data"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "into"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Physical"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Objects"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "with"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Digitally"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Fabricated"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Textures"
+				}
+			]
+		},
+		"pubdegree": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Master"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Science"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "in"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Media"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Arts"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Sciences"
+				}
+			]
+		},
+		"institute": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Massachussets"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Institute"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Technology"
+				}
+			]
+		},
+		"pubsupervisorname": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Andrew"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Lippman"
+				}
+			]
+		},
+		"pubsupervisortitle": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Associate"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Director"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "&"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Senior"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Research"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Scientist,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "MIT"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Media"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Lab"
+				}
+			]
+		},
+		"pubchairmanname": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Professor"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Patricia"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Maes"
+				}
+			]
+		},
+		"pubchairmantitle": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Associate"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Academic"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Head,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Program"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "in"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Media"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Arts"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Sciences"
+				}
+			]
+		},
+		"pubacknowledgements": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Like"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "all"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "good"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "adventures,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "landing"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "at"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "end"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "writing"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "your"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "thesis"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "is"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "filled"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "with"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "as"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "much"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "excitement"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "for"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "end"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "result"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "as"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "bewilderment"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "at"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "path"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "it"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "took"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "get"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "there."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "As"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "twisting"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "windy"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "as"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "that"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "path"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "may"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "have"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "been,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "there"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "are"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "always"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "hoards"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "people"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "who"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "have"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "kept"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "me"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "from"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "skidding"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "past"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "sharp"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "turns"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "sinking"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "too"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "far"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "into"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "deep"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "dives."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "To"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "that"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "end,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "thank"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "you"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "everyone"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "who"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "helped"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "me"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "get"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "from"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "A"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "B"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "(and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Z,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "H,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "K,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "M"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "in"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "between)."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "The"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Media"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Lab"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "is"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "unlike"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "any"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "community"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "I’ve"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "ever"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "been"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "a"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "part"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "I’m"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "extremely"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "grateful"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "have"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "been"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "able"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "complete"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "this"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "work"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "as"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "part"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "it."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Thank"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "you"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "everyone"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "for"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Friday"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "teas,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "99"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Fridays,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "ping"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "pong,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "free"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "appetizers,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "foodcam"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "rations,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Muddy"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "brainstorms."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "With"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "utmost"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "gratitude,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "I"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "thank"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "my"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "advisor,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Andy"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Lippman,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "for"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "bringing"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "me"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Lab"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "providing"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "amazing"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "experiences"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "throughout"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "this"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "two"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "years"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Master’s."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "I’m"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "extremely"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "grateful"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "for"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "all"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "support,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "advice,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "ideas"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "you’ve"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "given"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "me."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Thank"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "you"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "my"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "readers,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Pattie"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Maes"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Mike"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Bove,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "for"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "helping"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "me"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "funnel"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "sparks"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "in"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "my"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "head"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "down"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "into"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "something"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "worthwhile"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "exciting."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "It’s"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "been"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "wonderful"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "working"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "with"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "you."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Thanks"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Viral"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Spaces"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "group"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "(Matt"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Blackshaw,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Kwan"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Hong"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Lee"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": ","
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Julia"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Ma,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Dawei"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Shen,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Shen"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Shen,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Dan"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Sawada,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Jonathan"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Speiser,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Eyal"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Toledano,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Deb"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Widener,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Grace"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Woo,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Polychronis"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Ypodimatopoulos)"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "for"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "being"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "in"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "trenches"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "with"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "me"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "giving"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "me"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "enough"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "fuel"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "for"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "thought"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "last"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "decades."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Thanks"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "all"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "MIT"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "friends"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "who"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "have"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "been"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "there"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "get"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "food,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "drinks,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "free"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "t-shirts"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "for"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "these"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "past"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "two"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "years."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Nothing"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "is"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "sadder"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "than"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "fact"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "that"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "we"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "don’t"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "get"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "always"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "play"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "in"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "same"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "building."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "In"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "more"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "ways"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "than"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "I"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "can"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "count,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "I’m"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "indebted"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "my"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "family"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "—"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Dad,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Mom,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Josh,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Peter"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "—"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "for"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "raising"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "me"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "be"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "eager"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "interested"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "in"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "exploring"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "world’s"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "questions."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Thank"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "you."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "To"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "my"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "non-genetic"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "family"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "at"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "9"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Rollins,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "thanks"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "for"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "keeping"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "me"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "sane"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "happy."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "To"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Grace"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Lin,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "thanks"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "for"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "being"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "there"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "every"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "step"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "way."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "I"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "couldn’t"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "be"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "happier"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "that"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "I"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "get"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "share"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "countless"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "adventures"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "with"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "you."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "To"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "all"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "my"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "friends"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "inside"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "outside"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Lab,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "thank"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "you"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "for"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "taking"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "me"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "where"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "I"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "am"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "today."
+				}
+			]
+		},
+		"pubabstract": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "This"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "thesis"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "presents"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "outlines"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "a"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "system"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "for"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "encoding"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "physical"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "passive"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "objects"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "with"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "deterministic"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "surface"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "features"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "that"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "contain"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "identifying"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "information"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "about"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "that"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "object."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "The"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "goal"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "such"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "work"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "is"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "take"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "steps"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "towards"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "a"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "self-descriptive"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "universe"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "in"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "which"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "all"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "objects"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "contain"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "within"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "their"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "physical"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "structure"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "hooks"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "information"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "about"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "how"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "they"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "can"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "be"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "used,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "how"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "they"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "can"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "be"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "fixed,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "what"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "they’re"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "used"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "for,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "who"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "uses"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "them,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "etc."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "By"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "exploring"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "modern"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "manufacturing"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "processes,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "several"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "techniques"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "for"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "creating"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "these"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "deterministic"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "textures"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "are"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "presented."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "high"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "importance"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "is"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "advancement"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "3D"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "printing"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "technologies."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "By"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "leveraging"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "the"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "rapid"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "prototyping"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "capabilities"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "such"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "machines"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "offer,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "this"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "thesis"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "looks"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "at"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "how"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "personalized"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "objects"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "draft"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "models"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "may"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "be"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "encoded"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "with"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "data"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "that"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "allows"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "annotations,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "ideas,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "notes"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "be"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "associated"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "with"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "physical"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "points"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "across"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "that"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "object."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Whereas"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "barcodes,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "QR"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "codes,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "RFID"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "tags"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "are"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "often"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "used"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "associate"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "a"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "single"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "object"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "with"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "a"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "single"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "piece"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "data,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "this"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "technique"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "encoding"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "surfaces"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "will"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "allow"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "for"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "many"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "points"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "identification"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "to"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "be"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "placed"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "on"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "a"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "single"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "object,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "enabling"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "applications"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "in"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "learning,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "group"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "interaction,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "gaming."
+				}
+			]
+		},
+		"pubdegreemonth": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "June"
+				}
+			]
+		},
+		"pubdegreeyear": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "2013"
+				}
+			]
+		},
+		"pubthesisdate": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "May"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "6,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "2013"
+				}
+			]
+		},
+		"pubdepartment": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Program"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "in"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Media"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Arts"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Sciences,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "School"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Architecture"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Planning"
+				}
+			]
+		},
+		"pubreaders-0-name": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Patricia"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Maes"
+				}
+			]
+		},
+		"pubreaders-0-title": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Professor"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Media"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Technology"
+				}
+			]
+		},
+		"pubreaders-0-affiliation": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Program"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "in"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Media"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Arts"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Sciences"
+				}
+			]
+		},
+		"pubreaders-1-name": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Goerge"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Sweg"
+				}
+			]
+		},
+		"pubreaders-1-title": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Professor"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Fun"
+				}
+			]
+		},
+		"pubreaders-1-affiliation": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Media"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Arts"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Sciences"
+				}
+			]
+		},
+		"pubreaders-2-name": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Johnaothon"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Lolsworthy"
+				}
+			]
+		},
+		"pubreaders-2-title": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Professor"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Terror"
+				}
+			]
+		},
+		"pubreaders-2-affiliation": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Program"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "of"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Letters"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "and"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Predation"
+				}
+			]
+		},
+		"pubreaders-3-name": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "V."
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Michael"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Bove,"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Jr"
+				}
+			]
+		},
+		"pubreaders-3-title": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Principal"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Research"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Scientist"
+				}
+			]
+		},
+		"pubreaders-3-affiliation": {
+			"t": "MetaInlines",
+			"c": [
+				{
+					"t": "Str",
+					"c": "Media"
+				},
+				{
+					"t": "Space"
+				},
+				{
+					"t": "Str",
+					"c": "Lab"
+				}
+			]
+		}
+	}
+}

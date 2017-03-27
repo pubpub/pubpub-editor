@@ -32,7 +32,7 @@ var _require4 = require("prosemirror-commands"),
 var _require5 = require("prosemirror-state"),
     Plugin = _require5.Plugin;
 
-var _require6 = require("./menu"),
+var _require6 = require("./menu-config"),
     buildMenuItems = _require6.buildMenuItems;
 
 exports.buildMenuItems = buildMenuItems;

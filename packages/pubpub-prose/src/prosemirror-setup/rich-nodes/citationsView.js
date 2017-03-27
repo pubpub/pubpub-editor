@@ -4,7 +4,6 @@ import { CitationsComponent } from './components';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactView from './reactview';
-import {delete} from 'prosemirror-transform';
 import { getPlugin } from '../plugins';
 import { schema } from '../schema';
 
