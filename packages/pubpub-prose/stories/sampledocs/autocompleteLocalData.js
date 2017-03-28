@@ -319,7 +319,56 @@ export const localUsers = [
 	}
 ];
 
-export const localHighlights = [];
+export const localHighlights = [
+  {
+    "versionHash": "31bff09e01ac80e4b441e5115e432a19da1979ad",
+    "userId": 4598,
+    "fileName": "main.md",
+    "fileHash": "39342f6999fc8cd1f3c02121473fe2ddd7688914",
+    "updatedAt": "2017-03-25T14:03:46.677Z",
+    "context": null,
+    "suffix": "First, there was the continuity ",
+    "prefix": "ave worked through these ideas, ",
+    "versionId": 6263,
+    "fileId": 7438,
+    "pubId": 4642,
+    "id": 949,
+    "createdAt": "2017-03-25T14:03:46.677Z",
+    "exact": "a  number of principles have given more structure to the concept of an appropriable mathematics. "
+  },
+  {
+    "versionHash": "31bff09e01ac80e4b441e5115e432a19da1979ad",
+    "userId": 4598,
+    "fileName": "main.md",
+    "fileHash": "39342f6999fc8cd1f3c02121473fe2ddd7688914",
+    "updatedAt": "2017-03-20T23:14:36.763Z",
+    "context": null,
+    "suffix": ". If you can't, anything can be ",
+    "prefix": "a- mental fact  about learning: ",
+    "versionId": 6263,
+    "fileId": 7438,
+    "pubId": 4642,
+    "id": 947,
+    "createdAt": "2017-03-20T23:14:36.763Z",
+    "exact": "Anything is easy if you can assimilate it to your collection of models"
+  },
+  {
+    "versionHash": "31bff09e01ac80e4b441e5115e432a19da1979ad",
+    "userId": 4571,
+    "fileName": "main.md",
+    "fileHash": "39342f6999fc8cd1f3c02121473fe2ddd7688914",
+    "updatedAt": "2017-03-15T15:31:06.633Z",
+    "context": null,
+    "suffix": ". Thus we are brought back to se",
+    "prefix": " the mathetic computer culture. ",
+    "versionId": 6263,
+    "fileId": 7438,
+    "pubId": 4642,
+    "id": 945,
+    "createdAt": "2017-03-15T15:31:06.633Z",
+    "exact": "Powerful new social forms must have their roots in the  culture, not be the creatures of bureaucrats"
+  }
+];
 
 export const localDiscussions = [];
 

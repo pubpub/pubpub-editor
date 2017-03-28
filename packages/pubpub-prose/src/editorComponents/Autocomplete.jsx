@@ -102,6 +102,8 @@ export const Autocomplete = React.createClass({
 			return this.getModeResults(mode, 'file', input, this.props.localFiles);
 		case 'references':
 			return this.getModeResults(mode, 'reference', input, this.props.localReferences);
+		case 'highlights':
+			return this.getModeResults(mode, 'highlight', input, this.props.localHighlights);
 		default: 
 			results = [
 				...this.getLocalResults('file', input, this.props.localFiles),
@@ -236,20 +238,27 @@ export const Autocomplete = React.createClass({
 					if (result.itemType === 'pub' && result.local) { label = 'Featured Pub'; }
 					if (result.itemType === 'file') { label = `File: ${result.itemType}`; }
 					if (result.itemType === 'reference') { label = `Ref: ${result.author}`; }
+					if (result.itemType === 'highlight') { label = `Highlight`; }
 
 					let title = result.title;
 					if (result.itemType === 'user') { title = `${result.firstName} ${result.lastName}`; }
 					if (result.itemType === 'file') { title = `${result.name}`; }
+					if (result.itemType === 'highlight') { title = `${result.exact}`; }
 
-					const hasAvatar = result.avatar || result.type === 'image/jpeg' || result.type === 'image/png' || result.type === 'image/jpg' || result.type === 'image/gif';
+					let avatar;
+					if (result.avatar) { avatar = result.avatar; }
+					if (result.type === 'image/jpeg' || result.type === 'image/png' || result.type === 'image/jpg' || result.type === 'image/gif') { avatar = result.url; }
+					if (result.itemType === 'highlight') { avatar = 'https://i.imgur.com/W7JZHpx.png'; }
+
 					return (
 						<div key={`result-${result.itemType}-${result.id}`} style={styles.resultWrapper(this.state._selectedIndex === index, isCategory)} onMouseEnter={this.setCurrentIndex.bind(this, index)} onClick={this.selectResult.bind(this, index)}>
-							{hasAvatar &&
+							{!!avatar &&
 								<div style={styles.avatarWrapper}>
-									<img src={result.avatar || result.url} style={styles.avatar} />
+									<img src={avatar} style={styles.avatar} />
 								</div>
 							}
-							{!hasAvatar && !result.suggestionCategory &&
+
+							{!avatar && !result.suggestionCategory &&
 								<div style={styles.avatarWrapper}>
 									<div style={styles.avatarLetter}>{title.substring(0, 1)}</div>
 								</div>
@@ -319,7 +328,6 @@ styles = {
 		borderRadius: '11px',
 	},
 	avatarLetter: {
-		textAlign: 'center',
 		fontSize: '1.5em',
 		fontWeight: 'bold',
 		textTransform: 'uppercase',
