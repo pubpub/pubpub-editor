@@ -73,10 +73,10 @@ var BaseMenu = exports.BaseMenu = _react2.default.createClass({
 
 		var editorState = this.props.view.state;
 
-		var menuItems = menu.map(function (menuItem) {
+		var menuItems = menu.map(function (menuItem, index) {
 			if (Array.isArray(menuItem)) {
 				var m = _this2.renderMenu(menuItem);
-				m.concat(_react2.default.createElement('div', { className: 'editorMenuSeperator' }));
+				m.concat(_react2.default.createElement('div', { className: 'editorMenuSeperator', key: 'menuItem-' + index }));
 				return m;
 			} else if (menuItem.content && menuItem.content.length > 0) {
 				var renderedSubMenu = _this2.renderMenu(menuItem.content, true);
@@ -167,7 +167,7 @@ var BaseMenu = exports.BaseMenu = _react2.default.createClass({
 					};
 					return _react2.default.createElement(
 						'div',
-						{ disabled: !active, style: buttonStyle },
+						{ key: 'menuItem-' + index, disabled: !active, style: buttonStyle },
 						_react2.default.createElement(_core.MenuItem, { disabled: !active, iconName: _icon, onClick: run, text: text }),
 						' '
 					);
@@ -179,7 +179,7 @@ var BaseMenu = exports.BaseMenu = _react2.default.createClass({
 					}
 					return _react2.default.createElement(
 						_core.Button,
-						{ disabled: !active, style: _buttonStyle, iconName: _icon, onClick: run },
+						{ key: 'menuItem-' + index, disabled: !active, style: _buttonStyle, iconName: _icon, onClick: run },
 						text
 					);
 				}

@@ -74,14 +74,16 @@ function buildKeymap(schema, mapKeys) {
   if (type = schema.nodes.ordered_list) bind("Shift-Ctrl-9", wrapInList(type));
   if (type = schema.nodes.blockquote) bind("Ctrl->", wrapIn(type));
   if (type = schema.nodes.hard_break) {
-    var br = type,
-        cmd = chainCommands(newlineInCode, function (state, onAction) {
-      onAction(state.tr.replaceSelectionWith(br.create()).scrollAction());
-      return true;
-    });
-    bind("Mod-Enter", cmd);
-    bind("Shift-Enter", cmd);
-    if (mac) bind("Ctrl-Enter", cmd);
+    (function () {
+      var br = type,
+          cmd = chainCommands(newlineInCode, function (state, onAction) {
+        onAction(state.tr.replaceSelectionWith(br.create()).scrollAction());
+        return true;
+      });
+      bind("Mod-Enter", cmd);
+      bind("Shift-Enter", cmd);
+      if (mac) bind("Ctrl-Enter", cmd);
+    })();
   }
   if (type = schema.nodes.list_item) {
     bind("Enter", splitListItem(type));
@@ -93,11 +95,13 @@ function buildKeymap(schema, mapKeys) {
   if (type = schema.nodes.heading) for (var i = 1; i <= 6; i++) {
     bind("Shift-Ctrl-" + i, setBlockType(type, { level: i }));
   }if (type = schema.nodes.horizontal_rule) {
-    var hr = type;
-    bind("Mod-_", function (state, onAction) {
-      onAction(state.tr.replaceSelectionWith(hr.create()).scrollAction());
-      return true;
-    });
+    (function () {
+      var hr = type;
+      bind("Mod-_", function (state, onAction) {
+        onAction(state.tr.replaceSelectionWith(hr.create()).scrollAction());
+        return true;
+      });
+    })();
   }
 
   /*

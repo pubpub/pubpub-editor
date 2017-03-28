@@ -109,6 +109,7 @@ const nodes = {
       size: {default: ''},
       align: {default: ''},
   	},
+    parseDOM: [{tag: "img[src]"}],
   	inline: false,
   	group: 'block',
   	draggable: false,
@@ -169,6 +170,7 @@ const nodes = {
     toDOM(node) { return node.text }
   },
 
+  /*
   image: {
     inline: true,
     attrs: {
@@ -187,6 +189,7 @@ const nodes = {
     }}],
     toDOM(node) { return ["img", node.attrs] }
   },
+  */
 
   hard_break: {
     inline: true,

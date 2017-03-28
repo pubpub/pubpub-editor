@@ -9,17 +9,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-<<<<<<< HEAD
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _prosemirrorSetup = require('../prosemirror-setup');
-
-var _Autocomplete = require('./Autocomplete');
-
-var _Autocomplete2 = _interopRequireDefault(_Autocomplete);
-=======
 var _Autocomplete = require('./Autocomplete');
 
 var _Autocomplete2 = _interopRequireDefault(_Autocomplete);
@@ -29,7 +18,6 @@ var _prosemirrorSetup = require('../prosemirror-setup');
 var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
->>>>>>> d54fbe8dbbcf3c879e713ad0e2811aa5ac72c923
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -48,7 +36,13 @@ Props outline:
 var RichEditor = exports.RichEditor = _react2.default.createClass({
 	displayName: 'RichEditor',
 
-	propTypes: {},
+	propTypes: {
+		initialContent: _react.PropTypes.object,
+		onChange: _react.PropTypes.func,
+		localUsers: _react.PropTypes.array,
+		localPubs: _react.PropTypes.array,
+		globalCategories: _react.PropTypes.array
+	},
 
 	getInitialState: function getInitialState() {
 		return {
@@ -57,7 +51,10 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 			visible: undefined,
 			top: 0,
 			left: 0,
-			input: ''
+			input: '',
+			menuTop: 0,
+			inlineCenter: 0,
+			inlineTop: 0
 		};
 	},
 	componentWillMount: function componentWillMount() {},
@@ -65,9 +62,39 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 		this.createEditor(null);
 	},
 	componentWillUpdate: function componentWillUpdate(nextProps) {},
-	onChange: function onChange(editorState) {
-		this.props.onChange();
+	onChange: function onChange() {
+		this.props.onChange(this.editor.view.state.toJSON().doc);
+		// this.props.onChange(this.editor.view.state.doc);
+		this.updateCoordsForMenus();
 	},
+
+
+	updateCoordsForMenus: function updateCoordsForMenus() {
+		var currentPos = this.editor.view.state.selection.$to.pos;
+		var container = document.getElementById('rich-editor-container');
+		var menuTop = this.editor.view.coordsAtPos(currentPos).top - container.getBoundingClientRect().top + 5;
+
+		if (!this.editor.view.state.selection.$cursor) {
+			var currentFromPos = this.editor.view.state.selection.$from.pos;
+			var currentToPos = this.editor.view.state.selection.$to.pos;
+			var left = this.editor.view.coordsAtPos(currentFromPos).left - container.getBoundingClientRect().left;
+			var right = this.editor.view.coordsAtPos(currentToPos).right - container.getBoundingClientRect().left;
+			var inlineCenter = left + (right - left) / 2;
+			var inlineTop = this.editor.view.coordsAtPos(currentFromPos).top - container.getBoundingClientRect().top;
+			return this.setState({
+				menuTop: menuTop,
+				inlineCenter: inlineCenter,
+				inlineTop: inlineTop
+			});
+		}
+
+		return this.setState({
+			menuTop: menuTop,
+			inlineTop: 0,
+			inlineCenter: 0
+		});
+	},
+
 	getMarkdown: function getMarkdown() {
 		return this.editor.toMarkdown();
 	},
@@ -79,7 +106,7 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 		    handleFileUpload = _props.handleFileUpload,
 		    onError = _props.onError,
 		    mentionsComponent = _props.mentionsComponent,
-		    initialState = _props.initialState;
+		    initialContent = _props.initialContent;
 
 
 		if (this.editor) {
@@ -88,7 +115,7 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 		var place = _reactDom2.default.findDOMNode(this.refs.container);
 		this.editor = new _prosemirrorSetup.RichEditor({
 			place: place,
-			contents: initialState,
+			contents: initialContent,
 			// components: {
 			// 	suggestComponent: mentionsComponent,
 			// },
@@ -122,31 +149,30 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 	},
 
 
-<<<<<<< HEAD
-=======
-	createMention: function createMention(text) {
+	onSelection: function onSelection(selectedObject) {
+		console.log(selectedObject);
 		return this.editor.createMention();
 	},
 
->>>>>>> d54fbe8dbbcf3c879e713ad0e2811aa5ac72c923
-	mentionStyle: function mentionStyle(top, left, visible) {
-		return {
-			zIndex: 10,
-			position: 'absolute',
-			left: left,
-			top: top,
-			opacity: visible ? 1 : 0,
-			pointerEvents: visible ? 'auto' : 'none',
-			transition: '.1s linear opacity'
-		};
-	},
-
 	render: function render() {
-		var autocompleteStyle = this.mentionStyle(this.state.top, this.state.left, this.state.visible);
 		return _react2.default.createElement(
 			'div',
 			{ style: { position: 'relative' }, id: 'rich-editor-container' },
-			_react2.default.createElement(_Autocomplete2.default, { style: autocompleteStyle, input: this.state.input }),
+			_react2.default.createElement(_Autocomplete2.default, {
+				top: this.state.top,
+				left: this.state.left,
+				visible: this.state.visible,
+				input: this.state.input,
+				onSelection: this.onSelection,
+				localUsers: this.props.localUsers,
+				localPubs: this.props.localPubs,
+				globalCategories: this.props.globalCategories }),
+			!!this.state.menuTop && _react2.default.createElement('span', { style: { position: 'absolute', left: '-24px', top: this.state.menuTop, cursor: 'pointer' }, className: 'pt-icon-standard pt-icon-add' }),
+			!!this.state.inlineTop && _react2.default.createElement(
+				'div',
+				{ className: 'pt-card pt-elevation-0 pt-dark', style: { position: 'absolute', height: '35px', lineHeight: '35px', padding: '0px 1em', top: this.state.inlineTop - 40, left: this.state.inlineCenter } },
+				'Formatting'
+			),
 			_react2.default.createElement('div', { ref: 'container', className: 'pubEditor', id: 'pubEditor' })
 		);
 	}

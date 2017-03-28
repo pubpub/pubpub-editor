@@ -2,7 +2,7 @@ const {lift, joinUp, selectParentNode, wrapIn, setBlockType} = require("prosemir
 const {undo, redo} = require("prosemirror-history")
 const {toggleMark} = require("prosemirror-commands")
 const {wrapInList} = require("prosemirror-schema-list")
-
+const {createTable} = require("prosemirror-schema-table")
 class MenuItem {
   constructor(spec) {
     this.spec = spec

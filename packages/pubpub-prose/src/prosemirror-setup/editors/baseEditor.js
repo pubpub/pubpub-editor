@@ -15,7 +15,7 @@ class BaseEditor {
   }
 
   create({place, contents, plugins, config, components: {suggestComponent} = {}, handlers: { createFile, onChange, captureError, updateMentions }}) {
-    const {clipboardParser, clipboardSerializer} = require('../clipboard');
+    const {clipboardParser, clipboardSerializer, transformPastedHTML} = require('../clipboard');
     const {buildMenuItems} = require('../menu-config');
     const {EditorState} = require('prosemirror-state');
     const {EditorView} = require('prosemirror-view');
@@ -53,6 +53,7 @@ class BaseEditor {
       handleContextMenu: (evt, thing, thing2)=> {
         console.log(evt, thing, thing2);
       },
+      transformPastedHTML: transformPastedHTML,
       handleDOMEvents: {
         dragstart: (view, evt) => {
           evt.preventDefault();

@@ -36,11 +36,13 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 		fence: {block: 'code_block'},
 		hr: {node: 'horizontal_rule'},
 		pagebreak: {node: 'page_break'},
+		/*
 		image: {node: 'image', attrs: tok => ({
 			src: tok.attrGet('src'),
 			title: tok.attrGet('title') || null,
 			alt: tok.children[0] && tok.children[0].content || null
 		})},
+		*/
 		embed: {node: 'embed', attrs: tok => ({
 			source: tok.attrGet('source'),
 			className: tok.attrGet('className') || null,

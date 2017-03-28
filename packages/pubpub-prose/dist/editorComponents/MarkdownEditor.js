@@ -33,7 +33,10 @@ var MarkdownEditor = exports.MarkdownEditor = _react2.default.createClass({
 
 	propTypes: {
 		initialContent: _react.PropTypes.string,
-		onChange: _react.PropTypes.func
+		onChange: _react.PropTypes.func,
+		localUsers: _react.PropTypes.array,
+		localPubs: _react.PropTypes.array,
+		globalCategories: _react.PropTypes.array
 	},
 
 	simpleMDE: undefined,
@@ -70,48 +73,6 @@ var MarkdownEditor = exports.MarkdownEditor = _react2.default.createClass({
 			this.simpleMDE.value(this.props.initialContent || '');
 			this.simpleMDE.codemirror.on('cursorActivity', function () {
 				if (_this.props.onChange) {
-<<<<<<< HEAD
-					_this.props.onChange(_this.simpleMDE.value());
-					var cm = _this.simpleMDE.codemirror;
-					var currentCursor = cm.getCursor();
-					var currentLine = cm.getLine(currentCursor.line);
-					var nextChIndex = currentCursor.ch;
-					var nextCh = currentLine.length > nextChIndex ? currentLine.charAt(nextChIndex) : ' ';
-					var prevChars = currentLine.substring(0, currentCursor.ch);
-					var startIndex = prevChars.lastIndexOf(' ') + 1;
-					var startLetter = currentLine.charAt(startIndex);
-					var shouldMark = startLetter === '@' && nextCh === ' ' && !cm.getSelection();
-
-					if (shouldMark && !_this.autocompleteMarker) {
-						_this.autocompleteMarker = cm.markText({ line: currentCursor.line, ch: prevChars.lastIndexOf(' ') + 1 }, { line: currentCursor.line, ch: prevChars.lastIndexOf(' ') + 2 }, { className: 'testmarker' });
-
-						setTimeout(function () {
-							var container = document.getElementById('markdown-editor-container');
-							var mark = document.getElementsByClassName('testmarker')[0];
-							var top = mark.getBoundingClientRect().bottom - container.getBoundingClientRect().top;
-							var left = mark.getBoundingClientRect().left - container.getBoundingClientRect().left;
-
-							_this.setState({
-								visible: true,
-								top: top,
-								left: left,
-								input: currentLine.substring(startIndex + 1, nextChIndex)
-							});
-						}, 0);
-					} else if (shouldMark) {
-						_this.setState({
-							input: currentLine.substring(startIndex + 1, nextChIndex)
-						});
-					} else if (!shouldMark && _this.autocompleteMarker) {
-						// console.log('Clearing!');
-						_this.autocompleteMarker.clear();
-						_this.autocompleteMarker = undefined;
-						_this.setState({
-							visible: false
-						});
-					}
-					// console.log(startLetter, nextCh);
-=======
 					(function () {
 						_this.props.onChange(_this.simpleMDE.value());
 						var cm = _this.simpleMDE.codemirror;
@@ -119,32 +80,25 @@ var MarkdownEditor = exports.MarkdownEditor = _react2.default.createClass({
 						var currentLine = cm.getLine(currentCursor.line);
 						var nextChIndex = currentCursor.ch;
 						var nextCh = currentLine.length > nextChIndex ? currentLine.charAt(nextChIndex) : ' ';
-						// console.log(currentCursor);
 						var prevChars = currentLine.substring(0, currentCursor.ch);
 						var startIndex = prevChars.lastIndexOf(' ') + 1;
 						var startLetter = currentLine.charAt(startIndex);
-						// console.log(prevChars.lastIndexOf(' ') + 1, currentCursor.ch);
 						var shouldMark = startLetter === '@' && nextCh === ' ' && !cm.getSelection();
 
-						// console.log('Heyo ', startLetter, nextCh, currentCursor.ch, startIndex, currentCursor, cm.getSelection());
 						if (shouldMark && !_this.autocompleteMarker) {
-							// console.log('Add it')
 							_this.autocompleteMarker = cm.markText({ line: currentCursor.line, ch: prevChars.lastIndexOf(' ') + 1 }, { line: currentCursor.line, ch: prevChars.lastIndexOf(' ') + 2 }, { className: 'testmarker' });
 
-							// console.log(document.getElementsByClassName('testmarker'), document.getElementsByClassName('testmarker')[0]);
 							setTimeout(function () {
 								var container = document.getElementById('markdown-editor-container');
 								var mark = document.getElementsByClassName('testmarker')[0];
-								// console.log(container, mark);
 								var top = mark.getBoundingClientRect().bottom - container.getBoundingClientRect().top;
 								var left = mark.getBoundingClientRect().left - container.getBoundingClientRect().left;
 
-								console.log(startIndex, nextChIndex);
 								_this.setState({
 									visible: true,
 									top: top,
 									left: left,
-									input: currentLine.substring(startIndex + 1, nextChIndex)
+									input: currentLine.substring(startIndex + 1, nextChIndex) || ' '
 								});
 							}, 0);
 						} else if (shouldMark) {
@@ -161,14 +115,14 @@ var MarkdownEditor = exports.MarkdownEditor = _react2.default.createClass({
 						}
 						// console.log(startLetter, nextCh);
 					})();
->>>>>>> d54fbe8dbbcf3c879e713ad0e2811aa5ac72c923
 				}
 			});
 			// this.simpleMDE.codemirror.on('keyHandled', this.handleKey);
 			this.simpleMDE.codemirror.setOption('extraKeys', {
 				Up: this.handleArrow,
 				Down: this.handleArrow,
-				Esc: this.handleEscape
+				Esc: this.handleEscape,
+				Enter: this.handleEnter
 			});
 		}
 	},
@@ -191,24 +145,30 @@ var MarkdownEditor = exports.MarkdownEditor = _react2.default.createClass({
 		return _codemirror2.default.Pass;
 	},
 
-	mentionStyle: function mentionStyle(top, left, visible) {
-		return {
-			zIndex: 10,
-			position: 'absolute',
-			left: left,
-			top: top,
-			opacity: visible ? 1 : 0,
-			pointerEvents: visible ? 'auto' : 'none',
-			transition: '.1s linear opacity'
-		};
+	handleEnter: function handleEnter(cm) {
+		if (!this.state.visible) {
+			return _codemirror2.default.Pass;
+		}
+		return null;
+	},
+
+	onSelection: function onSelection(selectedObject) {
+		console.log('Got ', selectedObject);
 	},
 
 	render: function render() {
-		var autocompleteStyle = this.mentionStyle(this.state.top, this.state.left, this.state.visible);
 		return _react2.default.createElement(
 			'div',
 			{ id: 'markdown-editor-container', style: styles.container },
-			_react2.default.createElement(_Autocomplete2.default, { style: autocompleteStyle, input: this.state.input }),
+			_react2.default.createElement(_Autocomplete2.default, {
+				top: this.state.top,
+				left: this.state.left,
+				visible: this.state.visible,
+				input: this.state.input,
+				onSelection: this.onSelection,
+				localUsers: this.props.localUsers,
+				localPubs: this.props.localPubs,
+				globalCategories: this.props.globalCategories }),
 			_react2.default.createElement('textarea', { id: 'myMarkdownEditor' })
 		);
 	}

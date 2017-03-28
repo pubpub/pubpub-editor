@@ -118,6 +118,7 @@ var nodes = {
       size: { default: '' },
       align: { default: '' }
     },
+    parseDOM: [{ tag: "img[src]" }],
     inline: false,
     group: 'block',
     draggable: false,
@@ -186,27 +187,26 @@ var nodes = {
     }
   },
 
+  /*
   image: {
     inline: true,
     attrs: {
       src: {},
-      alt: { default: null },
-      title: { default: null }
+      alt: {default: null},
+      title: {default: null}
     },
     group: "inline",
     draggable: true,
-    parseDOM: [{ tag: "img[src]", getAttrs: function getAttrs(dom) {
-        return {
-          src: dom.getAttribute("src"),
-          title: dom.getAttribute("title"),
-          alt: dom.getAttribute("alt")
-        };
+    parseDOM: [{tag: "img[src]", getAttrs(dom) {
+      return {
+        src: dom.getAttribute("src"),
+        title: dom.getAttribute("title"),
+        alt: dom.getAttribute("alt")
       }
-    }],
-    toDOM: function toDOM(node) {
-      return ["img", node.attrs];
-    }
+    }}],
+    toDOM(node) { return ["img", node.attrs] }
   },
+  */
 
   hard_break: {
     inline: true,

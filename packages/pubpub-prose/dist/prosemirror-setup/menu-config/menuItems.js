@@ -21,6 +21,9 @@ var _require3 = require("prosemirror-commands"),
 var _require4 = require("prosemirror-schema-list"),
     wrapInList = _require4.wrapInList;
 
+var _require5 = require("prosemirror-schema-table"),
+    createTable = _require5.createTable;
+
 var MenuItem = function MenuItem(spec) {
   _classCallCheck(this, MenuItem);
 

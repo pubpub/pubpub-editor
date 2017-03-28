@@ -99,6 +99,47 @@ export const markdownSerializer = new MarkdownSerializer({
 	text(state, node) {
 		state.text(node.text);
 	},
+	table: function table(state, node) {
+		state.write('\n');
+		let rowCount = undefined;
+
+		const renderRow = (row) => {
+			let countedRows = 0;
+	    row.forEach((rowChild, _, i) => {
+				state.render(rowChild, row, i);
+				countedRows++;
+	    });
+			state.write('|');
+			state.write('\n');
+			if (!rowCount) {
+				rowCount = countedRows;
+			}
+		};
+
+		const renderHeaderDivider = () => {
+			let a;
+			for (a = 0; a < rowCount; a++) {
+				state.write('|---------');
+			}
+			state.write('|');
+			state.write('\n');
+		}
+
+    node.forEach((child, _, i) => {
+			renderRow(child);
+			if (i === 0 && rowCount) {
+				renderHeaderDivider();
+			}
+    })
+				// state.renderInline(node);
+		state.write('\n');
+	},
+	table_cell: function table_cell(state, node) {
+		state.write('|');
+    node.forEach((child, _, i) => {
+		  state.renderInline(child);
+    })
+	},
 }, {
 	em: {open: '*', close: '*', mixable: true},
 	strong: {open: '**', close: '**', mixable: true},
