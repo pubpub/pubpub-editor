@@ -90,7 +90,7 @@ class BaseEditor {
     }
   }
 
-  saveMention(text) {
+  createMention(text) {
     let mentionsPlugin;
     if (mentionsPlugin = getPlugin('mentions', this.view.state)) {
       mentionsPlugin.props.createMention(this.view, text);

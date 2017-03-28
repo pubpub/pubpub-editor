@@ -21,9 +21,9 @@ var _requestPromise2 = _interopRequireDefault(_requestPromise);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 require('../../style/autosuggest.scss');
 
@@ -36,16 +36,15 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 		visible: _react.PropTypes.bool,
 		top: _react.PropTypes.number,
 		left: _react.PropTypes.number,
-		URLs: _react.PropTypes.object,
 		input: _react.PropTypes.string,
 		onSelection: _react.PropTypes.func,
 
-		localFiles: _react.PropTypes.array,
-		localPubs: _react.PropTypes.array,
-		localReferences: _react.PropTypes.array,
-		localUsers: _react.PropTypes.array,
-		localHighlights: _react.PropTypes.array,
-		localDiscussions: _react.PropTypes.array,
+		localFiles: _react.PropTypes.array, // Used on Pubs. No Global at the moment
+		localPubs: _react.PropTypes.array, // Used in Journals. Local = Feature
+		localReferences: _react.PropTypes.array, // Used in Pubs. No Global at the moment
+		localUsers: _react.PropTypes.array, // Used in Discussions.
+		localHighlights: _react.PropTypes.array, // Used in Discussions. No Global at the moment
+		localDiscussions: _react.PropTypes.array, // Used in Discussions. No Global at the moment
 
 		globalCategories: _react.PropTypes.array },
 
@@ -99,6 +98,7 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 	getNewSelections: function getNewSelections(input) {
 		var mode = this.state._suggestionCategory || 'local';
 
+		// If we're in the starting state - no input, no mode selected, we show the default Category options
 		if ((input === ' ' || !input) && mode === 'local') {
 			return this.setState({
 				_currentSuggestions: this.appendOptions([], input),
@@ -106,6 +106,7 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 			});
 		}
 
+		// If we already have the result of this query in memory, use it rather than recalculating
 		if (this.state[mode + '-' + input]) {
 			return this.setState({
 				_currentSuggestions: this.appendOptions(this.state[mode + '-' + input], input),
@@ -113,77 +114,22 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 			});
 		}
 
-		var localFiles = this.props.localFiles || [];
-		var localPubs = this.props.localPubs || [];
-		var localReferences = this.props.localReferences || [];
-		var localUsers = this.props.localUsers || [];
-		var localHighlights = this.props.localHighlights || [];
-		var localDiscussions = this.props.localDiscussions || [];
-
-		// const urlBase = window.location.hostname === 'localhost'
-		// 	? 'http://localhost:9876'
-		// 	: 'https://www.pubpub.org';
-
-		// const globalCategories = this.props.globalCategories || [];
+		// Switch between modes to gather suggestions. Default = local, all types shown.
 		var results = void 0;
 		switch (mode) {
 			case 'pubs':
-				return this.getModeResults(mode, 'pub', input, localPubs);
+				return this.getModeResults(mode, 'pub', input, this.props.localPubs);
 			case 'users':
-				return this.getModeResults(mode, 'user', input, localUsers);
-			// results = localUsers.filter((item)=> {
-			// 	if (input === '' || input === ' ') { return true; }
-			// 	return item.username.toLowerCase().indexOf(input.toLowerCase()) > -1;
-			// });
-
-			// if (!globalCategories.includes(mode)) {
-			// 	return this.setState({ 
-			// 		_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
-			// 		_selectedIndex: 0,
-			// 		[`${mode}-${input}`]: results.slice(0, 10),
-			// 	});
-			// }
-			// return request({ uri: `${urlBase}/search/user?q=${input}`, json: true })
-			// .then((response)=> {
-			// 	results = results.concat(response);
-			// 	this.setState({ 
-			// 		_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
-			// 		_selectedIndex: 0,
-			// 		[`${mode}-${input}`]: results.slice(0, 10),
-			// 	});
-			// })
-			// .catch((err)=> {
-			// 	console.log(err);
-			// });
+				return this.getModeResults(mode, 'user', input, this.props.localUsers);
+			case 'files':
+				return this.getModeResults(mode, 'file', input, this.props.localFiles);
+			case 'references':
+				return this.getModeResults(mode, 'reference', input, this.props.localReferences);
+			case 'highlights':
+				return this.getModeResults(mode, 'highlight', input, this.props.localHighlights);
 			default:
-				results = localFiles.filter(function (item) {
-					return item.name.toLowerCase().indexOf(input.toLowerCase()) > -1;
-				}).map(function (item) {
-					return _extends({}, item, { type: 'file' });
-				}).concat(localPubs.filter(function (item) {
-					return item.firstName.toLowerCase().indexOf(input.toLowerCase()) > -1;
-				}).map(function (item) {
-					return _extends({}, item, { type: 'pub' });
-				})).concat(localReferences.filter(function (item) {
-					return item.title.toLowerCase().indexOf(input.toLowerCase()) > -1;
-				}).map(function (item) {
-					return _extends({}, item, { type: 'reference' });
-				})).concat(localUsers.filter(function (item) {
-					return item.username.toLowerCase().indexOf(input.toLowerCase()) > -1;
-				}).map(function (item) {
-					return _extends({}, item, { type: 'user' });
-				})).concat(localHighlights.filter(function (item) {
-					return item.exact.toLowerCase().indexOf(input.toLowerCase()) > -1;
-				}).map(function (item) {
-					return _extends({}, item, { type: 'highlight' });
-				})).concat(localDiscussions.filter(function (item) {
-					return item.title.toLowerCase().indexOf(input.toLowerCase()) > -1;
-				}).map(function (item) {
-					return _extends({}, item, { type: 'discussion' });
-				}));
-				// .concat(this.appendObjectType(localDiscussions.filter((item)=> {
-				// 	return item.title.indexOf(input) > -1;
-				// })), 'discussion');
+				results = [].concat(_toConsumableArray(this.getLocalResults('file', input, this.props.localFiles)), _toConsumableArray(this.getLocalResults('pub', input, this.props.localPubs)), _toConsumableArray(this.getLocalResults('reference', input, this.props.localReferences)), _toConsumableArray(this.getLocalResults('user', input, this.props.localUsers)), _toConsumableArray(this.getLocalResults('highlight', input, this.props.localHighlights)), _toConsumableArray(this.getLocalResults('discussion', input, this.props.localDiscussions)));
+
 				return this.setState(_defineProperty({
 					_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
 					_selectedIndex: 0
@@ -192,32 +138,63 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 	},
 
 
-	getModeResults: function getModeResults(mode, urlPath, input, localArray) {
+	getLocalResults: function getLocalResults(itemType, input) {
+		var localArray = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+
+		var searchKeysObject = {
+			file: ['name'],
+			pub: ['slug', 'title', 'description'],
+			reference: ['key', 'title', 'author'],
+			user: ['firstName', 'lastName', 'username'],
+			highlight: ['exact'],
+			discussion: ['title']
+		};
+		var searchKeys = searchKeysObject[itemType];
+
+		return localArray.filter(function (item) {
+			return searchKeys.reduce(function (previous, current) {
+				if (item[current].toLowerCase().indexOf(input.toLowerCase()) > -1) {
+					return true;
+				}
+				return previous;
+			}, false);
+		}).map(function (item) {
+			return _extends({}, item, { itemType: itemType, local: true });
+		});
+	},
+
+	getModeResults: function getModeResults(mode, itemType, input) {
 		var _this = this;
 
-		var results = void 0;
-		var urlBase = window.location.hostname === 'localhost' ? 'http://localhost:9876' : 'https://www.pubpub.org';
+		var localArray = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
 
 		var globalCategories = this.props.globalCategories || [];
+		var emptySearch = input === '' || input === ' ';
+		var urlBase = window.location.hostname === 'localhost' ? 'http://localhost:9876' : 'https://www.pubpub.org';
 
-		results = localArray.filter(function (item) {
-			if (input === '' || input === ' ') {
-				return true;
-			}
-			return item.username.toLowerCase().indexOf(input.toLowerCase()) > -1;
-		});
-		if (!globalCategories.includes(mode)) {
+		// Get local results for this category
+		var localResults = emptySearch ? localArray.map(function (item) {
+			return _extends({}, item, { itemType: itemType, local: true });
+		}) : this.getLocalResults(itemType, input, localArray);
+
+		// If we're not allowed this global category or empty search, simply setState with localResults and return
+		if (!globalCategories.includes(mode) || emptySearch) {
 			return this.setState(_defineProperty({
-				_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
+				_currentSuggestions: this.appendOptions(localResults.slice(0, 10), input),
 				_selectedIndex: 0
-			}, mode + '-' + input, results.slice(0, 10)));
+			}, mode + '-' + input, localResults.slice(0, 10)));
 		}
-		return (0, _requestPromise2.default)({ uri: urlBase + '/search/' + urlPath + '?q=' + input, json: true }).then(function (response) {
-			results = results.concat(response);
+
+		// If we are allowed this global category, async search
+		return (0, _requestPromise2.default)({ uri: urlBase + '/search/' + itemType + '?q=' + input, json: true }).then(function (response) {
+			var remoteResults = response.map(function (item) {
+				return _extends({}, item, { itemType: itemType, local: false });
+			});
+			var allResults = [].concat(_toConsumableArray(localResults), _toConsumableArray(remoteResults));
 			_this.setState(_defineProperty({
-				_currentSuggestions: _this.appendOptions(results.slice(0, 10), input),
+				_currentSuggestions: _this.appendOptions(allResults.slice(0, 10), input),
 				_selectedIndex: 0
-			}, mode + '-' + input, results.slice(0, 10)));
+			}, mode + '-' + input, allResults.slice(0, 10)));
 		}).catch(function (err) {
 			console.log(err);
 		});
@@ -244,31 +221,31 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 			// If it's empty - we need to show local options
 			// it if's not, we show global
 			var localCategories = [];
-			if (this.props.localFiles) {
+			if (this.props.localFiles && this.props.localFiles.length) {
 				localCategories.push('files');
 			}
-			if (this.props.localPubs) {
+			if (this.props.localPubs && this.props.localPubs.length) {
 				localCategories.push('pubs');
 			}
-			if (this.props.localReferences) {
+			if (this.props.localReferences && this.props.localReferences.length) {
 				localCategories.push('references');
 			}
-			if (this.props.localUsers) {
+			if (this.props.localUsers && this.props.localUsers.length) {
 				localCategories.push('users');
 			}
-			if (this.props.localHighlights) {
+			if (this.props.localHighlights && this.props.localHighlights.length) {
 				localCategories.push('highlights');
 			}
-			if (this.props.localDiscussions) {
+			if (this.props.localDiscussions && this.props.localDiscussions.length) {
 				localCategories.push('discussions');
 			}
 
 			var localCategoryOptions = localCategories.map(function (item) {
-				return { id: item, suggestionCategory: item, title: '' + (!isEmpty ? 'search all ' : '') + item };
+				return { id: item, suggestionCategory: item, title: item };
 			});
 
 			var globalCategoryOptions = globalCategories.map(function (item) {
-				return { id: item, suggestionCategory: item, title: '' + (!isEmpty ? 'search all ' : '') + item };
+				return { id: item, suggestionCategory: item, title: 'search all ' + item };
 			});
 
 			var options = isEmpty ? localCategoryOptions : globalCategoryOptions;
@@ -290,22 +267,72 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 			{ className: 'pt-card pt-elevation-4', style: styles.container(this.props.top, this.props.left, this.props.visible) },
 			results.map(function (result, index) {
 				var isCategory = !!result.suggestionCategory;
+				var label = result.itemType;
+				if (result.itemType === 'pub' && result.local) {
+					label = 'Featured Pub';
+				}
+				if (result.itemType === 'file') {
+					label = 'File: ' + result.itemType;
+				}
+				if (result.itemType === 'reference') {
+					label = 'Ref: ' + result.author;
+				}
+				if (result.itemType === 'highlight') {
+					label = 'Highlight';
+				}
+
+				var title = result.title;
+				if (result.itemType === 'user') {
+					title = result.firstName + ' ' + result.lastName;
+				}
+				if (result.itemType === 'file') {
+					title = '' + result.name;
+				}
+				if (result.itemType === 'highlight') {
+					title = '' + result.exact;
+				}
+
+				var avatar = void 0;
+				if (result.avatar) {
+					avatar = result.avatar;
+				}
+				if (result.type === 'image/jpeg' || result.type === 'image/png' || result.type === 'image/jpg' || result.type === 'image/gif') {
+					avatar = result.url;
+				}
+				if (result.itemType === 'highlight') {
+					avatar = 'https://i.imgur.com/W7JZHpx.png';
+				}
+
 				return _react2.default.createElement(
 					'div',
-					{ key: 'result-' + result.type + '-' + result.id, style: styles.resultWrapper(_this2.state._selectedIndex === index, isCategory), onMouseEnter: _this2.setCurrentIndex.bind(_this2, index), onClick: _this2.selectResult.bind(_this2, index) },
-					result.avatar && _react2.default.createElement('img', { src: result.avatar, style: styles.avatar }),
-					_react2.default.createElement(
-						'span',
-						{ style: styles.title },
-						result.firstName,
-						' ',
-						result.lastName,
-						result.title
+					{ key: 'result-' + result.itemType + '-' + result.id, style: styles.resultWrapper(_this2.state._selectedIndex === index, isCategory), onMouseEnter: _this2.setCurrentIndex.bind(_this2, index), onClick: _this2.selectResult.bind(_this2, index) },
+					!!avatar && _react2.default.createElement(
+						'div',
+						{ style: styles.avatarWrapper },
+						_react2.default.createElement('img', { src: avatar, style: styles.avatar })
 					),
-					result.type && _react2.default.createElement(
-						'span',
-						{ style: { float: 'right' }, className: 'pt-tag' },
-						result.type
+					!avatar && !result.suggestionCategory && _react2.default.createElement(
+						'div',
+						{ style: styles.avatarWrapper },
+						_react2.default.createElement(
+							'div',
+							{ style: styles.avatarLetter },
+							title.substring(0, 1)
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ style: styles.titleWrapper },
+						_react2.default.createElement(
+							'span',
+							{ style: styles.title },
+							title
+						),
+						label && _react2.default.createElement(
+							'div',
+							{ style: styles.label },
+							label
+						)
 					)
 				);
 			})
@@ -343,17 +370,56 @@ styles = {
 			backgroundColor: backgroundColor,
 			margin: '0em',
 			cursor: 'pointer',
-			padding: '0.5em',
-			fontStyle: isCategory ? 'italic' : 'none',
+			// padding: '0.5em',
+			borderBottom: '1px solid rgba(57, 75, 89, 0.1)',
+			// fontStyle: isCategory ? 'italic' : 'none',
 			textAlign: isCategory ? 'center' : 'left',
-			textTransform: isCategory ? 'capitalize' : 'none'
+			textTransform: isCategory ? 'capitalize' : 'none',
+			display: 'table',
+			width: '100%',
+			tableLayout: 'fixed'
 		};
 	},
+	avatarWrapper: {
+		display: 'table-cell',
+		width: '48px',
+		verticalAlign: 'top'
+	},
 	avatar: {
-		width: '35px',
-		verticalAlign: 'middle'
+		width: '48px',
+		maxHeight: '48px',
+		padding: '8px',
+		borderRadius: '11px'
+	},
+	avatarLetter: {
+		fontSize: '1.5em',
+		fontWeight: 'bold',
+		textTransform: 'uppercase',
+		lineHeight: 1,
+		padding: '8px'
+	},
+	titleWrapper: {
+		verticalAlign: 'top',
+		display: 'table-cell',
+		width: 'calc(100% - 48px)',
+		padding: '8px 12px 8px 0px'
+
 	},
 	title: {
-		verticalAlign: 'middle'
+		width: '100%',
+		whiteSpace: 'nowrap',
+		overflow: 'hidden',
+		textOverflow: 'ellipsis',
+		display: 'inline-block'
+	},
+	label: {
+		fontSize: '0.9em',
+		opacity: '0.85',
+		marginTop: '-4px',
+		width: '100%',
+		whiteSpace: 'nowrap',
+		overflow: 'hidden',
+		textOverflow: 'ellipsis',
+		display: 'inline-block'
 	}
 };

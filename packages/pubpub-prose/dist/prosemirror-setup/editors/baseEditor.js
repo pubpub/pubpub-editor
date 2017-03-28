@@ -200,8 +200,8 @@ var BaseEditor = function () {
       }
     }
   }, {
-    key: 'saveMention',
-    value: function saveMention(text) {
+    key: 'createMention',
+    value: function createMention(text) {
       var mentionsPlugin = void 0;
       if (mentionsPlugin = (0, _plugins.getPlugin)('mentions', this.view.state)) {
         mentionsPlugin.props.createMention(this.view, text);
