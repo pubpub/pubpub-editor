@@ -28,7 +28,7 @@ export const Autocomplete = React.createClass({
 	getInitialState() {
 		return { 
 			_suggestionCategory: null, 
-			_currentSuggestions: this.appendOptions([]),
+			_currentSuggestions: this.appendOptions([], ''),
 			_selectedIndex: 0,
 			_loading: false
 		};
@@ -50,7 +50,7 @@ export const Autocomplete = React.createClass({
 		}
 	},
 
-	componentWillUnmont() {
+	componentWillUnmount() {
 		window.removeEventListener('keydown', this.onKeyEvents);
 	},
 
@@ -78,14 +78,14 @@ export const Autocomplete = React.createClass({
 
 		if ((input === ' ' || !input) && mode === 'local') {
 			return this.setState({ 
-				_currentSuggestions: this.appendOptions([]),
+				_currentSuggestions: this.appendOptions([], input),
 				_selectedIndex: 0,
 			});
 		}
 
 		if (this.state[`${mode}-${input}`]) { 
 			return this.setState({ 
-				_currentSuggestions: this.appendOptions(this.state[`${mode}-${input}`]),
+				_currentSuggestions: this.appendOptions(this.state[`${mode}-${input}`], input),
 				_selectedIndex: 0,
 			});
 		}
@@ -98,45 +98,41 @@ export const Autocomplete = React.createClass({
 		const localHighlights = this.props.localHighlights || [];
 		const localDiscussions = this.props.localDiscussions || [];
 
-		const urlBase = window.location.hostname === 'localhost'
-			? 'http://localhost:9876'
-			: 'https://www.pubpub.org';
+		// const urlBase = window.location.hostname === 'localhost'
+		// 	? 'http://localhost:9876'
+		// 	: 'https://www.pubpub.org';
 
-
+		// const globalCategories = this.props.globalCategories || [];
 		let results;
 		switch (mode) {
 		case 'pubs':
-			results = localPubs.filter((item)=> {
-				return item.username.toLowerCase().indexOf(input.toLowerCase()) > -1;
-			});
-			return request({ uri: `${urlBase}/search/pub?q=${input}`, json: true })
-			.then((response)=> {
-				results = results.concat(response);
-				this.setState({ 
-					_currentSuggestions: this.appendOptions(results.slice(0, 10)),
-					_selectedIndex: 0,
-					[`${mode}-${input}`]: results.slice(0, 10),
-				});
-			})
-			.catch((err)=> {
-				console.log(err);
-			});
+			return this.getModeResults(mode, 'pub', input, localPubs);
 		case 'users':
-			results = localUsers.filter((item)=> {
-				return item.username.toLowerCase().indexOf(input.toLowerCase()) > -1;
-			});
-			return request({ uri: `${urlBase}/search/user?q=${input}`, json: true })
-			.then((response)=> {
-				results = results.concat(response);
-				this.setState({ 
-					_currentSuggestions: this.appendOptions(results.slice(0, 10)),
-					_selectedIndex: 0,
-					[`${mode}-${input}`]: results.slice(0, 10),
-				});
-			})
-			.catch((err)=> {
-				console.log(err);
-			});
+			return this.getModeResults(mode, 'user', input, localUsers);
+			// results = localUsers.filter((item)=> {
+			// 	if (input === '' || input === ' ') { return true; }
+			// 	return item.username.toLowerCase().indexOf(input.toLowerCase()) > -1;
+			// });
+			
+			// if (!globalCategories.includes(mode)) {
+			// 	return this.setState({ 
+			// 		_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
+			// 		_selectedIndex: 0,
+			// 		[`${mode}-${input}`]: results.slice(0, 10),
+			// 	});
+			// }
+			// return request({ uri: `${urlBase}/search/user?q=${input}`, json: true })
+			// .then((response)=> {
+			// 	results = results.concat(response);
+			// 	this.setState({ 
+			// 		_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
+			// 		_selectedIndex: 0,
+			// 		[`${mode}-${input}`]: results.slice(0, 10),
+			// 	});
+			// })
+			// .catch((err)=> {
+			// 	console.log(err);
+			// });
 		default: 
 			results = localFiles.filter((item)=> {
 				return item.name.toLowerCase().indexOf(input.toLowerCase()) > -1;
@@ -160,29 +156,45 @@ export const Autocomplete = React.createClass({
 			// 	return item.title.indexOf(input) > -1;
 			// })), 'discussion');
 			return this.setState({ 
-				_currentSuggestions: this.appendOptions(results.slice(0, 10)),
+				_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
 				_selectedIndex: 0,
 				[`${mode}-${input}`]: results.slice(0, 10),
 			});
 		}
 
-		// If there is no suggestioncategory, search all local
-		// If there is a category - search local of that category
-		// If less than 10, search for global of that category
+	},
 
-		
-		// request({ uri: `${urlBase}/search/user?q=${input}`, json: true })
-		// .then((response)=> {
-		// 	this.setState({ 
-		// 		_currentSuggestions: response.slice(0, 10),
-		// 		_selectedIndex: 0,
-		// 		[input]: response.slice(0, 10),
+	getModeResults: function(mode, urlPath, input, localArray) {
+		let results;
+		const urlBase = window.location.hostname === 'localhost'
+			? 'http://localhost:9876'
+			: 'https://www.pubpub.org';
 
-		// 	});
-		// })
-		// .catch((err)=> {
-		// 	console.log(err);
-		// });
+		const globalCategories = this.props.globalCategories || [];
+
+		results = localArray.filter((item)=> {
+			if (input === '' || input === ' ') { return true; }
+			return item.username.toLowerCase().indexOf(input.toLowerCase()) > -1;
+		});
+		if (!globalCategories.includes(mode)) {
+			return this.setState({ 
+				_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
+				_selectedIndex: 0,
+				[`${mode}-${input}`]: results.slice(0, 10),
+			});
+		}
+		return request({ uri: `${urlBase}/search/${urlPath}?q=${input}`, json: true })
+		.then((response)=> {
+			results = results.concat(response);
+			this.setState({ 
+				_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
+				_selectedIndex: 0,
+				[`${mode}-${input}`]: results.slice(0, 10),
+			});
+		})
+		.catch((err)=> {
+			console.log(err);
+		});
 	},
 
 	selectResult: function(index) {
@@ -195,39 +207,56 @@ export const Autocomplete = React.createClass({
 		}
 	},
 
-	appendOptions: function(resultArray = []) {
+	appendOptions: function(resultArray = [], input) {
+		const isEmpty = input === ' ' || !input;
 		if ((!this.state || !this.state._suggestionCategory) && resultArray.length < 10) {
+			const globalCategories = this.props.globalCategories || [];
+
+			// If it's empty - we need to show local options
+			// it if's not, we show global
+			const localCategories = [];
+			if (this.props.localFiles) { localCategories.push('files'); }
+			if (this.props.localPubs) { localCategories.push('pubs'); }
+			if (this.props.localReferences) { localCategories.push('references'); }
+			if (this.props.localUsers) { localCategories.push('users'); }
+			if (this.props.localHighlights) { localCategories.push('highlights'); }
+			if (this.props.localDiscussions) { localCategories.push('discussions'); }
+
+			const localCategoryOptions = localCategories.map((item)=> {
+				return { id: item, suggestionCategory: item, title: `${!isEmpty ? 'search all ' : ''}${item}` };
+			});
+
+			const globalCategoryOptions = globalCategories.map((item)=> {
+				return { id: item, suggestionCategory: item, title: `${!isEmpty ? 'search all ' : ''}${item}` };
+			});
+			
+			const options = isEmpty ? localCategoryOptions : globalCategoryOptions;
 			return [
 				...resultArray,
-				{ id: 'pubs', suggestionCategory: 'pubs', title: `${resultArray.length ? 'Search All ' : ''}Pubs` },
-				{ id: 'users', suggestionCategory: 'users', title: `${resultArray.length ? 'Search All ' : ''}Users` },
+				...options,
 			];
 		}
 		return resultArray;
 	},
-	// appendObjectType: function(array, type) {
-	// 	return array.map((item)=> {
-	// 		return { ...item, type: type };
-	// 	});
-	// },
+
 
 	render() {
 		const results = [...this.state._currentSuggestions] || [];
-		// if (results.length < 10 && !this.state._suggestionCategory) {
-		// 	results.push({ id: 'users', suggestionCategory: 'users', title: 'Search All Users' });
-		// 	results.push({ id: 'pubs', suggestionCategory: 'pubs', title: 'Search All Pubs' });
-		// }
 		if (!results.length) { return null; }
 
 		return (
 			<div className={'pt-card pt-elevation-4'} style={styles.container(this.props.top, this.props.left, this.props.visible)}>
 				{results.map((result, index)=> {
+					const isCategory = !!result.suggestionCategory;
 					return (
-						<div key={`result-${result.type}-${result.id}`} style={styles.resultWrapper(this.state._selectedIndex === index)} onMouseEnter={this.setCurrentIndex.bind(this, index)} onClick={this.selectResult.bind(this, index)}>
-							<img src={result.avatar} style={styles.avatar} />
+						<div key={`result-${result.type}-${result.id}`} style={styles.resultWrapper(this.state._selectedIndex === index, isCategory)} onMouseEnter={this.setCurrentIndex.bind(this, index)} onClick={this.selectResult.bind(this, index)}>
+							{result.avatar &&
+								<img src={result.avatar} style={styles.avatar} />
+							}
+							
 							<span style={styles.title}>{result.firstName} {result.lastName}{result.title}</span>
 							{result.type &&
-								<span style={{ float: 'right'}} className={'pt-tag'}>{result.type}</span>
+								<span style={{ float: 'right' }} className={'pt-tag'}>{result.type}</span>
 							}
 							
 						</div>
@@ -254,12 +283,19 @@ styles = {
 			transition: '.1s linear opacity'
 		};
 	},
-	resultWrapper: function(selected) {
+	resultWrapper: function(selected, isCategory) {
+		let backgroundColor = 'transparent';
+		if (isCategory) { backgroundColor = '#F5F8FA'; }
+		if (selected) { backgroundColor = '#E1E8ED'; }
+		
 		return {
-			backgroundColor: selected ? '#DDD' : 'transparent',
-			margin: '0.25em 0em',
+			backgroundColor: backgroundColor,
+			margin: '0em',
 			cursor: 'pointer',
 			padding: '0.5em',
+			fontStyle: isCategory ? 'italic' : 'none',
+			textAlign: isCategory ? 'center' : 'left',
+			textTransform: isCategory ? 'capitalize' : 'none',
 		};
 		
 	},

@@ -236,7 +236,6 @@ export const BaseMenu = React.createClass({
 	},
 
   render: function() {
-  	console.log('Rendering')
     const {editing} = this.state;
 		return this.renderDisplay();
 	}

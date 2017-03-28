@@ -18,7 +18,7 @@ export const StoryBookFullEditor = React.createClass({
 	},
 
 	setMarkdown: function() {
-		const newMarkdown = jsonToMarkdown(this.state.content) || '';
+		const newMarkdown = this.state.content ? jsonToMarkdown(this.state.content) : '';
 		this.setState({ 
 			mode: 'markdown',
 			initialContent: newMarkdown,
@@ -43,6 +43,7 @@ export const StoryBookFullEditor = React.createClass({
 		const locals = {
 			localUsers: [{ id: 1, username: 'travis', firstName: 'travis' }, { id: 2, username: 'trench', firstName: 'trench' }, { id: 3, username: 'traveller', firstName: 'traveller' }],
 			localPubs: [{ id: 1, username: 'ThebestPub', firstName: 'The Best Pub' }, { id: 2, username: 'Over the Rainbow', firstName: 'Over the Rainbow' }, { id: 3, username: 'Time Traveller', firstName: 'Time Traveller' }],
+			globalCategories: ['pubs', 'users'],
 		};
 		return (
 			<div className={'pt-card pt-elevation-3'} style={{ padding: '0em', margin: '0em auto 2em', maxWidth: '850px' }}>

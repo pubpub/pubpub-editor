@@ -23,6 +23,7 @@ export const RichEditor = React.createClass({
 		onChange: PropTypes.func,
 		localUsers: PropTypes.array,
 		localPubs: PropTypes.array,
+		globalCategories: PropTypes.array,
 	},
 
 	getInitialState() {
@@ -147,7 +148,8 @@ export const RichEditor = React.createClass({
 					input={this.state.input} 
 					onSelection={this.onSelection}
 					localUsers={this.props.localUsers}
-					localPubs={this.props.localPubs} />
+					localPubs={this.props.localPubs} 
+					globalCategories={this.props.globalCategories} />
 				
 				{!!this.state.menuTop &&
 					<span style={{ position: 'absolute', left: '-24px', top: this.state.menuTop, cursor: 'pointer' }} className={'pt-icon-standard pt-icon-add'} />

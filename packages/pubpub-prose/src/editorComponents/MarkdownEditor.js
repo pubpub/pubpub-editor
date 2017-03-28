@@ -11,6 +11,7 @@ export const MarkdownEditor = React.createClass({
 		onChange: PropTypes.func,
 		localUsers: PropTypes.array,
 		localPubs: PropTypes.array,
+		globalCategories: PropTypes.array,
 	},
 
 	simpleMDE: undefined,
@@ -134,7 +135,8 @@ export const MarkdownEditor = React.createClass({
 					input={this.state.input} 
 					onSelection={this.onSelection}
 					localUsers={this.props.localUsers}
-					localPubs={this.props.localPubs} />
+					localPubs={this.props.localPubs} 
+					globalCategories={this.props.globalCategories} />
 				<textarea id={'myMarkdownEditor'} />
 			</div>
 		);
