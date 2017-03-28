@@ -75,6 +75,7 @@ export const Autocomplete = React.createClass({
 	getNewSelections(input) {
 		const mode = this.state._suggestionCategory || 'local';
 
+		// If we're in the starting state - no input, no mode selected, we show the default Category options
 		if ((input === ' ' || !input) && mode === 'local') {
 			return this.setState({ 
 				_currentSuggestions: this.appendOptions([], input),
@@ -82,6 +83,7 @@ export const Autocomplete = React.createClass({
 			});
 		}
 
+		// If we already have the result of this query in memory, use it rather than recalculating
 		if (this.state[`${mode}-${input}`]) { 
 			return this.setState({ 
 				_currentSuggestions: this.appendOptions(this.state[`${mode}-${input}`], input),
@@ -89,6 +91,7 @@ export const Autocomplete = React.createClass({
 			});
 		}
 
+		// Switch between modes to gather suggestions. Default = local, all types shown.
 		let results;
 		switch (mode) {
 		case 'pubs':
@@ -97,12 +100,12 @@ export const Autocomplete = React.createClass({
 			return this.getModeResults(mode, 'user', input, this.props.localUsers);
 		default: 
 			results = [
-				...this.getLocalResults('file', 'firstName', input, this.props.localFiles),
-				...this.getLocalResults('pub', 'firstName', input, this.props.localPubs),
-				...this.getLocalResults('reference', 'firstName', input, this.props.localReferences),
-				...this.getLocalResults('user', 'firstName', input, this.props.localUsers),
-				...this.getLocalResults('highlight', 'firstName', input, this.props.localHighlights),
-				...this.getLocalResults('discussion', 'firstName', input, this.props.localDiscussions),
+				...this.getLocalResults('file', input, this.props.localFiles),
+				...this.getLocalResults('pub', input, this.props.localPubs),
+				...this.getLocalResults('reference', input, this.props.localReferences),
+				...this.getLocalResults('user', input, this.props.localUsers),
+				...this.getLocalResults('highlight', input, this.props.localHighlights),
+				...this.getLocalResults('discussion', input, this.props.localDiscussions),
 			];
 
 			return this.setState({ 
@@ -114,40 +117,56 @@ export const Autocomplete = React.createClass({
 
 	},
 
-	getLocalResults: function(type, searchKey, input, localArray = []) {
+	getLocalResults: function(type, input, localArray = []) {
+		const searchKeysObject = {
+			file: ['name'],
+			pub: ['slug', 'title', 'description'],
+			reference: ['key'],
+			user: ['firstName', 'lastName', 'username'],
+			highlight: ['exact'],
+			discussion: ['title'],
+		};
+		const searchKeys = searchKeysObject[type];
+
 		return localArray.filter((item)=> { 
-			return item[searchKey].toLowerCase().indexOf(input.toLowerCase()) > -1; 
+			return searchKeys.reduce((previous, current)=> {
+				if (item[current].toLowerCase().indexOf(input.toLowerCase()) > -1) { return true; }
+				return previous;
+			}, false);
 		}).map((item) => { 
-			return { ...item, type: type }; 
+			return { ...item, type: type, local: true }; 
 		});
 	},
 
-	getModeResults: function(mode, urlPath, input, localArray = []) {
-		let results;
+	getModeResults: function(mode, type, input, localArray = []) {	
+		const globalCategories = this.props.globalCategories || [];
+		const emptySearch = input === '' || input === ' ';
 		const urlBase = window.location.hostname === 'localhost'
 			? 'http://localhost:9876'
 			: 'https://www.pubpub.org';
 
-		const globalCategories = this.props.globalCategories || [];
+		// Get local results for this category
+		const localResults = emptySearch
+			? localArray.map(item => { return { ...item, type: type, local: true }; }) 
+			: this.getLocalResults(type, input, localArray);
 
-		results = localArray.filter((item)=> {
-			if (input === '' || input === ' ') { return true; }
-			return item.username.toLowerCase().indexOf(input.toLowerCase()) > -1;
-		});
-		if (!globalCategories.includes(mode)) {
+		// If we're not allowed this global category or empty search, simply setState with localResults and return
+		if (!globalCategories.includes(mode) || emptySearch) {
 			return this.setState({ 
-				_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
+				_currentSuggestions: this.appendOptions(localResults.slice(0, 10), input),
 				_selectedIndex: 0,
-				[`${mode}-${input}`]: results.slice(0, 10),
+				[`${mode}-${input}`]: localResults.slice(0, 10),
 			});
 		}
-		return request({ uri: `${urlBase}/search/${urlPath}?q=${input}`, json: true })
+
+		// If we are allowed this global category, async search
+		return request({ uri: `${urlBase}/search/${type}?q=${input}`, json: true })
 		.then((response)=> {
-			results = results.concat(response);
+			const allResults = localResults.concat(response);
 			this.setState({ 
-				_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
+				_currentSuggestions: this.appendOptions(allResults.slice(0, 10), input),
 				_selectedIndex: 0,
-				[`${mode}-${input}`]: results.slice(0, 10),
+				[`${mode}-${input}`]: allResults.slice(0, 10),
 			});
 		})
 		.catch((err)=> {
@@ -173,19 +192,19 @@ export const Autocomplete = React.createClass({
 			// If it's empty - we need to show local options
 			// it if's not, we show global
 			const localCategories = [];
-			if (this.props.localFiles) { localCategories.push('files'); }
-			if (this.props.localPubs) { localCategories.push('pubs'); }
-			if (this.props.localReferences) { localCategories.push('references'); }
-			if (this.props.localUsers) { localCategories.push('users'); }
-			if (this.props.localHighlights) { localCategories.push('highlights'); }
-			if (this.props.localDiscussions) { localCategories.push('discussions'); }
+			if (this.props.localFiles && this.props.localFiles.length) { localCategories.push('files'); }
+			if (this.props.localPubs && this.props.localPubs.length) { localCategories.push('pubs'); }
+			if (this.props.localReferences && this.props.localReferences.length) { localCategories.push('references'); }
+			if (this.props.localUsers && this.props.localUsers.length) { localCategories.push('users'); }
+			if (this.props.localHighlights && this.props.localHighlights.length) { localCategories.push('highlights'); }
+			if (this.props.localDiscussions && this.props.localDiscussions.length) { localCategories.push('discussions'); }
 
 			const localCategoryOptions = localCategories.map((item)=> {
-				return { id: item, suggestionCategory: item, title: `${!isEmpty ? 'search all ' : ''}${item}` };
+				return { id: item, suggestionCategory: item, title: item };
 			});
 
 			const globalCategoryOptions = globalCategories.map((item)=> {
-				return { id: item, suggestionCategory: item, title: `${!isEmpty ? 'search all ' : ''}${item}` };
+				return { id: item, suggestionCategory: item, title: `search all ${item}` };
 			});
 			
 			const options = isEmpty ? localCategoryOptions : globalCategoryOptions;
@@ -206,6 +225,8 @@ export const Autocomplete = React.createClass({
 			<div className={'pt-card pt-elevation-4'} style={styles.container(this.props.top, this.props.left, this.props.visible)}>
 				{results.map((result, index)=> {
 					const isCategory = !!result.suggestionCategory;
+					let label = result.type;
+					if (result.type === 'pub' && result.local) { label = 'Featured Pub'; }
 					return (
 						<div key={`result-${result.type}-${result.id}`} style={styles.resultWrapper(this.state._selectedIndex === index, isCategory)} onMouseEnter={this.setCurrentIndex.bind(this, index)} onClick={this.selectResult.bind(this, index)}>
 							{result.avatar &&
@@ -214,7 +235,7 @@ export const Autocomplete = React.createClass({
 							
 							<span style={styles.title}>{result.firstName} {result.lastName}{result.title}</span>
 							{result.type &&
-								<span style={{ float: 'right' }} className={'pt-tag'}>{result.type}</span>
+								<span style={{ float: 'right' }} className={'pt-tag'}>{label}</span>
 							}
 							
 						</div>
@@ -251,7 +272,7 @@ styles = {
 			margin: '0em',
 			cursor: 'pointer',
 			padding: '0.5em',
-			fontStyle: isCategory ? 'italic' : 'none',
+			// fontStyle: isCategory ? 'italic' : 'none',
 			textAlign: isCategory ? 'center' : 'left',
 			textTransform: isCategory ? 'capitalize' : 'none',
 		};
