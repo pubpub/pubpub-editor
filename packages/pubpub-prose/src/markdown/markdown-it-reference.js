@@ -5,7 +5,7 @@ function referenceParser(state, silent) {
 	const start = state.pos;
 
 	// if (state.src.charAt(start) !== '[') { return false; }
-	if (state.src.substring(0, 12) !== '[@') { return false; }
+	if (state.src.substring(0, 2) !== '[@') { return false; }
 	if (silent) { return false; } // don't run any pairs in validation mode
 	if (start + 2 >= max) { return false; }
 

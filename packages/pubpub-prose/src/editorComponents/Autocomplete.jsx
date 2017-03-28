@@ -254,7 +254,7 @@ export const Autocomplete = React.createClass({
 						<div key={`result-${result.itemType}-${result.id}`} style={styles.resultWrapper(this.state._selectedIndex === index, isCategory)} onMouseEnter={this.setCurrentIndex.bind(this, index)} onClick={this.selectResult.bind(this, index)}>
 							{!!avatar &&
 								<div style={styles.avatarWrapper}>
-									<img src={avatar} style={styles.avatar} />
+									<img src={avatar} style={styles.avatar} role={'presentation'} />
 								</div>
 							}
 
