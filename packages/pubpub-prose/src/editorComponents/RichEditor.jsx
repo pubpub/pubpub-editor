@@ -137,7 +137,7 @@ export const RichEditor = React.createClass({
 
 	onSelection: function(selectedObject) {
 		console.log(selectedObject);
-		return this.editor.createMention();
+		return this.editor.createMention(selectedObject.firstName || selectedObject.title || selectedObject.name || selectedObject.exact || selectedObject.key);
 	},
 
 	render: function() {
