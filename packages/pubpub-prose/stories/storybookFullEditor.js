@@ -1,8 +1,9 @@
-import React from 'react';
-import RichEditor from '../src/editorComponents/RichEditor';
+import React, { PropTypes } from 'react';
+import { jsonToMarkdown, markdownToJSON } from '../src/markdown';
+import { localDiscussions, localFiles, localHighlights, localPubs, localReferences, localUsers } from './sampledocs/autocompleteLocalData';
+
 import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
-import { markdownToJSON, jsonToMarkdown } from '../src/markdown';
-import { localFiles, localPubs, localReferences, localUsers, localHighlights, localDiscussions } from './sampledocs/autocompleteLocalData';
+import RichEditor from '../src/editorComponents/RichEditor';
 
 // requires style attributes that would normally be up to the wrapping library to require
 require('@blueprintjs/core/dist/blueprint.css');
@@ -10,17 +11,23 @@ require('../style/base.scss');
 require('../style/markdown.scss');
 
 export const StoryBookFullEditor = React.createClass({
+
+	propTypes: {
+		initialContent: PropTypes.string,
+		mode: PropTypes.string,
+	},
+
 	getInitialState() {
 		return {
-			mode: 'markdown',
-			initialContent: undefined,
-			content: undefined,
+			mode: (this.props.mode) ? this.props.mode : 'markdown',
+			initialContent: (this.props.initialContent) ? this.props.initialContent : undefined,
+			content: (this.props.initialContent) ? this.props.initialContent : undefined,
 		};
 	},
 
 	setMarkdown: function() {
 		const newMarkdown = this.state.content ? jsonToMarkdown(this.state.content) : '';
-		this.setState({ 
+		this.setState({
 			mode: 'markdown',
 			initialContent: newMarkdown,
 			content: newMarkdown,
@@ -29,11 +36,11 @@ export const StoryBookFullEditor = React.createClass({
 
 	setRich: function() {
 		const newJSON = markdownToJSON(this.state.content || '');
-		this.setState({ 
+		this.setState({
 			mode: 'rich',
 			initialContent: newJSON,
 			content: newJSON,
-		});	
+		});
 	},
 
 	onChange: function(newContent) {
@@ -44,7 +51,7 @@ export const StoryBookFullEditor = React.createClass({
 		const editorProps = {
 			initialContent: this.state.initialContent,
 			onChange: this.onChange,
-			
+
 			localFiles: localFiles,
 			localPubs: localPubs,
 			localReferences: localReferences,

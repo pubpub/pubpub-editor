@@ -109,18 +109,15 @@ var MarkdownEditor = exports.MarkdownEditor = _react2.default.createClass({
 								input: currentLine.substring(startIndex + 1, nextChIndex)
 							});
 						} else if (!shouldMark && _this.autocompleteMarker) {
-							// console.log('Clearing!');
 							_this.autocompleteMarker.clear();
 							_this.autocompleteMarker = undefined;
 							_this.setState({
 								visible: false
 							});
 						}
-						// console.log(startLetter, nextCh);
 					})();
 				}
 			});
-			// this.simpleMDE.codemirror.on('keyHandled', this.handleKey);
 			this.simpleMDE.codemirror.setOption('extraKeys', {
 				Up: this.handleArrow,
 				Down: this.handleArrow,
@@ -156,7 +153,36 @@ var MarkdownEditor = exports.MarkdownEditor = _react2.default.createClass({
 	},
 
 	onSelection: function onSelection(selectedObject) {
-		console.log('Got ', selectedObject);
+		// console.log('Got ', selectedObject);
+		var cm = this.simpleMDE.codemirror;
+		var currentCursor = cm.getCursor();
+		var currentLine = cm.getLine(currentCursor.line);
+		var nextChIndex = currentCursor.ch;
+		var prevChars = currentLine.substring(0, currentCursor.ch);
+		var startIndex = prevChars.lastIndexOf(' ') + 1;
+
+		var content = void 0;
+		switch (selectedObject.itemType) {
+			case 'file':
+				content = '![' + selectedObject.name + '](' + selectedObject.name + ')';
+				break;
+			case 'pub':
+				content = '[' + selectedObject.title + '](/pub/' + selectedObject.slug + ')';
+				break;
+			case 'reference':
+				content = '[@' + selectedObject.key + ']';
+				break;
+			case 'user':
+				content = '[' + selectedObject.firstName + ' ' + selectedObject.lastName + '](/user/' + selectedObject.username + ')';
+				break;
+			case 'highlight':
+				content = '[@highlight/' + selectedObject.id + ']';
+				break;
+			default:
+				content = '[An Error occured with this @ mention]';
+				break;
+		}
+		cm.replaceRange(content, { line: currentCursor.line, ch: startIndex }, { line: currentCursor.line, ch: nextChIndex });
 	},
 
 	render: function render() {

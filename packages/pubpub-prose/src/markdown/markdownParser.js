@@ -16,8 +16,7 @@ newSpec.topNode = "article";
 const markdownSchema = new Schema(newSpec);
 
 export const markdownParser = new MarkdownParser(markdownSchema,
-	markdownit({html: false})
-	.disable([ 'table' ]),
+	markdownit({html: false}),
 		/*
 	.use(emoji)
 	.use(sub)
@@ -63,6 +62,15 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 			console.log(tok.content);
 			return {};
 		}},
+
+		table: {block: 'table', attrs: tok => {console.log(tok); return{};}},
+		tbody: {block: 'table', attrs: tok => {console.log(tok); return{};}},
+		thead: {block: 'none', attrs: tok => {console.log(tok); return{};}},
+
+		tr: {block: 'table_row', attrs: tok => {console.log(tok); return{};}},
+		td: {block: 'table_cell', attrs: tok => {console.log(tok); return{};}},
+		th: {block: 'table_cell', attrs: tok => {console.log(tok); return{};}},
+
 		em: {mark: 'em'},
 		strong: {mark: 'strong'},
 		strike: {mark: 'strike'},
@@ -76,3 +84,12 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 		sup: {mark: 'sup'},
 	}
 );
+
+const emptyAdd = function(state, tok) {
+	console.log('emptying', tok);
+};
+
+markdownParser.tokenHandlers.tbody_open = emptyAdd;
+markdownParser.tokenHandlers.tbody_close = emptyAdd;
+markdownParser.tokenHandlers.thead_open = emptyAdd;
+markdownParser.tokenHandlers.thead_close = emptyAdd;

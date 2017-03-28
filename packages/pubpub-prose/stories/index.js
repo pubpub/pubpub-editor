@@ -1,10 +1,10 @@
-import React from 'react';
-import { storiesOf } from '@kadira/storybook';
+import {SingleMention, SingleReference, TableMarkdown} from './sampledocs';
 
-import RichEditor from './storybookRichEditor';
-import MarkdownEditor from './storybookMarkdownEditor';
 import FullEditor from './storybookFullEditor';
-import { SingleMention, SingleReference } from './sampledocs';
+import MarkdownEditor from './storybookMarkdownEditor';
+import React from 'react';
+import RichEditor from './storybookRichEditor';
+import { storiesOf } from '@kadira/storybook';
 
 storiesOf('Rich Editor', module)
 .add('basic ', () => (
@@ -17,6 +17,7 @@ storiesOf('Rich Editor', module)
 	<RichEditor initialState={SingleMention} />
 ));
 
+
 storiesOf('Markdown Editor', module)
 .add('basic ', () => (
 	<MarkdownEditor />
@@ -24,5 +25,9 @@ storiesOf('Markdown Editor', module)
 
 storiesOf('Full Editor', module)
 .add('basic ', () => (
-	<FullEditor />
-));
+	<FullEditor/>
+))
+.add('table conversion ', () => (
+	<FullEditor mode={"markdown"} initialContent={TableMarkdown}/>
+))
+;
