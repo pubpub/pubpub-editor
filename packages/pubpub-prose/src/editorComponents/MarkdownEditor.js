@@ -83,17 +83,14 @@ export const MarkdownEditor = React.createClass({
 							input: currentLine.substring(startIndex + 1, nextChIndex),
 						});
 					} else if (!shouldMark && this.autocompleteMarker) {
-						// console.log('Clearing!');
 						this.autocompleteMarker.clear();
 						this.autocompleteMarker = undefined;
 						this.setState({
 							visible: false,
 						});
 					}
-					// console.log(startLetter, nextCh);
 				}
 			});
-			// this.simpleMDE.codemirror.on('keyHandled', this.handleKey);
 			this.simpleMDE.codemirror.setOption('extraKeys', {
 				Up: this.handleArrow,
 				Down: this.handleArrow,
