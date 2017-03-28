@@ -29,8 +29,11 @@ var getSize = function getSize(dom) {
   return undefined;
 };
 
+// require('split-html');
+// Needs to lift out image blocks in their own div
 var transformPastedHTML = function transformPastedHTML(htmlStr) {
   // console.log('Got pasted HTML', htmlStr);
+  // const newHTML = window.splitHtml(htmlStr, 'img');
   return htmlStr;
 };
 

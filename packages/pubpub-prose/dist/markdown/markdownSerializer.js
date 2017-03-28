@@ -105,6 +105,27 @@ var markdownSerializer = exports.markdownSerializer = new _prosemirrorMarkdown.M
 	state.write('\\\n');
 }), _defineProperty(_ref, 'text', function text(state, node) {
 	state.text(node.text);
+}), _defineProperty(_ref, 'table', function table(state, node) {
+	state.write('\n');
+	state.write('|');
+	console.log('table', node);
+	// state.renderInline(node);
+	state.write('|');
+	state.write('\n');
+}), _defineProperty(_ref, 'table_row', function table(state, node) {
+	state.write('\n');
+	state.write('|');
+	console.log('table2', node);
+	// state.renderInline(node);
+	state.write('|');
+	state.write('\n');
+}), _defineProperty(_ref, 'table_column', function table(state, node) {
+	state.write('\n');
+	state.write('|');
+	console.log('table3', node);
+	// state.renderInline(node);
+	state.write('|');
+	state.write('\n');
 }), _ref), {
 	em: { open: '*', close: '*', mixable: true },
 	strong: { open: '**', close: '**', mixable: true },
