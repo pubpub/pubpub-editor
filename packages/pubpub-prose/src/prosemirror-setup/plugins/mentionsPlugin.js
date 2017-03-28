@@ -3,13 +3,13 @@ import { keys } from './pluginKeys';
 import { schema } from '../schema';
 import { getPluginState } from '../plugins';
 
-const { DecorationSet, Decoration } = require("prosemirror-view");
+const { DecorationSet, Decoration } = require('prosemirror-view');
 
 const mentionsPlugin = new Plugin({
 	state: {
 		init(config, instance) {
-			const set = DecorationSet.empty;
-			return {decos: DecorationSet.empty, start: null };
+			// const set = DecorationSet.empty;
+			return { decos: DecorationSet.empty, start: null };
 		},
 		apply(transaction, state, prevEditorState, editorState) {
 
@@ -18,10 +18,10 @@ const mentionsPlugin = new Plugin({
 
 			if (!sel.empty) {
 				updateMentions('');
-				return {decos: DecorationSet.empty, start: null, };
+				return { decos: DecorationSet.empty, start: null, };
 			}
 
-			const doc = editorState.doc;
+			// const doc = editorState.doc;
 			const currentPos = editorState.selection.$to;
 			const currentNode = editorState.doc.nodeAt(currentPos.pos - 1);
 			if (currentNode && currentNode.text) {
@@ -30,7 +30,7 @@ const mentionsPlugin = new Plugin({
 				
 				const nextCh = currentLine.length > nextChIndex ? currentLine.charAt(nextChIndex) : ' ';
 				
-				const prevChars = currentLine.substring(0, currentPos.parentOffset );
+				const prevChars = currentLine.substring(0, currentPos.parentOffset);
 				// const startIndex = Math.max(prevChars.lastIndexOf(' ') + 1, prevChars.lastIndexOf(' ') + 1);
 				const startIndex = prevChars.lastIndexOf(' ') + 1;
 				const startLetter = currentLine.charAt(startIndex);
@@ -50,7 +50,7 @@ const mentionsPlugin = new Plugin({
 
 			}
 			updateMentions('');
-			return {decos: DecorationSet.empty, start: null, };
+			return { decos: DecorationSet.empty, start: null, end: null };
 		}
 	},
 	view: function(editorView) {
