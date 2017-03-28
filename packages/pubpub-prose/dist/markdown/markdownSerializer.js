@@ -107,25 +107,43 @@ var markdownSerializer = exports.markdownSerializer = new _prosemirrorMarkdown.M
 	state.text(node.text);
 }), _defineProperty(_ref, 'table', function table(state, node) {
 	state.write('\n');
-	state.write('|');
-	console.log('table', node);
+	var rowCount = undefined;
+
+	var renderRow = function renderRow(row) {
+		var countedRows = 0;
+		row.forEach(function (rowChild, _, i) {
+			state.render(rowChild, row, i);
+			countedRows++;
+		});
+		state.write('|');
+		state.write('\n');
+		if (!rowCount) {
+			rowCount = countedRows;
+		}
+	};
+
+	var renderHeaderDivider = function renderHeaderDivider() {
+		var a = void 0;
+		for (a = 0; a < rowCount; a++) {
+			state.write('|---------');
+		}
+		state.write('|');
+		state.write('\n');
+	};
+
+	node.forEach(function (child, _, i) {
+		renderRow(child);
+		if (i === 0 && rowCount) {
+			renderHeaderDivider();
+		}
+	});
 	// state.renderInline(node);
-	state.write('|');
 	state.write('\n');
-}), _defineProperty(_ref, 'table_row', function table(state, node) {
-	state.write('\n');
+}), _defineProperty(_ref, 'table_cell', function table_cell(state, node) {
 	state.write('|');
-	console.log('table2', node);
-	// state.renderInline(node);
-	state.write('|');
-	state.write('\n');
-}), _defineProperty(_ref, 'table_column', function table(state, node) {
-	state.write('\n');
-	state.write('|');
-	console.log('table3', node);
-	// state.renderInline(node);
-	state.write('|');
-	state.write('\n');
+	node.forEach(function (child, _, i) {
+		state.renderInline(child);
+	});
 }), _ref), {
 	em: { open: '*', close: '*', mixable: true },
 	strong: { open: '**', close: '**', mixable: true },
