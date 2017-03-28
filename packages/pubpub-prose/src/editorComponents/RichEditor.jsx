@@ -23,6 +23,8 @@ export const RichEditor = React.createClass({
 		onChange: PropTypes.func,
 		localUsers: PropTypes.array,
 		localPubs: PropTypes.array,
+		localFiles: PropTypes.array,
+		localReferences: PropTypes.array,
 		globalCategories: PropTypes.array,
 	},
 
@@ -148,6 +150,8 @@ export const RichEditor = React.createClass({
 					onSelection={this.onSelection}
 					localUsers={this.props.localUsers}
 					localPubs={this.props.localPubs} 
+					localFiles={this.props.localFiles}
+					localReferences={this.props.localReferences}
 					globalCategories={this.props.globalCategories} />
 				
 				{!!this.state.menuTop &&
