@@ -24,20 +24,23 @@ const mentionsPlugin = new Plugin({
 			const currentPos = editorState.selection.$to;
 			const currentNode = editorState.doc.nodeAt(currentPos.pos - 1);
 			if (currentNode && currentNode.text) {
-				const currentLine = currentNode.text;
+				const currentLine = currentNode.text.replace(/\s/g, ' ');
 				const nextChIndex = currentPos.parentOffset;
+				
 				const nextCh = currentLine.length > nextChIndex ? currentLine.charAt(nextChIndex) : ' ';
+				
 				const prevChars = currentLine.substring(0, currentPos.parentOffset );
-				const startIndex = Math.max(prevChars.lastIndexOf(' ') + 1, prevChars.lastIndexOf(' ') + 1);
+				// const startIndex = Math.max(prevChars.lastIndexOf(' ') + 1, prevChars.lastIndexOf(' ') + 1);
+				const startIndex = prevChars.lastIndexOf(' ') + 1;
 				const startLetter = currentLine.charAt(startIndex);
-				const shouldMark = startLetter === '@' && (nextCh.charCodeAt(0) === 32 || nextCh.charCodeAt(0) === 160);
+				// const shouldMark = startLetter === '@' && (nextCh.charCodeAt(0) === 32 || nextCh.charCodeAt(0) === 160);
+				const shouldMark = startLetter === '@' && nextCh.charCodeAt(0) === 32;
 				if (shouldMark) {
 					const start = currentPos.pos - currentPos.parentOffset + startIndex;
 					const end = currentPos.pos - currentPos.parentOffset + startIndex + 1;
 					const decorations = [Decoration.inline(start, end, {class: 'mention-marker'})];
 					const decos = DecorationSet.create(editorState.doc, decorations);
-
-					updateMentions(currentLine.substring(start - 1, currentPos.pos));
+					updateMentions(currentLine.substring(start - 1, currentPos.pos) || ' ');
 					return {decos: decos, start, end};
 				}
 

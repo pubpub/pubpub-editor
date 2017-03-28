@@ -21,6 +21,8 @@ export const RichEditor = React.createClass({
 	propTypes: {
 		initialContent: PropTypes.object,
 		onChange: PropTypes.func,
+		localUsers: PropTypes.array,
+		localPubs: PropTypes.array,
 	},
 
 	getInitialState() {
@@ -138,7 +140,14 @@ export const RichEditor = React.createClass({
 	render: function() {
 		return (
 			<div style={{ position: 'relative' }} id={'rich-editor-container'}>
-				<Autocomplete top={this.state.top} left={this.state.left} visible={this.state.visible} input={this.state.input} onSelection={this.onSelection}/>
+				<Autocomplete 
+					top={this.state.top} 
+					left={this.state.left} 
+					visible={this.state.visible} 
+					input={this.state.input} 
+					onSelection={this.onSelection}
+					localUsers={this.props.localUsers}
+					localPubs={this.props.localPubs} />
 				
 				{!!this.state.menuTop &&
 					<span style={{ position: 'absolute', left: '-24px', top: this.state.menuTop, cursor: 'pointer' }} className={'pt-icon-standard pt-icon-add'} />

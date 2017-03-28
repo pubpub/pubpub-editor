@@ -9,6 +9,8 @@ export const MarkdownEditor = React.createClass({
 	propTypes: {
 		initialContent: PropTypes.string,
 		onChange: PropTypes.func,
+		localUsers: PropTypes.array,
+		localPubs: PropTypes.array,
 	},
 
 	simpleMDE: undefined,
@@ -68,7 +70,7 @@ export const MarkdownEditor = React.createClass({
 								visible: true,
 								top: top,
 								left: left,
-								input: currentLine.substring(startIndex + 1, nextChIndex),
+								input: currentLine.substring(startIndex + 1, nextChIndex) || ' ',
 							});
 						}, 0);
 						
@@ -125,7 +127,14 @@ export const MarkdownEditor = React.createClass({
 	render() {
 		return (
 			<div id={'markdown-editor-container'} style={styles.container}>
-				<Autocomplete top={this.state.top} left={this.state.left} visible={this.state.visible} input={this.state.input} onSelection={this.onSelection}/>
+				<Autocomplete 
+					top={this.state.top} 
+					left={this.state.left} 
+					visible={this.state.visible} 
+					input={this.state.input} 
+					onSelection={this.onSelection}
+					localUsers={this.props.localUsers}
+					localPubs={this.props.localPubs} />
 				<textarea id={'myMarkdownEditor'} />
 			</div>
 		);
