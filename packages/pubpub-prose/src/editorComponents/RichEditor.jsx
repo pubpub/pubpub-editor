@@ -38,7 +38,7 @@ export const RichEditor = React.createClass({
 			left: 0,
 			input: '',
 			menuTop: 0,
-			inlineCenter: 0, 
+			inlineCenter: 0,
 			inlineTop: 0,
 		};
 	},
@@ -64,7 +64,7 @@ export const RichEditor = React.createClass({
 		const currentPos = this.editor.view.state.selection.$to.pos;
 		const container = document.getElementById('rich-editor-container');
 		const menuTop = this.editor.view.coordsAtPos(currentPos).top - container.getBoundingClientRect().top + 5;
-		
+
 		if (!this.editor.view.state.selection.$cursor) {
 			const currentFromPos = this.editor.view.state.selection.$from.pos;
 			const currentToPos = this.editor.view.state.selection.$to.pos;
@@ -76,10 +76,10 @@ export const RichEditor = React.createClass({
 				menuTop: menuTop,
 				inlineCenter: inlineCenter,
 				inlineTop: inlineTop,
-			});			
+			});
 		}
 
-		return this.setState({ 
+		return this.setState({
 			menuTop: menuTop,
 			inlineTop: 0,
 			inlineCenter: 0,
@@ -143,19 +143,19 @@ export const RichEditor = React.createClass({
 	render: function() {
 		return (
 			<div style={{ position: 'relative' }} id={'rich-editor-container'}>
-				<Autocomplete 
-					top={this.state.top} 
-					left={this.state.left} 
-					visible={this.state.visible} 
-					input={this.state.input} 
+				<Autocomplete
+					top={this.state.top}
+					left={this.state.left}
+					visible={this.state.visible}
+					input={this.state.input}
 					onSelection={this.onSelection}
 					localUsers={this.props.localUsers}
-					localPubs={this.props.localPubs} 
+					localPubs={this.props.localPubs}
 					localFiles={this.props.localFiles}
 					localReferences={this.props.localReferences}
 					localHighlights={this.props.localHighlights}
 					globalCategories={this.props.globalCategories} />
-				
+
 				{!!this.state.menuTop &&
 					<span style={{ position: 'absolute', left: '-24px', top: this.state.menuTop, cursor: 'pointer' }} className={'pt-icon-standard pt-icon-add'} />
 				}

@@ -41,6 +41,9 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 		onChange: _react.PropTypes.func,
 		localUsers: _react.PropTypes.array,
 		localPubs: _react.PropTypes.array,
+		localFiles: _react.PropTypes.array,
+		localReferences: _react.PropTypes.array,
+		localHighlights: _react.PropTypes.array,
 		globalCategories: _react.PropTypes.array
 	},
 
@@ -102,26 +105,20 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 		return this.editor.toJSON();
 	},
 	createEditor: function createEditor(docJSON) {
-		var _props = this.props,
-		    handleFileUpload = _props.handleFileUpload,
-		    onError = _props.onError,
-		    mentionsComponent = _props.mentionsComponent,
-		    initialContent = _props.initialContent;
-
-
 		if (this.editor) {
 			this.editor1.remove();
 		}
+
 		var place = _reactDom2.default.findDOMNode(this.refs.container);
 		this.editor = new _prosemirrorSetup.RichEditor({
 			place: place,
-			contents: initialContent,
+			contents: this.props.initialContent,
 			// components: {
 			// 	suggestComponent: mentionsComponent,
 			// },
 			handlers: {
-				createFile: handleFileUpload,
-				captureError: onError,
+				createFile: this.props.handleFileUpload,
+				captureError: this.props.onError,
 				onChange: this.onChange,
 				updateMentions: this.updateMentions
 			}
@@ -130,7 +127,7 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 	updateMentions: function updateMentions(mentionInput) {
 		var _this = this;
 
-		if (!!mentionInput) {
+		if (mentionInput) {
 			setTimeout(function () {
 				var container = document.getElementById('rich-editor-container');
 				var mark = document.getElementsByClassName('mention-marker')[0];
@@ -166,6 +163,9 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 				onSelection: this.onSelection,
 				localUsers: this.props.localUsers,
 				localPubs: this.props.localPubs,
+				localFiles: this.props.localFiles,
+				localReferences: this.props.localReferences,
+				localHighlights: this.props.localHighlights,
 				globalCategories: this.props.globalCategories }),
 			!!this.state.menuTop && _react2.default.createElement('span', { style: { position: 'absolute', left: '-24px', top: this.state.menuTop, cursor: 'pointer' }, className: 'pt-icon-standard pt-icon-add' }),
 			!!this.state.inlineTop && _react2.default.createElement(
