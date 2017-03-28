@@ -12,7 +12,7 @@ require('../style/markdown.scss');
 export const StoryBookFullEditor = React.createClass({
 	getInitialState() {
 		return {
-			mode: 'rich',
+			mode: 'markdown',
 			initialContent: undefined,
 			content: undefined,
 		};

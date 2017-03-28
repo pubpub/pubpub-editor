@@ -125,7 +125,36 @@ export const MarkdownEditor = React.createClass({
 	},
 
 	onSelection: function(selectedObject) {
-		console.log('Got ', selectedObject);
+		// console.log('Got ', selectedObject);
+		const cm = this.simpleMDE.codemirror;
+		const currentCursor = cm.getCursor();
+		const currentLine = cm.getLine(currentCursor.line);
+		const nextChIndex = currentCursor.ch;
+		const prevChars = currentLine.substring(0, currentCursor.ch);
+		const startIndex = prevChars.lastIndexOf(' ') + 1;
+
+		let content;
+		switch (selectedObject.itemType) {
+		case 'file':
+			content = `![${selectedObject.name}](${selectedObject.name})`;
+			break;
+		case 'pub':
+			content = `[${selectedObject.title}](/pub/${selectedObject.slug})`;
+			break;
+		case 'reference':
+			content = `[@${selectedObject.key}]`;
+			break;
+		case 'user':
+			content = `[${selectedObject.firstName} ${selectedObject.lastName}](/user/${selectedObject.username})`;
+			break;
+		case 'highlight':
+			content = `[@highlight/${selectedObject.id}]`;
+			break;
+		default: 
+			content = '[An Error occured with this @ mention]';
+			break;
+		}
+		cm.replaceRange(content, { line: currentCursor.line, ch: startIndex }, { line: currentCursor.line, ch: nextChIndex });
 	},
 
 	render() {
