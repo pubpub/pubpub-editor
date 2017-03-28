@@ -77,81 +77,83 @@ var diffPlugin = new _prosemirrorState.Plugin({
               return "continue";
             }
             if (diff.added) {
+              (function () {
 
-              //must find biggest chunk
-              var _to = startCount;
-              var from = startCount + strippedString.length;
+                //must find biggest chunk
+                var to = startCount;
+                var from = startCount + strippedString.length;
 
-              var ranges = [];
-              var lastRange = { type: 'inline', to: null, from: null };
-              var lastNode = null;
+                var ranges = [];
+                var lastRange = { type: 'inline', to: null, from: null };
+                var lastNode = null;
 
-              // find the contigous ranges and turn them into a map
-              // need to join ranges afterwards
-              for (var i = _to; i <= from; i++) {
-                if (diffMap[i] && diffMap[i].type) {
-                  if (lastNode === diffMap[i].index) {
+                // find the contigous ranges and turn them into a map
+                // need to join ranges afterwards
+                for (var i = to; i <= from; i++) {
+                  if (diffMap[i] && diffMap[i].type) {
+                    if (lastNode === diffMap[i].index) {
+                      continue;
+                    }
+                    lastNode = diffMap[i].index;
+                    ranges.push({
+                      type: 'node',
+                      to: diffMap[i].index,
+                      from: diffMap[i].index + 1
+                    });
+                    continue;
+                  } else {
+                    lastNode = null;
+                  }
+                  if (i === from && diffMap[i] !== undefined) {
+                    if (lastRange.to === null) {
+                      lastRange.to = diffMap[i];
+                      lastRange.from = diffMap[i];
+                    } else {
+                      lastRange.from = diffMap[i];
+                    }
+                    ranges.push(lastRange);
                     continue;
                   }
-                  lastNode = diffMap[i].index;
-                  ranges.push({
-                    type: 'node',
-                    to: diffMap[i].index,
-                    from: diffMap[i].index + 1
-                  });
-                  continue;
-                } else {
-                  lastNode = null;
-                }
-                if (i === from && diffMap[i] !== undefined) {
-                  if (lastRange.to === null) {
+                  if (diffMap[i] !== undefined && lastRange.to === null) {
                     lastRange.to = diffMap[i];
-                    lastRange.from = diffMap[i];
-                  } else {
-                    lastRange.from = diffMap[i];
+                  } else if (diffMap[i] === undefined && lastRange.to !== null) {
+                    lastRange.from = diffMap[i - 1] + 1;
+                    ranges.push(lastRange);
+                    lastRange = { type: 'inline', to: null, from: null };
                   }
-                  ranges.push(lastRange);
-                  continue;
-                }
-                if (diffMap[i] !== undefined && lastRange.to === null) {
-                  lastRange.to = diffMap[i];
-                } else if (diffMap[i] === undefined && lastRange.to !== null) {
-                  lastRange.from = diffMap[i - 1] + 1;
-                  ranges.push(lastRange);
-                  lastRange = { type: 'inline', to: null, from: null };
-                }
-                if (i === from && diffMap[i] !== undefined) {
-                  if (lastRange.to === null) {
-                    lastRange.to = diffMap[i];
-                    lastRange.from = diffMap[i] + 1;
-                  } else {
-                    lastRange.from = diffMap[i] + 1;
+                  if (i === from && diffMap[i] !== undefined) {
+                    if (lastRange.to === null) {
+                      lastRange.to = diffMap[i];
+                      lastRange.from = diffMap[i] + 1;
+                    } else {
+                      lastRange.from = diffMap[i] + 1;
+                    }
+                    ranges.push(lastRange);
                   }
-                  ranges.push(lastRange);
                 }
-              }
 
-              var className = 'diff-marker';
-              if (state.showAsAdditions) {
-                className += ' added';
-              } else {
-                className += ' removed';
-              }
-              className += " diff-index-" + diffIndex;
-              var patch = { to: _to, from: from, text: strippedString };
-
-              var patchDecorations = ranges.map(function (range) {
-                if (range.type === 'node') {
-                  return Decoration.node(range.to, range.from, { class: className }, { diffIndex: diffIndex });
+                var className = 'diff-marker';
+                if (state.showAsAdditions) {
+                  className += ' added';
                 } else {
-                  return Decoration.inline(range.to, range.from, { class: className }, { inclusiveLeft: true,
-                    inclusiveRight: true,
-                    diffIndex: diffIndex
-                  });
+                  className += ' removed';
                 }
-              });
-              decos = decos.concat(patchDecorations);
-              console.log(decos);
+                className += " diff-index-" + diffIndex;
+                var patch = { to: to, from: from, text: strippedString };
+
+                var patchDecorations = ranges.map(function (range) {
+                  if (range.type === 'node') {
+                    return Decoration.node(range.to, range.from, { class: className }, { diffIndex: diffIndex });
+                  } else {
+                    return Decoration.inline(range.to, range.from, { class: className }, { inclusiveLeft: true,
+                      inclusiveRight: true,
+                      diffIndex: diffIndex
+                    });
+                  }
+                });
+                decos = decos.concat(patchDecorations);
+                console.log(decos);
+              })();
             }
             startCount += strippedString.length;
           };
