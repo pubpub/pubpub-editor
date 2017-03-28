@@ -53,7 +53,7 @@ var Emoji = {
 	inline: true
 };
 
-var schemaNodes = _schemaDefinition.schema.spec.nodes.addBefore('horizontal_rule', 'page_break', PageBreak).addBefore('image', 'emoji', Emoji);
+var schemaNodes = _schemaDefinition.schema.spec.nodes.addBefore('horizontal_rule', 'page_break', PageBreak).addBefore('horizontal_rule', 'emoji', Emoji);
 
 var listSchema = (0, _prosemirrorSchemaList.addListNodes)(schemaNodes, "paragraph block*", "block");
 var tableSchema = (0, _prosemirrorSchemaTable.addTableNodes)(listSchema, "paragraph block*", "block");

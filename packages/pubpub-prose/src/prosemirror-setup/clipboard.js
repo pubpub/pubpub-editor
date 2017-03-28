@@ -18,20 +18,46 @@ nodeSerializer.embed = function toDOM(node) {
 const clipboardSerializer = new DOMSerializer(nodeSerializer, markSerializer);
 
 const defaultRules = DOMParser.schemaRules(schema);
+
+const getSize = function(dom) {
+  const width = dom.getAttribute("width");
+  if (width) {
+    return width;
+  }
+  return undefined;
+}
+
+const transformPastedHTML = function(htmlStr) {
+  // console.log('Got pasted HTML', htmlStr);
+  return htmlStr;
+}
+
 /*
-
 for (const rule of defaultRules) {
-
-  if (rule.node === 'block_embed') {
-    rule.tag = 'div.block-embed';
-    rule.getAttrs = getNodeAttrs;
-  } else if (rule.node === 'embed') {
-    rule.tag = 'span.embed';
-    rule.getAttrs = getNodeAttrs;
+  if (rule.node === 'embed') {
+    rule.tag = "img[src]";
+    rule.getAttrs = function(dom) {
+      console.log('GETTING ATTRS', this);
+      const url = dom.getAttribute("src");
+      const file = {
+        name: '',
+        type: '',
+        url,
+      };
+      const attrs = {
+        filename: file.name,
+        url: file.url,
+        size: getSize(dom),
+        align: 'full',
+      };
+      console.log('attrs', attrs);
+      return attrs;
+    }
   }
 }
 */
 const clipboardParser = new DOMParser(schema, defaultRules);
 
+exports.transformPastedHTML = transformPastedHTML;
 exports.clipboardSerializer = clipboardSerializer;
 exports.clipboardParser = clipboardParser;

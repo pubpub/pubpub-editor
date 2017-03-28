@@ -102,7 +102,8 @@ var BaseEditor = function () {
 
       var _require3 = require('../clipboard'),
           clipboardParser = _require3.clipboardParser,
-          clipboardSerializer = _require3.clipboardSerializer;
+          clipboardSerializer = _require3.clipboardSerializer,
+          transformPastedHTML = _require3.transformPastedHTML;
 
       var _require4 = require('../menu-config'),
           buildMenuItems = _require4.buildMenuItems;
@@ -143,6 +144,10 @@ var BaseEditor = function () {
         spellcheck: true,
         clipboardParser: clipboardParser,
         clipboardSerializer: clipboardSerializer,
+        handleContextMenu: function handleContextMenu(evt, thing, thing2) {
+          console.log(evt, thing, thing2);
+        },
+        transformPastedHTML: transformPastedHTML,
         handleDOMEvents: {
           dragstart: function dragstart(view, evt) {
             evt.preventDefault();
