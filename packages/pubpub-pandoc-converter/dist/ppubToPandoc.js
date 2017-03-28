@@ -209,9 +209,12 @@ function ppubToPandoc(ppub, options) {
 			case 'citations':
 				// Create a header node that goes above that says 'References'
 
-				var aboveNode = { t: 'Header', c: [1, ['references', ['unnumbered'], []], [{ t: 'Str', 'c': 'References' }]] };
-				// insert this node at the root
-				blocks.push(aboveNode);
+				var bibContents = csltoBibtex(bibData);
+				if (bibContents.length !== 1) {
+					var aboveNode = { t: 'Header', c: [1, ['references', ['unnumbered'], []], [{ t: 'Str', 'c': 'References' }]] };
+					blocks.push(aboveNode);
+				} // insert this node at the root
+
 				newNode.t = 'DoNotAddThisNode';
 
 				break;
@@ -499,10 +502,10 @@ function ppubToPandoc(ppub, options) {
 					c: createTextNodes(metadata['degree'])
 				};
 			}
-			if (metadata['university']) {
+			if (metadata['institute']) {
 				pandocJSON.meta.institute = {
 					t: 'MetaInlines',
-					c: createTextNodes(metadata['university'])
+					c: createTextNodes(metadata['institute'])
 				};
 			}
 			if (metadata['date']) {
