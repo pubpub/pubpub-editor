@@ -92,21 +92,20 @@ export const RichEditor = React.createClass({
 	},
 
 	createEditor(docJSON) {
-	const {handleFileUpload, onError, mentionsComponent, initialContent} = this.props;
+		if (this.editor) {
+			this.editor1.remove();
+		}
 
-	if (this.editor) {
-	  this.editor1.remove();
-	}
-	const place = ReactDOM.findDOMNode(this.refs.container);
+		const place = ReactDOM.findDOMNode(this.refs.container);
 		this.editor = new ProseEditor({
 			place: place,
-			contents: initialContent,
+			contents: this.props.initialContent,
 			// components: {
 			// 	suggestComponent: mentionsComponent,
 			// },
 			handlers: {
-				createFile: handleFileUpload,
-				captureError: onError,
+				createFile: this.props.handleFileUpload,
+				captureError: this.props.onError,
 				onChange: this.onChange,
 				updateMentions: this.updateMentions,
 			}
@@ -158,7 +157,7 @@ export const RichEditor = React.createClass({
 					<div className={'pt-card pt-elevation-0 pt-dark'} style={{ position: 'absolute', height: '35px', lineHeight: '35px', padding: '0px 1em', top: (this.state.inlineTop - 40), left: this.state.inlineCenter }}>Formatting</div>
 				}
 
-				<div ref="container" className="pubEditor" id="pubEditor"></div>
+				<div ref="container" className="pubEditor" id="pubEditor" />
 			</div>
 		);
 	}

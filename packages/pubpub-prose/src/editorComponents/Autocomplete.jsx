@@ -11,18 +11,17 @@ export const Autocomplete = React.createClass({
 		visible: PropTypes.bool,
 		top: PropTypes.number,
 		left: PropTypes.number,
-		URLs: PropTypes.object,
 		input: PropTypes.string,
 		onSelection: PropTypes.func,
 
-		localFiles: PropTypes.array,
-		localPubs: PropTypes.array,
-		localReferences: PropTypes.array,
-		localUsers: PropTypes.array,
-		localHighlights: PropTypes.array,
-		localDiscussions: PropTypes.array,
+		localFiles: PropTypes.array, // Used on Pubs. No Global at the moment
+		localPubs: PropTypes.array, // Used in Journals. Local = Feature
+		localReferences: PropTypes.array, // Used in Pubs. No Global at the moment
+		localUsers: PropTypes.array, // Used in Discussions.
+		localHighlights: PropTypes.array, // Used in Discussions. No Global at the moment
+		localDiscussions: PropTypes.array, // Used in Discussions. No Global at the moment
 
-		globalCategories: PropTypes.array, // ['highlights', 'discussions', 'users']
+		globalCategories: PropTypes.array, // ['pubs', 'users']
 	},
 
 	getInitialState() {

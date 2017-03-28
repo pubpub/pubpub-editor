@@ -2,6 +2,7 @@ import React from 'react';
 import RichEditor from '../src/editorComponents/RichEditor';
 import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
 import { markdownToJSON, jsonToMarkdown } from '../src/markdown';
+import { localFiles, localPubs, localReferences, localUsers, localHighlights, localDiscussions } from './sampledocs/autocompleteLocalData';
 
 // requires style attributes that would normally be up to the wrapping library to require
 require('@blueprintjs/core/dist/blueprint.css');
@@ -40,9 +41,17 @@ export const StoryBookFullEditor = React.createClass({
 	},
 
 	render: function() {
-		const locals = {
-			localUsers: [{ id: 1, username: 'travis', firstName: 'travis' }, { id: 2, username: 'trench', firstName: 'trench' }, { id: 3, username: 'traveller', firstName: 'traveller' }],
-			localPubs: [{ id: 1, username: 'ThebestPub', firstName: 'The Best Pub' }, { id: 2, username: 'Over the Rainbow', firstName: 'Over the Rainbow' }, { id: 3, username: 'Time Traveller', firstName: 'Time Traveller' }],
+		const editorProps = {
+			initialContent: this.state.initialContent,
+			onChange: this.onChange,
+			
+			localFiles: localFiles,
+			localPubs: localPubs,
+			localReferences: localReferences,
+			localUsers: localUsers,
+			localHighlights: localHighlights,
+			localDiscussions: localDiscussions,
+
 			globalCategories: ['pubs', 'users'],
 		};
 		return (
@@ -55,10 +64,10 @@ export const StoryBookFullEditor = React.createClass({
 				</div>
 				<div style={{ padding: '1em 2em' }}>
 					{this.state.mode === 'markdown' &&
-						<MarkdownEditor initialContent={this.state.initialContent} onChange={this.onChange} {...locals} />
+						<MarkdownEditor {...editorProps} />
 					}
 					{this.state.mode === 'rich' &&
-						<RichEditor initialContent={this.state.initialContent} onChange={this.onChange} {...locals} />
+						<RichEditor {...editorProps} />
 					}
 				</div>
 
