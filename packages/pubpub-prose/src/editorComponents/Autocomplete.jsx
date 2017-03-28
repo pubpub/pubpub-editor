@@ -90,71 +90,22 @@ export const Autocomplete = React.createClass({
 			});
 		}
 
-		
-		const localFiles = this.props.localFiles || [];
-		const localPubs = this.props.localPubs || [];
-		const localReferences = this.props.localReferences || [];
-		const localUsers = this.props.localUsers || [];
-		const localHighlights = this.props.localHighlights || [];
-		const localDiscussions = this.props.localDiscussions || [];
-
-		// const urlBase = window.location.hostname === 'localhost'
-		// 	? 'http://localhost:9876'
-		// 	: 'https://www.pubpub.org';
-
-		// const globalCategories = this.props.globalCategories || [];
 		let results;
 		switch (mode) {
 		case 'pubs':
-			return this.getModeResults(mode, 'pub', input, localPubs);
+			return this.getModeResults(mode, 'pub', input, this.props.localPubs);
 		case 'users':
-			return this.getModeResults(mode, 'user', input, localUsers);
-			// results = localUsers.filter((item)=> {
-			// 	if (input === '' || input === ' ') { return true; }
-			// 	return item.username.toLowerCase().indexOf(input.toLowerCase()) > -1;
-			// });
-			
-			// if (!globalCategories.includes(mode)) {
-			// 	return this.setState({ 
-			// 		_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
-			// 		_selectedIndex: 0,
-			// 		[`${mode}-${input}`]: results.slice(0, 10),
-			// 	});
-			// }
-			// return request({ uri: `${urlBase}/search/user?q=${input}`, json: true })
-			// .then((response)=> {
-			// 	results = results.concat(response);
-			// 	this.setState({ 
-			// 		_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
-			// 		_selectedIndex: 0,
-			// 		[`${mode}-${input}`]: results.slice(0, 10),
-			// 	});
-			// })
-			// .catch((err)=> {
-			// 	console.log(err);
-			// });
+			return this.getModeResults(mode, 'user', input, this.props.localUsers);
 		default: 
-			results = localFiles.filter((item)=> {
-				return item.name.toLowerCase().indexOf(input.toLowerCase()) > -1;
-			}).map(item => { return { ...item, type: 'file' }; })
-			.concat(localPubs.filter((item)=> {
-				return item.firstName.toLowerCase().indexOf(input.toLowerCase()) > -1;
-			}).map(item => { return { ...item, type: 'pub' }; }))
-			.concat(localReferences.filter((item)=> {
-				return item.title.toLowerCase().indexOf(input.toLowerCase()) > -1;
-			}).map(item => { return { ...item, type: 'reference' }; }))
-			.concat(localUsers.filter((item)=> {
-				return item.username.toLowerCase().indexOf(input.toLowerCase()) > -1;
-			}).map(item => { return { ...item, type: 'user' }; }))
-			.concat(localHighlights.filter((item)=> {
-				return item.exact.toLowerCase().indexOf(input.toLowerCase()) > -1;
-			}).map(item => { return { ...item, type: 'highlight' }; }))
-			.concat(localDiscussions.filter((item)=> {
-				return item.title.toLowerCase().indexOf(input.toLowerCase()) > -1;
-			}).map(item => { return { ...item, type: 'discussion' }; }));
-			// .concat(this.appendObjectType(localDiscussions.filter((item)=> {
-			// 	return item.title.indexOf(input) > -1;
-			// })), 'discussion');
+			results = [
+				...this.getLocalResults('file', 'firstName', input, this.props.localFiles),
+				...this.getLocalResults('pub', 'firstName', input, this.props.localPubs),
+				...this.getLocalResults('reference', 'firstName', input, this.props.localReferences),
+				...this.getLocalResults('user', 'firstName', input, this.props.localUsers),
+				...this.getLocalResults('highlight', 'firstName', input, this.props.localHighlights),
+				...this.getLocalResults('discussion', 'firstName', input, this.props.localDiscussions),
+			];
+
 			return this.setState({ 
 				_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
 				_selectedIndex: 0,
@@ -164,7 +115,15 @@ export const Autocomplete = React.createClass({
 
 	},
 
-	getModeResults: function(mode, urlPath, input, localArray) {
+	getLocalResults: function(type, searchKey, input, localArray = []) {
+		return localArray.filter((item)=> { 
+			return item[searchKey].toLowerCase().indexOf(input.toLowerCase()) > -1; 
+		}).map((item) => { 
+			return { ...item, type: type }; 
+		});
+	},
+
+	getModeResults: function(mode, urlPath, input, localArray = []) {
 		let results;
 		const urlBase = window.location.hostname === 'localhost'
 			? 'http://localhost:9876'

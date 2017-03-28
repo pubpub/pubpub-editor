@@ -114,7 +114,7 @@ export const RichEditor = React.createClass({
 	},
 
 	updateMentions(mentionInput) {
-		if (!!mentionInput) {
+		if (mentionInput) {
 			setTimeout(()=>{
 				const container = document.getElementById('rich-editor-container');
 				const mark = document.getElementsByClassName('mention-marker')[0];
@@ -134,7 +134,7 @@ export const RichEditor = React.createClass({
 
 
 	onSelection: function(selectedObject) {
-		console.log(selectedObject)
+		console.log(selectedObject);
 		return this.editor.createMention();
 	},
 
