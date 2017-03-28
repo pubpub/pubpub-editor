@@ -33,7 +33,7 @@ newSpec.topNode = "article";
 
 var markdownSchema = new _prosemirrorModel.Schema(newSpec);
 
-var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownParser(markdownSchema, (0, _markdownIt2.default)({ html: false }).disable(['table']),
+var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownParser(markdownSchema, (0, _markdownIt2.default)({ html: false }),
 /*
 .use(emoji)
 .use(sub)
@@ -87,6 +87,27 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 			console.log(tok.content);
 			return {};
 		} },
+
+	table: { block: 'table', attrs: function attrs(tok) {
+			console.log(tok);return {};
+		} },
+	tbody: { block: 'table', attrs: function attrs(tok) {
+			console.log(tok);return {};
+		} },
+	thead: { block: 'none', attrs: function attrs(tok) {
+			console.log(tok);return {};
+		} },
+
+	tr: { block: 'table_row', attrs: function attrs(tok) {
+			console.log(tok);return {};
+		} },
+	td: { block: 'table_cell', attrs: function attrs(tok) {
+			console.log(tok);return {};
+		} },
+	th: { block: 'table_cell', attrs: function attrs(tok) {
+			console.log(tok);return {};
+		} },
+
 	em: { mark: 'em' },
 	strong: { mark: 'strong' },
 	strike: { mark: 'strike' },
@@ -101,3 +122,12 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 	sub: { mark: 'sub' },
 	sup: { mark: 'sup' }
 });
+
+var emptyAdd = function emptyAdd(state, tok) {
+	console.log('emptying', tok);
+};
+
+markdownParser.tokenHandlers.tbody_open = emptyAdd;
+markdownParser.tokenHandlers.tbody_close = emptyAdd;
+markdownParser.tokenHandlers.thead_open = emptyAdd;
+markdownParser.tokenHandlers.thead_close = emptyAdd;

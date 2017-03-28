@@ -309,7 +309,7 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 					!!avatar && _react2.default.createElement(
 						'div',
 						{ style: styles.avatarWrapper },
-						_react2.default.createElement('img', { src: avatar, style: styles.avatar })
+						_react2.default.createElement('img', { src: avatar, style: styles.avatar, role: 'presentation' })
 					),
 					!avatar && !result.suggestionCategory && _react2.default.createElement(
 						'div',

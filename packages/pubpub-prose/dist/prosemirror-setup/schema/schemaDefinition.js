@@ -216,7 +216,16 @@ var nodes = {
     toDOM: function toDOM() {
       return ["br"];
     }
+  },
+
+  // empty schema block
+  none: {
+    group: "block",
+    toDOM: function toDOM() {
+      return ["span"];
+    }
   }
+
 };
 exports.nodes = nodes;
 

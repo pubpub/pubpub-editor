@@ -197,7 +197,14 @@ const nodes = {
     selectable: false,
     parseDOM: [{tag: "br"}],
     toDOM() { return ["br"] }
+  },
+
+  // empty schema block
+  none: {
+    group: "block",
+    toDOM() { return ["span"] }
   }
+
 }
 exports.nodes = nodes
 
