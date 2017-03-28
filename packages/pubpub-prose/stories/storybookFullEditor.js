@@ -19,7 +19,7 @@ export const StoryBookFullEditor = React.createClass({
 
 	getInitialState() {
 		return {
-			mode: (this.props.mode) ? this.props.mode : 'markdown',
+			mode: (this.props.mode) ? this.props.mode : 'rich',
 			initialContent: (this.props.initialContent) ? this.props.initialContent : undefined,
 			content: (this.props.initialContent) ? this.props.initialContent : undefined,
 		};
