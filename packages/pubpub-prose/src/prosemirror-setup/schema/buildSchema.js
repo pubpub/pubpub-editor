@@ -1,40 +1,40 @@
-import {DOMParser, DOMSerializer, Fragment, Mark, MarkType, NodeType, Schema} from 'prosemirror-model';
-
-import {addListNodes} from 'prosemirror-schema-list';
-import {addTableNodes} from 'prosemirror-schema-table';
-import {schema as basicSchema} from './schemaDefinition';
+// import { DOMParser, DOMSerializer, Fragment, Mark, MarkType, NodeType, Schema} from 'prosemirror-model';
+import { Schema } from 'prosemirror-model';
+import { addListNodes } from 'prosemirror-schema-list';
+import { addTableNodes } from 'prosemirror-schema-table';
+import { schema as basicSchema } from './schemaDefinition';
 
 const SubMark = {
-    parseDOM: [{tag: "sub"}],
-    toDOM() { return ["sub"] }
+	parseDOM: [{ tag: 'sub' }],
+	toDOM() { return ['sub']; }
 };
 
 const SupMark = {
-    parseDOM: [{tag: "sup"}],
-    toDOM() { return ["sup"] }
+	parseDOM: [{ tag: 'sup' }],
+	toDOM() { return ['sup']; }
 };
 
 const StrikeThroughMark = {
-    parseDOM: [{tag: "s"}],
-    toDOM() { return ["s"] }
+	parseDOM: [{ tag: 's' }],
+	toDOM() { return ['s']; }
 };
 
 const PageBreak = {
-    group: "block",
-    toDOM(node) { return ['div', {class: 'pagebreak'}, 'pagebreak']; }
+	group: 'block',
+	toDOM(node) { return ['div', { class: 'pagebreak' }, 'pagebreak']; }
 };
 
 const Emoji = {
-  group: 'inline',
-  attrs: {
-    content: {default: ''},
-    markup: {default: ''},
-  },
+	group: 'inline',
+	attrs: {
+		content: { default: '' },
+		markup: { default: '' },
+	},
 	toDOM: function(node) {
 		return ['span', node.attrs.content];
 	},
-  inline: true,
-}
+	inline: true,
+};
 
 
 const schemaNodes = basicSchema.spec.nodes
@@ -44,26 +44,26 @@ const schemaNodes = basicSchema.spec.nodes
 // const listSchema = addListNodes(schemaNodes, "paragraph block*", "block");
 // const tableSchema = addTableNodes(listSchema, "paragraph block*", "block");
 
-const listSchema = addListNodes(schemaNodes, "block*", "block");
-const tableSchema = addTableNodes(listSchema, "block*", "block");
+const listSchema = addListNodes(schemaNodes, 'block*', 'block');
+const tableSchema = addTableNodes(listSchema, 'block*', 'block');
 
 export const schema = new Schema({
 	nodes: tableSchema,
 	marks: basicSchema.spec.marks.addBefore('code', 'sub', SubMark).addBefore('code', 'sup', SupMark).addBefore('code', 'strike', StrikeThroughMark),
-  topNode: 'doc'
+	topNode: 'doc'
 });
 
 export const createSchema = () => {
-  return new Schema({
-  	nodes: tableSchema,
-  	marks: basicSchema.markSpec.addBefore('code', 'sub', SubMark).addBefore('code', 'sup', SupMark).addBefore('code', 'strike', StrikeThroughMark)
-  });
-}
+	return new Schema({
+		nodes: tableSchema,
+		marks: basicSchema.markSpec.addBefore('code', 'sub', SubMark).addBefore('code', 'sup', SupMark).addBefore('code', 'strike', StrikeThroughMark)
+	});
+};
 
-const migrateMarks = (node) => {
-  if (!node) {
-    return null;
-  }
+const migrateMarks = (node)=> {
+	if (!node) {
+		return null;
+	}
 	if (node.content) {
 		for (const subNode of node.content) {
 			migrateMarks(subNode);
@@ -82,7 +82,7 @@ const migrateMarks = (node) => {
 
 				}
 				*/
-			}
+			};
 		});
 	}
 	if (node.slice) {

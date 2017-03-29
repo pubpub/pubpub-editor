@@ -1,5 +1,5 @@
 // import { toggleMark, lift, joinUp, selectParentNode, wrapIn, setBlockType } from 'prosemirror-commands';
-// import { wrapInList } from 'prosemirror-schema-list';
+import { createTable } from 'prosemirror-schema-table';
 
 import { schema } from '../prosemirror-setup';
 
@@ -22,6 +22,18 @@ function getMenuItems(editor) {
 	/* -------------- */
 	/* -------------- */
 
+	/* Table */
+	/* -------------- */
+	function insertTable() {
+		// const newNode = schema.nodes.equation.create({ content: '\\sum_ix^i' });
+		// editor.view.dispatch(editor.view.state.tr.replaceSelectionWith(newNode));
+		const rows = 2;
+		const cols = 2;
+		editor.view.dispatch(editor.view.state.tr.replaceSelectionWith(createTable(schema.nodes.table, rows, cols)));
+	}
+	/* -------------- */
+	/* -------------- */
+
 	const menuItems = [
 		{
 			icon: 'pt-icon-h1',
@@ -31,7 +43,7 @@ function getMenuItems(editor) {
 		{
 			icon: 'pt-icon-h1',
 			text: 'Insert Table',
-			run: ()=>{},
+			run: insertTable,
 		},
 		{
 			icon: 'pt-icon-h1',
