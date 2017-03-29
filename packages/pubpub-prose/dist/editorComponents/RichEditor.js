@@ -9,15 +9,23 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _prosemirrorSetup = require('../prosemirror-setup');
+
 var _Autocomplete = require('./Autocomplete');
 
 var _Autocomplete2 = _interopRequireDefault(_Autocomplete);
 
-var _prosemirrorSetup = require('../prosemirror-setup');
+var _FormattingMenu = require('../FormattingMenu/FormattingMenu');
 
-var _reactDom = require('react-dom');
+var _FormattingMenu2 = _interopRequireDefault(_FormattingMenu);
 
-var _reactDom2 = _interopRequireDefault(_reactDom);
+var _InsertMenu = require('../InsertMenu/InsertMenu');
+
+var _InsertMenu2 = _interopRequireDefault(_InsertMenu);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -55,7 +63,7 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 			top: 0,
 			left: 0,
 			input: '',
-			menuTop: 0,
+			menuTop: 7,
 			inlineCenter: 0,
 			inlineTop: 0
 		};
@@ -74,10 +82,14 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 
 	updateCoordsForMenus: function updateCoordsForMenus() {
 		var currentPos = this.editor.view.state.selection.$to.pos;
-		var container = document.getElementById('rich-editor-container');
-		var menuTop = this.editor.view.coordsAtPos(currentPos).top - container.getBoundingClientRect().top + 5;
 
-		if (!this.editor.view.state.selection.$cursor) {
+		var currentNode = this.editor.view.state.doc.nodeAt(currentPos - 1);
+		var isRoot = this.editor.view.state.selection.$to.depth === 2;
+
+		var container = document.getElementById('rich-editor-container');
+		var menuTop = isRoot && currentNode && !currentNode.text ? this.editor.view.coordsAtPos(currentPos).top - container.getBoundingClientRect().top + 5 : 0;
+
+		if (!this.editor.view.state.selection.$cursor && currentNode && currentNode.text) {
 			var currentFromPos = this.editor.view.state.selection.$from.pos;
 			var currentToPos = this.editor.view.state.selection.$to.pos;
 			var left = this.editor.view.coordsAtPos(currentFromPos).left - container.getBoundingClientRect().left;
@@ -150,7 +162,8 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 	},
 
 
-	onSelection: function onSelection(selectedObject) {
+	onMentionSelection: function onMentionSelection(selectedObject) {
+		console.log(selectedObject);
 		return this.editor.createMention(selectedObject.firstName || selectedObject.title || selectedObject.name || selectedObject.exact || selectedObject.key);
 	},
 
@@ -186,6 +199,7 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 	},
 
 	render: function render() {
+
 		return _react2.default.createElement(
 			'div',
 			{ style: { position: 'relative' }, id: 'rich-editor-container' },
@@ -194,19 +208,20 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 				left: this.state.left,
 				visible: this.state.visible,
 				input: this.state.input,
-				onSelection: this.onSelection,
+				onSelection: this.onMentionSelection,
 				localUsers: this.props.localUsers,
 				localPubs: this.props.localPubs,
 				localFiles: this.props.localFiles,
 				localReferences: this.props.localReferences,
 				localHighlights: this.props.localHighlights,
 				globalCategories: this.props.globalCategories }),
-			!!this.state.menuTop && _react2.default.createElement('span', { style: { position: 'absolute', left: '-24px', top: this.state.menuTop, cursor: 'pointer' }, className: 'pt-icon-standard pt-icon-add' }),
-			!!this.state.inlineTop && _react2.default.createElement(
-				'div',
-				{ className: 'pt-card pt-elevation-0 pt-dark', style: { position: 'absolute', height: '35px', lineHeight: '35px', padding: '0px 1em', top: this.state.inlineTop - 40, left: this.state.inlineCenter } },
-				'Formatting'
-			),
+			!!this.state.menuTop && _react2.default.createElement(_InsertMenu2.default, {
+				editor: this.editor,
+				top: this.state.menuTop }),
+			this.editor && !!this.state.inlineTop && _react2.default.createElement(_FormattingMenu2.default, {
+				editor: this.editor,
+				top: this.state.inlineTop,
+				left: this.state.inlineCenter }),
 			_react2.default.createElement('div', { ref: 'container', className: 'pubEditor', id: 'pubEditor' })
 		);
 	}

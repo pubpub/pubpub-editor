@@ -55,8 +55,11 @@ var Emoji = {
 
 var schemaNodes = _schemaDefinition.schema.spec.nodes.addBefore('horizontal_rule', 'page_break', PageBreak).addBefore('horizontal_rule', 'emoji', Emoji);
 
-var listSchema = (0, _prosemirrorSchemaList.addListNodes)(schemaNodes, "paragraph block*", "block");
-var tableSchema = (0, _prosemirrorSchemaTable.addTableNodes)(listSchema, "paragraph block*", "block");
+// const listSchema = addListNodes(schemaNodes, "paragraph block*", "block");
+// const tableSchema = addTableNodes(listSchema, "paragraph block*", "block");
+
+var listSchema = (0, _prosemirrorSchemaList.addListNodes)(schemaNodes, "block*", "block");
+var tableSchema = (0, _prosemirrorSchemaTable.addTableNodes)(listSchema, "block*", "block");
 
 var schema = exports.schema = new _prosemirrorModel.Schema({
 	nodes: tableSchema,

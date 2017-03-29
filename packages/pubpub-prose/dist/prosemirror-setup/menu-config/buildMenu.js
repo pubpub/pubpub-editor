@@ -31,6 +31,8 @@ var _require2 = require('prosemirror-schema-table'),
 
 // Helpers to create specific types of items
 
+exports.boldItem = markItem(_schema.schema.marks.bold, { title: 'Toggle strong style', icon: 'bold' });
+
 function buildMenuItems(schema) {
 	var output = {};
 	var type = void 0;
@@ -104,7 +106,7 @@ function buildMenuItems(schema) {
 
 	if (type = schema.nodes.page_break) {
 		var pb = type;
-		output.insertPageBreak = insertHorizontalRule(pb);
+		output.insertPageBreak = insertPageBreak(pb);
 	}
 
 	if (type = schema.nodes.table) {
@@ -129,7 +131,7 @@ function buildMenuItems(schema) {
 
 	output.moreinlineMenu = new Dropdown(cut([output.supMark, output.subMark, output.strikeMark]), { label: '', icon: 'style' });
 	output.insertMenu = new Dropdown(cut([output.insertImageEmbed, output.insertVideoEmbed, output.insertReferenceEmbed, output.insertLatexEmbed]), { label: 'Insert', icon: 'insert' });
-	output.typeMenu = new Dropdown(cut([output.makeCodeBlock, output.insertPageBreak]), { label: '...' });
+	output.typeMenu = new Dropdown(cut([output.makeCodeBlock, output.insertHorizontalRule]), { label: '...' });
 	var tableItems = cut([output.insertTable, output.addRowBefore, output.addRowAfter, output.removeRow, output.addColumnBefore, output.addColumnAfter, output.removeColumn]);
 	if (tableItems.length) {
 		output.tableMenu = new Dropdown(tableItems, { label: '', icon: 'th', hideOnDisable: false });

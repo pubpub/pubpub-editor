@@ -54,7 +54,9 @@ var BaseEditor = function () {
 			var _require = require('../../markdown'),
 			    markdownSerializer = _require.markdownSerializer;
 
-			var markdown = markdownSerializer.serialize(_this.view.state.doc);
+			var doc = _this.view.state.doc;
+			console.log('Doc', doc.attrs);
+			var markdown = markdownSerializer.serialize(_this.view.state.doc, { meta: doc.attrs.meta });
 			return markdown;
 		};
 
@@ -133,7 +135,7 @@ var BaseEditor = function () {
 			var reactMenu = document.createElement('div');
 			var editorView = document.createElement('div');
 			editorView.className = 'pub-body';
-			place.appendChild(reactMenu);
+			// place.appendChild(reactMenu);
 			place.appendChild(editorView);
 
 			this.menuElem = reactMenu;
@@ -144,9 +146,9 @@ var BaseEditor = function () {
 				spellcheck: true,
 				clipboardParser: markdownParser,
 				clipboardSerializer: clipboardSerializer,
-				handleContextMenu: function handleContextMenu(evt, thing, thing2) {
-					console.log(evt, thing, thing2);
-				},
+				// handleContextMenu: (evt, thing, thing2)=> {
+				// 	console.log(evt, thing, thing2);
+				// },
 				transformPastedHTML: transformPastedHTML,
 				handleDOMEvents: {
 					dragstart: function dragstart(view, evt) {

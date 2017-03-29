@@ -80,6 +80,8 @@ export const markdownSerializer = new MarkdownSerializer({
 		state.write('[@' + node.attrs.text + ']');
 	},
 	reference: function reference(state, node) {
+		console.log('reference', node);
+		console.log(state.options);
 		state.write('');
 	},
 	citation: function citation(state, node) {
