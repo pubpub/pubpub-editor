@@ -34,11 +34,46 @@ function getMenuItems(editor) {
 	/* -------------- */
 	/* -------------- */
 
+	/* Reference */
+	/* -------------- */
+	function insertReference() {
+		editor.view.dispatch(editor.view.state.tr.setMeta('createCitation', { key: 'testKey', title: 'myRef' }));
+	}
+	/* -------------- */
+	/* -------------- */
+
+	/* Embed */
+	/* -------------- */
+	function insertEmbed() {
+		const filename = 'test.jpg'; // Should be passed in
+		const url = 'http://cdn3-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-5.jpg'; // Should be passed in
+
+		const textnode = schema.text('Enter caption.');
+		const captionNode = schema.nodes.caption.create({}, textnode);
+		const embedNode = schema.nodes.embed.create(
+			{
+				filename,
+				align: 'full',
+				size: '50%',
+			}, 
+			captionNode
+		);
+
+		let transaction = editor.view.state.tr.replaceSelectionWith(embedNode);
+		transaction = transaction.setMeta('uploadedFile', { filename, url });
+		editor.view.dispatch(transaction);
+	}
+	/* -------------- */
+	/* -------------- */
+
+
+	
+
 	const menuItems = [
 		{
 			icon: 'pt-icon-h1',
 			text: 'Upload Media',
-			run: ()=>{},
+			run: insertEmbed, // Really, we want to pop open the dialog. Which in turn will insert reference
 		},
 		{
 			icon: 'pt-icon-h1',
@@ -58,7 +93,7 @@ function getMenuItems(editor) {
 		{
 			icon: 'pt-icon-h1',
 			text: 'Add References',
-			run: ()=>{},
+			run: insertReference, // Really, we want to pop open the dialog. Which in turn will insert reference
 		},
 		
 	];
