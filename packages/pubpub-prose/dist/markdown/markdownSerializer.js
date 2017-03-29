@@ -9,6 +9,8 @@ var _ref;
 
 var _prosemirrorMarkdown = require('prosemirror-markdown');
 
+var _citationConversion = require('../references/citationConversion');
+
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var markdownSerializer = exports.markdownSerializer = new _prosemirrorMarkdown.MarkdownSerializer((_ref = {
@@ -91,11 +93,15 @@ var markdownSerializer = exports.markdownSerializer = new _prosemirrorMarkdown.M
 	state.write('$$\n');
 }), _defineProperty(_ref, 'mention', function mention(state, node) {
 	state.write('[@' + node.attrs.text + ']');
-}), _defineProperty(_ref, 'reference', function reference(state) {
+}), _defineProperty(_ref, 'reference', function reference(state, node) {
 	state.write('');
-}), _defineProperty(_ref, 'citation', function citation(state) {
-	state.write('');
+}), _defineProperty(_ref, 'citation', function citation(state, node) {
+	var CSLData = node.attrs.data;
+	var bibtexStr = (0, _citationConversion.generateBibTexString)(CSLData);
+	console.log('bibtex', CSLData);
+	state.write(bibtexStr);
 }), _defineProperty(_ref, 'citations', function citations(state, node) {
+	state.renderContent(node);
 	state.write('');
 }), _defineProperty(_ref, 'aside', function aside(state) {
 	state.write('');

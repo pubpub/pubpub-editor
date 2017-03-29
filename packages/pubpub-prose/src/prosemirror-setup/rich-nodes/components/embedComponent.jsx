@@ -78,11 +78,7 @@ export const EmbedComponent = React.createClass({
 		const {selected} = this.state;
 		const caption = (this.state.caption || this.props.caption);
 		const data = this.props.data || {};
-
 		const file = {url, name: filename, type: URLToType(url)}
-
-		console.log('RENDERING', file);
-
 
 		const popoverContent = (<EmbedMenu createCaption={this.props.createCaption} removeCaption={this.props.removeCaption} embedAttrs={this.props} updateParams={this.updateAttrs}/>);
 

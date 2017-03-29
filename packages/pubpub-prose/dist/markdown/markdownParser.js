@@ -190,3 +190,9 @@ markdownParser.tokenHandlers.tbody_open = emptyAdd;
 markdownParser.tokenHandlers.tbody_close = emptyAdd;
 markdownParser.tokenHandlers.thead_open = emptyAdd;
 markdownParser.tokenHandlers.thead_close = emptyAdd;
+
+markdownParser.parseSlice = function (md) {
+	console.log('PARSING THIS');
+	console.log(md);
+	return markdownParser.parse(md);
+};

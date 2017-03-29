@@ -1,10 +1,9 @@
+import { CitationsView, EmbedView, IframeView, LatexView, MentionView, ReferenceView } from '../rich-nodes';
+
+import { BaseMenu } from '../../menubar';
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import { CitationsView, EmbedView, IframeView, LatexView, MentionView, ReferenceView } from '../rich-nodes';
-import { BaseMenu } from '../../menubar';
-// import { TextSelection } from 'prosemirror-state';
-import { getPlugin } from '../plugins';
+import {getPlugin} from '../plugins';
 import { schema as pubSchema } from '../schema';
 
 class BaseEditor {
@@ -16,6 +15,8 @@ class BaseEditor {
 
 	create({ place, contents, plugins, config, components: { suggestComponent } = {}, handlers: { createFile, onChange, captureError, updateMentions } }) {
 		const { clipboardParser, clipboardSerializer, transformPastedHTML } = require('../clipboard');
+		const { markdownParser } = require('../../markdown/markdownParser');
+
 		const { buildMenuItems } = require('../menu-config');
 		const { EditorState } = require('prosemirror-state');
 		const { EditorView } = require('prosemirror-view');
@@ -48,7 +49,7 @@ class BaseEditor {
 			state: state,
 			dispatchTransaction: this._onAction,
 			spellcheck: true,
-			clipboardParser: clipboardParser,
+			clipboardParser: markdownParser,
 			clipboardSerializer: clipboardSerializer,
 			// handleContextMenu: (evt, thing, thing2)=> {
 			// 	console.log(evt, thing, thing2);

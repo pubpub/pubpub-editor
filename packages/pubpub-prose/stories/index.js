@@ -1,11 +1,10 @@
-import React from 'react';
-import { storiesOf } from '@kadira/storybook';
+import { SingleMention, SingleReference, TableMarkdown } from './sampledocs';
 
 import FullEditor from './storybookFullEditor';
 import MarkdownEditor from './storybookMarkdownEditor';
+import React from 'react';
 import RichEditor from './storybookRichEditor';
-import { SingleMention, SingleReference, TableMarkdown } from './sampledocs';
-
+import { storiesOf } from '@kadira/storybook';
 
 storiesOf('Rich Editor', module)
 .add('basic ', () => (
@@ -30,4 +29,8 @@ storiesOf('Full Editor', module)
 ))
 .add('table conversion ', () => (
 	<FullEditor mode={'markdown'} initialContent={TableMarkdown} />
-));
+))
+.add('reference serializing ', () => (
+	<FullEditor mode={'rich'} initialContent={SingleReference} />
+))
+;
