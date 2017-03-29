@@ -4,7 +4,7 @@ import { getPlugin, getPluginState } from '../prosemirror-setup/plugins';
 
 import BasePrompt from './basePrompt';
 import FileDialog from './fileDialog';
-import ReferenceDialog from './referenceDialog'
+import ReferenceDialog from './referenceDialog';
 
 let styles = {};
 

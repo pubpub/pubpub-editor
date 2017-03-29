@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react';
-
+import ReactDOM from 'react-dom';
+import { schema } from '../prosemirror-setup';
 import Autocomplete from './Autocomplete';
 import { RichEditor as ProseEditor } from '../prosemirror-setup';
-import ReactDOM from 'react-dom';
-
+import FormattingMenu from '../FormattingMenu/FormattingMenu';
 /*
 Props outline:
 <Editor
@@ -62,8 +62,12 @@ export const RichEditor = React.createClass({
 
 	updateCoordsForMenus: function() {
 		const currentPos = this.editor.view.state.selection.$to.pos;
+
+		const currentNode = this.editor.view.state.doc.nodeAt(currentPos - 1);
+		const isRoot = this.editor.view.state.selection.$to.depth === 2;
+		
 		const container = document.getElementById('rich-editor-container');
-		const menuTop = this.editor.view.coordsAtPos(currentPos).top - container.getBoundingClientRect().top + 5;
+		const menuTop = isRoot && !currentNode.text ? this.editor.view.coordsAtPos(currentPos).top - container.getBoundingClientRect().top + 5 : 0;
 
 		if (!this.editor.view.state.selection.$cursor) {
 			const currentFromPos = this.editor.view.state.selection.$from.pos;
@@ -135,12 +139,13 @@ export const RichEditor = React.createClass({
 	},
 
 
-	onSelection: function(selectedObject) {
+	onMentionSelection: function(selectedObject) {
 		console.log(selectedObject);
 		return this.editor.createMention(selectedObject.firstName || selectedObject.title || selectedObject.name || selectedObject.exact || selectedObject.key);
 	},
 
 	render: function() {
+		
 		return (
 			<div style={{ position: 'relative' }} id={'rich-editor-container'}>
 				<Autocomplete
@@ -148,7 +153,7 @@ export const RichEditor = React.createClass({
 					left={this.state.left}
 					visible={this.state.visible}
 					input={this.state.input}
-					onSelection={this.onSelection}
+					onSelection={this.onMentionSelection}
 					localUsers={this.props.localUsers}
 					localPubs={this.props.localPubs}
 					localFiles={this.props.localFiles}
@@ -159,8 +164,12 @@ export const RichEditor = React.createClass({
 				{!!this.state.menuTop &&
 					<span style={{ position: 'absolute', left: '-24px', top: this.state.menuTop, cursor: 'pointer' }} className={'pt-icon-standard pt-icon-add'} />
 				}
-				{!!this.state.inlineTop &&
-					<div className={'pt-card pt-elevation-0 pt-dark'} style={{ position: 'absolute', height: '35px', lineHeight: '35px', padding: '0px 1em', top: (this.state.inlineTop - 40), left: this.state.inlineCenter }}>Formatting</div>
+
+				{this.editor && !!this.state.inlineTop &&
+					<FormattingMenu 
+						editor={this.editor}
+						top={this.state.inlineTop} 
+						left={this.state.inlineCenter} />
 				}
 
 				<div ref="container" className="pubEditor" id="pubEditor" />

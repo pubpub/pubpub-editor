@@ -41,8 +41,11 @@ const schemaNodes = basicSchema.spec.nodes
 .addBefore('horizontal_rule', 'page_break', PageBreak)
 .addBefore('horizontal_rule', 'emoji', Emoji);
 
-const listSchema = addListNodes(schemaNodes, "paragraph block*", "block");
-const tableSchema = addTableNodes(listSchema, "paragraph block*", "block");
+// const listSchema = addListNodes(schemaNodes, "paragraph block*", "block");
+// const tableSchema = addTableNodes(listSchema, "paragraph block*", "block");
+
+const listSchema = addListNodes(schemaNodes, "block*", "block");
+const tableSchema = addTableNodes(listSchema, "block*", "block");
 
 export const schema = new Schema({
 	nodes: tableSchema,

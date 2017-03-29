@@ -69,7 +69,7 @@ export const StoryBookFullEditor = React.createClass({
 						<div className={`pt-button${this.state.mode === 'rich' ? ' pt-active' : ''}`} onClick={this.setRich}>Rich</div>
 					</div>
 				</div>
-				<div style={{ padding: '1em 2em' }}>
+				<div style={{ padding: '1em 4em' }}>
 					{this.state.mode === 'markdown' &&
 						<MarkdownEditor {...editorProps} />
 					}

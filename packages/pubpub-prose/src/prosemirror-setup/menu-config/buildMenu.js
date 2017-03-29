@@ -5,6 +5,8 @@ const { createTable, addColumnBefore, addColumnAfter, removeColumn, addRowBefore
 
 // Helpers to create specific types of items
 
+exports.boldItem = markItem(schema.marks.bold, { title: 'Toggle strong style', icon: 'bold' });
+
 function buildMenuItems(schema) {
 	const output = {};
 	let type;
