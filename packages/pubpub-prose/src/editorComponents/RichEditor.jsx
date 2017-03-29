@@ -4,6 +4,7 @@ import { schema } from '../prosemirror-setup';
 import Autocomplete from './Autocomplete';
 import { RichEditor as ProseEditor } from '../prosemirror-setup';
 import FormattingMenu from '../FormattingMenu/FormattingMenu';
+import InsertMenu from '../InsertMenu/InsertMenu';
 /*
 Props outline:
 <Editor
@@ -37,7 +38,7 @@ export const RichEditor = React.createClass({
 			top: 0,
 			left: 0,
 			input: '',
-			menuTop: 0,
+			menuTop: 7,
 			inlineCenter: 0,
 			inlineTop: 0,
 		};
@@ -142,7 +143,6 @@ export const RichEditor = React.createClass({
 		}
 	},
 
-
 	onMentionSelection: function(selectedObject) {
 		console.log(selectedObject);
 		return this.editor.createMention(selectedObject.firstName || selectedObject.title || selectedObject.name || selectedObject.exact || selectedObject.key);
@@ -176,7 +176,9 @@ export const RichEditor = React.createClass({
 					globalCategories={this.props.globalCategories} />
 
 				{!!this.state.menuTop &&
-					<span style={{ position: 'absolute', left: '-24px', top: this.state.menuTop, cursor: 'pointer' }} className={'pt-icon-standard pt-icon-add'} />
+					<InsertMenu
+						editor={this.editor}
+						top={this.state.menuTop} />
 				}
 
 				{this.editor && !!this.state.inlineTop &&
