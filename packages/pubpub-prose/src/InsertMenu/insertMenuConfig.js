@@ -5,13 +5,12 @@ import { schema } from '../prosemirror-setup';
 
 function getMenuItems(editor) {
 
+
 	/* Horizontal Rule */
 	/* -------------- */
 	function insertHorizontalRule() {
 		editor.view.dispatch(editor.view.state.tr.replaceSelectionWith(schema.nodes.horizontal_rule.create()));
 	}
-	/* -------------- */
-	/* -------------- */
 
 	/* Latex Equation */
 	/* -------------- */
@@ -19,28 +18,21 @@ function getMenuItems(editor) {
 		const newNode = schema.nodes.equation.create({ content: '\\sum_ix^i' });
 		editor.view.dispatch(editor.view.state.tr.replaceSelectionWith(newNode));
 	}
-	/* -------------- */
-	/* -------------- */
 
+	/* -------------- */
 	/* Table */
 	/* -------------- */
 	function insertTable() {
-		// const newNode = schema.nodes.equation.create({ content: '\\sum_ix^i' });
-		// editor.view.dispatch(editor.view.state.tr.replaceSelectionWith(newNode));
 		const rows = 2;
 		const cols = 2;
 		editor.view.dispatch(editor.view.state.tr.replaceSelectionWith(createTable(schema.nodes.table, rows, cols)));
 	}
-	/* -------------- */
-	/* -------------- */
 
 	/* Reference */
 	/* -------------- */
 	function insertReference() {
 		editor.view.dispatch(editor.view.state.tr.setMeta('createCitation', { key: 'testKey', title: 'myRef' }));
 	}
-	/* -------------- */
-	/* -------------- */
 
 	/* Embed */
 	/* -------------- */
@@ -63,10 +55,6 @@ function getMenuItems(editor) {
 		transaction = transaction.setMeta('uploadedFile', { filename, url });
 		editor.view.dispatch(transaction);
 	}
-	/* -------------- */
-	/* -------------- */
-
-
 	
 
 	const menuItems = [
