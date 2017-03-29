@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import Radium from 'radium';
 import request from 'request-promise';
-
+import fuzzysearch from 'fuzzysearch';
 require('../../style/autosuggest.scss');
 
 let styles;
@@ -20,6 +20,7 @@ export const Autocomplete = React.createClass({
 		localUsers: PropTypes.array, // Used in Discussions.
 		localHighlights: PropTypes.array, // Used in Discussions. No Global at the moment
 		localDiscussions: PropTypes.array, // Used in Discussions. No Global at the moment
+		// localPages
 
 		globalCategories: PropTypes.array, // ['pubs', 'users']
 	},
@@ -136,7 +137,8 @@ export const Autocomplete = React.createClass({
 
 		return localArray.filter((item)=> { 
 			return searchKeys.reduce((previous, current)=> {
-				if (item[current].toLowerCase().indexOf(input.toLowerCase()) > -1) { return true; }
+				const contained = fuzzysearch(input.toLowerCase(), item[current].toLowerCase());
+				if (contained) { return true; }
 				return previous;
 			}, false);
 		}).map((item) => { 
