@@ -6,6 +6,7 @@ import { keys } from './pluginKeys';
 const RelativeFilesPlugin = new Plugin({
   state: {
     init(config, instance) {
+      console.log('GOT FILEMAP', config.fileMap);
       return { fileMap: config.fileMap || {} };
     },
     apply(transaction, state, prevEditorState, editorState) {

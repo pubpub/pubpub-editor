@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
-var _schema = require("../schema");
+var _schema = require('../schema');
 
-var _require = require("./menuItems"),
+var _require = require('./menuItems'),
     wrapItem = _require.wrapItem,
     blockTypeItem = _require.blockTypeItem,
     Dropdown = _require.Dropdown,
@@ -20,7 +20,7 @@ var _require = require("./menuItems"),
     insertTableItem = _require.insertTableItem,
     cmdItem = _require.cmdItem;
 
-var _require2 = require("prosemirror-schema-table"),
+var _require2 = require('prosemirror-schema-table'),
     createTable = _require2.createTable,
     addColumnBefore = _require2.addColumnBefore,
     addColumnAfter = _require2.addColumnAfter,
@@ -32,96 +32,114 @@ var _require2 = require("prosemirror-schema-table"),
 // Helpers to create specific types of items
 
 function buildMenuItems(schema) {
-  var r = {},
-      type = void 0;
-  if (type = schema.marks.sup) r.supMark = markItem(type, { title: "superscript", icon: null });
-  if (type = schema.marks.sub) r.subMark = markItem(type, { title: "subscript", icon: null });
-  if (type = schema.marks.strike) r.strikeMark = markItem(type, { title: "strikethrough", icon: null });
+	var output = {};
+	var type = void 0;
+	if (type = schema.marks.sup) {
+		output.supMark = markItem(type, { title: 'superscript', icon: null });
+	}
+	if (type = schema.marks.sub) {
+		output.subMark = markItem(type, { title: 'subscript', icon: null });
+	}
+	if (type = schema.marks.strike) {
+		output.strikeMark = markItem(type, { title: 'strikethrough', icon: null });
+	}
 
-  if (type = schema.marks.strong) r.toggleStrong = markItem(type, { title: "Toggle strong style", icon: "bold" });
-  if (type = schema.marks.em) r.toggleEm = markItem(type, { title: "Toggle emphasis", icon: "italic" });
-  if (type = schema.marks.code) r.toggleCode = markItem(type, { title: "Toggle code font", icon: "code" });
-  if (type = schema.marks.link) r.toggleLink = linkItem(type);
+	if (type = schema.marks.strong) {
+		output.toggleStrong = markItem(type, { title: 'Toggle strong style', icon: 'bold' });
+	}
+	if (type = schema.marks.em) {
+		output.toggleEm = markItem(type, { title: 'Toggle emphasis', icon: 'italic' });
+	}
+	if (type = schema.marks.code) {
+		output.toggleCode = markItem(type, { title: 'Toggle code font', icon: 'code' });
+	}
+	if (type = schema.marks.link) {
+		output.toggleLink = linkItem(type);
+	}
 
-  if (type = schema.nodes.embed) {
-    r.insertImageEmbed = insertImageEmbed(type);
-    r.insertVideoEmbed = insertVideoEmbed(type);
-  }
+	if (type = schema.nodes.embed) {
+		output.insertImageEmbed = insertImageEmbed(type);
+		output.insertVideoEmbed = insertVideoEmbed(type);
+	}
 
-  if (type = schema.nodes.reference) {
-    r.insertReferenceEmbed = insertReferenceEmbed(type);
-  }
+	if (type = schema.nodes.reference) {
+		output.insertReferenceEmbed = insertReferenceEmbed(type);
+	}
 
-  if (type = schema.nodes.equation) {
-    r.insertLatexEmbed = insertLatexEmbed(type);
-  }
+	if (type = schema.nodes.equation) {
+		output.insertLatexEmbed = insertLatexEmbed(type);
+	}
 
-  if (type = schema.nodes.bullet_list) r.wrapBulletList = wrapListItem(type, {
-    title: "Wrap in bullet list",
-    icon: "properties"
-  });
-  if (type = schema.nodes.ordered_list) r.wrapOrderedList = wrapListItem(type, {
-    title: "Wrap in ordered list",
-    icon: "numbered-list"
-  });
-  if (type = schema.nodes.blockquote) r.wrapBlockQuote = wrapItem(type, {
-    title: "Quote",
-    icon: "citation"
-  });
-  if (type = schema.nodes.paragraph) r.makeParagraph = blockTypeItem(type, {
-    title: "Normal",
-    label: "Normal"
-  });
-  if (type = schema.nodes.code_block) r.makeCodeBlock = blockTypeItem(type, {
-    title: "Code block",
-    label: "Code",
-    icon: "code"
-  });
-  if (type = schema.nodes.heading) for (var i = 1; i <= 10; i++) {
-    r["makeHead" + i] = blockTypeItem(type, {
-      title: "Heading " + i,
-      label: "Heading " + i,
-      attrs: { level: i }
-    });
-  }if (type = schema.nodes.horizontal_rule) {
-    var hr = type;
-    r.insertHorizontalRule = insertHorizontalRule(hr);
-  }
+	if (type = schema.nodes.bullet_list) output.wrapBulletList = wrapListItem(type, {
+		title: 'Wrap in bullet list',
+		icon: 'properties'
+	});
+	if (type = schema.nodes.ordered_list) output.wrapOrderedList = wrapListItem(type, {
+		title: 'Wrap in ordered list',
+		icon: 'numbered-list'
+	});
+	if (type = schema.nodes.blockquote) output.wrapBlockQuote = wrapItem(type, {
+		title: 'Quote',
+		icon: 'citation'
+	});
+	if (type = schema.nodes.paragraph) output.makeParagraph = blockTypeItem(type, {
+		title: 'Normal',
+		label: 'Normal'
+	});
+	if (type = schema.nodes.code_block) output.makeCodeBlock = blockTypeItem(type, {
+		title: 'Code block',
+		label: 'Code',
+		icon: 'code'
+	});
+	if (type = schema.nodes.heading) for (var i = 1; i <= 10; i++) {
+		output['makeHead' + i] = blockTypeItem(type, {
+			title: 'Heading ' + i,
+			label: 'Heading ' + i,
+			attrs: { level: i }
+		});
+	}if (type = schema.nodes.horizontal_rule) {
+		var hr = type;
+		output.insertHorizontalRule = insertHorizontalRule(hr);
+	}
 
-  if (type = schema.nodes.page_break) {
-    var pb = type;
-    r.insertPageBreak = insertHorizontalRule(pb);
-  }
+	if (type = schema.nodes.page_break) {
+		var pb = type;
+		output.insertPageBreak = insertHorizontalRule(pb);
+	}
 
-  if (type = schema.nodes.table) r.insertTable = insertTableItem(type);
-  if (type = schema.nodes.table_row) {
-    r.addRowBefore = cmdItem(addRowBefore, { title: "Add row before" });
-    r.addRowAfter = cmdItem(addRowAfter, { title: "Add row after" });
-    r.removeRow = cmdItem(removeRow, { title: "Remove row" });
-    r.addColumnBefore = cmdItem(addColumnBefore, { title: "Add column before" });
-    r.addColumnAfter = cmdItem(addColumnAfter, { title: "Add column after" });
-    r.removeColumn = cmdItem(removeColumn, { title: "Remove column" });
-  }
+	if (type = schema.nodes.table) {
+		output.insertTable = insertTableItem(type);
+	}
+	if (type = schema.nodes.table_row) {
+		output.addRowBefore = cmdItem(addRowBefore, { title: 'Add row before' });
+		output.addRowAfter = cmdItem(addRowAfter, { title: 'Add row after' });
+		output.removeRow = cmdItem(removeRow, { title: 'Remove row' });
+		output.addColumnBefore = cmdItem(addColumnBefore, { title: 'Add column before' });
+		output.addColumnAfter = cmdItem(addColumnAfter, { title: 'Add column after' });
+		output.removeColumn = cmdItem(removeColumn, { title: 'Remove column' });
+	}
 
-  var cut = function cut(arr) {
-    return arr.filter(function (x) {
-      return x;
-    });
-  };
+	var cut = function cut(arr) {
+		return arr.filter(function (input) {
+			return input;
+		});
+	};
 
-  r.textMenu = [new Dropdown(cut([r.makeParagraph, r.makeHead1, r.makeHead2, r.makeHead3, r.makeHead4]), { label: "Normal", className: "textMenu" })];
+	output.textMenu = [new Dropdown(cut([output.makeParagraph, output.makeHead1, output.makeHead2, output.makeHead3, output.makeHead4]), { label: 'Normal', className: 'textMenu' })];
 
-  r.moreinlineMenu = new Dropdown(cut([r.supMark, r.subMark, r.strikeMark]), { label: "", icon: "style" });
-  r.insertMenu = new Dropdown(cut([r.insertImageEmbed, r.insertVideoEmbed, r.insertReferenceEmbed, r.insertLatexEmbed]), { label: "Insert", icon: "insert" });
-  r.typeMenu = new Dropdown(cut([r.makeCodeBlock, r.insertPageBreak]), { label: "..." });
-  var tableItems = cut([r.insertTable, r.addRowBefore, r.addRowAfter, r.removeRow, r.addColumnBefore, r.addColumnAfter, r.removeColumn]);
-  if (tableItems.length) r.tableMenu = new Dropdown(tableItems, { label: "", icon: "th", hideOnDisable: false });
+	output.moreinlineMenu = new Dropdown(cut([output.supMark, output.subMark, output.strikeMark]), { label: '', icon: 'style' });
+	output.insertMenu = new Dropdown(cut([output.insertImageEmbed, output.insertVideoEmbed, output.insertReferenceEmbed, output.insertLatexEmbed]), { label: 'Insert', icon: 'insert' });
+	output.typeMenu = new Dropdown(cut([output.makeCodeBlock, output.insertPageBreak]), { label: '...' });
+	var tableItems = cut([output.insertTable, output.addRowBefore, output.addRowAfter, output.removeRow, output.addColumnBefore, output.addColumnAfter, output.removeColumn]);
+	if (tableItems.length) {
+		output.tableMenu = new Dropdown(tableItems, { label: '', icon: 'th', hideOnDisable: false });
+	}
 
-  r.inlineMenu = [[r.textMenu], cut([r.toggleStrong, r.toggleEm, r.toggleCode, r.toggleLink, r.moreinlineMenu]), [r.insertMenu]];
-  r.blockMenu = [cut([r.tableMenu, r.wrapBulletList, r.wrapOrderedList, r.wrapBlockQuote, liftItem, r.typeMenu])];
-  r.fullMenu = r.inlineMenu.concat(r.blockMenu);
+	output.inlineMenu = [[output.textMenu], cut([output.toggleStrong, output.toggleEm, output.toggleCode, output.toggleLink, output.moreinlineMenu]), [output.insertMenu]];
+	output.blockMenu = [cut([output.tableMenu, output.wrapBulletList, output.wrapOrderedList, output.wrapBlockQuote, liftItem, output.typeMenu])];
+	output.fullMenu = output.inlineMenu.concat(output.blockMenu);
 
-  return r;
+	return output;
 }
 
 exports.buildMenuItems = buildMenuItems;

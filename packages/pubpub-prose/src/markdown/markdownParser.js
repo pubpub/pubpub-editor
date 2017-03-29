@@ -1,7 +1,6 @@
 import { MarkdownParser } from 'prosemirror-markdown';
 import { Schema } from 'prosemirror-model';
-import embed from './markdown-it-embed';
-import markdownit from 'markdown-it';
+import markdownit from './markdownitInstance';
 import { schema as pubSchema } from '../prosemirror-setup/schema';
 /*
 import pagebreak from './markdown-it-pagebreak';
@@ -18,7 +17,7 @@ const markdownSchema = new Schema(newSpec);
 const context = {};
 
 export const markdownParser = new MarkdownParser(markdownSchema,
-	markdownit({html: false}),
+	markdownit,
 		/*
 	.use(emoji)
 	.use(sub)
@@ -35,15 +34,20 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 		heading: {block: 'heading', attrs: tok => ({level: +tok.tag.slice(1)})},
 		code_block: {block: 'code_block'},
 		fence: {block: 'code_block'},
+		html_inline: {node: 'code_block', attrs: tok => {console.log(tok); return {}; }},
 		hr: {node: 'horizontal_rule'},
 		pagebreak: {node: 'page_break'},
-		/*
-		image: {node: 'image', attrs: tok => ({
-			src: tok.attrGet('src'),
-			title: tok.attrGet('title') || null,
-			alt: tok.children[0] && tok.children[0].content || null
-		})},
-		*/
+		math_inline: {node: 'equation', attrs: tok => {console.log(tok); return {content: tok.content}; }},
+		math_block: {node: 'block_equation', attrs: tok => {console.log(tok); return {content: tok.content}; }},
+
+		image: {node: 'embed', attrs: tok => {
+			console.log(tok, tok.attrGet('src'));
+				return {
+					filename: tok.attrGet('src'),
+				};
+			}
+		},
+
 		embed: {node: 'embed', attrs: tok => ({
 			source: tok.attrGet('source'),
 			className: tok.attrGet('className') || null,
@@ -110,7 +114,7 @@ const closeTable = function(state, tok) {
 	const rows = state.rows;
 	// the attribute in the tables schema is columns, but it should mean rows
 	// so we use the word rows but assign the column attribute
-	state.stack[state.stack.length - 1].attrs.columns = rows;
+	state.top().attrs.columns = rows;
 	state.closeNode();
 };
 
@@ -123,9 +127,25 @@ const openRow = function(state, tok) {
 
 const closeRow = function(state, tok) {
 	const columns = state.columns;
-	state.stack[state.stack.length - 1].attrs.columns = columns;
+	state.top().attrs.columns = columns;
 	state.closeNode();
 };
+
+const addEmbed = function(state, tok) {
+	const topNode = state.top();
+	if (topNode.type.name === 'paragraph') {
+		state.closeNode();
+	}
+	const attrs = {
+		filename: tok.attrGet('src'),
+	};
+	state.addNode(markdownSchema.nodeType('embed'), attrs);
+
+	state.openNode(topNode.type, topNode.attrs);
+};
+
+markdownParser.tokenHandlers.image = addEmbed;
+
 
 markdownParser.tokenHandlers.table_open = openTable;
 markdownParser.tokenHandlers.table_close = closeTable;

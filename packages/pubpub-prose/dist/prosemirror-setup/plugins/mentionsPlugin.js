@@ -10,14 +10,16 @@ var _pluginKeys = require('./pluginKeys');
 
 var _schema = require('../schema');
 
-var _require = require("prosemirror-view"),
+var _plugins = require('../plugins');
+
+var _require = require('prosemirror-view'),
     DecorationSet = _require.DecorationSet,
     Decoration = _require.Decoration;
 
 var mentionsPlugin = new _prosemirrorState.Plugin({
 	state: {
 		init: function init(config, instance) {
-			var set = DecorationSet.empty;
+			// const set = DecorationSet.empty;
 			return { decos: DecorationSet.empty, start: null };
 		},
 		apply: function apply(transaction, state, prevEditorState, editorState) {
@@ -30,7 +32,7 @@ var mentionsPlugin = new _prosemirrorState.Plugin({
 				return { decos: DecorationSet.empty, start: null };
 			}
 
-			var doc = editorState.doc;
+			// const doc = editorState.doc;
 			var currentPos = editorState.selection.$to;
 			var currentNode = editorState.doc.nodeAt(currentPos.pos - 1);
 			if (currentNode && currentNode.text) {
@@ -46,16 +48,19 @@ var mentionsPlugin = new _prosemirrorState.Plugin({
 				// const shouldMark = startLetter === '@' && (nextCh.charCodeAt(0) === 32 || nextCh.charCodeAt(0) === 160);
 				var shouldMark = startLetter === '@' && nextCh.charCodeAt(0) === 32;
 				if (shouldMark) {
+					var substring = currentLine.substring(startIndex + 1, nextChIndex) || ' ';
 					var start = currentPos.pos - currentPos.parentOffset + startIndex;
-					var end = currentPos.pos - currentPos.parentOffset + startIndex + 1;
+					var end = currentPos.pos - currentPos.parentOffset + startIndex + 1 + substring.length;
 					var decorations = [Decoration.inline(start, end, { class: 'mention-marker' })];
 					var decos = DecorationSet.create(editorState.doc, decorations);
-					updateMentions(currentLine.substring(start - 1, currentPos.pos) || ' ');
+
+					// updateMentions(currentLine.substring(start - 1, currentPos.pos) || ' ');
+					updateMentions(substring);
 					return { decos: decos, start: start, end: end };
 				}
 			}
 			updateMentions('');
-			return { decos: DecorationSet.empty, start: null };
+			return { decos: DecorationSet.empty, start: null, end: null };
 		}
 	},
 	view: function view(editorView) {
@@ -72,17 +77,17 @@ var mentionsPlugin = new _prosemirrorState.Plugin({
 		};
 	},
 	props: {
-		createMention: function createMention(view) {
+		createMention: function createMention(view, text) {
 			var state = view.state;
-			var pluginState = this.getState(view.state);
-			if (this.editorView && pluginState) {
+			var pluginState = (0, _plugins.getPluginState)('mentions', state);
+			if (pluginState) {
 				var start = pluginState.start,
 				    end = pluginState.end;
 
 				if (start === null) {
-					return nulll;
+					return null;
 				}
-				var transaction = state.tr.replaceRangeWith(start, end, _schema.schema.nodes.mention.create({ editing: true }));
+				var transaction = state.tr.replaceRangeWith(start, end, _schema.schema.nodes.mention.create({ editing: true, text: text }));
 				return view.dispatch(transaction);
 			}
 			return null;
@@ -93,16 +98,18 @@ var mentionsPlugin = new _prosemirrorState.Plugin({
 			}
 			return null;
 		},
-		handleKeyDown: function handleKeyDown(view, evt) {
-			var sel = view.state.selection;
-			if (sel.empty && evt.type === 'keydown' && (evt.key === 'ArrowUp' || evt.key === 'ArrowDown')) {
-				var pluginState = this.getState(view.state);
-				var start = pluginState.start,
-				    end = pluginState.end;
 
-				if (start !== null) {
-					return true;
+		handleDOMEvents: {
+			keydown: function keydown(view, evt) {
+				var sel = view.state.selection;
+				if (sel.empty && evt.type === 'keydown' && (evt.key === 'ArrowUp' || evt.key === 'ArrowDown' || evt.key === 'Enter')) {
+					var pluginState = (0, _plugins.getPluginState)('mentions', view.state);
+					if (pluginState.start !== null) {
+						evt.preventDefault();
+						return true;
+					}
 				}
+				return false;
 			}
 		}
 	},

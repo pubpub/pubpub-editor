@@ -109,6 +109,8 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 
 		var file = { url: url, name: filename, type: (0, _renderFiles.URLToType)(url) };
 
+		console.log('RENDERING', file);
+
 		var popoverContent = _react2.default.createElement(_embedMenu2.default, { createCaption: this.props.createCaption, removeCaption: this.props.removeCaption, embedAttrs: this.props, updateParams: this.updateAttrs });
 
 		return _react2.default.createElement(

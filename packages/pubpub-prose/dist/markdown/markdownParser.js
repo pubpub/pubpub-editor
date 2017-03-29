@@ -9,13 +9,9 @@ var _prosemirrorMarkdown = require('prosemirror-markdown');
 
 var _prosemirrorModel = require('prosemirror-model');
 
-var _markdownItEmbed = require('./markdown-it-embed');
+var _markdownitInstance = require('./markdownitInstance');
 
-var _markdownItEmbed2 = _interopRequireDefault(_markdownItEmbed);
-
-var _markdownIt = require('markdown-it');
-
-var _markdownIt2 = _interopRequireDefault(_markdownIt);
+var _markdownitInstance2 = _interopRequireDefault(_markdownitInstance);
 
 var _schema = require('../prosemirror-setup/schema');
 
@@ -35,7 +31,7 @@ var markdownSchema = new _prosemirrorModel.Schema(newSpec);
 
 var context = {};
 
-var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownParser(markdownSchema, (0, _markdownIt2.default)({ html: false }),
+var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownParser(markdownSchema, _markdownitInstance2.default,
 /*
 .use(emoji)
 .use(sub)
@@ -56,15 +52,26 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 		} },
 	code_block: { block: 'code_block' },
 	fence: { block: 'code_block' },
+	html_inline: { node: 'code_block', attrs: function attrs(tok) {
+			console.log(tok);return {};
+		} },
 	hr: { node: 'horizontal_rule' },
 	pagebreak: { node: 'page_break' },
-	/*
- image: {node: 'image', attrs: tok => ({
- 	src: tok.attrGet('src'),
- 	title: tok.attrGet('title') || null,
- 	alt: tok.children[0] && tok.children[0].content || null
- })},
- */
+	math_inline: { node: 'equation', attrs: function attrs(tok) {
+			console.log(tok);return { content: tok.content };
+		} },
+	math_block: { node: 'block_equation', attrs: function attrs(tok) {
+			console.log(tok);return { content: tok.content };
+		} },
+
+	image: { node: 'embed', attrs: function attrs(tok) {
+			console.log(tok, tok.attrGet('src'));
+			return {
+				filename: tok.attrGet('src')
+			};
+		}
+	},
+
 	embed: { node: 'embed', attrs: function attrs(tok) {
 			return {
 				source: tok.attrGet('source'),
@@ -136,7 +143,7 @@ var closeTable = function closeTable(state, tok) {
 	var rows = state.rows;
 	// the attribute in the tables schema is columns, but it should mean rows
 	// so we use the word rows but assign the column attribute
-	state.stack[state.stack.length - 1].attrs.columns = rows;
+	state.top().attrs.columns = rows;
 	state.closeNode();
 };
 
@@ -148,9 +155,24 @@ var openRow = function openRow(state, tok) {
 
 var closeRow = function closeRow(state, tok) {
 	var columns = state.columns;
-	state.stack[state.stack.length - 1].attrs.columns = columns;
+	state.top().attrs.columns = columns;
 	state.closeNode();
 };
+
+var addEmbed = function addEmbed(state, tok) {
+	var topNode = state.top();
+	if (topNode.type.name === 'paragraph') {
+		state.closeNode();
+	}
+	var attrs = {
+		filename: tok.attrGet('src')
+	};
+	state.addNode(markdownSchema.nodeType('embed'), attrs);
+
+	state.openNode(topNode.type, topNode.attrs);
+};
+
+markdownParser.tokenHandlers.image = addEmbed;
 
 markdownParser.tokenHandlers.table_open = openTable;
 markdownParser.tokenHandlers.table_close = closeTable;

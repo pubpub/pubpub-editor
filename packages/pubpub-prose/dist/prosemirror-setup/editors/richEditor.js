@@ -18,6 +18,7 @@ var RichEditor = function (_BaseEditor) {
   function RichEditor(_ref) {
     var place = _ref.place,
         text = _ref.text,
+        config = _ref.config,
         contents = _ref.contents,
         _ref$components = _ref.components;
     _ref$components = _ref$components === undefined ? {} : _ref$components;
@@ -46,7 +47,7 @@ var RichEditor = function (_BaseEditor) {
     } else {
       docJSON = contents;
     }
-    _this.create({ place: place, contents: docJSON, plugins: plugins, components: { suggestComponent: suggestComponent }, handlers: { createFile: createFile, onChange: onChange, captureError: captureError, updateMentions: updateMentions } });
+    _this.create({ place: place, contents: docJSON, config: config, plugins: plugins, components: { suggestComponent: suggestComponent }, handlers: { createFile: createFile, onChange: onChange, captureError: captureError, updateMentions: updateMentions } });
     return _this;
   }
 

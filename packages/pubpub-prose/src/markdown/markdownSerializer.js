@@ -67,12 +67,12 @@ export const markdownSerializer = new MarkdownSerializer({
 	},
 	equation: function equation(state, node) {
 		state.write('$');
-		state.renderInline(node);
+		state.write(node.attrs.content);
 		state.write('$');
 	},
 	block_equation: function block_equation(state, node) {
 		state.write('\n$$');
-		state.renderInline(node);
+		state.write(node.attrs.content);
 		state.write('$$\n');
 	},
 	mention: function mention(state, node) {

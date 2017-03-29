@@ -104,9 +104,13 @@ export const RichEditor = React.createClass({
 		}
 
 		const place = ReactDOM.findDOMNode(this.refs.container);
+		const fileMap = this.generateFileMap();
 		this.editor = new ProseEditor({
 			place: place,
 			contents: this.props.initialContent,
+			config: {
+				fileMap: fileMap,
+			},
 			// components: {
 			// 	suggestComponent: mentionsComponent,
 			// },
@@ -142,6 +146,16 @@ export const RichEditor = React.createClass({
 	onMentionSelection: function(selectedObject) {
 		console.log(selectedObject);
 		return this.editor.createMention(selectedObject.firstName || selectedObject.title || selectedObject.name || selectedObject.exact || selectedObject.key);
+	},
+
+	generateFileMap: function() {
+		const files = this.props.localFiles;
+		const fileMap = {};
+		for (const file of files) {
+			fileMap[file.name] = file.url;
+		}
+
+		return fileMap;
 	},
 
 	render: function() {

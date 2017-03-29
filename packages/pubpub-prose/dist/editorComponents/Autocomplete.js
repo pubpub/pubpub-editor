@@ -19,6 +19,10 @@ var _requestPromise = require('request-promise');
 
 var _requestPromise2 = _interopRequireDefault(_requestPromise);
 
+var _fuzzysearch = require('fuzzysearch');
+
+var _fuzzysearch2 = _interopRequireDefault(_fuzzysearch);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -45,6 +49,7 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 		localUsers: _react.PropTypes.array, // Used in Discussions.
 		localHighlights: _react.PropTypes.array, // Used in Discussions. No Global at the moment
 		localDiscussions: _react.PropTypes.array, // Used in Discussions. No Global at the moment
+		// localPages
 
 		globalCategories: _react.PropTypes.array },
 
@@ -153,7 +158,8 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 
 		return localArray.filter(function (item) {
 			return searchKeys.reduce(function (previous, current) {
-				if (item[current].toLowerCase().indexOf(input.toLowerCase()) > -1) {
+				var contained = (0, _fuzzysearch2.default)(input.toLowerCase(), item[current].toLowerCase());
+				if (contained) {
 					return true;
 				}
 				return previous;
