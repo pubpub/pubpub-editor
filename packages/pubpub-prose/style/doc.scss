@@ -8,6 +8,11 @@
   word-wrap: break-word;
 }
 
+.pub-body *:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
 .pub-body a {
   background-color: transparent;
 }
