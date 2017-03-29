@@ -15,6 +15,8 @@ newSpec.topNode = "article";
 
 const markdownSchema = new Schema(newSpec);
 
+const context = {};
+
 export const markdownParser = new MarkdownParser(markdownSchema,
 	markdownit({html: false}),
 		/*
@@ -57,19 +59,14 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 			markup: tok.markup,
 		})},
 		hardbreak: {node: 'hard_break'},
-		text: {block: 'text', attrs: tok => {
-			console.log(tok);
-			console.log(tok.content);
-			return {};
-		}},
 
-		table: {block: 'table', attrs: tok => {console.log(tok); return{};}},
-		tbody: {block: 'table', attrs: tok => {console.log(tok); return{};}},
-		thead: {block: 'none', attrs: tok => {console.log(tok); return{};}},
+		table: {block: 'table'},
+		tbody: {block: 'none'},
+		thead: {block: 'none'},
 
-		tr: {block: 'table_row', attrs: tok => {console.log(tok); return{};}},
-		td: {block: 'table_cell', attrs: tok => {console.log(tok); return{};}},
-		th: {block: 'table_cell', attrs: tok => {console.log(tok); return{};}},
+		tr: {block: 'table_row'},
+		td: {block: 'table_cell'},
+		th: {block: 'table_cell'},
 
 		em: {mark: 'em'},
 		strong: {mark: 'strong'},
@@ -86,8 +83,62 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 );
 
 const emptyAdd = function(state, tok) {
-	console.log('emptying', tok);
+	// console.log('emptying', tok);
 };
+
+function attrs(given, token) {
+  return given instanceof Function ? given(token) : given
+}
+
+const addParagraph = function(state, tok) {
+	state.columns = state.columns + 1;
+	state.openNode(markdownSchema.nodeType("table_cell"), attrs({}, tok));
+	state.openNode(markdownSchema.nodeType("paragraph"), attrs({}, tok));
+};
+
+const stopParagraph = function(state) {
+	state.closeNode();
+	state.closeNode();
+};
+
+const openTable = function(state, tok) {
+	state.rows = 0;
+	state.openNode(markdownSchema.nodeType("table"), attrs({}, tok));
+};
+
+const closeTable = function(state, tok) {
+	const rows = state.rows;
+	// the attribute in the tables schema is columns, but it should mean rows
+	// so we use the word rows but assign the column attribute
+	state.stack[state.stack.length - 1].attrs.columns = rows;
+	state.closeNode();
+};
+
+
+const openRow = function(state, tok) {
+	state.columns = 0;
+	state.rows = state.rows + 1;
+	state.openNode(markdownSchema.nodeType("table_row"), attrs({}, tok));
+};
+
+const closeRow = function(state, tok) {
+	const columns = state.columns;
+	state.stack[state.stack.length - 1].attrs.columns = columns;
+	state.closeNode();
+};
+
+markdownParser.tokenHandlers.table_open = openTable;
+markdownParser.tokenHandlers.table_close = closeTable;
+
+markdownParser.tokenHandlers.tr_open = openRow;
+markdownParser.tokenHandlers.tr_close = closeRow;
+
+markdownParser.tokenHandlers.th_open = addParagraph;
+markdownParser.tokenHandlers.td_open = addParagraph;
+
+markdownParser.tokenHandlers.th_close = stopParagraph;
+markdownParser.tokenHandlers.td_close = stopParagraph;
+
 
 markdownParser.tokenHandlers.tbody_open = emptyAdd;
 markdownParser.tokenHandlers.tbody_close = emptyAdd;
