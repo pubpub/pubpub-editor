@@ -9,13 +9,9 @@ var _prosemirrorMarkdown = require('prosemirror-markdown');
 
 var _prosemirrorModel = require('prosemirror-model');
 
-var _markdownItEmbed = require('./markdown-it-embed');
+var _markdownitInstance = require('./markdownitInstance');
 
-var _markdownItEmbed2 = _interopRequireDefault(_markdownItEmbed);
-
-var _markdownIt = require('markdown-it');
-
-var _markdownIt2 = _interopRequireDefault(_markdownIt);
+var _markdownitInstance2 = _interopRequireDefault(_markdownitInstance);
 
 var _schema = require('../prosemirror-setup/schema');
 
@@ -35,7 +31,7 @@ var markdownSchema = new _prosemirrorModel.Schema(newSpec);
 
 var context = {};
 
-var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownParser(markdownSchema, (0, _markdownIt2.default)({ html: false }),
+var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownParser(markdownSchema, _markdownitInstance2.default,
 /*
 .use(emoji)
 .use(sub)
@@ -56,8 +52,18 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 		} },
 	code_block: { block: 'code_block' },
 	fence: { block: 'code_block' },
+	html_inline: { node: 'code_block', attrs: function attrs(tok) {
+			console.log(tok);return {};
+		} },
 	hr: { node: 'horizontal_rule' },
 	pagebreak: { node: 'page_break' },
+	math_inline: { node: 'equation', attrs: function attrs(tok) {
+			console.log(tok);return { content: tok.content };
+		} },
+	math_block: { node: 'block_equation', attrs: function attrs(tok) {
+			console.log(tok);return { content: tok.content };
+		} },
+
 	/*
  image: {node: 'image', attrs: tok => ({
  	src: tok.attrGet('src'),

@@ -148,7 +148,7 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 
 	onSelection: function onSelection(selectedObject) {
 		console.log(selectedObject);
-		return this.editor.createMention();
+		return this.editor.createMention(selectedObject.firstName || selectedObject.title || selectedObject.name || selectedObject.exact || selectedObject.key);
 	},
 
 	render: function render() {

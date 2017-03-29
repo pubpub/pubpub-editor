@@ -1,7 +1,6 @@
 import { MarkdownParser } from 'prosemirror-markdown';
 import { Schema } from 'prosemirror-model';
-import embed from './markdown-it-embed';
-import markdownit from 'markdown-it';
+import markdownit from './markdownitInstance';
 import { schema as pubSchema } from '../prosemirror-setup/schema';
 /*
 import pagebreak from './markdown-it-pagebreak';
@@ -18,7 +17,7 @@ const markdownSchema = new Schema(newSpec);
 const context = {};
 
 export const markdownParser = new MarkdownParser(markdownSchema,
-	markdownit({html: false}),
+	markdownit,
 		/*
 	.use(emoji)
 	.use(sub)
@@ -35,8 +34,12 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 		heading: {block: 'heading', attrs: tok => ({level: +tok.tag.slice(1)})},
 		code_block: {block: 'code_block'},
 		fence: {block: 'code_block'},
+		html_inline: {node: 'code_block', attrs: tok => {console.log(tok); return {}; }},
 		hr: {node: 'horizontal_rule'},
 		pagebreak: {node: 'page_break'},
+		math_inline: {node: 'equation', attrs: tok => {console.log(tok); return {content: tok.content}; }},
+		math_block: {node: 'block_equation', attrs: tok => {console.log(tok); return {content: tok.content}; }},
+
 		/*
 		image: {node: 'image', attrs: tok => ({
 			src: tok.attrGet('src'),
