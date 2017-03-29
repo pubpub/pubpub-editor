@@ -110,9 +110,13 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 		}
 
 		var place = _reactDom2.default.findDOMNode(this.refs.container);
+		var fileMap = this.generateFileMap();
 		this.editor = new _prosemirrorSetup.RichEditor({
 			place: place,
 			contents: this.props.initialContent,
+			config: {
+				fileMap: fileMap
+			},
 			// components: {
 			// 	suggestComponent: mentionsComponent,
 			// },
@@ -147,8 +151,38 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 
 
 	onSelection: function onSelection(selectedObject) {
-		console.log(selectedObject);
 		return this.editor.createMention(selectedObject.firstName || selectedObject.title || selectedObject.name || selectedObject.exact || selectedObject.key);
+	},
+
+	generateFileMap: function generateFileMap() {
+		var files = this.props.localFiles;
+		var fileMap = {};
+		var _iteratorNormalCompletion = true;
+		var _didIteratorError = false;
+		var _iteratorError = undefined;
+
+		try {
+			for (var _iterator = files[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+				var file = _step.value;
+
+				fileMap[file.name] = file.url;
+			}
+		} catch (err) {
+			_didIteratorError = true;
+			_iteratorError = err;
+		} finally {
+			try {
+				if (!_iteratorNormalCompletion && _iterator.return) {
+					_iterator.return();
+				}
+			} finally {
+				if (_didIteratorError) {
+					throw _iteratorError;
+				}
+			}
+		}
+
+		return fileMap;
 	},
 
 	render: function render() {

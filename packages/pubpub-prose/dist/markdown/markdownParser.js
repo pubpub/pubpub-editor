@@ -64,13 +64,14 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 			console.log(tok);return { content: tok.content };
 		} },
 
-	/*
- image: {node: 'image', attrs: tok => ({
- 	src: tok.attrGet('src'),
- 	title: tok.attrGet('title') || null,
- 	alt: tok.children[0] && tok.children[0].content || null
- })},
- */
+	image: { node: 'embed', attrs: function attrs(tok) {
+			console.log(tok, tok.attrGet('src'));
+			return {
+				filename: tok.attrGet('src')
+			};
+		}
+	},
+
 	embed: { node: 'embed', attrs: function attrs(tok) {
 			return {
 				source: tok.attrGet('source'),
@@ -142,7 +143,7 @@ var closeTable = function closeTable(state, tok) {
 	var rows = state.rows;
 	// the attribute in the tables schema is columns, but it should mean rows
 	// so we use the word rows but assign the column attribute
-	state.stack[state.stack.length - 1].attrs.columns = rows;
+	state.top().attrs.columns = rows;
 	state.closeNode();
 };
 
@@ -154,9 +155,24 @@ var openRow = function openRow(state, tok) {
 
 var closeRow = function closeRow(state, tok) {
 	var columns = state.columns;
-	state.stack[state.stack.length - 1].attrs.columns = columns;
+	state.top().attrs.columns = columns;
 	state.closeNode();
 };
+
+var addEmbed = function addEmbed(state, tok) {
+	var topNode = state.top();
+	if (topNode.type.name === 'paragraph') {
+		state.closeNode();
+	}
+	var attrs = {
+		filename: tok.attrGet('src')
+	};
+	state.addNode(markdownSchema.nodeType('embed'), attrs);
+
+	state.openNode(topNode.type, topNode.attrs);
+};
+
+markdownParser.tokenHandlers.image = addEmbed;
 
 markdownParser.tokenHandlers.table_open = openTable;
 markdownParser.tokenHandlers.table_close = closeTable;

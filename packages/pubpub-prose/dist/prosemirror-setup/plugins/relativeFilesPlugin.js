@@ -13,6 +13,7 @@ var _pluginKeys = require('./pluginKeys');
 var RelativeFilesPlugin = new _prosemirrorState.Plugin({
   state: {
     init: function init(config, instance) {
+      console.log('GOT FILEMAP', config.fileMap);
       return { fileMap: config.fileMap || {} };
     },
     apply: function apply(transaction, state, prevEditorState, editorState) {
