@@ -1,6 +1,9 @@
 import {DOMParser, DOMSerializer} from 'prosemirror-model';
 
+import { markdownToJSON } from '../markdown/markdownToJson';
+import { markdowntoHTML } from '../markdown/markdownToHTML';
 import {schema} from './schema';
+import toMarkdown from 'to-markdown';
 
 const markSerializer = DOMSerializer.marksFromSchema(schema);
 const nodeSerializer = DOMSerializer.nodesFromSchema(schema);
@@ -31,35 +34,11 @@ const getSize = function(dom) {
 // require('split-html');
 // Needs to lift out image blocks in their own div
 const transformPastedHTML = function(htmlStr) {
-  // console.log('Got pasted HTML', htmlStr);
-  // const newHTML = window.splitHtml(htmlStr, 'img');
+  const markdown = markdowntoHTML(htmlStr);
+  return markdown;
   return htmlStr;
 }
 
-/*
-for (const rule of defaultRules) {
-  if (rule.node === 'embed') {
-    rule.tag = "img[src]";
-    rule.getAttrs = function(dom) {
-      console.log('GETTING ATTRS', this);
-      const url = dom.getAttribute("src");
-      const file = {
-        name: '',
-        type: '',
-        url,
-      };
-      const attrs = {
-        filename: file.name,
-        url: file.url,
-        size: getSize(dom),
-        align: 'full',
-      };
-      console.log('attrs', attrs);
-      return attrs;
-    }
-  }
-}
-*/
 const clipboardParser = new DOMParser(schema, defaultRules);
 
 exports.transformPastedHTML = transformPastedHTML;

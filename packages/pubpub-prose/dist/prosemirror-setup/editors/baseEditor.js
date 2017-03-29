@@ -3,8 +3,10 @@
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-// import { TextSelection } from 'prosemirror-state';
 
+var _richNodes = require('../rich-nodes');
+
+var _menubar = require('../../menubar');
 
 var _react = require('react');
 
@@ -13,10 +15,6 @@ var _react2 = _interopRequireDefault(_react);
 var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _richNodes = require('../rich-nodes');
-
-var _menubar = require('../../menubar');
 
 var _plugins = require('../plugins');
 
@@ -105,14 +103,17 @@ var BaseEditor = function () {
 			    clipboardSerializer = _require3.clipboardSerializer,
 			    transformPastedHTML = _require3.transformPastedHTML;
 
-			var _require4 = require('../menu-config'),
-			    buildMenuItems = _require4.buildMenuItems;
+			var _require4 = require('../../markdown/markdownParser'),
+			    markdownParser = _require4.markdownParser;
 
-			var _require5 = require('prosemirror-state'),
-			    EditorState = _require5.EditorState;
+			var _require5 = require('../menu-config'),
+			    buildMenuItems = _require5.buildMenuItems;
 
-			var _require6 = require('prosemirror-view'),
-			    EditorView = _require6.EditorView;
+			var _require6 = require('prosemirror-state'),
+			    EditorState = _require6.EditorState;
+
+			var _require7 = require('prosemirror-view'),
+			    EditorView = _require7.EditorView;
 			// const collabEditing = require('prosemirror-collab').collab;
 
 			var menu = buildMenuItems(_schema.schema);
@@ -141,7 +142,7 @@ var BaseEditor = function () {
 				state: state,
 				dispatchTransaction: this._onAction,
 				spellcheck: true,
-				clipboardParser: clipboardParser,
+				clipboardParser: markdownParser,
 				clipboardSerializer: clipboardSerializer,
 				handleContextMenu: function handleContextMenu(evt, thing, thing2) {
 					console.log(evt, thing, thing2);

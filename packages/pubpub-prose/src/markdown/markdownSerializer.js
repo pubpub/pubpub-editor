@@ -1,4 +1,5 @@
 import { MarkdownSerializer } from 'prosemirror-markdown';
+import { generateBibTexString } from '../references/citationConversion';
 
 export const markdownSerializer = new MarkdownSerializer({
 	blockquote(state, node) {
@@ -78,13 +79,17 @@ export const markdownSerializer = new MarkdownSerializer({
 	mention: function mention(state, node) {
 		state.write('[@' + node.attrs.text + ']');
 	},
-	reference: function reference(state) {
+	reference: function reference(state, node) {
 		state.write('');
 	},
-	citation: function citation(state) {
-		state.write('');
+	citation: function citation(state, node) {
+		const CSLData = node.attrs.data;
+		const bibtexStr = generateBibTexString(CSLData);
+		console.log('bibtex', CSLData);
+		state.write(bibtexStr);
 	},
 	citations: function citations(state, node) {
+		state.renderContent(node);
 		state.write('');
 	},
 	aside: function aside(state) {
