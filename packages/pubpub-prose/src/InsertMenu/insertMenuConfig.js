@@ -13,6 +13,14 @@ function getMenuItems(editor) {
 	/* -------------- */
 	/* -------------- */
 
+	/* Latex Equation */
+	/* -------------- */
+	function insertLatexEquation() {
+		const newNode = schema.nodes.equation.create({ content: '\\sum_ix^i' });
+		editor.view.dispatch(editor.view.state.tr.replaceSelectionWith(newNode));
+	}
+	/* -------------- */
+	/* -------------- */
 
 	const menuItems = [
 		{
@@ -28,7 +36,7 @@ function getMenuItems(editor) {
 		{
 			icon: 'pt-icon-h1',
 			text: 'Insert Equation',
-			run: ()=>{},
+			run: insertLatexEquation,
 		},
 		{
 			icon: 'pt-icon-h1',
