@@ -98,6 +98,10 @@
   text-decoration: underline;
 }
 
+.pub-body .ProseMirror-selectednode { // Necessary to show hr when selected. If this is unwanted for other cases, append hr selector to the css, rather than removing.
+  box-shadow: 0px 0px 2px 1px #8A9BA8;
+}
+
 .pub-body hr {
   height: 0;
   margin: 15px 0;

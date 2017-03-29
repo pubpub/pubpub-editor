@@ -86,7 +86,7 @@ function buildMenuItems(schema) {
 
 	if (type = schema.nodes.page_break) {
 		let pb = type;
-		output.insertPageBreak = insertHorizontalRule(pb);
+		output.insertPageBreak = insertPageBreak(pb);
 	}
 
 	if (type = schema.nodes.table) {
@@ -107,7 +107,7 @@ function buildMenuItems(schema) {
 
 	output.moreinlineMenu = new Dropdown(cut([output.supMark, output.subMark, output.strikeMark]), { label: '', icon: 'style' });
 	output.insertMenu = new Dropdown(cut([output.insertImageEmbed, output.insertVideoEmbed, output.insertReferenceEmbed, output.insertLatexEmbed]), { label: 'Insert', icon: 'insert' });
-	output.typeMenu = new Dropdown(cut([output.makeCodeBlock, output.insertPageBreak]), { label: '...' });
+	output.typeMenu = new Dropdown(cut([output.makeCodeBlock, output.insertHorizontalRule]), { label: '...' });
 	const tableItems = cut([output.insertTable, output.addRowBefore, output.addRowAfter, output.removeRow, output.addColumnBefore, output.addColumnAfter, output.removeColumn]);
 	if (tableItems.length) {
 		output.tableMenu = new Dropdown(tableItems, { label: '', icon: 'th', hideOnDisable: false });

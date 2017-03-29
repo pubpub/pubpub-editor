@@ -70,7 +70,7 @@ export const RichEditor = React.createClass({
 		const container = document.getElementById('rich-editor-container');
 		const menuTop = isRoot && !currentNode.text ? this.editor.view.coordsAtPos(currentPos).top - container.getBoundingClientRect().top + 5 : 0;
 
-		if (!this.editor.view.state.selection.$cursor) {
+		if (!this.editor.view.state.selection.$cursor && currentNode.text) {
 			const currentFromPos = this.editor.view.state.selection.$from.pos;
 			const currentToPos = this.editor.view.state.selection.$to.pos;
 			const left = this.editor.view.coordsAtPos(currentFromPos).left - container.getBoundingClientRect().left;

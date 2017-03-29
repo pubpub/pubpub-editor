@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { Popover, PopoverInteractionKind, Position, Menu, MenuItem } from '@blueprintjs/core';
-// import getMenuItems from './formattingMenuConfig';
+import getMenuItems from './insertMenuConfig';
 
 let styles;
 
@@ -11,18 +11,16 @@ export const InsertMenu = React.createClass({
 	},
 
 	render: function() {
-		// const menuItems = getMenuItems(this.props.editor);
+		const menuItems = getMenuItems(this.props.editor);
 
 		return (
 			<div style={styles.container(this.props.top)}>
 				<Popover 
 					content={
 						<Menu>
-							<MenuItem text={'Upload Media'}/>
-							<MenuItem text={'Insert Table'}/>
-							<MenuItem text={'Insert Equation'}/>
-							<MenuItem text={'Insert Horizontal Line'}/>
-							<MenuItem text={'Add References'}/>
+							{menuItems.map((item)=> {
+								return <MenuItem text={item.text} onClick={item.run} />
+							})}
 						</Menu>
 					}
 					interactionKind={PopoverInteractionKind.CLICK}

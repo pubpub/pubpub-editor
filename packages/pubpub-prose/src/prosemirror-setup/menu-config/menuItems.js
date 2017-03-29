@@ -280,7 +280,9 @@ function insertHorizontalRule(hr) {
 		label: "Horizontal rule",
 		icon: "small-minus",
 		select(state) { return canInsert(state, hr) },
-		run(state, onAction) { onAction(state.tr.replaceSelection(hr.create())) }
+		run(state, dispatch) { 
+			console.log(state,dispatch,hr);
+			dispatch(state.tr.replaceSelectionWith(hr.create())) }
 	})
 }
 
@@ -292,7 +294,7 @@ function insertPageBreak(pb) {
 		label: "Page break",
 		icon: "vertical-distribution",
 		select(state) { return canInsert(state, pb) },
-		run(state, onAction) { onAction(state.tr.replaceSelection(pb.create())) }
+		run(state, onAction) { onAction(state.tr.replaceSelectionWith(pb.create())) }
 	});
 }
 
