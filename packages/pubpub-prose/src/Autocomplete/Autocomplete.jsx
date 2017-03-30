@@ -193,7 +193,10 @@ export const Autocomplete = React.createClass({
 		const item = this.state._currentSuggestions[index];
 		if (item.suggestionCategory) {
 			this.setState({ _suggestionCategory: item.suggestionCategory });
-			this.getNewSelections(this.props.input);
+			setTimeout(()=>{
+				this.getNewSelections(this.props.input);
+			}, 0);
+			
 		} else {
 			this.props.onSelection(item);
 		}
