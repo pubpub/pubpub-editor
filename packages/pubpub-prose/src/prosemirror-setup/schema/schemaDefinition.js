@@ -10,7 +10,7 @@ const nodes = {
 	},
 
 	article: {
-		content: 'block+',
+		content: 'paragraph block+',
 		parseDOM: [{ tag: 'div.article' }],
 		toDOM(node) { return ['div', { class: 'article' }, 0]; }
 	},
@@ -212,11 +212,11 @@ const nodes = {
 const marks = {
 	em: {
 		parseDOM: [
-			{ tag: 'i' }, 
+			{ tag: 'i' },
 			{ tag: 'em' },
-			{ 
-				style: 'font-style', 
-				getAttrs: value => value === 'italic' && null 
+			{
+				style: 'font-style',
+				getAttrs: value => value === 'italic' && null
 			}
 		],
 		toDOM() { return ['em']; }
@@ -240,8 +240,8 @@ const marks = {
 			title: { default: null }
 		},
 		parseDOM: [
-			{ 
-				tag: 'a[href]', 
+			{
+				tag: 'a[href]',
 				getAttrs(dom) {
 					return { href: dom.getAttribute('href'), title: dom.getAttribute('title') };
 				}

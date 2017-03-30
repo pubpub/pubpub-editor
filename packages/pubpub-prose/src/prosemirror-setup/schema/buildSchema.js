@@ -1,4 +1,3 @@
-// import { DOMParser, DOMSerializer, Fragment, Mark, MarkType, NodeType, Schema} from 'prosemirror-model';
 import { Schema } from 'prosemirror-model';
 import { addListNodes } from 'prosemirror-schema-list';
 import { addTableNodes } from 'prosemirror-schema-table';
@@ -44,8 +43,8 @@ const schemaNodes = basicSchema.spec.nodes
 // const listSchema = addListNodes(schemaNodes, "paragraph block*", "block");
 // const tableSchema = addTableNodes(listSchema, "paragraph block*", "block");
 
-const listSchema = addListNodes(schemaNodes, 'block*', 'block');
-const tableSchema = addTableNodes(listSchema, 'block*', 'block');
+const listSchema = addListNodes(schemaNodes, 'paragraph block*', 'block');
+const tableSchema = addTableNodes(listSchema, 'paragraph block*', 'block');
 
 export const schema = new Schema({
 	nodes: tableSchema,

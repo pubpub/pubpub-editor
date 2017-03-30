@@ -13,7 +13,6 @@ var _prosemirrorSchemaTable = require('prosemirror-schema-table');
 
 var _schemaDefinition = require('./schemaDefinition');
 
-// import { DOMParser, DOMSerializer, Fragment, Mark, MarkType, NodeType, Schema} from 'prosemirror-model';
 var SubMark = {
 	parseDOM: [{ tag: 'sub' }],
 	toDOM: function toDOM() {
@@ -59,8 +58,8 @@ var schemaNodes = _schemaDefinition.schema.spec.nodes.addBefore('horizontal_rule
 // const listSchema = addListNodes(schemaNodes, "paragraph block*", "block");
 // const tableSchema = addTableNodes(listSchema, "paragraph block*", "block");
 
-var listSchema = (0, _prosemirrorSchemaList.addListNodes)(schemaNodes, 'block*', 'block');
-var tableSchema = (0, _prosemirrorSchemaTable.addTableNodes)(listSchema, 'block*', 'block');
+var listSchema = (0, _prosemirrorSchemaList.addListNodes)(schemaNodes, 'paragraph block*', 'block');
+var tableSchema = (0, _prosemirrorSchemaTable.addTableNodes)(listSchema, 'paragraph block*', 'block');
 
 var schema = exports.schema = new _prosemirrorModel.Schema({
 	nodes: tableSchema,
