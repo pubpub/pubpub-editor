@@ -538,10 +538,19 @@ function ppubToPandoc(ppub, options) {
 				};
 			}
 			if (metadata['institute']) {
+
 				pandocJSON.meta.institute = {
-					t: 'MetaInlines',
-					c: createTextNodes(metadata['institute'])
+					t: 'MetaList',
+					c: []
 				};
+
+				for (var i = 0; i < metadata.institute.length; i++){
+					var institute = {
+						t: 'MetaInlines',
+						c: createTextNodes(metadata.institute[i])
+					};
+					pandocJSON.meta.institute.c.push(institute);
+				}
 			}
 			if (metadata['date']) {
 				pandocJSON.meta.pubdate = {
