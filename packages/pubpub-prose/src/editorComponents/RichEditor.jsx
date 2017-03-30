@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { schema } from '../prosemirror-setup';
+// import { schema } from '../prosemirror-setup';
 import Autocomplete from './Autocomplete';
 import { RichEditor as ProseEditor } from '../prosemirror-setup';
 import FormattingMenu from '../FormattingMenu/FormattingMenu';

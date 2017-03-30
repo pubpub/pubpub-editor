@@ -3,8 +3,7 @@ import { createTable } from 'prosemirror-schema-table';
 
 import { schema } from '../prosemirror-setup';
 
-function getMenuItems(editor) {
-
+function getMenuItems(editor, openDialog) {
 
 	/* Horizontal Rule */
 	/* -------------- */
@@ -60,8 +59,14 @@ function getMenuItems(editor) {
 	const menuItems = [
 		{
 			icon: 'pt-icon-h1',
-			text: 'Upload Media',
-			run: insertEmbed, // Really, we want to pop open the dialog. Which in turn will insert reference
+			// component: <li>
+			// 	<label htmlFor={'upload-media-input'} className="pt-menu-item">
+			// 		Upload Media
+			// 		<input id={'upload-media-input'} type="file" onChange={onFileSelect} style={{ position: 'fixed', top: '-1000px' }} />
+			// 	</label>
+			// </li>,
+			text: 'Upload Files',
+			run: ()=> { openDialog('files', insertEmbed); }, 
 		},
 		{
 			icon: 'pt-icon-h1',
@@ -81,7 +86,7 @@ function getMenuItems(editor) {
 		{
 			icon: 'pt-icon-h1',
 			text: 'Add References',
-			run: insertReference, // Really, we want to pop open the dialog. Which in turn will insert reference
+			run: ()=> { openDialog('references', insertReference); }, 
 		},
 		
 	];

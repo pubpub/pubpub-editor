@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Popover, PopoverInteractionKind, Position, Menu, MenuItem } from '@blueprintjs/core';
 import getMenuItems from './insertMenuConfig';
+import InsertMenuDialogFiles from './InsertMenuDialogFiles';
+import InsertMenuDialogReferences from './InsertMenuDialogReferences';
 
 let styles;
 
@@ -10,8 +12,32 @@ export const InsertMenu = React.createClass({
 		top: PropTypes.number,
 	},
 
+	getInitialState() {
+		return {
+			openDialog: undefined,
+		};
+	},
+
+	openDialog: function(dialogType, callback) {
+		console.log('hi', dialogType, callback);
+		this.setState({ openDialog: dialogType });
+	},
+
+	closeDialog: function() {
+		this.setState({ openDialog: undefined });
+	},
+
+	onFileSelect: function(evt) {
+		console.log(evt.target.files[0]);
+		evt.target.value = null;
+	},
+
+	onReferenceAdd: function(item) {
+		console.log(item);
+	},
+
 	render: function() {
-		const menuItems = getMenuItems(this.props.editor);
+		const menuItems = getMenuItems(this.props.editor, this.openDialog);
 
 		return (
 			<div style={styles.container(this.props.top)}>
@@ -19,7 +45,7 @@ export const InsertMenu = React.createClass({
 					content={
 						<Menu>
 							{menuItems.map((item)=> {
-								return <MenuItem text={item.text} onClick={item.run} />
+								return <MenuItem onClick={item.run} text={item.text} />;
 							})}
 						</Menu>
 					}
@@ -30,6 +56,16 @@ export const InsertMenu = React.createClass({
 					useSmartPositioning={false}>
 					<button className={'pt-button pt-minimal pt-icon-insert'} />
 				</Popover>
+
+				<InsertMenuDialogFiles 
+					isOpen={this.state.openDialog === 'files'} 
+					onClose={this.closeDialog} 
+					onFileSelect={this.onFileSelect} />
+
+				<InsertMenuDialogReferences 
+					isOpen={this.state.openDialog === 'references'} 
+					onClose={this.closeDialog} 
+					onReferenceAdd={this.onReferenceAdd}/>
 			</div>
 		);
 	}
