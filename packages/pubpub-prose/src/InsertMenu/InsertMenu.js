@@ -10,32 +10,66 @@ export const InsertMenu = React.createClass({
 	propTypes: {
 		editor: PropTypes.object,
 		top: PropTypes.number,
+		handleFileUpload: PropTypes.func,
+		handleReferenceAdd: PropTypes.func,
 	},
 
 	getInitialState() {
 		return {
 			openDialog: undefined,
+			callback: undefined,
 		};
 	},
 
 	openDialog: function(dialogType, callback) {
 		console.log('hi', dialogType, callback);
-		this.setState({ openDialog: dialogType });
+		this.setState({ 
+			openDialog: dialogType,
+			callback: callback 
+		});
 	},
 
 	closeDialog: function() {
-		this.setState({ openDialog: undefined });
+		this.setState({ 
+			openDialog: undefined,
+			callback: undefined,
+		});
 	},
 
 	onFileSelect: function(evt) {
-		console.log(evt.target.files[0]);
+		const file = evt.target.files[0];
+		console.log(file);
 		evt.target.value = null;
-		this.setState({ openDialog: undefined });
+		this.props.handleFileUpload(file, (filename)=>{
+			console.log('Going to insert filename');
+			this.state.callback(filename); // This shouldn't use the callback - it should import the function rom insertMenu and call it.
+
+			this.setState({ 
+				openDialog: undefined,
+				callback: undefined,
+			});
+		});
+		// Need to upload file
+		// Need to add new file object to file list
+		// Need to insert file content into editor
+		
 	},
 
 	onReferenceAdd: function(item) {
 		console.log(item);
-		this.setState({ openDialog: undefined });
+		// Need to update or create bibtex file
+		// Need to make sure that updated file is sent to editor props
+		// Need to call inserReference function 
+		this.props.handleReferenceAdd(item, (itemToAdd)=> {
+
+			console.log('Going to insert reference');
+			this.state.callback(itemToAdd);
+			this.setState({ 
+				openDialog: undefined,
+				callback: undefined,
+			});
+		});
+		
 	},
 
 	render: function() {

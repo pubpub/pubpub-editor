@@ -47,11 +47,22 @@ export const StoryBookFullEditor = React.createClass({
 		this.setState({ content: newContent });
 	},
 
+	onFileUpload: function(file, callback) {
+		// Do the uploading - then callback
+		callback('giphy.gif');
+	},
+
+	onReferenceAdd: function(newCitationObject, callback) {
+		// Do the adding/creation to the bibtex file - then callback
+		callback(newCitationObject);
+	},
+
 	render: function() {
 		const editorProps = {
 			initialContent: this.state.initialContent,
 			onChange: this.onChange,
-
+			handleFileUpload: this.onFileUpload, 
+			handleReferenceAdd: this.onReferenceAdd,
 			localFiles: localFiles,
 			localPubs: localPubs,
 			localReferences: localReferences,

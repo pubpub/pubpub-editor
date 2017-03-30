@@ -29,16 +29,16 @@ function getMenuItems(editor, openDialog) {
 
 	/* Reference */
 	/* -------------- */
-	function insertReference() {
-		editor.view.dispatch(editor.view.state.tr.setMeta('createCitation', { key: 'testKey', title: 'myRef' }));
+	function insertReference(citationObject) {
+		editor.view.dispatch(editor.view.state.tr.setMeta('createCitation', citationObject));
 	}
 
 	/* Embed */
 	/* -------------- */
-	function insertEmbed() {
-		const filename = 'test.jpg'; // Should be passed in
+	function insertEmbed(filename) {
+		// const filename = 'test.jpg'; // Should be passed in
 		const url = 'http://cdn3-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-5.jpg'; // Should be passed in
-
+		console.log('filename is', filename)
 		const textnode = schema.text('Enter caption.');
 		const captionNode = schema.nodes.caption.create({}, textnode);
 		const embedNode = schema.nodes.embed.create(

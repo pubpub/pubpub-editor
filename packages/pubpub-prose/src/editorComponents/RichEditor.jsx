@@ -22,6 +22,9 @@ export const RichEditor = React.createClass({
 	propTypes: {
 		initialContent: PropTypes.object,
 		onChange: PropTypes.func,
+		handleFileUpload: PropTypes.func,
+		handleReferenceAdd: PropTypes.func,
+
 		localUsers: PropTypes.array,
 		localPubs: PropTypes.array,
 		localFiles: PropTypes.array,
@@ -49,10 +52,6 @@ export const RichEditor = React.createClass({
 
 	componentDidMount() {
 		this.createEditor(null);
-	},
-
-	componentWillUpdate(nextProps) {
-
 	},
 
 	onChange() {
@@ -178,7 +177,9 @@ export const RichEditor = React.createClass({
 				{!!this.state.menuTop &&
 					<InsertMenu
 						editor={this.editor}
-						top={this.state.menuTop} />
+						top={this.state.menuTop} 
+						handleFileUpload={this.props.handleFileUpload} 
+						handleReferenceAdd={this.props.handleReferenceAdd} />
 				}
 
 				{this.editor && !!this.state.inlineTop &&

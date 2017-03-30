@@ -9,6 +9,7 @@ export const MarkdownEditor = React.createClass({
 	propTypes: {
 		initialContent: PropTypes.string,
 		onChange: PropTypes.func,
+		handleFileUpload: PropTypes.func,
 		localUsers: PropTypes.array,
 		localPubs: PropTypes.array,
 		localFiles: PropTypes.array,
