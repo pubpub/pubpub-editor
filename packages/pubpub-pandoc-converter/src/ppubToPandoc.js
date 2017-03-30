@@ -552,6 +552,21 @@ function ppubToPandoc(ppub, options) {
 					pandocJSON.meta.institute.c.push(institute);
 				}
 			}
+			if (metadata['previous-degrees']) {
+
+				pandocJSON.meta.pubprevdegrees = {
+					t: 'MetaList',
+					c: []
+				};
+
+				for (var i = 0; i < metadata['previous-degrees'].length; i++){
+					var pubprevdegree = {
+						t: 'MetaInlines',
+						c: createTextNodes(metadata['previous-degrees'][i])
+					};
+					pandocJSON.meta.pubprevdegrees.c.push(pubprevdegree);
+				}
+			}
 			if (metadata['date']) {
 				pandocJSON.meta.pubdate = {
 					t: 'MetaInlines',
