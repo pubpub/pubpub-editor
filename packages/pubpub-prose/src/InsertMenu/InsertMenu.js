@@ -30,10 +30,12 @@ export const InsertMenu = React.createClass({
 	onFileSelect: function(evt) {
 		console.log(evt.target.files[0]);
 		evt.target.value = null;
+		this.setState({ openDialog: undefined });
 	},
 
 	onReferenceAdd: function(item) {
 		console.log(item);
+		this.setState({ openDialog: undefined });
 	},
 
 	render: function() {
