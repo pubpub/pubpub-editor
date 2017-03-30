@@ -41,6 +41,11 @@ function insertReference({view}) {
 	view.dispatch(view.state.tr.setMeta('createCitation', { key: 'testKey', title: 'myRef' }));
 }
 
+function insertMention({ start, end, view, url, type, text }) {
+	const transaction = view.state.tr.replaceRangeWith(start, end, schema.nodes.mention.create({ url, type, text }));
+	view.dispatch(transaction);
+}
+
 /* Embed */
 /* -------------- */
 function insertEmbed({ view, filename, url, start, end }) {
@@ -66,19 +71,26 @@ function insertEmbed({ view, filename, url, start, end }) {
 
 exports.createRichMention = function(editor, selectedObject, start, end) {
 
+	let text, url, filename;
+
+	console.log('Selected object', selectedObject);
 	switch (selectedObject.itemType) {
 		case 'file':
-			const filename = selectedObject.name;
+			filename = selectedObject.name;
 			insertEmbed({ view: editor.view, filename, start, end });
 			break;
 		case 'pub':
-			insertMention();
+			text = selectedObject.title;
+			url = `/pub/${selectedObject.slug}`;
+			insertMention({ view: editor.view, start, end, text, url, type: 'pub' });
 			break;
 		case 'reference':
-			insertReference({ view: editor.view });
+			insertReference({ view: editor.view, start, end });
 			break;
 		case 'user':
-			insertMention();
+			text = `${selectedObject.firstName} ${selectedObject.lastName}`;
+			url = `/user/${selectedObject.username}`;
+			insertMention({ view: editor.view, start, end, text, url, type: 'user' });
 			break;
 		case 'highlight':
 			insertMention();

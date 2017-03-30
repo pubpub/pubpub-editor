@@ -52,7 +52,6 @@ class ReactView {
   update(node, decorations) {
     if (node.type !== this.node.type) return false
     if (node === this.node && this.decorations === decorations) {
-      console.log('Avoided unnecessary evaluation');
       return true;
     }
     this.node = node;

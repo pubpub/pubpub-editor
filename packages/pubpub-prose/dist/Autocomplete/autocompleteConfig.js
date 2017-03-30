@@ -42,14 +42,26 @@ function insertReference(_ref) {
 	view.dispatch(view.state.tr.setMeta('createCitation', { key: 'testKey', title: 'myRef' }));
 }
 
+function insertMention(_ref2) {
+	var start = _ref2.start,
+	    end = _ref2.end,
+	    view = _ref2.view,
+	    url = _ref2.url,
+	    type = _ref2.type,
+	    text = _ref2.text;
+
+	var transaction = view.state.tr.replaceRangeWith(start, end, _prosemirrorSetup.schema.nodes.mention.create({ url: url, type: type, text: text }));
+	view.dispatch(transaction);
+}
+
 /* Embed */
 /* -------------- */
-function insertEmbed(_ref2) {
-	var view = _ref2.view,
-	    filename = _ref2.filename,
-	    url = _ref2.url,
-	    start = _ref2.start,
-	    end = _ref2.end;
+function insertEmbed(_ref3) {
+	var view = _ref3.view,
+	    filename = _ref3.filename,
+	    url = _ref3.url,
+	    start = _ref3.start,
+	    end = _ref3.end;
 
 	var textnode = _prosemirrorSetup.schema.text('Enter caption.');
 	var captionNode = _prosemirrorSetup.schema.nodes.caption.create({}, textnode);
@@ -70,19 +82,28 @@ function insertEmbed(_ref2) {
 
 exports.createRichMention = function (editor, selectedObject, start, end) {
 
+	var text = void 0,
+	    url = void 0,
+	    filename = void 0;
+
+	console.log('Selected object', selectedObject);
 	switch (selectedObject.itemType) {
 		case 'file':
-			var filename = selectedObject.name;
+			filename = selectedObject.name;
 			insertEmbed({ view: editor.view, filename: filename, start: start, end: end });
 			break;
 		case 'pub':
-			insertMention();
+			text = selectedObject.title;
+			url = '/pub/' + selectedObject.slug;
+			insertMention({ view: editor.view, start: start, end: end, text: text, url: url, type: 'pub' });
 			break;
 		case 'reference':
-			insertReference({ view: editor.view });
+			insertReference({ view: editor.view, start: start, end: end });
 			break;
 		case 'user':
-			insertMention();
+			text = selectedObject.firstName + ' ' + selectedObject.lastName;
+			url = '/user/' + selectedObject.username;
+			insertMention({ view: editor.view, start: start, end: end, text: text, url: url, type: 'user' });
 			break;
 		case 'highlight':
 			insertMention();
