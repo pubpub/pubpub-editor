@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import { jsonToMarkdown, markdownToJSON } from '../src/markdown';
-import { localDiscussions, localFiles, localHighlights, localPubs, localReferences, localUsers } from './sampledocs/autocompleteLocalData';
+import { localDiscussions, localFiles, localHighlights, localPubs, localReferences, localUsers, localPages } from './sampledocs/autocompleteLocalData';
 
 // import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
 // import RichEditor from '../src/editorComponents/RichEditor';
@@ -70,6 +70,7 @@ export const StoryBookFullEditor = React.createClass({
 			localUsers: localUsers,
 			localHighlights: localHighlights,
 			localDiscussions: localDiscussions,
+			localPages: localPages,
 
 			globalCategories: ['pubs', 'users'],
 		};

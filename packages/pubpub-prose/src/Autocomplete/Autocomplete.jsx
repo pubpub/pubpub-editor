@@ -24,7 +24,7 @@ export const Autocomplete = React.createClass({
 		localUsers: PropTypes.array, // Used in Discussions.
 		localHighlights: PropTypes.array, // Used in Discussions. No Global at the moment
 		localDiscussions: PropTypes.array, // Used in Discussions. No Global at the moment
-		// localPages
+		localPages: PropTypes.array, // Used in Journals. No Global at the moment
 
 		globalCategories: PropTypes.array, // ['pubs', 'users']
 	},
@@ -109,6 +109,8 @@ export const Autocomplete = React.createClass({
 			return this.getModeResults(mode, 'reference', input, this.props.localReferences);
 		case 'highlights':
 			return this.getModeResults(mode, 'highlight', input, this.props.localHighlights);
+		case 'pages':
+			return this.getModeResults(mode, 'page', input, this.props.localPages);
 		default:
 			results = [
 				...this.getLocalResults('file', input, this.props.localFiles),
@@ -116,6 +118,7 @@ export const Autocomplete = React.createClass({
 				...this.getLocalResults('reference', input, this.props.localReferences),
 				...this.getLocalResults('user', input, this.props.localUsers),
 				...this.getLocalResults('highlight', input, this.props.localHighlights),
+				...this.getLocalResults('page', input, this.props.localPages),
 				...this.getLocalResults('discussion', input, this.props.localDiscussions),
 			];
 
@@ -215,6 +218,7 @@ export const Autocomplete = React.createClass({
 			if (this.props.localReferences && this.props.localReferences.length) { localCategories.push('references'); }
 			if (this.props.localUsers && this.props.localUsers.length) { localCategories.push('users'); }
 			if (this.props.localHighlights && this.props.localHighlights.length) { localCategories.push('highlights'); }
+			if (this.props.localPages && this.props.localPages.length) { localCategories.push('pages'); }
 			if (this.props.localDiscussions && this.props.localDiscussions.length) { localCategories.push('discussions'); }
 
 			const localCategoryOptions = localCategories.map((item)=> {
@@ -248,11 +252,13 @@ export const Autocomplete = React.createClass({
 					if (result.itemType === 'file') { label = `File: ${result.itemType}`; }
 					if (result.itemType === 'reference') { label = `Ref: ${result.author}`; }
 					if (result.itemType === 'highlight') { label = `Highlight`; }
+					if (result.itemType === 'page') { label = `Page`; }
 
 					let title = result.title;
 					if (result.itemType === 'user') { title = `${result.firstName} ${result.lastName}`; }
 					if (result.itemType === 'file') { title = `${result.name}`; }
 					if (result.itemType === 'highlight') { title = `${result.exact}`; }
+					if (result.itemType === 'page') { title = `${result.title}`; }
 
 					let avatar;
 					if (result.avatar) { avatar = result.avatar; }

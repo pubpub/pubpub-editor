@@ -15,6 +15,7 @@ export const FullEditor = React.createClass({
 		localFiles: PropTypes.array,
 		localReferences: PropTypes.array,
 		localHighlights: PropTypes.array,
+		localPages: PropTypes.array,
 		globalCategories: PropTypes.array,
 
 		// Unique to Full Editor

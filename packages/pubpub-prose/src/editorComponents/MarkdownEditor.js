@@ -17,6 +17,7 @@ export const MarkdownEditor = React.createClass({
 		localFiles: PropTypes.array,
 		localReferences: PropTypes.array,
 		localHighlights: PropTypes.array,
+		localPages: PropTypes.array,
 		globalCategories: PropTypes.array,
 	},
 
@@ -143,6 +144,7 @@ export const MarkdownEditor = React.createClass({
 					localFiles={this.props.localFiles}
 					localReferences={this.props.localReferences}
 					localHighlights={this.props.localHighlights}
+					localPages={this.props.localPages}
 					globalCategories={this.props.globalCategories} />
 				<textarea id={'myMarkdownEditor'} />
 			</div>

@@ -372,5 +372,18 @@ export const localHighlights = [
 
 export const localDiscussions = [];
 
-
+export const localPages = [
+	{
+		id: 1,
+		pageSlug: 'about',
+		title: 'About This Journal',
+		journalSlug: 'jods',
+	},
+	{
+		id: 2,
+		pageSlug: 'call-for-submissions',
+		title: 'Call For Submissions',
+		journalSlug: 'jods',
+	},
+];
 
