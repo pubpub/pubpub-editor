@@ -1,7 +1,7 @@
 import { Plugin } from 'prosemirror-state';
+import { getPluginState } from '../plugins';
 import { keys } from './pluginKeys';
 import { schema } from '../schema';
-import { getPluginState } from '../plugins';
 
 const { DecorationSet, Decoration } = require('prosemirror-view');
 
@@ -27,9 +27,9 @@ const mentionsPlugin = new Plugin({
 			if (currentNode && currentNode.text) {
 				const currentLine = currentNode.text.replace(/\s/g, ' ');
 				const nextChIndex = currentPos.parentOffset;
-				
+
 				const nextCh = currentLine.length > nextChIndex ? currentLine.charAt(nextChIndex) : ' ';
-				
+
 				const prevChars = currentLine.substring(0, currentPos.parentOffset);
 				// const startIndex = Math.max(prevChars.lastIndexOf(' ') + 1, prevChars.lastIndexOf(' ') + 1);
 				const startIndex = prevChars.lastIndexOf(' ') + 1;
@@ -42,7 +42,7 @@ const mentionsPlugin = new Plugin({
 					const end = currentPos.pos - currentPos.parentOffset + startIndex + 1 + substring.length;
 					const decorations = [Decoration.inline(start, end, { class: 'mention-marker' })];
 					const decos = DecorationSet.create(editorState.doc, decorations);
-					
+
 					// updateMentions(currentLine.substring(start - 1, currentPos.pos) || ' ');
 					updateMentions(substring);
 					return { decos: decos, start, end };
@@ -77,6 +77,16 @@ const mentionsPlugin = new Plugin({
 			return null;
 		},
 
+		getMentionPos(view) {
+			const state = view.state;
+			const pluginState = getPluginState('mentions', state);
+			if (pluginState) {
+				const { start, end } = pluginState;
+				return { start, end };
+			}
+			return null;
+		},
+
 		decorations(state) {
 			if (state && this.getState(state) && this.getState(state).decos) {
 				return this.getState(state).decos;
@@ -88,9 +98,9 @@ const mentionsPlugin = new Plugin({
 				const sel = view.state.selection;
 				if (sel.empty && evt.type === 'keydown' && (evt.key === 'ArrowUp' || evt.key === 'ArrowDown' || evt.key === 'Enter')) {
 					const pluginState = getPluginState('mentions', view.state);
-					if (pluginState.start !== null) { 
+					if (pluginState.start !== null) {
 						evt.preventDefault();
-						return true; 
+						return true;
 					}
 				}
 				return false;

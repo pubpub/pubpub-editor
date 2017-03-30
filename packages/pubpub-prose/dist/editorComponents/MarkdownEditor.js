@@ -9,6 +9,14 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _Autocomplete = require('./Autocomplete');
+
+var _Autocomplete2 = _interopRequireDefault(_Autocomplete);
+
+var _codemirror = require('codemirror');
+
+var _codemirror2 = _interopRequireDefault(_codemirror);
+
 var _radium = require('radium');
 
 var _radium2 = _interopRequireDefault(_radium);
@@ -17,13 +25,7 @@ var _simplemde = require('simplemde');
 
 var _simplemde2 = _interopRequireDefault(_simplemde);
 
-var _codemirror = require('codemirror');
-
-var _codemirror2 = _interopRequireDefault(_codemirror);
-
-var _Autocomplete = require('./Autocomplete');
-
-var _Autocomplete2 = _interopRequireDefault(_Autocomplete);
+var _autocompleteConfig = require('./autocompleteConfig');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -153,36 +155,8 @@ var MarkdownEditor = exports.MarkdownEditor = _react2.default.createClass({
 	},
 
 	onSelection: function onSelection(selectedObject) {
-		// console.log('Got ', selectedObject);
 		var cm = this.simpleMDE.codemirror;
-		var currentCursor = cm.getCursor();
-		var currentLine = cm.getLine(currentCursor.line);
-		var nextChIndex = currentCursor.ch;
-		var prevChars = currentLine.substring(0, currentCursor.ch);
-		var startIndex = prevChars.lastIndexOf(' ') + 1;
-
-		var content = void 0;
-		switch (selectedObject.itemType) {
-			case 'file':
-				content = '![' + selectedObject.name + '](' + selectedObject.name + ')';
-				break;
-			case 'pub':
-				content = '[' + selectedObject.title + '](/pub/' + selectedObject.slug + ')';
-				break;
-			case 'reference':
-				content = '[@' + selectedObject.key + ']';
-				break;
-			case 'user':
-				content = '[' + selectedObject.firstName + ' ' + selectedObject.lastName + '](/user/' + selectedObject.username + ')';
-				break;
-			case 'highlight':
-				content = '[@highlight/' + selectedObject.id + ']';
-				break;
-			default:
-				content = '[An Error occured with this @ mention]';
-				break;
-		}
-		cm.replaceRange(content, { line: currentCursor.line, ch: startIndex }, { line: currentCursor.line, ch: nextChIndex });
+		(0, _autocompleteConfig.createMarkdownMention)(cm, selectedObject);
 	},
 
 	render: function render() {

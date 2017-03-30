@@ -18,7 +18,7 @@ export const InsertMenuDialogReferences = React.createClass({
 
 	getInitialState() {
 		return {
-			selectedTabIndex: TabIndexes.MANUAL,
+			// selectedTabIndex: TabIndexes.MANUAL,
 			addedFields: [
 				'title', 'author', 'journal', 'year',
 			],
@@ -201,7 +201,7 @@ export const InsertMenuDialogReferences = React.createClass({
 				</div>
 			</Dialog>
 		);
- 
+
 	}
 });
 

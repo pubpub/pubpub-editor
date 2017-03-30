@@ -1,10 +1,12 @@
 import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
-// import { schema } from '../prosemirror-setup';
+
 import Autocomplete from './Autocomplete';
-import { RichEditor as ProseEditor } from '../prosemirror-setup';
 import FormattingMenu from '../FormattingMenu/FormattingMenu';
 import InsertMenu from '../InsertMenu/InsertMenu';
+import { RichEditor as ProseEditor } from '../prosemirror-setup';
+import ReactDOM from 'react-dom';
+import { createRichMention } from './autocompleteConfig';
+
 /*
 Props outline:
 <Editor
@@ -65,7 +67,7 @@ export const RichEditor = React.createClass({
 
 		const currentNode = this.editor.view.state.doc.nodeAt(currentPos - 1);
 		const isRoot = this.editor.view.state.selection.$to.depth === 2;
-		
+
 		const container = document.getElementById('rich-editor-container');
 		const menuTop = isRoot && currentNode && !currentNode.text ? this.editor.view.coordsAtPos(currentPos).top - container.getBoundingClientRect().top + 5 : 0;
 
@@ -143,8 +145,8 @@ export const RichEditor = React.createClass({
 	},
 
 	onMentionSelection: function(selectedObject) {
-		console.log(selectedObject);
-		return this.editor.createMention(selectedObject.firstName || selectedObject.title || selectedObject.name || selectedObject.exact || selectedObject.key);
+		const mentionPos = this.editor.getMentionPos();
+		createRichMention(this.editor, selectedObject, mentionPos.start, mentionPos.end);
 	},
 
 	generateFileMap: function() {
@@ -158,7 +160,7 @@ export const RichEditor = React.createClass({
 	},
 
 	render: function() {
-		
+
 		return (
 			<div style={{ position: 'relative' }} id={'rich-editor-container'}>
 				<Autocomplete
@@ -183,9 +185,9 @@ export const RichEditor = React.createClass({
 				}
 
 				{this.editor && !!this.state.inlineTop &&
-					<FormattingMenu 
+					<FormattingMenu
 						editor={this.editor}
-						top={this.state.inlineTop} 
+						top={this.state.inlineTop}
 						left={this.state.inlineCenter} />
 				}
 

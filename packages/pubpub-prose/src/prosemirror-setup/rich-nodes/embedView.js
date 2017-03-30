@@ -7,7 +7,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ReactView from './reactview';
 import { findNodesWithIndex } from '../../utils/doc-operations';
-import {schema} from '../schema';
+import { schema } from '../schema';
 
 class EmbedView extends ReactView {
   constructor(node, view, getPos, options) {

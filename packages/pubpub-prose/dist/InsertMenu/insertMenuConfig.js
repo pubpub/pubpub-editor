@@ -9,7 +9,7 @@ var _prosemirrorSchemaTable = require('prosemirror-schema-table');
 var _prosemirrorSetup = require('../prosemirror-setup');
 
 // import { toggleMark, lift, joinUp, selectParentNode, wrapIn, setBlockType } from 'prosemirror-commands';
-function getMenuItems(editor) {
+function getMenuItems(editor, openDialog) {
 
 	/* Horizontal Rule */
 	/* -------------- */
@@ -60,8 +60,17 @@ function getMenuItems(editor) {
 
 	var menuItems = [{
 		icon: 'pt-icon-h1',
-		text: 'Upload Media',
-		run: insertEmbed }, {
+		// component: <li>
+		// 	<label htmlFor={'upload-media-input'} className="pt-menu-item">
+		// 		Upload Media
+		// 		<input id={'upload-media-input'} type="file" onChange={onFileSelect} style={{ position: 'fixed', top: '-1000px' }} />
+		// 	</label>
+		// </li>,
+		text: 'Upload Files',
+		run: function run() {
+			openDialog('files', insertEmbed);
+		}
+	}, {
 		icon: 'pt-icon-h1',
 		text: 'Insert Table',
 		run: insertTable
@@ -76,7 +85,10 @@ function getMenuItems(editor) {
 	}, {
 		icon: 'pt-icon-h1',
 		text: 'Add References',
-		run: insertReference }];
+		run: function run() {
+			openDialog('references', insertReference);
+		}
+	}];
 
 	return menuItems;
 }

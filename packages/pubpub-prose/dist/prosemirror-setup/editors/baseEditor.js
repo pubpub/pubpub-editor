@@ -202,12 +202,13 @@ var BaseEditor = function () {
 			}
 		}
 	}, {
-		key: 'createMention',
-		value: function createMention(text) {
+		key: 'getMentionPos',
+		value: function getMentionPos() {
 			var mentionsPlugin = void 0;
 			if (mentionsPlugin = (0, _plugins.getPlugin)('mentions', this.view.state)) {
-				mentionsPlugin.props.createMention(this.view, text);
+				return mentionsPlugin.props.getMentionPos(this.view);
 			}
+			return null;
 		}
 	}, {
 		key: '_onAction',

@@ -9,12 +9,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _prosemirrorSetup = require('../prosemirror-setup');
-
 var _Autocomplete = require('./Autocomplete');
 
 var _Autocomplete2 = _interopRequireDefault(_Autocomplete);
@@ -26,6 +20,14 @@ var _FormattingMenu2 = _interopRequireDefault(_FormattingMenu);
 var _InsertMenu = require('../InsertMenu/InsertMenu');
 
 var _InsertMenu2 = _interopRequireDefault(_InsertMenu);
+
+var _prosemirrorSetup = require('../prosemirror-setup');
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _autocompleteConfig = require('./autocompleteConfig');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -163,8 +165,8 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 
 
 	onMentionSelection: function onMentionSelection(selectedObject) {
-		console.log(selectedObject);
-		return this.editor.createMention(selectedObject.firstName || selectedObject.title || selectedObject.name || selectedObject.exact || selectedObject.key);
+		var mentionPos = this.editor.getMentionPos();
+		(0, _autocompleteConfig.createRichMention)(this.editor, selectedObject, mentionPos.start, mentionPos.end);
 	},
 
 	generateFileMap: function generateFileMap() {

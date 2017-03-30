@@ -6,11 +6,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _prosemirrorState = require('prosemirror-state');
 
+var _plugins = require('../plugins');
+
 var _pluginKeys = require('./pluginKeys');
 
 var _schema = require('../schema');
-
-var _plugins = require('../plugins');
 
 var _require = require('prosemirror-view'),
     DecorationSet = _require.DecorationSet,
@@ -89,6 +89,17 @@ var mentionsPlugin = new _prosemirrorState.Plugin({
 				}
 				var transaction = state.tr.replaceRangeWith(start, end, _schema.schema.nodes.mention.create({ editing: true, text: text }));
 				return view.dispatch(transaction);
+			}
+			return null;
+		},
+		getMentionPos: function getMentionPos(view) {
+			var state = view.state;
+			var pluginState = (0, _plugins.getPluginState)('mentions', state);
+			if (pluginState) {
+				var start = pluginState.start,
+				    end = pluginState.end;
+
+				return { start: start, end: end };
 			}
 			return null;
 		},

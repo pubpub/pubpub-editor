@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react';
+
+import Autocomplete from './Autocomplete';
+import CodeMirror from 'codemirror';
 import Radium from 'radium';
 import SimpleMDE from 'simplemde';
-import CodeMirror from 'codemirror';
-import Autocomplete from './Autocomplete';
+import { createMarkdownMention } from './autocompleteConfig';
 
 let styles;
 export const MarkdownEditor = React.createClass({
@@ -33,7 +35,7 @@ export const MarkdownEditor = React.createClass({
 	componentDidMount() {
 		const element = document.getElementById('myMarkdownEditor');
 		if (element) {
-			this.simpleMDE = new SimpleMDE({ 
+			this.simpleMDE = new SimpleMDE({
 				element: element,
 				autoDownloadFontAwesome: false,
 				autofocus: true,
@@ -64,13 +66,13 @@ export const MarkdownEditor = React.createClass({
 
 					if (shouldMark && !this.autocompleteMarker) {
 						this.autocompleteMarker = cm.markText({ line: currentCursor.line, ch: (prevChars.lastIndexOf(' ') + 1 )}, { line: currentCursor.line, ch: (prevChars.lastIndexOf(' ') + 2)}, {className: 'testmarker'});
-						
+
 						setTimeout(()=>{
 							const container = document.getElementById('markdown-editor-container');
 							const mark = document.getElementsByClassName('testmarker')[0];
 							const top = mark.getBoundingClientRect().bottom - container.getBoundingClientRect().top;
 							const left = mark.getBoundingClientRect().left - container.getBoundingClientRect().left;
-							
+
 							this.setState({
 								visible: true,
 								top: top,
@@ -78,7 +80,7 @@ export const MarkdownEditor = React.createClass({
 								input: currentLine.substring(startIndex + 1, nextChIndex) || ' ',
 							});
 						}, 0);
-						
+
 					} else if (shouldMark) {
 						this.setState({
 							input: currentLine.substring(startIndex + 1, nextChIndex),
@@ -123,49 +125,21 @@ export const MarkdownEditor = React.createClass({
 	},
 
 	onSelection: function(selectedObject) {
-		// console.log('Got ', selectedObject);
 		const cm = this.simpleMDE.codemirror;
-		const currentCursor = cm.getCursor();
-		const currentLine = cm.getLine(currentCursor.line);
-		const nextChIndex = currentCursor.ch;
-		const prevChars = currentLine.substring(0, currentCursor.ch);
-		const startIndex = prevChars.lastIndexOf(' ') + 1;
-
-		let content;
-		switch (selectedObject.itemType) {
-		case 'file':
-			content = `![${selectedObject.name}](${selectedObject.name})`;
-			break;
-		case 'pub':
-			content = `[${selectedObject.title}](/pub/${selectedObject.slug})`;
-			break;
-		case 'reference':
-			content = `[@${selectedObject.key}]`;
-			break;
-		case 'user':
-			content = `[${selectedObject.firstName} ${selectedObject.lastName}](/user/${selectedObject.username})`;
-			break;
-		case 'highlight':
-			content = `[@highlight/${selectedObject.id}]`;
-			break;
-		default: 
-			content = '[An Error occured with this @ mention]';
-			break;
-		}
-		cm.replaceRange(content, { line: currentCursor.line, ch: startIndex }, { line: currentCursor.line, ch: nextChIndex });
+		createMarkdownMention(cm, selectedObject);
 	},
 
 	render() {
 		return (
 			<div id={'markdown-editor-container'} style={styles.container}>
-				<Autocomplete 
-					top={this.state.top} 
-					left={this.state.left} 
-					visible={this.state.visible} 
-					input={this.state.input} 
+				<Autocomplete
+					top={this.state.top}
+					left={this.state.left}
+					visible={this.state.visible}
+					input={this.state.input}
 					onSelection={this.onSelection}
 					localUsers={this.props.localUsers}
-					localPubs={this.props.localPubs} 
+					localPubs={this.props.localPubs}
 					localFiles={this.props.localFiles}
 					localReferences={this.props.localReferences}
 					localHighlights={this.props.localHighlights}

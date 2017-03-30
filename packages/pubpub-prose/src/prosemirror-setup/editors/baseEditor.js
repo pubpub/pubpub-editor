@@ -91,11 +91,12 @@ class BaseEditor {
 		}
 	}
 
-	createMention(text) {
+	getMentionPos() {
 		let mentionsPlugin;
 		if (mentionsPlugin = getPlugin('mentions', this.view.state)) {
-			mentionsPlugin.props.createMention(this.view, text);
+			return mentionsPlugin.props.getMentionPos(this.view);
 		}
+		return null;
 	}
 
 	_onAction (action) {

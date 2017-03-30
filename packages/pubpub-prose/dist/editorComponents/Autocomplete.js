@@ -15,13 +15,13 @@ var _radium = require('radium');
 
 var _radium2 = _interopRequireDefault(_radium);
 
-var _requestPromise = require('request-promise');
-
-var _requestPromise2 = _interopRequireDefault(_requestPromise);
-
 var _fuzzysearch = require('fuzzysearch');
 
 var _fuzzysearch2 = _interopRequireDefault(_fuzzysearch);
+
+var _requestPromise = require('request-promise');
+
+var _requestPromise2 = _interopRequireDefault(_requestPromise);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

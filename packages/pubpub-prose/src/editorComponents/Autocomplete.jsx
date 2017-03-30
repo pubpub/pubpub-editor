@@ -1,8 +1,12 @@
 import React, { PropTypes } from 'react';
+
 import Radium from 'radium';
-import request from 'request-promise';
 import fuzzysearch from 'fuzzysearch';
+import request from 'request-promise';
+
 require('../../style/autosuggest.scss');
+
+
 
 let styles;
 
@@ -26,8 +30,8 @@ export const Autocomplete = React.createClass({
 	},
 
 	getInitialState() {
-		return { 
-			_suggestionCategory: null, 
+		return {
+			_suggestionCategory: null,
 			_currentSuggestions: this.appendOptions([], ''),
 			_selectedIndex: 0,
 			_loading: false
@@ -78,15 +82,15 @@ export const Autocomplete = React.createClass({
 
 		// If we're in the starting state - no input, no mode selected, we show the default Category options
 		if ((input === ' ' || !input) && mode === 'local') {
-			return this.setState({ 
+			return this.setState({
 				_currentSuggestions: this.appendOptions([], input),
 				_selectedIndex: 0,
 			});
 		}
 
 		// If we already have the result of this query in memory, use it rather than recalculating
-		if (this.state[`${mode}-${input}`]) { 
-			return this.setState({ 
+		if (this.state[`${mode}-${input}`]) {
+			return this.setState({
 				_currentSuggestions: this.appendOptions(this.state[`${mode}-${input}`], input),
 				_selectedIndex: 0,
 			});
@@ -105,7 +109,7 @@ export const Autocomplete = React.createClass({
 			return this.getModeResults(mode, 'reference', input, this.props.localReferences);
 		case 'highlights':
 			return this.getModeResults(mode, 'highlight', input, this.props.localHighlights);
-		default: 
+		default:
 			results = [
 				...this.getLocalResults('file', input, this.props.localFiles),
 				...this.getLocalResults('pub', input, this.props.localPubs),
@@ -115,7 +119,7 @@ export const Autocomplete = React.createClass({
 				...this.getLocalResults('discussion', input, this.props.localDiscussions),
 			];
 
-			return this.setState({ 
+			return this.setState({
 				_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
 				_selectedIndex: 0,
 				[`${mode}-${input}`]: results.slice(0, 10),
@@ -135,18 +139,18 @@ export const Autocomplete = React.createClass({
 		};
 		const searchKeys = searchKeysObject[itemType];
 
-		return localArray.filter((item)=> { 
+		return localArray.filter((item)=> {
 			return searchKeys.reduce((previous, current)=> {
 				const contained = fuzzysearch(input.toLowerCase(), item[current].toLowerCase());
 				if (contained) { return true; }
 				return previous;
 			}, false);
-		}).map((item) => { 
-			return { ...item, itemType: itemType, local: true }; 
+		}).map((item) => {
+			return { ...item, itemType: itemType, local: true };
 		});
 	},
 
-	getModeResults: function(mode, itemType, input, localArray = []) {	
+	getModeResults: function(mode, itemType, input, localArray = []) {
 		const globalCategories = this.props.globalCategories || [];
 		const emptySearch = input === '' || input === ' ';
 		const urlBase = window.location.hostname === 'localhost'
@@ -155,12 +159,12 @@ export const Autocomplete = React.createClass({
 
 		// Get local results for this category
 		const localResults = emptySearch
-			? localArray.map(item => { return { ...item, itemType: itemType, local: true }; }) 
+			? localArray.map(item => { return { ...item, itemType: itemType, local: true }; })
 			: this.getLocalResults(itemType, input, localArray);
 
 		// If we're not allowed this global category or empty search, simply setState with localResults and return
 		if (!globalCategories.includes(mode) || emptySearch) {
-			return this.setState({ 
+			return this.setState({
 				_currentSuggestions: this.appendOptions(localResults.slice(0, 10), input),
 				_selectedIndex: 0,
 				[`${mode}-${input}`]: localResults.slice(0, 10),
@@ -174,7 +178,7 @@ export const Autocomplete = React.createClass({
 				return { ...item, itemType: itemType, local: false };
 			});
 			const allResults = [...localResults, ...remoteResults];
-			this.setState({ 
+			this.setState({
 				_currentSuggestions: this.appendOptions(allResults.slice(0, 10), input),
 				_selectedIndex: 0,
 				[`${mode}-${input}`]: allResults.slice(0, 10),
@@ -191,7 +195,7 @@ export const Autocomplete = React.createClass({
 			this.setState({ _suggestionCategory: item.suggestionCategory });
 			this.getNewSelections(this.props.input);
 		} else {
-			this.props.onSelection(item);	
+			this.props.onSelection(item);
 		}
 	},
 
@@ -217,7 +221,7 @@ export const Autocomplete = React.createClass({
 			const globalCategoryOptions = globalCategories.map((item)=> {
 				return { id: item, suggestionCategory: item, title: `search all ${item}` };
 			});
-			
+
 			const options = isEmpty ? localCategoryOptions : globalCategoryOptions;
 			return [
 				...resultArray,
@@ -265,15 +269,15 @@ export const Autocomplete = React.createClass({
 									<div style={styles.avatarLetter}>{title.substring(0, 1)}</div>
 								</div>
 							}
-							
+
 							<div style={styles.titleWrapper}>
 								<span style={styles.title}>{title}</span>
 								{label &&
 									<div style={styles.label}>{label}</div>
 								}
 							</div>
-							
-							
+
+
 						</div>
 					);
 				})}
@@ -289,12 +293,12 @@ styles = {
 		return {
 			width: '250px',
 			padding: '0em',
-			zIndex: 10, 
-			position: 'absolute', 
-			left: left, 
-			top: top, 
-			opacity: visible ? 1 : 0, 
-			pointerEvents: visible ? 'auto' : 'none', 
+			zIndex: 10,
+			position: 'absolute',
+			left: left,
+			top: top,
+			opacity: visible ? 1 : 0,
+			pointerEvents: visible ? 'auto' : 'none',
 			transition: '.1s linear opacity'
 		};
 	},
@@ -302,7 +306,7 @@ styles = {
 		let backgroundColor = 'transparent';
 		if (isCategory) { backgroundColor = '#F5F8FA'; }
 		if (selected) { backgroundColor = '#E1E8ED'; }
-		
+
 		return {
 			backgroundColor: backgroundColor,
 			margin: '0em',
@@ -316,7 +320,7 @@ styles = {
 			width: '100%',
 			tableLayout: 'fixed',
 		};
-		
+
 	},
 	avatarWrapper: {
 		display: 'table-cell',
@@ -341,7 +345,7 @@ styles = {
 		display: 'table-cell',
 		width: 'calc(100% - 48px)',
 		padding: '8px 12px 8px 0px',
-		
+
 	},
 	title: {
 		width: '100%',
