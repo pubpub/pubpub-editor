@@ -2,8 +2,9 @@ import React, { PropTypes } from 'react';
 import { jsonToMarkdown, markdownToJSON } from '../src/markdown';
 import { localDiscussions, localFiles, localHighlights, localPubs, localReferences, localUsers } from './sampledocs/autocompleteLocalData';
 
-import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
-import RichEditor from '../src/editorComponents/RichEditor';
+// import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
+// import RichEditor from '../src/editorComponents/RichEditor';
+import FullEditor from '../src/editorComponents/FullEditor';
 
 // requires style attributes that would normally be up to the wrapping library to require
 require('@blueprintjs/core/dist/blueprint.css');
@@ -81,12 +82,7 @@ export const StoryBookFullEditor = React.createClass({
 					</div>
 				</div>
 				<div style={{ padding: '1em 4em' }}>
-					{this.state.mode === 'markdown' &&
-						<MarkdownEditor {...editorProps} />
-					}
-					{this.state.mode === 'rich' &&
-						<RichEditor {...editorProps} />
-					}
+					<FullEditor {...editorProps} mode={this.state.mode} />
 				</div>
 
 			</div>
