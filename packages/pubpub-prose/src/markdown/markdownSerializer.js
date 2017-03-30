@@ -58,7 +58,13 @@ export const markdownSerializer = new MarkdownSerializer({
 		// state.write('[[source=\"' + node.attrs.source + '\" id=\"' + node.attrs.id + '\" className=\"' + node.attrs.className + '\" align=\"' + node.attrs.align + '\" size=\"' + node.attrs.size + '\" caption=\"' + node.attrs.caption + '\" mode=\"' + node.attrs.mode + '\" data=\"' + encodeURIComponent(JSON.stringify(node.attrs.data)) + '\"]]');
 		state.write('\n![');
 		state.renderInline(node);
-		state.write('](' + state.esc(node.attrs.filename) + ')\n');
+		state.write('](' + state.esc(node.attrs.filename) + ')');
+		if (node.attrs.align || node.attrs.size || node.attrs.caption) {
+			const alignText = (node.attrs.align) ? `align=${node.attrs.align}` : '';
+			const sizeText = (node.attrs.size) ? `width=${node.attrs.size}` : '';
+			state.write(`{${alignText} ${sizeText}}`);
+		}
+		state.write('\n');
 	},
 	emoji: function emoji(state, node) {
 		state.write(':' + node.attrs.markup + ':');

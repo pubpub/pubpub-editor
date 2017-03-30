@@ -13,29 +13,30 @@ var _prosemirrorSchemaTable = require('prosemirror-schema-table');
 
 var _schemaDefinition = require('./schemaDefinition');
 
+// import { DOMParser, DOMSerializer, Fragment, Mark, MarkType, NodeType, Schema} from 'prosemirror-model';
 var SubMark = {
-	parseDOM: [{ tag: "sub" }],
+	parseDOM: [{ tag: 'sub' }],
 	toDOM: function toDOM() {
-		return ["sub"];
+		return ['sub'];
 	}
 };
 
 var SupMark = {
-	parseDOM: [{ tag: "sup" }],
+	parseDOM: [{ tag: 'sup' }],
 	toDOM: function toDOM() {
-		return ["sup"];
+		return ['sup'];
 	}
 };
 
 var StrikeThroughMark = {
-	parseDOM: [{ tag: "s" }],
+	parseDOM: [{ tag: 's' }],
 	toDOM: function toDOM() {
-		return ["s"];
+		return ['s'];
 	}
 };
 
 var PageBreak = {
-	group: "block",
+	group: 'block',
 	toDOM: function toDOM(node) {
 		return ['div', { class: 'pagebreak' }, 'pagebreak'];
 	}
@@ -58,8 +59,8 @@ var schemaNodes = _schemaDefinition.schema.spec.nodes.addBefore('horizontal_rule
 // const listSchema = addListNodes(schemaNodes, "paragraph block*", "block");
 // const tableSchema = addTableNodes(listSchema, "paragraph block*", "block");
 
-var listSchema = (0, _prosemirrorSchemaList.addListNodes)(schemaNodes, "block*", "block");
-var tableSchema = (0, _prosemirrorSchemaTable.addTableNodes)(listSchema, "block*", "block");
+var listSchema = (0, _prosemirrorSchemaList.addListNodes)(schemaNodes, 'block*', 'block');
+var tableSchema = (0, _prosemirrorSchemaTable.addTableNodes)(listSchema, 'block*', 'block');
 
 var schema = exports.schema = new _prosemirrorModel.Schema({
 	nodes: tableSchema,

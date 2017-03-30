@@ -5,6 +5,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.markdownitInstance = undefined;
 
+var _markdownItAttrs = require('markdown-it-attrs');
+
+var _markdownItAttrs2 = _interopRequireDefault(_markdownItAttrs);
+
 var _markdownItHighlight = require('./markdown-it-highlight');
 
 var _markdownItHighlight2 = _interopRequireDefault(_markdownItHighlight);
@@ -38,6 +42,7 @@ var markdownitInstance = exports.markdownitInstance = (0, _markdownIt2.default)(
 .use(_markdownItSup2.default) // Superscript
 .use(_markdownItKatex2.default) // Latex math
 .use(_markdownItReference2.default) // Reference parser
+.use(_markdownItAttrs2.default) // Reference parser
 .use(_markdownItHighlight2.default); // Pub Highlight parser
 
 exports.default = markdownitInstance;

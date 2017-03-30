@@ -1,3 +1,4 @@
+import attrs from 'markdown-it-attrs';
 import highlight from './markdown-it-highlight';
 import markdownit from 'markdown-it';
 import mk from 'markdown-it-katex';
@@ -13,6 +14,7 @@ export const markdownitInstance = markdownit({
 .use(sup) // Superscript
 .use(mk) // Latex math
 .use(reference) // Reference parser
+.use(attrs) // Reference parser
 .use(highlight); // Pub Highlight parser
 
 export default markdownitInstance;
