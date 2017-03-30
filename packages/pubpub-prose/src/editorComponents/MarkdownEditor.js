@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 
-import Autocomplete from './Autocomplete';
+import Autocomplete from '../Autocomplete/Autocomplete';
 import CodeMirror from 'codemirror';
 import Radium from 'radium';
 import SimpleMDE from 'simplemde';
-import { createMarkdownMention } from './autocompleteConfig';
+import { createMarkdownMention } from '../Autocomplete/autocompleteConfig';
 
 let styles;
 export const MarkdownEditor = React.createClass({

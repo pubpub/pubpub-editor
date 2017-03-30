@@ -5,7 +5,7 @@ import FormattingMenu from '../FormattingMenu/FormattingMenu';
 import InsertMenu from '../InsertMenu/InsertMenu';
 import { RichEditor as ProseEditor } from '../prosemirror-setup';
 import ReactDOM from 'react-dom';
-import { createRichMention } from './autocompleteConfig';
+import { createRichMention } from '../Autocomplete/autocompleteConfig';
 
 /*
 Props outline:

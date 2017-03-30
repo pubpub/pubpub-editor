@@ -9,7 +9,7 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Autocomplete = require('./Autocomplete');
+var _Autocomplete = require('../Autocomplete/Autocomplete');
 
 var _Autocomplete2 = _interopRequireDefault(_Autocomplete);
 
@@ -25,7 +25,7 @@ var _simplemde = require('simplemde');
 
 var _simplemde2 = _interopRequireDefault(_simplemde);
 
-var _autocompleteConfig = require('./autocompleteConfig');
+var _autocompleteConfig = require('../Autocomplete/autocompleteConfig');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

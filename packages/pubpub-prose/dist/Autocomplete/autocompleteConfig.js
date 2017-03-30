@@ -61,7 +61,6 @@ function insertEmbed(_ref2) {
 	var transaction = void 0;
 
 	transaction = view.state.tr.replaceRangeWith(start, end, embedNode);
-
 	if (url) {
 		transaction = transaction.setMeta('uploadedFile', { filename: filename, url: url });
 	}
