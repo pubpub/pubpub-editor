@@ -64,13 +64,7 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 			console.log(tok);return { content: tok.content };
 		} },
 
-	image: { node: 'embed', attrs: function attrs(tok) {
-			console.log(tok, tok.attrGet('src'));
-			return {
-				filename: tok.attrGet('src')
-			};
-		}
-	},
+	image: { node: 'embed' },
 
 	embed: { node: 'embed', attrs: function attrs(tok) {
 			return {
@@ -165,7 +159,9 @@ var addEmbed = function addEmbed(state, tok) {
 		state.closeNode();
 	}
 	var attrs = {
-		filename: tok.attrGet('src')
+		filename: tok.attrGet('src'),
+		size: tok.attrGet('width'),
+		align: tok.attrGet('align')
 	};
 	state.addNode(markdownSchema.nodeType('embed'), attrs);
 

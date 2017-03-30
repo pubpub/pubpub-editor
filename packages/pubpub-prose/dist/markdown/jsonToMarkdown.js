@@ -11,6 +11,7 @@ var jsonToMarkdown = function jsonToMarkdown(docJSON) {
     doc: _schema.schema.nodeFromJSON(docJSON)
   });
   var doc = newState.doc;
+  console.log('Attrs', doc.attrs);
   var markdown = _markdownSerializer.markdownSerializer.serialize(doc);
   return markdown;
 };

@@ -40,13 +40,7 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 		math_inline: {node: 'equation', attrs: tok => {console.log(tok); return {content: tok.content}; }},
 		math_block: {node: 'block_equation', attrs: tok => {console.log(tok); return {content: tok.content}; }},
 
-		image: {node: 'embed', attrs: tok => {
-			console.log(tok, tok.attrGet('src'));
-				return {
-					filename: tok.attrGet('src'),
-				};
-			}
-		},
+		image: {node: 'embed'},
 
 		embed: {node: 'embed', attrs: tok => ({
 			source: tok.attrGet('source'),
@@ -138,6 +132,8 @@ const addEmbed = function(state, tok) {
 	}
 	const attrs = {
 		filename: tok.attrGet('src'),
+		size: tok.attrGet('width'),
+		align: tok.attrGet('align')
 	};
 	state.addNode(markdownSchema.nodeType('embed'), attrs);
 

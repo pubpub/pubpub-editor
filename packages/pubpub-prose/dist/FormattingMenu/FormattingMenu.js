@@ -1,0 +1,78 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.FormattingMenu = undefined;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _formattingMenuConfig = require('./formattingMenuConfig');
+
+var _formattingMenuConfig2 = _interopRequireDefault(_formattingMenuConfig);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var styles = void 0;
+
+var FormattingMenu = exports.FormattingMenu = _react2.default.createClass({
+	displayName: 'FormattingMenu',
+
+	propTypes: {
+		editor: _react.PropTypes.object,
+		top: _react.PropTypes.number,
+		left: _react.PropTypes.number
+	},
+
+	render: function render() {
+		var menuItems = (0, _formattingMenuConfig2.default)(this.props.editor);
+
+		return _react2.default.createElement(
+			'div',
+			{ className: 'pt-card pt-elevation-0 pt-dark', style: styles.container(this.props.top, this.props.left) },
+			menuItems.map(function (item, index) {
+				return _react2.default.createElement(
+					'button',
+					{ key: 'menuItem-' + index, className: 'pt-button pt-minimal', style: item.isActive ? _extends({}, styles.button, styles.active) : styles.button, onClick: item.run },
+					item.text
+				);
+			})
+		);
+	}
+
+});
+
+exports.default = FormattingMenu;
+
+
+styles = {
+	container: function container(top, left) {
+		var width = 350;
+		return {
+			width: width + 'px',
+			position: 'absolute',
+			height: '30px',
+			lineHeight: '30px',
+			padding: '0px',
+			textAlign: 'center',
+			top: top - 40,
+			left: Math.max(left - width / 2, -50),
+			overflow: 'hidden'
+		};
+	},
+	button: {
+		minWidth: '5px',
+		padding: '0px 7px',
+		fontSize: '1.1em',
+		outline: 'none',
+		borderRadius: '0px',
+		color: 'rgba(255, 255, 255, 0.7)'
+	},
+	active: {
+		color: 'rgba(255, 255, 255, 1)'
+	}
+};

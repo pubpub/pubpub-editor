@@ -41,7 +41,8 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 		block: _react.PropTypes.bool,
 		updateValue: _react.PropTypes.func,
 		changeToBlock: _react.PropTypes.func,
-		changeToInline: _react.PropTypes.func
+		changeToInline: _react.PropTypes.func,
+		forceSelection: _react.PropTypes.func
 	},
 	getInitialState: function getInitialState() {
 		var displayHTML = this.generateHTML(this.props.value);
@@ -51,6 +52,7 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 			value: null
 		};
 	},
+
 	getDefaultProps: function getDefaultProps() {
 		return {};
 	},
@@ -108,8 +110,8 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 	},
 
 
-	handleKeyPress: function handleKeyPress(e) {
-		if (e.key === 'Enter' && !this.props.block) {
+	handleKeyPress: function handleKeyPress(evt) {
+		if (evt.key === 'Enter' && !this.props.block) {
 			this.changeToNormal();
 		}
 	},
@@ -140,7 +142,7 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 
 		var popoverContent = _react2.default.createElement(
 			'div',
-			{ className: 'pt-button-group pt-fill' },
+			{ className: 'pt-button-group pt-minimal' },
 			_react2.default.createElement(
 				_core.Button,
 				{ iconName: 'annotation', onClick: this.changeToEditing },
@@ -165,10 +167,11 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 			_react2.default.createElement(_radium.Style, { rules: _katexCss2.default }),
 			_react2.default.createElement(
 				_core.Popover,
-				{ content: popoverContent,
+				{
+					content: popoverContent,
 					isOpen: isPopOverOpen,
 					interactionKind: _core.PopoverInteractionKind.CLICK,
-					popoverClassName: 'pt-popover-content-sizing',
+					popoverClassName: '',
 					position: _core.Position.BOTTOM,
 					useSmartPositioning: false },
 				block ? _react2.default.createElement('div', {
@@ -182,7 +185,7 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 		);
 	},
 	renderEdit: function renderEdit() {
-		var clientWidth = this.state.clientWidth;
+		// const { clientWidth } = this.state;
 		var block = this.props.block;
 
 
@@ -203,10 +206,11 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 			{ style: { position: 'relative' }, onClick: this.forceSelection },
 			block ? _react2.default.createElement(
 				_core.Popover,
-				{ content: popoverContent,
+				{
+					content: popoverContent,
 					defaultIsOpen: true,
 					interactionKind: _core.PopoverInteractionKind.CLICK,
-					popoverClassName: 'pt-popover-content-sizing',
+					popoverClassName: '',
 					position: _core.Position.BOTTOM,
 					autoFocus: false,
 					enforceFocus: false,
@@ -244,11 +248,13 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 	render: function render() {
 		var editing = this.state.editing;
 
+
 		if (editing) {
 			return this.renderEdit();
 		}
 		return this.renderDisplay();
 	}
+
 });
 
 exports.default = LatexEditor;
