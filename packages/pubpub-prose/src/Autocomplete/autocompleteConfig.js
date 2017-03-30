@@ -52,11 +52,9 @@ function insertEmbed({ view, filename, url, start, end }) {
 		captionNode
 	);
 	let transaction;
-	if (start && end) {
-		transaction = view.state.tr.replaceRangeWith(start, end, embedNode);
-	} else {
-		transaction = view.state.tr.replaceSelectionWith(embedNode);
-	}
+
+	transaction = view.state.tr.replaceRangeWith(start, end, embedNode);
+
 	if (url) {
 		transaction = transaction.setMeta('uploadedFile', { filename, url });
 	}

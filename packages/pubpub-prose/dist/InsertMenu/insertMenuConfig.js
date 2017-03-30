@@ -35,16 +35,16 @@ function getMenuItems(editor, openDialog) {
 
 	/* Reference */
 	/* -------------- */
-	function insertReference() {
-		editor.view.dispatch(editor.view.state.tr.setMeta('createCitation', { key: 'testKey', title: 'myRef' }));
+	function insertReference(citationObject) {
+		editor.view.dispatch(editor.view.state.tr.setMeta('createCitation', citationObject));
 	}
 
 	/* Embed */
 	/* -------------- */
-	function insertEmbed() {
-		var filename = 'test.jpg'; // Should be passed in
+	function insertEmbed(filename) {
+		// const filename = 'test.jpg'; // Should be passed in
 		var url = 'http://cdn3-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-5.jpg'; // Should be passed in
-
+		console.log('filename is', filename);
 		var textnode = _prosemirrorSetup.schema.text('Enter caption.');
 		var captionNode = _prosemirrorSetup.schema.nodes.caption.create({}, textnode);
 		var embedNode = _prosemirrorSetup.schema.nodes.embed.create({

@@ -9,7 +9,7 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Autocomplete = require('./Autocomplete');
+var _Autocomplete = require('../Autocomplete/Autocomplete');
 
 var _Autocomplete2 = _interopRequireDefault(_Autocomplete);
 
@@ -49,6 +49,9 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 	propTypes: {
 		initialContent: _react.PropTypes.object,
 		onChange: _react.PropTypes.func,
+		handleFileUpload: _react.PropTypes.func,
+		handleReferenceAdd: _react.PropTypes.func,
+
 		localUsers: _react.PropTypes.array,
 		localPubs: _react.PropTypes.array,
 		localFiles: _react.PropTypes.array,
@@ -74,7 +77,6 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 	componentDidMount: function componentDidMount() {
 		this.createEditor(null);
 	},
-	componentWillUpdate: function componentWillUpdate(nextProps) {},
 	onChange: function onChange() {
 		this.props.onChange(this.editor.view.state.toJSON().doc);
 		// this.props.onChange(this.editor.view.state.doc);
@@ -219,7 +221,9 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 				globalCategories: this.props.globalCategories }),
 			!!this.state.menuTop && _react2.default.createElement(_InsertMenu2.default, {
 				editor: this.editor,
-				top: this.state.menuTop }),
+				top: this.state.menuTop,
+				handleFileUpload: this.props.handleFileUpload,
+				handleReferenceAdd: this.props.handleReferenceAdd }),
 			this.editor && !!this.state.inlineTop && _react2.default.createElement(_FormattingMenu2.default, {
 				editor: this.editor,
 				top: this.state.inlineTop,

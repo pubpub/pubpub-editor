@@ -36,6 +36,7 @@ var MarkdownEditor = exports.MarkdownEditor = _react2.default.createClass({
 	propTypes: {
 		initialContent: _react.PropTypes.string,
 		onChange: _react.PropTypes.func,
+		handleFileUpload: _react.PropTypes.func,
 		localUsers: _react.PropTypes.array,
 		localPubs: _react.PropTypes.array,
 		localFiles: _react.PropTypes.array,

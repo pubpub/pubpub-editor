@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import Autocomplete from './Autocomplete';
+import Autocomplete from '../Autocomplete/Autocomplete';
 import FormattingMenu from '../FormattingMenu/FormattingMenu';
 import InsertMenu from '../InsertMenu/InsertMenu';
 import { RichEditor as ProseEditor } from '../prosemirror-setup';
@@ -179,8 +179,8 @@ export const RichEditor = React.createClass({
 				{!!this.state.menuTop &&
 					<InsertMenu
 						editor={this.editor}
-						top={this.state.menuTop} 
-						handleFileUpload={this.props.handleFileUpload} 
+						top={this.state.menuTop}
+						handleFileUpload={this.props.handleFileUpload}
 						handleReferenceAdd={this.props.handleReferenceAdd} />
 				}
 
