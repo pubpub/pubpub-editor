@@ -191,16 +191,17 @@ var EmbedView = function (_ReactView) {
   }, {
     key: 'stopEvent',
     value: function stopEvent(evt) {
-      if (evt.type === "keypress" || evt.type === "input" || evt.type === "keydown" || evt.type === "keyup" || evt.type === "paste") {
+      if (evt.type === "keypress" || evt.type === "input" || evt.type === "keydown" || evt.type === "keyup" || evt.type === "paste" || evt.type === "mousedown") {
         // console.log('Stopped ', evt.type);
         return true;
       }
-      // console.log('Played ', evt.type);
+      console.log('Stop and play ', evt.type);
       return false;
     }
   }, {
     key: 'selectNode',
     value: function selectNode() {
+      console.log('selected!');
       this.reactElement.focusAndSelect();
     }
   }, {

@@ -17,13 +17,6 @@ var _schema = require('../prosemirror-setup/schema');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/*
-import pagebreak from './markdown-it-pagebreak';
-import sub from 'markdown-it-sub';
-import sup from 'markdown-it-sup';
-import emoji from 'markdown-it-emoji';
-*/
-
 var newSpec = _schema.schema.spec;
 newSpec.topNode = "article";
 
@@ -31,15 +24,7 @@ var markdownSchema = new _prosemirrorModel.Schema(newSpec);
 
 var context = {};
 
-var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownParser(markdownSchema, _markdownitInstance2.default,
-/*
-.use(emoji)
-.use(sub)
-.use(sup)
-.use(pagebreak)
-.use(embed),
-*/
-{
+var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownParser(markdownSchema, _markdownitInstance2.default, {
 	blockquote: { block: 'blockquote' },
 	paragraph: { block: 'paragraph' },
 	list_item: { block: 'list_item' },

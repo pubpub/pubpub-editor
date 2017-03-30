@@ -2,12 +2,6 @@ import { MarkdownParser } from 'prosemirror-markdown';
 import { Schema } from 'prosemirror-model';
 import markdownit from './markdownitInstance';
 import { schema as pubSchema } from '../prosemirror-setup/schema';
-/*
-import pagebreak from './markdown-it-pagebreak';
-import sub from 'markdown-it-sub';
-import sup from 'markdown-it-sup';
-import emoji from 'markdown-it-emoji';
-*/
 
 const newSpec = pubSchema.spec;
 newSpec.topNode = "article";
@@ -18,13 +12,6 @@ const context = {};
 
 export const markdownParser = new MarkdownParser(markdownSchema,
 	markdownit,
-		/*
-	.use(emoji)
-	.use(sub)
-	.use(sup)
-	.use(pagebreak)
-	.use(embed),
-	*/
 	{
 		blockquote: {block: 'blockquote'},
 		paragraph: {block: 'paragraph'},

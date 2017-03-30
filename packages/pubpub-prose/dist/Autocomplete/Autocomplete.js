@@ -49,7 +49,7 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 		localUsers: _react.PropTypes.array, // Used in Discussions.
 		localHighlights: _react.PropTypes.array, // Used in Discussions. No Global at the moment
 		localDiscussions: _react.PropTypes.array, // Used in Discussions. No Global at the moment
-		// localPages
+		localPages: _react.PropTypes.array, // Used in Journals. No Global at the moment
 
 		globalCategories: _react.PropTypes.array },
 
@@ -132,8 +132,10 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 				return this.getModeResults(mode, 'reference', input, this.props.localReferences);
 			case 'highlights':
 				return this.getModeResults(mode, 'highlight', input, this.props.localHighlights);
+			case 'pages':
+				return this.getModeResults(mode, 'page', input, this.props.localPages);
 			default:
-				results = [].concat(_toConsumableArray(this.getLocalResults('file', input, this.props.localFiles)), _toConsumableArray(this.getLocalResults('pub', input, this.props.localPubs)), _toConsumableArray(this.getLocalResults('reference', input, this.props.localReferences)), _toConsumableArray(this.getLocalResults('user', input, this.props.localUsers)), _toConsumableArray(this.getLocalResults('highlight', input, this.props.localHighlights)), _toConsumableArray(this.getLocalResults('discussion', input, this.props.localDiscussions)));
+				results = [].concat(_toConsumableArray(this.getLocalResults('file', input, this.props.localFiles)), _toConsumableArray(this.getLocalResults('pub', input, this.props.localPubs)), _toConsumableArray(this.getLocalResults('reference', input, this.props.localReferences)), _toConsumableArray(this.getLocalResults('user', input, this.props.localUsers)), _toConsumableArray(this.getLocalResults('highlight', input, this.props.localHighlights)), _toConsumableArray(this.getLocalResults('page', input, this.props.localPages)), _toConsumableArray(this.getLocalResults('discussion', input, this.props.localDiscussions)));
 
 				return this.setState(_defineProperty({
 					_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
@@ -207,10 +209,14 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 	},
 
 	selectResult: function selectResult(index) {
+		var _this2 = this;
+
 		var item = this.state._currentSuggestions[index];
 		if (item.suggestionCategory) {
 			this.setState({ _suggestionCategory: item.suggestionCategory });
-			this.getNewSelections(this.props.input);
+			setTimeout(function () {
+				_this2.getNewSelections(_this2.props.input);
+			}, 0);
 		} else {
 			this.props.onSelection(item);
 		}
@@ -242,6 +248,9 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 			if (this.props.localHighlights && this.props.localHighlights.length) {
 				localCategories.push('highlights');
 			}
+			if (this.props.localPages && this.props.localPages.length) {
+				localCategories.push('pages');
+			}
 			if (this.props.localDiscussions && this.props.localDiscussions.length) {
 				localCategories.push('discussions');
 			}
@@ -261,7 +270,7 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 	},
 
 	render: function render() {
-		var _this2 = this;
+		var _this3 = this;
 
 		var results = [].concat(_toConsumableArray(this.state._currentSuggestions)) || [];
 		if (!results.length) {
@@ -286,6 +295,9 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 				if (result.itemType === 'highlight') {
 					label = 'Highlight';
 				}
+				if (result.itemType === 'page') {
+					label = 'Page';
+				}
 
 				var title = result.title;
 				if (result.itemType === 'user') {
@@ -296,6 +308,9 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 				}
 				if (result.itemType === 'highlight') {
 					title = '' + result.exact;
+				}
+				if (result.itemType === 'page') {
+					title = '' + result.title;
 				}
 
 				var avatar = void 0;
@@ -311,7 +326,7 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 
 				return _react2.default.createElement(
 					'div',
-					{ key: 'result-' + result.itemType + '-' + result.id, style: styles.resultWrapper(_this2.state._selectedIndex === index, isCategory), onMouseEnter: _this2.setCurrentIndex.bind(_this2, index), onClick: _this2.selectResult.bind(_this2, index) },
+					{ key: 'result-' + result.itemType + '-' + result.id, style: styles.resultWrapper(_this3.state._selectedIndex === index, isCategory), onMouseEnter: _this3.setCurrentIndex.bind(_this3, index), onClick: _this3.selectResult.bind(_this3, index) },
 					!!avatar && _react2.default.createElement(
 						'div',
 						{ style: styles.avatarWrapper },

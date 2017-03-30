@@ -42,6 +42,7 @@ var MarkdownEditor = exports.MarkdownEditor = _react2.default.createClass({
 		localFiles: _react.PropTypes.array,
 		localReferences: _react.PropTypes.array,
 		localHighlights: _react.PropTypes.array,
+		localPages: _react.PropTypes.array,
 		globalCategories: _react.PropTypes.array
 	},
 
@@ -175,6 +176,7 @@ var MarkdownEditor = exports.MarkdownEditor = _react2.default.createClass({
 				localFiles: this.props.localFiles,
 				localReferences: this.props.localReferences,
 				localHighlights: this.props.localHighlights,
+				localPages: this.props.localPages,
 				globalCategories: this.props.globalCategories }),
 			_react2.default.createElement('textarea', { id: 'myMarkdownEditor' })
 		);

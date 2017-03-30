@@ -57,6 +57,7 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 		localFiles: _react.PropTypes.array,
 		localReferences: _react.PropTypes.array,
 		localHighlights: _react.PropTypes.array,
+		localPages: _react.PropTypes.array,
 		globalCategories: _react.PropTypes.array
 	},
 
@@ -218,6 +219,7 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 				localFiles: this.props.localFiles,
 				localReferences: this.props.localReferences,
 				localHighlights: this.props.localHighlights,
+				localPages: this.props.localPages,
 				globalCategories: this.props.globalCategories }),
 			!!this.state.menuTop && _react2.default.createElement(_InsertMenu2.default, {
 				editor: this.editor,

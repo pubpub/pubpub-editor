@@ -27,6 +27,9 @@ exports.createMarkdownMention = function (cm, selectedObject) {
 		case 'highlight':
 			content = '[@highlight/' + selectedObject.id + ']';
 			break;
+		case 'page':
+			content = '[' + selectedObject.title + '](' + selectedObject.journalSlug + '/page/' + selectedObject.pageSlug + ')';
+			break;
 		default:
 			content = '[An Error occured with this @ mention]';
 			break;
