@@ -4,8 +4,6 @@ var _get = function get(object, property, receiver) { if (object === null) objec
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 var _richEditor = require('./richEditor');
 
 var _prosemirrorState = require('prosemirror-state');
@@ -47,51 +45,39 @@ var highlightPlugin = new _prosemirrorState.Plugin({
     applyAction: function applyAction(action, val, prev, state) {
 
       if (action.type == "highlightCommit") {
-        var _ret = function () {
-          var tState = trackPlugin.getState(state);
-          var editingCommit = tState.commits.length;
-          var decos = tState.blameMap.filter(function (span) {
-            return span.commit !== null;
-          }).map(function (span) {
-            var decorationClass = 'blame-marker commit-id-' + span.commit;
-            if (span.commit !== action.commit) {
-              decorationClass += ' invisible';
-            } else {
-              decorationClass += ' highlight';
-            }
-            if (span.commit === editingCommit) {
-              decorationClass += ' editing';
-            }
-            return Decoration.inline(span.from, span.to, { class: decorationClass }, { inclusiveLeft: true, inclusiveRight: true });
-          });
-          return {
-            v: { deco: DecorationSet.create(state.doc, decos), commit: action.commit }
-          };
-        }();
-
-        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+        var tState = trackPlugin.getState(state);
+        var editingCommit = tState.commits.length;
+        var decos = tState.blameMap.filter(function (span) {
+          return span.commit !== null;
+        }).map(function (span) {
+          var decorationClass = 'blame-marker commit-id-' + span.commit;
+          if (span.commit !== action.commit) {
+            decorationClass += ' invisible';
+          } else {
+            decorationClass += ' highlight';
+          }
+          if (span.commit === editingCommit) {
+            decorationClass += ' editing';
+          }
+          return Decoration.inline(span.from, span.to, { class: decorationClass }, { inclusiveLeft: true, inclusiveRight: true });
+        });
+        return { deco: DecorationSet.create(state.doc, decos), commit: action.commit };
       } else if (action.type == "transform" && prev.commit) {
         console.log('got previous committt');
         return { deco: prev.deco.map(action.transform.mapping, action.transform.doc), commit: prev.commit };
       } else if (action.type === 'commit' || action.type === 'transform' || action.type === 'clearHighlight') {
-        var _ret2 = function () {
-          var tState = trackPlugin.getState(state);
-          var editingCommit = tState.commits.length;
-          var decos = tState.blameMap.filter(function (span) {
-            return span.commit !== null;
-          }).map(function (span) {
-            var decorationClass = 'blame-marker commit-id-' + span.commit;
-            if (span.commit === editingCommit) {
-              decorationClass += ' editing';
-            }
-            return Decoration.inline(span.from, span.to, { class: decorationClass }, { inclusiveLeft: true, inclusiveRight: true });
-          });
-          return {
-            v: { deco: DecorationSet.create(state.doc, decos), commit: action.commit }
-          };
-        }();
-
-        if ((typeof _ret2 === 'undefined' ? 'undefined' : _typeof(_ret2)) === "object") return _ret2.v;
+        var _tState = trackPlugin.getState(state);
+        var _editingCommit = _tState.commits.length;
+        var _decos = _tState.blameMap.filter(function (span) {
+          return span.commit !== null;
+        }).map(function (span) {
+          var decorationClass = 'blame-marker commit-id-' + span.commit;
+          if (span.commit === _editingCommit) {
+            decorationClass += ' editing';
+          }
+          return Decoration.inline(span.from, span.to, { class: decorationClass }, { inclusiveLeft: true, inclusiveRight: true });
+        });
+        return { deco: DecorationSet.create(state.doc, _decos), commit: action.commit };
       }
       return val;
 

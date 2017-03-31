@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.RichEditor = exports.MarkdownEditor = exports.Autocomplete = undefined;
+exports.FullEditor = exports.RichEditor = exports.MarkdownEditor = exports.Autocomplete = undefined;
 
 var _Autocomplete2 = require('./editorComponents/Autocomplete');
 
@@ -17,8 +17,13 @@ var _RichEditor2 = require('./editorComponents/RichEditor');
 
 var _RichEditor3 = _interopRequireDefault(_RichEditor2);
 
+var _FullEditor2 = require('./editorComponents/FullEditor');
+
+var _FullEditor3 = _interopRequireDefault(_FullEditor2);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.Autocomplete = _Autocomplete3.default;
 exports.MarkdownEditor = _MarkdownEditor3.default;
 exports.RichEditor = _RichEditor3.default;
+exports.FullEditor = _FullEditor3.default;
