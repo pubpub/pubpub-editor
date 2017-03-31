@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.markdownToJSON = exports.jsonToMarkdown = exports.markdownSerializer = exports.markdownParser = exports.FullEditor = exports.RichEditor = exports.MarkdownEditor = exports.Autocomplete = undefined;
+exports.bibtexToCSL = exports.markdownToJSON = exports.jsonToMarkdown = exports.markdownSerializer = exports.markdownParser = exports.FullEditor = exports.RichEditor = exports.MarkdownEditor = exports.Autocomplete = undefined;
 
 var _markdownParser = require('./markdown/markdownParser');
 
@@ -57,9 +57,14 @@ var _FullEditor2 = require('./editorComponents/FullEditor');
 
 var _FullEditor3 = _interopRequireDefault(_FullEditor2);
 
+var _bibtextocsl = require('./references/bibtextocsl');
+
+var _bibtextocsl2 = _interopRequireDefault(_bibtextocsl);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.Autocomplete = _Autocomplete3.default;
 exports.MarkdownEditor = _MarkdownEditor3.default;
 exports.RichEditor = _RichEditor3.default;
 exports.FullEditor = _FullEditor3.default;
+exports.bibtexToCSL = _bibtextocsl2.default;

@@ -149,6 +149,9 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 			setTimeout(function () {
 				var container = document.getElementById('rich-editor-container');
 				var mark = document.getElementsByClassName('mention-marker')[0];
+				if (!container || !mark) {
+					return _this.setState({ visible: false });
+				}
 				var top = mark.getBoundingClientRect().bottom - container.getBoundingClientRect().top;
 				var left = mark.getBoundingClientRect().left - container.getBoundingClientRect().left;
 				_this.setState({

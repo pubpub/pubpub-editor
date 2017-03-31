@@ -132,6 +132,9 @@ export const RichEditor = React.createClass({
 			setTimeout(()=>{
 				const container = document.getElementById('rich-editor-container');
 				const mark = document.getElementsByClassName('mention-marker')[0];
+				if (!container || !mark) {
+					return this.setState({ visible: false });
+				}
 				const top = mark.getBoundingClientRect().bottom - container.getBoundingClientRect().top;
 				const left = mark.getBoundingClientRect().left - container.getBoundingClientRect().left;
 				this.setState({

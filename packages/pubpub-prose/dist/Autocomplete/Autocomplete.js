@@ -156,7 +156,7 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 		var searchKeysObject = {
 			file: ['name'],
 			pub: ['slug', 'title', 'description'],
-			reference: ['key', 'title', 'author'],
+			reference: ['id', 'title'],
 			user: ['firstName', 'lastName', 'username'],
 			highlight: ['exact'],
 			discussion: ['title']
@@ -302,7 +302,9 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 					label = 'File: ' + result.itemType;
 				}
 				if (result.itemType === 'reference') {
-					label = 'Ref: ' + result.author;
+					label = 'Ref: ' + result.author.reduce(function (previous, current) {
+						return previous + ('' + current.given + (current.given ? ' ' : '') + current.family);
+					}, '');
 				}
 				if (result.itemType === 'highlight') {
 					label = 'Highlight';

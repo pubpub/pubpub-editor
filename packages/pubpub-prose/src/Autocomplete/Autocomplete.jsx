@@ -139,7 +139,7 @@ export const Autocomplete = React.createClass({
 		const searchKeysObject = {
 			file: ['name'],
 			pub: ['slug', 'title', 'description'],
-			reference: ['key', 'title', 'author'],
+			reference: ['id', 'title'],
 			user: ['firstName', 'lastName', 'username'],
 			highlight: ['exact'],
 			discussion: ['title'],
@@ -261,7 +261,7 @@ export const Autocomplete = React.createClass({
 					let label = result.itemType;
 					if (result.itemType === 'pub' && result.local) { label = 'Featured Pub'; }
 					if (result.itemType === 'file') { label = `File: ${result.itemType}`; }
-					if (result.itemType === 'reference') { label = `Ref: ${result.author}`; }
+					if (result.itemType === 'reference') { label = `Ref: ${result.author.reduce((previous, current)=> { return previous + `${current.given}${current.given ? ' ' : ''}${current.family}`; }, '')}`; }
 					if (result.itemType === 'highlight') { label = `Highlight`; }
 					if (result.itemType === 'page') { label = `Page`; }
 
