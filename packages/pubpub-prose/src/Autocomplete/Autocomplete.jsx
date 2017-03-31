@@ -250,7 +250,8 @@ export const Autocomplete = React.createClass({
 
 	render() {
 		const results = [...this.state._currentSuggestions] || [];
-		if (!results.length) { return null; }
+		const noResultsNoInput = !results.length && (this.props.input === '' || this.props.input === ' ') && !!this.state._suggestionCategory;
+		if (!results.length && !noResultsNoInput) { return null; }
 
 		return (
 			<div className={'pt-card pt-elevation-4'} style={styles.container(this.props.top, this.props.left, this.props.visible)}>
@@ -299,6 +300,14 @@ export const Autocomplete = React.createClass({
 						</div>
 					);
 				})}
+
+				{noResultsNoInput &&
+					<div style={styles.resultWrapper(false, true)}>
+						<div style={styles.titleWrapper}>
+							Type to search {this.state._suggestionCategory}
+						</div>
+					</div>
+				}
 			</div>
 		);
 	},

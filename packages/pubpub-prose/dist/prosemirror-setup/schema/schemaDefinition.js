@@ -13,7 +13,7 @@ var nodes = {
 	},
 
 	article: {
-		content: 'paragraph block+',
+		content: 'block+',
 		parseDOM: [{ tag: 'div.article' }],
 		toDOM: function toDOM(node) {
 			return ['div', { class: 'article' }, 0];

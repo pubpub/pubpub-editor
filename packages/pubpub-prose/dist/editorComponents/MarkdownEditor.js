@@ -26,6 +26,8 @@ var _autocompleteConfig = require('../Autocomplete/autocompleteConfig');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // import Radium from 'radium';
+require('../../style/markdown.scss');
+
 var styles = void 0;
 var MarkdownEditor = exports.MarkdownEditor = _react2.default.createClass({
 	displayName: 'MarkdownEditor',

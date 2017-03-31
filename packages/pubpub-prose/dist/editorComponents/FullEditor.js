@@ -19,6 +19,8 @@ var _RichEditor2 = _interopRequireDefault(_RichEditor);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+require('../../style/base.scss');
+
 var FullEditor = exports.FullEditor = _react2.default.createClass({
 	displayName: 'FullEditor',
 

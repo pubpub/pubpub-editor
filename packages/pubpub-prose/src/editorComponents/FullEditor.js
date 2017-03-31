@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import MarkdownEditor from './MarkdownEditor';
 import RichEditor from './RichEditor';
 
+require('../../style/base.scss');
+
 export const FullEditor = React.createClass({
 
 	propTypes: {

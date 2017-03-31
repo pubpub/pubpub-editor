@@ -8,8 +8,8 @@ import FullEditor from '../src/editorComponents/FullEditor';
 
 // requires style attributes that would normally be up to the wrapping library to require
 require('@blueprintjs/core/dist/blueprint.css');
-require('../style/base.scss');
-require('../style/markdown.scss');
+// require('../style/base.scss');
+// require('../style/markdown.scss');
 
 export const StoryBookFullEditor = React.createClass({
 

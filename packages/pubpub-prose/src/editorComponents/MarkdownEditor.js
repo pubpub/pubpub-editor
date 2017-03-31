@@ -6,6 +6,8 @@ import CodeMirror from 'codemirror';
 import SimpleMDE from 'simplemde';
 import { createMarkdownMention } from '../Autocomplete/autocompleteConfig';
 
+require('../../style/markdown.scss');
+
 let styles;
 export const MarkdownEditor = React.createClass({
 	propTypes: {

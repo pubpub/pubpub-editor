@@ -283,7 +283,8 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 		var _this3 = this;
 
 		var results = [].concat(_toConsumableArray(this.state._currentSuggestions)) || [];
-		if (!results.length) {
+		var noResultsNoInput = !results.length && (this.props.input === '' || this.props.input === ' ') && !!this.state._suggestionCategory;
+		if (!results.length && !noResultsNoInput) {
 			return null;
 		}
 
@@ -366,7 +367,17 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 						)
 					)
 				);
-			})
+			}),
+			noResultsNoInput && _react2.default.createElement(
+				'div',
+				{ style: styles.resultWrapper(false, true) },
+				_react2.default.createElement(
+					'div',
+					{ style: styles.titleWrapper },
+					'Type to search ',
+					this.state._suggestionCategory
+				)
+			)
 		);
 	}
 });
