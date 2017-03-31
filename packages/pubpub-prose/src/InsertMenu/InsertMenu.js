@@ -37,6 +37,9 @@ export const InsertMenu = React.createClass({
 	},
 
 	onFileSelect: function(evt) {
+		// Need to upload file
+		// Need to add new file object to file list
+		// Need to insert file content into editor
 		const file = evt.target.files[0];
 		console.log(file);
 		evt.target.value = null;
@@ -49,9 +52,7 @@ export const InsertMenu = React.createClass({
 				callback: undefined,
 			});
 		});
-		// Need to upload file
-		// Need to add new file object to file list
-		// Need to insert file content into editor
+
 		
 	},
 
