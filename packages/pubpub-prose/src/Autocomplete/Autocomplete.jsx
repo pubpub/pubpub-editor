@@ -122,6 +122,7 @@ export const Autocomplete = React.createClass({
 				...this.getLocalResults('discussion', input, this.props.localDiscussions),
 			];
 
+			console.log(results);
 			return this.setState({
 				_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
 				_selectedIndex: 0,
@@ -133,7 +134,7 @@ export const Autocomplete = React.createClass({
 
 	getLocalResults: function(itemType, input, localArray = []) {
 		const localCategories = this.getLocalCategories();
-		if (!localCategories.includes(itemType)) { return []; }
+		if (!localCategories.includes(`${itemType}s`)) { return []; }
 		
 		const searchKeysObject = {
 			file: ['name'],

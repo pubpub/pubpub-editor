@@ -136,6 +136,7 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 			default:
 				results = [].concat(_toConsumableArray(this.getLocalResults('file', input, this.props.localFiles)), _toConsumableArray(this.getLocalResults('pub', input, this.props.localPubs)), _toConsumableArray(this.getLocalResults('reference', input, this.props.localReferences)), _toConsumableArray(this.getLocalResults('user', input, this.props.localUsers)), _toConsumableArray(this.getLocalResults('highlight', input, this.props.localHighlights)), _toConsumableArray(this.getLocalResults('page', input, this.props.localPages)), _toConsumableArray(this.getLocalResults('discussion', input, this.props.localDiscussions)));
 
+				console.log(results);
 				return this.setState(_defineProperty({
 					_currentSuggestions: this.appendOptions(results.slice(0, 10), input),
 					_selectedIndex: 0
@@ -148,7 +149,7 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 		var localArray = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
 		var localCategories = this.getLocalCategories();
-		if (!localCategories.includes(itemType)) {
+		if (!localCategories.includes(itemType + 's')) {
 			return [];
 		}
 
