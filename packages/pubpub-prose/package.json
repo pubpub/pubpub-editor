@@ -4,9 +4,9 @@
   "description": "Prosemirror Plugins for the PubPub Editor",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "cross-env BABEL_ENV=development babel src --out-dir dist",
+    "build": "cross-env BABEL_ENV=development babel src --out-dir dist --copy-files",
     "prepublish": "npm run build",
-    "watch": "cross-env BABEL_ENV=development babel src --out-dir dist --watch",
+    "watch": "cross-env BABEL_ENV=development babel src --out-dir dist --watch --copy-files",
     "storybook": "start-storybook -p 9001 -c .storybook"
   },
   "maintainers": [
