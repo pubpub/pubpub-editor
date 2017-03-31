@@ -23,10 +23,6 @@ var _InsertMenu2 = _interopRequireDefault(_InsertMenu);
 
 var _prosemirrorSetup = require('../prosemirror-setup');
 
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
 var _autocompleteConfig = require('../Autocomplete/autocompleteConfig');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -126,7 +122,8 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 			this.editor1.remove();
 		}
 
-		var place = _reactDom2.default.findDOMNode(this.refs.container);
+		// const place = ReactDOM.findDOMNode(this.refs.container);
+		var place = document.getElementById('pubEditor');
 		var fileMap = this.generateFileMap();
 		this.editor = new _prosemirrorSetup.RichEditor({
 			place: place,
@@ -173,7 +170,7 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 	},
 
 	generateFileMap: function generateFileMap() {
-		var files = this.props.localFiles;
+		var files = this.props.localFiles || [];
 		var fileMap = {};
 		var _iteratorNormalCompletion = true;
 		var _didIteratorError = false;
@@ -230,10 +227,10 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 				editor: this.editor,
 				top: this.state.inlineTop,
 				left: this.state.inlineCenter }),
-			_react2.default.createElement('div', { ref: 'container', className: 'pubEditor', id: 'pubEditor' })
+			_react2.default.createElement('div', { className: 'pubEditor', id: 'pubEditor' })
 		);
 	}
 
 });
-
+// import ReactDOM from 'react-dom';
 exports.default = RichEditor;

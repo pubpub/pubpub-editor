@@ -53,21 +53,17 @@
     "prosemirror-schema-table": "^0.19.0",
     "prosemirror-state": "^0.19.1",
     "prosemirror-view": "^0.19.1",
-    "react": "^15.4.1",
-    "react-addons-css-transition-group": "^15.4.1",
-    "react-autosuggest": "^9.0.0",
-    "react-dom": "^15.4.1",
+    "react": "^15.4.2",
+    "react-addons-css-transition-group": "^15.4.2",
+    "react-dom": "^15.4.2",
     "react-dropzone": "^3.7.3",
     "react-resizable-box": "^1.8.1",
-    "request": "^2.81.0",
-    "request-promise": "^4.2.0",
+    "request": "2.79.0",
+    "request-promise": "4.2.0",
     "simplemde": "^1.11.2",
     "striptags": "^3.0.1",
     "superagent": "^3.0.0",
     "to-markdown": "^3.0.4"
-  },
-  "peerDependencies": {
-    "radium": "^0.18.1"
   },
   "devDependencies": {
     "@kadira/storybook": "^2.35.3",

@@ -4,7 +4,7 @@ import Autocomplete from '../Autocomplete/Autocomplete';
 import FormattingMenu from '../FormattingMenu/FormattingMenu';
 import InsertMenu from '../InsertMenu/InsertMenu';
 import { RichEditor as ProseEditor } from '../prosemirror-setup';
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import { createRichMention } from '../Autocomplete/autocompleteConfig';
 
 /*
@@ -106,7 +106,8 @@ export const RichEditor = React.createClass({
 			this.editor1.remove();
 		}
 
-		const place = ReactDOM.findDOMNode(this.refs.container);
+		// const place = ReactDOM.findDOMNode(this.refs.container);
+		const place = document.getElementById('pubEditor');
 		const fileMap = this.generateFileMap();
 		this.editor = new ProseEditor({
 			place: place,
@@ -151,7 +152,7 @@ export const RichEditor = React.createClass({
 	},
 
 	generateFileMap: function() {
-		const files = this.props.localFiles;
+		const files = this.props.localFiles || [];
 		const fileMap = {};
 		for (const file of files) {
 			fileMap[file.name] = file.url;
@@ -193,7 +194,7 @@ export const RichEditor = React.createClass({
 						left={this.state.inlineCenter} />
 				}
 
-				<div ref="container" className="pubEditor" id="pubEditor" />
+				<div className="pubEditor" id="pubEditor" />
 			</div>
 		);
 	}

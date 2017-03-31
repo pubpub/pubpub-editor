@@ -17,10 +17,6 @@ var _codemirror = require('codemirror');
 
 var _codemirror2 = _interopRequireDefault(_codemirror);
 
-var _radium = require('radium');
-
-var _radium2 = _interopRequireDefault(_radium);
-
 var _simplemde = require('simplemde');
 
 var _simplemde2 = _interopRequireDefault(_simplemde);
@@ -29,6 +25,7 @@ var _autocompleteConfig = require('../Autocomplete/autocompleteConfig');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import Radium from 'radium';
 var styles = void 0;
 var MarkdownEditor = exports.MarkdownEditor = _react2.default.createClass({
 	displayName: 'MarkdownEditor',
@@ -181,7 +178,8 @@ var MarkdownEditor = exports.MarkdownEditor = _react2.default.createClass({
 	}
 });
 
-exports.default = (0, _radium2.default)(MarkdownEditor);
+// export default Radium(MarkdownEditor);
+exports.default = MarkdownEditor;
 
 
 styles = {

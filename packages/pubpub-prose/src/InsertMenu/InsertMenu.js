@@ -101,7 +101,7 @@ export const InsertMenu = React.createClass({
 				<InsertMenuDialogReferences 
 					isOpen={this.state.openDialog === 'references'} 
 					onClose={this.closeDialog} 
-					onReferenceAdd={this.onReferenceAdd}/>
+					onReferenceAdd={this.onReferenceAdd} />
 			</div>
 		);
 	}

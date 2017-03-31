@@ -11,10 +11,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _radium = require('radium');
-
-var _radium2 = _interopRequireDefault(_radium);
-
 var _fuzzysearch = require('fuzzysearch');
 
 var _fuzzysearch2 = _interopRequireDefault(_fuzzysearch);
@@ -28,6 +24,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+// import Radium from 'radium';
+
 
 require('../../style/autosuggest.scss');
 
@@ -264,8 +263,9 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 			// If it's empty - we need to show local options
 			// it if's not, we show global
 			var localCategories = this.getLocalCategories();
+			var mergedCategories = [].concat(_toConsumableArray(new Set([].concat(_toConsumableArray(localCategories), _toConsumableArray(globalCategories)))));
 
-			var localCategoryOptions = localCategories.map(function (item) {
+			var localCategoryOptions = mergedCategories.map(function (item) {
 				return { id: item, suggestionCategory: item, title: item };
 			});
 
@@ -371,7 +371,8 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 	}
 });
 
-exports.default = (0, _radium2.default)(Autocomplete);
+// export default Radium(Autocomplete);
+exports.default = Autocomplete;
 
 
 styles = {

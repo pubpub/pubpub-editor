@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 import Autocomplete from '../Autocomplete/Autocomplete';
 import CodeMirror from 'codemirror';
-import Radium from 'radium';
+// import Radium from 'radium';
 import SimpleMDE from 'simplemde';
 import { createMarkdownMention } from '../Autocomplete/autocompleteConfig';
 
@@ -153,7 +153,8 @@ export const MarkdownEditor = React.createClass({
 
 });
 
-export default Radium(MarkdownEditor);
+// export default Radium(MarkdownEditor);
+export default MarkdownEditor;
 
 styles = {
 	container: {

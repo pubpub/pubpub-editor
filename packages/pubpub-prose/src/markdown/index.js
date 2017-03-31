@@ -1,4 +1,4 @@
-export {markdownParser} from './markdownParser';
-export {markdownSerializer} from './markdownSerializer';
-export {jsonToMarkdown} from './jsonToMarkdown';
-export {markdownToJSON} from './markdownToJson';
+export { markdownParser } from './markdownParser';
+export { markdownSerializer } from './markdownSerializer';
+export { jsonToMarkdown } from './jsonToMarkdown';
+export { markdownToJSON } from './markdownToJson';

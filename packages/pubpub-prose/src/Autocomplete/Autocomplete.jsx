@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import Radium from 'radium';
+// import Radium from 'radium';
 import fuzzysearch from 'fuzzysearch';
 import request from 'request-promise';
 
@@ -228,8 +228,9 @@ export const Autocomplete = React.createClass({
 			// If it's empty - we need to show local options
 			// it if's not, we show global
 			const localCategories = this.getLocalCategories();
+			const mergedCategories = [...new Set([...localCategories, ...globalCategories])];
 
-			const localCategoryOptions = localCategories.map((item)=> {
+			const localCategoryOptions = mergedCategories.map((item)=> {
 				return { id: item, suggestionCategory: item, title: item };
 			});
 
@@ -303,7 +304,8 @@ export const Autocomplete = React.createClass({
 	},
 });
 
-export default Radium(Autocomplete);
+// export default Radium(Autocomplete);
+export default Autocomplete;
 
 styles = {
 	container: function(top, left, visible) {
