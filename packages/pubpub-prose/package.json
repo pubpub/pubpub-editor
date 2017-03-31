@@ -53,7 +53,6 @@
     "prosemirror-schema-table": "^0.19.0",
     "prosemirror-state": "^0.19.1",
     "prosemirror-view": "^0.19.1",
-    "radium": "^0.18.1",
     "react": "^15.4.1",
     "react-addons-css-transition-group": "^15.4.1",
     "react-autosuggest": "^9.0.0",
@@ -66,6 +65,9 @@
     "striptags": "^3.0.1",
     "superagent": "^3.0.0",
     "to-markdown": "^3.0.4"
+  },
+  "peerDependencies": {
+    "radium": "^0.18.1"
   },
   "devDependencies": {
     "@kadira/storybook": "^2.35.3",

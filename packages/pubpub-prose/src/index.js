@@ -1,4 +1,10 @@
-export Autocomplete from './editorComponents/Autocomplete';
+export Autocomplete from './Autocomplete/Autocomplete';
 export MarkdownEditor from './editorComponents/MarkdownEditor';
 export RichEditor from './editorComponents/RichEditor';
 export FullEditor from './editorComponents/FullEditor';
+
+export { markdownParser } from './markdown/markdownParser';
+export { markdownSerializer } from './markdown/markdownSerializer';
+export { jsonToMarkdown } from './markdown/jsonToMarkdown';
+export { markdownToJSON } from './markdown/markdownToJson';
+

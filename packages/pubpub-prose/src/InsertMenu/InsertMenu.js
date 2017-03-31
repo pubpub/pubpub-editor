@@ -80,8 +80,8 @@ export const InsertMenu = React.createClass({
 				<Popover 
 					content={
 						<Menu>
-							{menuItems.map((item)=> {
-								return <MenuItem onClick={item.run} text={item.text} />;
+							{menuItems.map((item, index)=> {
+								return <MenuItem key={`insert-menu-${index}`} onClick={item.run} text={item.text} />;
 							})}
 						</Menu>
 					}

@@ -67,7 +67,7 @@ export const StoryBookFullEditor = React.createClass({
 			localFiles: localFiles,
 			localPubs: localPubs,
 			localReferences: localReferences,
-			// localUsers: localUsers,
+			localUsers: localUsers,
 			localHighlights: localHighlights,
 			localDiscussions: localDiscussions,
 			localPages: localPages,
@@ -82,7 +82,7 @@ export const StoryBookFullEditor = React.createClass({
 						<div className={`pt-button${this.state.mode === 'rich' ? ' pt-active' : ''}`} onClick={this.setRich}>Rich</div>
 					</div>
 				</div>
-				<div style={{ padding: '1em 4em' }}>
+				<div style={{ padding: '1em 4em', minHeight: '400px' }}>
 					<FullEditor {...editorProps} mode={this.state.mode} />
 				</div>
 

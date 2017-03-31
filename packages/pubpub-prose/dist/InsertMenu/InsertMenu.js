@@ -110,8 +110,8 @@ var InsertMenu = exports.InsertMenu = _react2.default.createClass({
 					content: _react2.default.createElement(
 						_core.Menu,
 						null,
-						menuItems.map(function (item) {
-							return _react2.default.createElement(_core.MenuItem, { onClick: item.run, text: item.text });
+						menuItems.map(function (item, index) {
+							return _react2.default.createElement(_core.MenuItem, { key: 'insert-menu-' + index, onClick: item.run, text: item.text });
 						})
 					),
 					interactionKind: _core.PopoverInteractionKind.CLICK,

@@ -3,9 +3,45 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.FullEditor = exports.RichEditor = exports.MarkdownEditor = exports.Autocomplete = undefined;
+exports.markdownToJSON = exports.jsonToMarkdown = exports.markdownSerializer = exports.markdownParser = exports.FullEditor = exports.RichEditor = exports.MarkdownEditor = exports.Autocomplete = undefined;
 
-var _Autocomplete2 = require('./editorComponents/Autocomplete');
+var _markdownParser = require('./markdown/markdownParser');
+
+Object.defineProperty(exports, 'markdownParser', {
+  enumerable: true,
+  get: function get() {
+    return _markdownParser.markdownParser;
+  }
+});
+
+var _markdownSerializer = require('./markdown/markdownSerializer');
+
+Object.defineProperty(exports, 'markdownSerializer', {
+  enumerable: true,
+  get: function get() {
+    return _markdownSerializer.markdownSerializer;
+  }
+});
+
+var _jsonToMarkdown = require('./markdown/jsonToMarkdown');
+
+Object.defineProperty(exports, 'jsonToMarkdown', {
+  enumerable: true,
+  get: function get() {
+    return _jsonToMarkdown.jsonToMarkdown;
+  }
+});
+
+var _markdownToJson = require('./markdown/markdownToJson');
+
+Object.defineProperty(exports, 'markdownToJSON', {
+  enumerable: true,
+  get: function get() {
+    return _markdownToJson.markdownToJSON;
+  }
+});
+
+var _Autocomplete2 = require('./Autocomplete/Autocomplete');
 
 var _Autocomplete3 = _interopRequireDefault(_Autocomplete2);
 
