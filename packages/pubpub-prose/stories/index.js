@@ -1,4 +1,4 @@
-import { SingleMention, SingleReference, TableMarkdown } from './sampledocs';
+import { SingleMention, SingleReference, TableMarkdown, SampleMarkdown } from './sampledocs';
 
 import FullEditor from './storybookFullEditor';
 import MarkdownEditor from './storybookMarkdownEditor';
@@ -32,5 +32,8 @@ storiesOf('Full Editor', module)
 ))
 .add('reference serializing ', () => (
 	<FullEditor mode={'rich'} initialContent={SingleReference} />
+))
+.add('Full Markdown Test', () => (
+	<FullEditor mode={'markdown'} initialContent={SampleMarkdown} />
 ))
 ;
