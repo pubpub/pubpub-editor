@@ -148,6 +148,11 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 	getLocalResults: function getLocalResults(itemType, input) {
 		var localArray = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
+		var localCategories = this.getLocalCategories();
+		if (!localCategories.includes(itemType)) {
+			return [];
+		}
+
 		var searchKeysObject = {
 			file: ['name'],
 			pub: ['slug', 'title', 'description'],
@@ -222,6 +227,32 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 		}
 	},
 
+	getLocalCategories: function getLocalCategories() {
+		var localCategories = [];
+		if (this.props.localFiles && this.props.localFiles.length) {
+			localCategories.push('files');
+		}
+		if (this.props.localPubs && this.props.localPubs.length) {
+			localCategories.push('pubs');
+		}
+		if (this.props.localReferences && this.props.localReferences.length) {
+			localCategories.push('references');
+		}
+		if (this.props.localUsers && this.props.localUsers.length) {
+			localCategories.push('users');
+		}
+		if (this.props.localHighlights && this.props.localHighlights.length) {
+			localCategories.push('highlights');
+		}
+		if (this.props.localPages && this.props.localPages.length) {
+			localCategories.push('pages');
+		}
+		if (this.props.localDiscussions && this.props.localDiscussions.length) {
+			localCategories.push('discussions');
+		}
+		return localCategories;
+	},
+
 	appendOptions: function appendOptions() {
 		var resultArray = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 		var input = arguments[1];
@@ -232,28 +263,7 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 
 			// If it's empty - we need to show local options
 			// it if's not, we show global
-			var localCategories = [];
-			if (this.props.localFiles && this.props.localFiles.length) {
-				localCategories.push('files');
-			}
-			if (this.props.localPubs && this.props.localPubs.length) {
-				localCategories.push('pubs');
-			}
-			if (this.props.localReferences && this.props.localReferences.length) {
-				localCategories.push('references');
-			}
-			if (this.props.localUsers && this.props.localUsers.length) {
-				localCategories.push('users');
-			}
-			if (this.props.localHighlights && this.props.localHighlights.length) {
-				localCategories.push('highlights');
-			}
-			if (this.props.localPages && this.props.localPages.length) {
-				localCategories.push('pages');
-			}
-			if (this.props.localDiscussions && this.props.localDiscussions.length) {
-				localCategories.push('discussions');
-			}
+			var localCategories = this.getLocalCategories();
 
 			var localCategoryOptions = localCategories.map(function (item) {
 				return { id: item, suggestionCategory: item, title: item };

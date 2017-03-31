@@ -132,6 +132,9 @@ export const Autocomplete = React.createClass({
 	},
 
 	getLocalResults: function(itemType, input, localArray = []) {
+		const localCategories = this.getLocalCategories();
+		if (!localCategories.includes(itemType)) { return []; }
+		
 		const searchKeysObject = {
 			file: ['name'],
 			pub: ['slug', 'title', 'description'],
@@ -205,6 +208,18 @@ export const Autocomplete = React.createClass({
 		}
 	},
 
+	getLocalCategories: function() {
+		const localCategories = [];
+		if (this.props.localFiles && this.props.localFiles.length) { localCategories.push('files'); }
+		if (this.props.localPubs && this.props.localPubs.length) { localCategories.push('pubs'); }
+		if (this.props.localReferences && this.props.localReferences.length) { localCategories.push('references'); }
+		if (this.props.localUsers && this.props.localUsers.length) { localCategories.push('users'); }
+		if (this.props.localHighlights && this.props.localHighlights.length) { localCategories.push('highlights'); }
+		if (this.props.localPages && this.props.localPages.length) { localCategories.push('pages'); }
+		if (this.props.localDiscussions && this.props.localDiscussions.length) { localCategories.push('discussions'); }
+		return localCategories;
+	},
+
 	appendOptions: function(resultArray = [], input) {
 		const isEmpty = input === ' ' || !input;
 		if ((!this.state || !this.state._suggestionCategory) && resultArray.length < 10) {
@@ -212,14 +227,7 @@ export const Autocomplete = React.createClass({
 
 			// If it's empty - we need to show local options
 			// it if's not, we show global
-			const localCategories = [];
-			if (this.props.localFiles && this.props.localFiles.length) { localCategories.push('files'); }
-			if (this.props.localPubs && this.props.localPubs.length) { localCategories.push('pubs'); }
-			if (this.props.localReferences && this.props.localReferences.length) { localCategories.push('references'); }
-			if (this.props.localUsers && this.props.localUsers.length) { localCategories.push('users'); }
-			if (this.props.localHighlights && this.props.localHighlights.length) { localCategories.push('highlights'); }
-			if (this.props.localPages && this.props.localPages.length) { localCategories.push('pages'); }
-			if (this.props.localDiscussions && this.props.localDiscussions.length) { localCategories.push('discussions'); }
+			const localCategories = this.getLocalCategories();
 
 			const localCategoryOptions = localCategories.map((item)=> {
 				return { id: item, suggestionCategory: item, title: item };

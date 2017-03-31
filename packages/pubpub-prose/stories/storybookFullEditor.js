@@ -67,7 +67,7 @@ export const StoryBookFullEditor = React.createClass({
 			localFiles: localFiles,
 			localPubs: localPubs,
 			localReferences: localReferences,
-			localUsers: localUsers,
+			// localUsers: localUsers,
 			localHighlights: localHighlights,
 			localDiscussions: localDiscussions,
 			localPages: localPages,
