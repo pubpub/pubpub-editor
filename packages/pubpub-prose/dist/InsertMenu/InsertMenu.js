@@ -63,6 +63,9 @@ var InsertMenu = exports.InsertMenu = _react2.default.createClass({
 	onFileSelect: function onFileSelect(evt) {
 		var _this = this;
 
+		// Need to upload file
+		// Need to add new file object to file list
+		// Need to insert file content into editor
 		var file = evt.target.files[0];
 		console.log(file);
 		evt.target.value = null;
@@ -75,9 +78,6 @@ var InsertMenu = exports.InsertMenu = _react2.default.createClass({
 				callback: undefined
 			});
 		});
-		// Need to upload file
-		// Need to add new file object to file list
-		// Need to insert file content into editor
 	},
 
 	onReferenceAdd: function onReferenceAdd(item) {

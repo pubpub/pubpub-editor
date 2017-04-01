@@ -68,6 +68,7 @@
     "react-addons-css-transition-group": "^15.4.2"
   },
   "devDependencies": {
+    "@blueprintjs/core": "^1.12.0",
     "@kadira/storybook": "^2.35.3",
     "babel-cli": "^6.14.0",
     "babel-core": "^6.13.2",
@@ -94,6 +95,8 @@
     "json-loader": "^0.5.4",
     "mocha": "^3.0.2",
     "node-sass": "^3.13.1",
+    "react": "^15.4.2",
+    "react-addons-css-transition-group": "^15.4.2",
     "react-transform-hmr": "^1.0.4",
     "rimraf": "^2.5.4",
     "sass-loader": "^4.1.1",
