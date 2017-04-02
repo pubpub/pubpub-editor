@@ -480,7 +480,8 @@ var parseBibTeXProp = function ( prop, value ) {
     // Pubate
     case 'date':
       rProp = 'issued'
-      rValue = parseDate( value )
+      // rValue = parseDate( value )
+      rValue = value
       break;
 
     case 'year' :
