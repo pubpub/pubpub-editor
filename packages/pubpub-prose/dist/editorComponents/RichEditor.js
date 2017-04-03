@@ -125,11 +125,13 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 		// const place = ReactDOM.findDOMNode(this.refs.container);
 		var place = document.getElementById('pubEditor');
 		var fileMap = this.generateFileMap();
+
 		this.editor = new _prosemirrorSetup.RichEditor({
 			place: place,
 			contents: this.props.initialContent,
 			config: {
-				fileMap: fileMap
+				fileMap: fileMap,
+				referencesList: this.props.localFiles
 			},
 			// components: {
 			// 	suggestComponent: mentionsComponent,

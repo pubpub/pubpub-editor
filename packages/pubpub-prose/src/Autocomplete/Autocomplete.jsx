@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-// import Radium from 'radium';
+import {CSLtoString} from '../references/csltostring';
 import fuzzysearch from 'fuzzysearch';
 import request from 'request-promise';
 
@@ -135,7 +135,7 @@ export const Autocomplete = React.createClass({
 	getLocalResults: function(itemType, input, localArray = []) {
 		const localCategories = this.getLocalCategories();
 		if (!localCategories.includes(`${itemType}s`)) { return []; }
-		
+
 		const searchKeysObject = {
 			file: ['name'],
 			pub: ['slug', 'title', 'description'],
@@ -203,7 +203,7 @@ export const Autocomplete = React.createClass({
 			setTimeout(()=>{
 				this.getNewSelections(this.props.input);
 			}, 0);
-			
+
 		} else {
 			this.props.onSelection(item);
 		}

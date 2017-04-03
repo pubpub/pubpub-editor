@@ -37,8 +37,13 @@ exports.createMarkdownMention = function(cm, selectedObject) {
 
 /* Reference */
 /* -------------- */
-function insertReference({view}) {
-	view.dispatch(view.state.tr.setMeta('createCitation', { key: 'testKey', title: 'myRef' }));
+
+function insertReference({view, citationData, start, end}) {
+	console.log('making ref', citationData, start, end);
+	const referenceNode = schema.nodes.reference.create({ citationID: citationData.id });
+	let transaction = view.state.tr.replaceRangeWith(start, end, referenceNode);
+	transaction = transaction.setMeta('createReference', citationData);
+	return view.dispatch(transaction);
 }
 
 function insertMention({ start, end, view, url, type, text }) {
@@ -85,7 +90,8 @@ exports.createRichMention = function(editor, selectedObject, start, end) {
 			insertMention({ view: editor.view, start, end, text, url, type: 'pub' });
 			break;
 		case 'reference':
-			insertReference({ view: editor.view, start, end });
+			console.log('CHOSE', selectedObject);
+			insertReference({ view: editor.view, start, end, citationData: selectedObject });
 			break;
 		case 'user':
 			text = `${selectedObject.firstName} ${selectedObject.lastName}`;

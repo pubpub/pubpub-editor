@@ -109,11 +109,13 @@ export const RichEditor = React.createClass({
 		// const place = ReactDOM.findDOMNode(this.refs.container);
 		const place = document.getElementById('pubEditor');
 		const fileMap = this.generateFileMap();
+
 		this.editor = new ProseEditor({
 			place: place,
 			contents: this.props.initialContent,
 			config: {
 				fileMap: fileMap,
+				referencesList: this.props.localFiles,
 			},
 			// components: {
 			// 	suggestComponent: mentionsComponent,

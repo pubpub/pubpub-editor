@@ -34,7 +34,7 @@ const nodes = {
 		group: 'inline',
 		attrs: {
 			text: { default: '' },
-			meta: { default: {} },
+			url: { default: '' },
 			type: { default: ' ' }
 		},
 		inline: true,

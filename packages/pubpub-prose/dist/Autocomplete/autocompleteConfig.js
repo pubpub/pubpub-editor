@@ -39,10 +39,18 @@ exports.createMarkdownMention = function (cm, selectedObject) {
 
 /* Reference */
 /* -------------- */
-function insertReference(_ref) {
-	var view = _ref.view;
 
-	view.dispatch(view.state.tr.setMeta('createCitation', { key: 'testKey', title: 'myRef' }));
+function insertReference(_ref) {
+	var view = _ref.view,
+	    citationData = _ref.citationData,
+	    start = _ref.start,
+	    end = _ref.end;
+
+	console.log('making ref', citationData, start, end);
+	var referenceNode = _prosemirrorSetup.schema.nodes.reference.create({ citationID: citationData.id });
+	var transaction = view.state.tr.replaceRangeWith(start, end, referenceNode);
+	transaction = transaction.setMeta('createReference', citationData);
+	return view.dispatch(transaction);
 }
 
 function insertMention(_ref2) {
@@ -101,7 +109,8 @@ exports.createRichMention = function (editor, selectedObject, start, end) {
 			insertMention({ view: editor.view, start: start, end: end, text: text, url: url, type: 'pub' });
 			break;
 		case 'reference':
-			insertReference({ view: editor.view, start: start, end: end });
+			console.log('CHOSE', selectedObject);
+			insertReference({ view: editor.view, start: start, end: end, citationData: selectedObject });
 			break;
 		case 'user':
 			text = selectedObject.firstName + ' ' + selectedObject.lastName;

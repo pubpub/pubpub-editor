@@ -82,28 +82,37 @@ var createDecorations = function createDecorations(doc, set, engine) {
 };
 
 var createReference = function createReference(citationData, state, engine) {
-	var randomCitationId = !citationData.id || isNaN(citationData.id) ? Math.round(Math.random() * 100000000) : citationData.id;
-	var randomReferenceId = Math.round(Math.random() * 100000000);
+	// const randomCitationId = (!citationData.id || isNaN(citationData.id)) ? Math.round(Math.random()*100000000) : citationData.id;
 
-	var referenceNode = _schema.schema.nodes.reference.create({
-		citationID: randomCitationId,
-		referenceID: randomReferenceId
-	});
-	citationData.id = randomCitationId;
+	var referenceNode = _schema.schema.nodes.reference.create({ citationID: citationData.id });
+	// citationData.id = randomCitationId;
 
-	var newNode = _schema.schema.nodes.citation.create({ data: citationData, citationID: randomCitationId });
-	var citationsNode = (0, _docOperations.findNodesWithIndex)(state.doc, 'citations');
-	var pos = citationsNode[0].index + 1;
+	/*
+ const newNode = schema.nodes.citation.create({data: citationData, citationID: randomCitationId});
+ const citationsNode = findNodesWithIndex(state.doc, 'citations');
+ const pos = citationsNode[0].index + 1;
+ const newPoint = insertPoint(state.doc, pos, schema.nodes.citation, {data: citationData});
+ let tr = state.tr.insert(newPoint, newNode);
+ */
 
-	// tries to find the closest place to insert this note
-	var newPoint = (0, _prosemirrorTransform.insertPoint)(state.doc, pos, _schema.schema.nodes.citation, { data: citationData });
-	var tr = state.tr.insert(newPoint, newNode);
-
-	tr = tr.replaceSelectionWith(referenceNode);
-	tr.setMeta('createdReference', { node: referenceNode, index: newPoint });
+	var tr = state.tr.replaceSelectionWith(referenceNode);
+	tr.setMeta('createdReference', { node: referenceNode });
 
 	engine.addCitation(citationData);
 
+	return tr;
+};
+
+var createCitations = function createCitations() {};
+
+var createCitation = function createCitation(citationData, state, engine) {
+	var newNode = _schema.schema.nodes.citation.create({ data: citationData, citationID: citationData.id });
+	var citationsNode = (0, _docOperations.findNodesWithIndex)(state.doc, 'citations');
+	var pos = citationsNode[0].index + 1;
+	var newPoint = (0, _prosemirrorTransform.insertPoint)(state.doc, pos, _schema.schema.nodes.citation, { data: citationData });
+	var tr = state.tr.insert(newPoint, newNode);
+	tr.setMeta('createCitation', citationData);
+	engine.addCitation(citationData);
 	return tr;
 };
 
@@ -117,34 +126,71 @@ var createAllCitations = function createAllCitations(engine, doc, decorations) {
 	return createDecorations(doc, decorations, engine);
 };
 
+var getAllCitationData = function getAllCitationData(doc) {
+	var citationNodes = (0, _docOperations.findNodesWithIndex)(doc, 'citation') || [];
+	var citationData = citationNodes.map(function (node) {
+		return node.node.attrs ? node.node.attrs.data : null;
+	});
+	return citationData;
+};
+
+var getReferences = function getReferences(engine, doc, decorations) {
+	var citationNodes = (0, _docOperations.findNodesWithIndex)(doc, 'citation') || [];
+	var citationData = citationNodes.map(function (node) {
+		return node.node.attrs ? node.node.attrs.data : null;
+	});
+	engine.setBibliography(citationData);
+	// Create deocrations for references
+	return createDecorations(doc, decorations, engine);
+};
+
+/*
+Citations Plugin:
+
+	- citaitons are stored in the document, but only the ID and order
+	- these citations are re-inserted every time there's a new file/rebuilt from markdown serialzation
+	- actual citation information is stored in the meta data of the document
+*/
+
 var citationsPlugin = new _prosemirrorState.Plugin({
 	state: {
-		// Need to parse citations at the bottom of the document
 		init: function init(config, instance) {
+			var existingCitations = getAllCitationData(instance.doc);
 			var engine = new _references.CitationEngine();
-			var set = createAllCitations(engine, instance.doc, DecorationSet.empty);
+			var referencesList = config.referencesList.concat(existingCitations);
+			engine.setBibliography(referencesList);
+			// const set = createAllCitations(engine, instance.doc, DecorationSet.empty);
+			var set = createDecorations(instance.doc, DecorationSet.empty, engine);
 			return {
 				decos: set,
-				engine: engine
+				engine: engine,
+				referencesList: referencesList
 			};
 		},
 		apply: function apply(transaction, state, prevEditorState, editorState) {
 			var _this = this;
 
-			if (transaction.getMeta('docReset')) {
-				var newSet = createAllCitations(state.engine, editorState.doc, state.decos);
-				return { decos: newSet, engine: state.engine };
+			/*
+   if (transaction.getMeta('docReset')) {
+   	const newSet = createAllCitations(state.engine, editorState.doc, state.decos);
+   	return {decos: newSet, engine: state.engine};
+   }
+   */
+
+			if (transaction.getMeta('createReference')) {
+				var citationData = transaction.getMeta('createReference');
+				state.engine.addCitation(citationData);
 			}
 
 			var set = state.decos;
-			if (transaction.getMeta('createdReference') || transaction.getMeta('deleteReference')) {
+			if (transaction.getMeta('createReference') || transaction.getMeta('deleteReference')) {
 				var blueSet = createDecorations(editorState.doc, state.decos, state.engine);
 				return { decos: blueSet, engine: state.engine };
 			} else if (transaction.mapping) {
-				var _newSet = set.map(transaction.mapping, editorState.doc, { onRemove: function onRemove(deco) {
+				var newSet = set.map(transaction.mapping, editorState.doc, { onRemove: function onRemove(deco) {
 						removeDecoration(deco.citationID, state.engine, _this.spec.view);
 					} });
-				return { decos: _newSet, engine: state.engine };
+				return { decos: newSet, engine: state.engine };
 			}
 
 			return { decos: set, engine: state.engine };
@@ -163,6 +209,7 @@ var citationsPlugin = new _prosemirrorState.Plugin({
 			}
 		};
 	},
+
 	appendTransaction: function appendTransaction(transactions, oldState, newState) {
 		var firstTransaction = transactions[0];
 		if (!firstTransaction) {
@@ -171,11 +218,10 @@ var citationsPlugin = new _prosemirrorState.Plugin({
 		var citationData = void 0;
 		if (citationData = firstTransaction.getMeta('createCitation')) {
 			var pluginState = this.getState(newState);
-			return createReference(citationData, newState, pluginState.engine);
+			return createReference(citationData, newState, pluginState.engine, start, end);
 		}
 		return null;
 	},
-
 	props: {
 		getCitationString: function getCitationString(state, citationID) {
 			if (state && this.getState(state)) {

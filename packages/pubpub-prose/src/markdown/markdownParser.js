@@ -4,7 +4,6 @@ import markdownit from './markdownitInstance';
 import { schema as pubSchema } from '../prosemirror-setup/schema';
 
 const newSpec = pubSchema.spec;
-newSpec.topNode = "article";
 
 const markdownSchema = new Schema(newSpec);
 
@@ -13,6 +12,8 @@ const context = {};
 export const markdownParser = new MarkdownParser(markdownSchema,
 	markdownit,
 	{
+		article: {block: 'article'},
+
 		blockquote: {block: 'blockquote'},
 		paragraph: {block: 'paragraph'},
 		list_item: {block: 'list_item'},
@@ -21,29 +22,22 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 		heading: {block: 'heading', attrs: tok => ({level: +tok.tag.slice(1)})},
 		code_block: {block: 'code_block'},
 		fence: {block: 'code_block'},
-		html_inline: {node: 'code_block', attrs: tok => {console.log(tok); return {}; }},
+		html_inline: {node: 'code_block'},
 		hr: {node: 'horizontal_rule'},
 		pagebreak: {node: 'page_break'},
-		math_inline: {node: 'equation', attrs: tok => {console.log(tok); return {content: tok.content}; }},
-		math_block: {node: 'block_equation', attrs: tok => {console.log(tok); return {content: tok.content}; }},
+		math_inline: {node: 'equation', attrs: tok => { return {content: tok.content}; }},
+		math_block: {node: 'block_equation', attrs: tok => { return {content: tok.content}; }},
 
 		image: {node: 'embed'},
 
-		embed: {node: 'embed', attrs: tok => ({
-			source: tok.attrGet('source'),
-			className: tok.attrGet('className') || null,
-			id: tok.attrGet('id') || null,
-			align: tok.attrGet('align') || null,
-			size: tok.attrGet('size') || null,
-			caption: tok.attrGet('caption') || null,
-			mode: tok.attrGet('mode') || 'embed',
-			data: JSON.parse(decodeURIComponent(tok.attrGet('data'))) || null,
-		})},
+		embed: {node: 'embed'},
 		emoji: {node: 'emoji', attrs: tok => ({
 			content: tok.content,
 			markup: tok.markup,
 		})},
 		hardbreak: {node: 'hard_break'},
+
+		citations: {node: 'citations'},
 
 		table: {block: 'table'},
 		tbody: {block: 'none'},
@@ -57,10 +51,27 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 		strong: {mark: 'strong'},
 		strike: {mark: 'strike'},
 		// s: {mark: 'strike'}, // Used for Migration. Handles strikethroughs more gracefully
-		link: {mark: 'link', attrs: tok => ({
-			href: tok.attrGet('href'),
-			title: tok.attrGet('title') || null
-		})},
+
+		reference: {node: 'reference'},
+
+		link: {node: 'mention', attrs: tok => {
+			console.log('got reference!!');
+				let text, type, link;
+				const titleAttr = tok.attrGet('title');
+				const hrefAttr = tok.attrGet('href');
+				if (title && title.charAt(0) === '@') {
+					type = 'reference';
+					text = 'reference';
+					url = hrefAttr;
+				} else {
+					type = 'normal';
+					text = titleAttr;
+					url = hrefAttr;
+				}
+
+				return {type, text, url};
+			}
+		},
 		code_inline: {mark: 'code'},
 		sub: {mark: 'sub'},
 		sup: {mark: 'sup'},
@@ -127,7 +138,55 @@ const addEmbed = function(state, tok) {
 	state.openNode(topNode.type, topNode.attrs);
 };
 
+
+const addReference = function(state, tok) {
+
+	if (!state.citationsDict) {
+		state.citationsDict = {};
+		state.citationOrder = [];
+	}
+
+	const citationID = tok.attrGet('citationID').slice(1);
+	if (!state.citationsDict[citationID]) {
+		state.citationOrder.push(citationID);
+	}
+
+	const attrs = { citationID: citationID };
+	state.addNode(markdownSchema.nodeType('reference'), attrs);
+};
+
+const addCitations = function(state, tok) {
+
+	const orderedCitations = state.citationOrder || [];
+	state.openNode(markdownSchema.nodeType('citations'), {});
+
+	for (const citationID of orderedCitations) {
+			state.addNode(markdownSchema.nodeType('citation'), {citationID:citationID});
+	}
+
+	state.closeNode();
+
+};
+
+
+const addMention = function(state, tok) {
+	const topNode = state.top();
+	if (topNode.type.name === 'paragraph') {
+		state.closeNode();
+	}
+	const attrs = {
+		filename: tok.attrGet('src'),
+		size: tok.attrGet('width'),
+		align: tok.attrGet('align')
+	};
+	state.addNode(markdownSchema.nodeType('embed'), attrs);
+
+	state.openNode(topNode.type, topNode.attrs);
+};
+
 markdownParser.tokenHandlers.image = addEmbed;
+markdownParser.tokenHandlers.reference = addReference;
+markdownParser.tokenHandlers.citations = addCitations;
 
 
 markdownParser.tokenHandlers.table_open = openTable;
@@ -149,7 +208,5 @@ markdownParser.tokenHandlers.thead_open = emptyAdd;
 markdownParser.tokenHandlers.thead_close = emptyAdd;
 
 markdownParser.parseSlice = (md) => {
-	console.log('PARSING THIS');
-	console.log(md);
 	return markdownParser.parse(md);
 }
