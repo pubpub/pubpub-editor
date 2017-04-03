@@ -87,14 +87,16 @@ function buildKeymap(schema, mapKeys) {
 	}
 
 	if (type = schema.nodes.hard_break) {
-		var br = type;
-		var cmd = chainCommands(newlineInCode, function (state, onAction) {
-			onAction(state.tr.replaceSelectionWith(br.create()).scrollAction());
-			return true;
-		});
-		bind('Mod-Enter', cmd);
-		bind('Shift-Enter', cmd);
-		if (mac) bind('Ctrl-Enter', cmd);
+		(function () {
+			var br = type;
+			var cmd = chainCommands(newlineInCode, function (state, onAction) {
+				onAction(state.tr.replaceSelectionWith(br.create()).scrollAction());
+				return true;
+			});
+			bind('Mod-Enter', cmd);
+			bind('Shift-Enter', cmd);
+			if (mac) bind('Ctrl-Enter', cmd);
+		})();
 	}
 
 	if (type = schema.nodes.list_item) {
@@ -118,11 +120,13 @@ function buildKeymap(schema, mapKeys) {
 	}
 
 	if (type = schema.nodes.horizontal_rule) {
-		var hr = type;
-		bind('Mod-_', function (state, onAction) {
-			onAction(state.tr.replaceSelectionWith(hr.create()).scrollAction());
-			return true;
-		});
+		(function () {
+			var hr = type;
+			bind('Mod-_', function (state, onAction) {
+				onAction(state.tr.replaceSelectionWith(hr.create()).scrollAction());
+				return true;
+			});
+		})();
 	}
 
 	/*

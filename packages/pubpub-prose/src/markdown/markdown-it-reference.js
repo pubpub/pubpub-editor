@@ -5,9 +5,10 @@ function referenceParser(state, silent) {
 	const start = state.pos;
 
 	// if (state.src.charAt(start) !== '[') { return false; }
-	if (state.src.substring(0, 2) !== '[@') { return false; }
-	if (silent) { return false; } // don't run any pairs in validation mode
 	if (start + 2 >= max) { return false; }
+	if (state.src.substring(start, start+2) !== '[@') { return false; }
+	if (silent) { return false; } // don't run any pairs in validation mode
+
 
 	state.pos = start + 1;
 	while (state.pos < max) {
@@ -24,13 +25,12 @@ function referenceParser(state, silent) {
 	state.pos = start + 1;
 
 	// Earlier we checked !silent, but this implementation does not need it
-	token = state.push('reference_open', 'reference', 1);
 
-	token = state.push('text', '', 0);
-	token.content = content.replace(UNESCAPE_RE, '$1');
+	token = state.push('reference', '', 0);
+	token.attrs = [];
+	const citationID = content.replace(UNESCAPE_RE, '$1');
+	token.attrs.push(['citationID', citationID]);
 
-	token = state.push('reference_close', 'reference', -1);
-	
 	state.pos = state.posMax + 1;
 	state.posMax = max;
 	return true;

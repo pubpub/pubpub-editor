@@ -37,16 +37,14 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 		} },
 	code_block: { block: 'code_block' },
 	fence: { block: 'code_block' },
-	html_inline: { node: 'code_block', attrs: function attrs(tok) {
-			console.log(tok);return {};
-		} },
+	html_inline: { node: 'code_block' },
 	hr: { node: 'horizontal_rule' },
 	pagebreak: { node: 'page_break' },
 	math_inline: { node: 'equation', attrs: function attrs(tok) {
-			console.log(tok);return { content: tok.content };
+			return { content: tok.content };
 		} },
 	math_block: { node: 'block_equation', attrs: function attrs(tok) {
-			console.log(tok);return { content: tok.content };
+			return { content: tok.content };
 		} },
 
 	image: { node: 'embed' },
@@ -83,12 +81,38 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 	strong: { mark: 'strong' },
 	strike: { mark: 'strike' },
 	// s: {mark: 'strike'}, // Used for Migration. Handles strikethroughs more gracefully
-	link: { mark: 'link', attrs: function attrs(tok) {
-			return {
-				href: tok.attrGet('href'),
-				title: tok.attrGet('title') || null
-			};
-		} },
+
+	reference: { node: 'reference', attrs: function attrs(tok) {
+			var text = void 0,
+			    type = void 0,
+			    link = void 0;
+			var citationID = tok.attrGet('citationID').slice(1);
+			console.log('Got reference!!!!', tok, citationID);
+
+			return { citationID: citationID };
+		}
+	},
+
+	link: { node: 'mention', attrs: function attrs(tok) {
+			console.log('got reference!!');
+			var text = void 0,
+			    type = void 0,
+			    link = void 0;
+			var titleAttr = tok.attrGet('title');
+			var hrefAttr = tok.attrGet('href');
+			if (title && title.charAt(0) === '@') {
+				type = 'reference';
+				text = 'reference';
+				url = hrefAttr;
+			} else {
+				type = 'normal';
+				text = titleAttr;
+				url = hrefAttr;
+			}
+
+			return { type: type, text: text, url: url };
+		}
+	},
 	code_inline: { mark: 'code' },
 	sub: { mark: 'sub' },
 	sup: { mark: 'sup' }
@@ -153,6 +177,21 @@ var addEmbed = function addEmbed(state, tok) {
 	state.openNode(topNode.type, topNode.attrs);
 };
 
+var addMention = function addMention(state, tok) {
+	var topNode = state.top();
+	if (topNode.type.name === 'paragraph') {
+		state.closeNode();
+	}
+	var attrs = {
+		filename: tok.attrGet('src'),
+		size: tok.attrGet('width'),
+		align: tok.attrGet('align')
+	};
+	state.addNode(markdownSchema.nodeType('embed'), attrs);
+
+	state.openNode(topNode.type, topNode.attrs);
+};
+
 markdownParser.tokenHandlers.image = addEmbed;
 
 markdownParser.tokenHandlers.table_open = openTable;
@@ -173,7 +212,5 @@ markdownParser.tokenHandlers.thead_open = emptyAdd;
 markdownParser.tokenHandlers.thead_close = emptyAdd;
 
 markdownParser.parseSlice = function (md) {
-	console.log('PARSING THIS');
-	console.log(md);
 	return markdownParser.parse(md);
 };

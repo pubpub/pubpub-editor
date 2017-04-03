@@ -1,3 +1,6 @@
+import bibtexToCSL from '../../src/references/bibtextocsl';
+import samplebibtex from './samplebibtex';
+
 export const localFiles = [
 	{
 		id: 585,
@@ -23,8 +26,8 @@ export const localFiles = [
 	{
 		id: 586,
 		type: "image/jpeg",
-		name: "mies_thomas_hawk.jpg",
-		url: "https://assets.pubpub.org/aggzdvsx/5861486428133586.jpg",
+	name: "mies_thomas_hawk.jpg",
+	url: "https://assets.pubpub.org/aggzdvsx/5861486428133586.jpg",
 		content: null,
 		hash: "5faf4402a637d7fca747d58052d9bb7c68c7fbef",
 		originalDate: null,
@@ -225,48 +228,13 @@ export const localPubs = [
 	}
 ];
 
-export const localReferences = [
-	{
-		id: 1,
-		key: 'Herbrich2006',
-		author: 'Herbrich, R and Minka, T and Graepel, T',
-		journal: '\ldots Processing Systems',
-		title: 'Trueskill: A Bayesian Skill Rating System,/paper\_files/NIPS2006\_688.pdf}',
-		year: 2006,
-	},
-	{
-		id: 2,
-		key: 'Dangauthier2007',
-		author: 'Dangauthier, Pierre',
-		journal: 'Advances in Neural \ldots',
-		title: 'Trueskill through time: Revisiting the history of chess,NIPS2007\_931.pdf}',
-		year: 2007,
-	},
-	{
-		id: 3,
-		key: 'Graepel2010',
-		author: 'Graepel, T, Graepel',
-		journal: 'Proceedings of the \ldots',
-		title: 'Web-scale bayesian click-through rate prediction for sponsored search advertising in microsoft\'s bing search engine',
-		year: 2010,
-	},
-	{
-		id: 4,
-		key: 'Guo2012',
-		author: 'Guo, Shengbo and Sanner, Scott and Graepel, Thore and Buntine, Wray',
-		journal: 'Machine Learning and \ldots',
-		title: 'Score-Based bayesian skill Learning',
-		year: 2012,
-	},
-	{
-		id: 5,
-		key: 'Tarlow2014',
-		author: 'Tarlow, Daniel and Graepel, Thore and Minka, Tom',
-		journal: 'cs.toronto.edu',
-		title: 'Knowing what we don\'t know in NCAA Football ratings : Understanding and using structured uncertainty',
-		year: 2014,
-	}
-];
+
+// local references parsed from bibtex?
+// how to load from initial document?
+// need to save references initially on document
+//
+
+export const localReferences = bibtexToCSL(samplebibtex.bib);
 
 export const localUsers = [
 	{
@@ -371,19 +339,3 @@ export const localHighlights = [
 ];
 
 export const localDiscussions = [];
-
-export const localPages = [
-	{
-		id: 1,
-		pageSlug: 'about',
-		title: 'About This Journal',
-		journalSlug: 'jods',
-	},
-	{
-		id: 2,
-		pageSlug: 'call-for-submissions',
-		title: 'Call For Submissions',
-		journalSlug: 'jods',
-	},
-];
-
