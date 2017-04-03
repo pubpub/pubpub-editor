@@ -176,6 +176,39 @@ var addReference = function addReference(state, tok) {
 	state.addNode(markdownSchema.nodeType('reference'), attrs);
 };
 
+var addCitations = function addCitations(state, tok) {
+
+	var orderedCitations = state.citationOrder || [];
+	state.openNode(markdownSchema.nodeType('citations'), {});
+
+	var _iteratorNormalCompletion = true;
+	var _didIteratorError = false;
+	var _iteratorError = undefined;
+
+	try {
+		for (var _iterator = orderedCitations[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+			var citationID = _step.value;
+
+			state.addNode(markdownSchema.nodeType('citation'), { citationID: citationID });
+		}
+	} catch (err) {
+		_didIteratorError = true;
+		_iteratorError = err;
+	} finally {
+		try {
+			if (!_iteratorNormalCompletion && _iterator.return) {
+				_iterator.return();
+			}
+		} finally {
+			if (_didIteratorError) {
+				throw _iteratorError;
+			}
+		}
+	}
+
+	state.closeNode();
+};
+
 var addMention = function addMention(state, tok) {
 	var topNode = state.top();
 	if (topNode.type.name === 'paragraph') {
@@ -193,6 +226,7 @@ var addMention = function addMention(state, tok) {
 
 markdownParser.tokenHandlers.image = addEmbed;
 markdownParser.tokenHandlers.reference = addReference;
+markdownParser.tokenHandlers.citations = addCitations;
 
 markdownParser.tokenHandlers.table_open = openTable;
 markdownParser.tokenHandlers.table_close = closeTable;

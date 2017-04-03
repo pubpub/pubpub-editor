@@ -155,6 +155,20 @@ const addReference = function(state, tok) {
 	state.addNode(markdownSchema.nodeType('reference'), attrs);
 };
 
+const addCitations = function(state, tok) {
+
+	const orderedCitations = state.citationOrder || [];
+	state.openNode(markdownSchema.nodeType('citations'), {});
+
+	for (const citationID of orderedCitations) {
+			state.addNode(markdownSchema.nodeType('citation'), {citationID:citationID});
+	}
+
+	state.closeNode();
+
+};
+
+
 const addMention = function(state, tok) {
 	const topNode = state.top();
 	if (topNode.type.name === 'paragraph') {
@@ -172,6 +186,7 @@ const addMention = function(state, tok) {
 
 markdownParser.tokenHandlers.image = addEmbed;
 markdownParser.tokenHandlers.reference = addReference;
+markdownParser.tokenHandlers.citations = addCitations;
 
 
 markdownParser.tokenHandlers.table_open = openTable;
