@@ -107,7 +107,7 @@ const nodes = {
 			url: { default: '' },
 			figureName: { default: '' },
 			size: { default: '' },
-			align: { default: '' },
+			align: { default: 'full' },
 		},
 		parseDOM: [{ tag: 'img[src]' }],
 		inline: false,
