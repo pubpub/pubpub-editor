@@ -83,7 +83,7 @@ export const markdownSerializer = new MarkdownSerializer({
 		state.write('$$\n');
 	},
 	mention: function mention(state, node) {
-		state.write(`[${node.attrs.text}](${node.attrs.url})`);
+		state.write(`[${node.textContent}](${node.attrs.url})`);
 	},
 	reference: function reference(state, node) {
 		state.write(`[@${node.attrs.citationID}]`);

@@ -50,11 +50,11 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 		em: {mark: 'em'},
 		strong: {mark: 'strong'},
 		strike: {mark: 'strike'},
-		// s: {mark: 'strike'}, // Used for Migration. Handles strikethroughs more gracefully
+		s: {mark: 'strike'},
 
 		reference: {node: 'reference'},
 
-		link: {node: 'mention', attrs: tok => {
+		link: {block: 'mention', attrs: tok => {
 			console.log('got reference!!');
 				let text, type, link;
 				const titleAttr = tok.attrGet('title');
@@ -161,7 +161,7 @@ const addCitations = function(state, tok) {
 	state.openNode(markdownSchema.nodeType('citations'), {});
 
 	for (const citationID of orderedCitations) {
-			state.addNode(markdownSchema.nodeType('citation'), {citationID:citationID});
+			state.addNode(markdownSchema.nodeType('citation'), { citationID:citationID });
 	}
 
 	state.closeNode();
@@ -170,18 +170,12 @@ const addCitations = function(state, tok) {
 
 
 const addMention = function(state, tok) {
-	const topNode = state.top();
-	if (topNode.type.name === 'paragraph') {
-		state.closeNode();
-	}
-	const attrs = {
-		filename: tok.attrGet('src'),
-		size: tok.attrGet('width'),
-		align: tok.attrGet('align')
-	};
-	state.addNode(markdownSchema.nodeType('embed'), attrs);
-
-	state.openNode(topNode.type, topNode.attrs);
+	let type, url;
+	const hrefAttr = tok.attrGet('href');
+	type = 'normal';
+	url = hrefAttr;
+	const attrs = {type, url};
+	state.openNode(markdownSchema.nodeType('mention'), attrs);
 };
 
 markdownParser.tokenHandlers.image = addEmbed;
@@ -200,6 +194,8 @@ markdownParser.tokenHandlers.td_open = addParagraph;
 
 markdownParser.tokenHandlers.th_close = stopParagraph;
 markdownParser.tokenHandlers.td_close = stopParagraph;
+
+markdownParser.tokenHandlers.link_open = addMention;
 
 
 markdownParser.tokenHandlers.tbody_open = emptyAdd;

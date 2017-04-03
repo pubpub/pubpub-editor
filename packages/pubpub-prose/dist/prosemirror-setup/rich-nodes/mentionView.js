@@ -54,9 +54,9 @@ var MentionView = function (_ReactView) {
       var node = this.node;
       var _node$attrs = node.attrs,
           url = _node$attrs.url,
-          type = _node$attrs.type,
-          text = _node$attrs.text;
+          type = _node$attrs.type;
 
+      var text = this.node.textContent;
       var renderedElem = _reactDom2.default.render(_react2.default.createElement(_components.MentionComponent, { key: 'mention', url: url, text: text, type: type }), domChild);
       return renderedElem;
     }

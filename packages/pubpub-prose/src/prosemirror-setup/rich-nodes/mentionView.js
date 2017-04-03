@@ -17,7 +17,8 @@ class MentionView extends ReactView {
 
   renderElement(domChild) {
     const node = this.node;
-    const { url, type, text } = node.attrs;
+    const { url, type } = node.attrs;
+    const text = this.node.textContent;
     const renderedElem = ReactDOM.render(<MentionComponent key="mention" url={url} text={text} type={type}/>, domChild);
     return renderedElem;
   }

@@ -30,10 +30,10 @@ const nodes = {
 
 
 	mention: {
+		content: 'text*',
 		atom: true,
 		group: 'inline',
 		attrs: {
-			text: { default: '' },
 			url: { default: '' },
 			type: { default: ' ' }
 		},

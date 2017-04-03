@@ -72,11 +72,11 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 	em: { mark: 'em' },
 	strong: { mark: 'strong' },
 	strike: { mark: 'strike' },
-	// s: {mark: 'strike'}, // Used for Migration. Handles strikethroughs more gracefully
+	s: { mark: 'strike' },
 
 	reference: { node: 'reference' },
 
-	link: { node: 'mention', attrs: function attrs(tok) {
+	link: { block: 'mention', attrs: function attrs(tok) {
 			console.log('got reference!!');
 			var text = void 0,
 			    type = void 0,
@@ -210,18 +210,13 @@ var addCitations = function addCitations(state, tok) {
 };
 
 var addMention = function addMention(state, tok) {
-	var topNode = state.top();
-	if (topNode.type.name === 'paragraph') {
-		state.closeNode();
-	}
-	var attrs = {
-		filename: tok.attrGet('src'),
-		size: tok.attrGet('width'),
-		align: tok.attrGet('align')
-	};
-	state.addNode(markdownSchema.nodeType('embed'), attrs);
-
-	state.openNode(topNode.type, topNode.attrs);
+	var type = void 0,
+	    url = void 0;
+	var hrefAttr = tok.attrGet('href');
+	type = 'normal';
+	url = hrefAttr;
+	var attrs = { type: type, url: url };
+	state.openNode(markdownSchema.nodeType('mention'), attrs);
 };
 
 markdownParser.tokenHandlers.image = addEmbed;
@@ -239,6 +234,8 @@ markdownParser.tokenHandlers.td_open = addParagraph;
 
 markdownParser.tokenHandlers.th_close = stopParagraph;
 markdownParser.tokenHandlers.td_close = stopParagraph;
+
+markdownParser.tokenHandlers.link_open = addMention;
 
 markdownParser.tokenHandlers.tbody_open = emptyAdd;
 markdownParser.tokenHandlers.tbody_close = emptyAdd;
