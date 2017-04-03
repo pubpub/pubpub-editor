@@ -18,13 +18,14 @@ var _schema = require('../prosemirror-setup/schema');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var newSpec = _schema.schema.spec;
-newSpec.topNode = "article";
 
 var markdownSchema = new _prosemirrorModel.Schema(newSpec);
 
 var context = {};
 
 var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownParser(markdownSchema, _markdownitInstance2.default, {
+	article: { block: 'article' },
+
 	blockquote: { block: 'blockquote' },
 	paragraph: { block: 'paragraph' },
 	list_item: { block: 'list_item' },
@@ -49,18 +50,7 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 
 	image: { node: 'embed' },
 
-	embed: { node: 'embed', attrs: function attrs(tok) {
-			return {
-				source: tok.attrGet('source'),
-				className: tok.attrGet('className') || null,
-				id: tok.attrGet('id') || null,
-				align: tok.attrGet('align') || null,
-				size: tok.attrGet('size') || null,
-				caption: tok.attrGet('caption') || null,
-				mode: tok.attrGet('mode') || 'embed',
-				data: JSON.parse(decodeURIComponent(tok.attrGet('data'))) || null
-			};
-		} },
+	embed: { node: 'embed' },
 	emoji: { node: 'emoji', attrs: function attrs(tok) {
 			return {
 				content: tok.content,
@@ -68,6 +58,8 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 			};
 		} },
 	hardbreak: { node: 'hard_break' },
+
+	citations: { node: 'citations' },
 
 	table: { block: 'table' },
 	tbody: { block: 'none' },
@@ -82,16 +74,7 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 	strike: { mark: 'strike' },
 	// s: {mark: 'strike'}, // Used for Migration. Handles strikethroughs more gracefully
 
-	reference: { node: 'reference', attrs: function attrs(tok) {
-			var text = void 0,
-			    type = void 0,
-			    link = void 0;
-			var citationID = tok.attrGet('citationID').slice(1);
-			console.log('Got reference!!!!', tok, citationID);
-
-			return { citationID: citationID };
-		}
-	},
+	reference: { node: 'reference' },
 
 	link: { node: 'mention', attrs: function attrs(tok) {
 			console.log('got reference!!');
@@ -177,6 +160,22 @@ var addEmbed = function addEmbed(state, tok) {
 	state.openNode(topNode.type, topNode.attrs);
 };
 
+var addReference = function addReference(state, tok) {
+
+	if (!state.citationsDict) {
+		state.citationsDict = {};
+		state.citationOrder = [];
+	}
+
+	var citationID = tok.attrGet('citationID').slice(1);
+	if (!state.citationsDict[citationID]) {
+		state.citationOrder.push(citationID);
+	}
+
+	var attrs = { citationID: citationID };
+	state.addNode(markdownSchema.nodeType('reference'), attrs);
+};
+
 var addMention = function addMention(state, tok) {
 	var topNode = state.top();
 	if (topNode.type.name === 'paragraph') {
@@ -193,6 +192,7 @@ var addMention = function addMention(state, tok) {
 };
 
 markdownParser.tokenHandlers.image = addEmbed;
+markdownParser.tokenHandlers.reference = addReference;
 
 markdownParser.tokenHandlers.table_open = openTable;
 markdownParser.tokenHandlers.table_close = closeTable;

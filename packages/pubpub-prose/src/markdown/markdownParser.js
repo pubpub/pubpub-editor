@@ -4,7 +4,6 @@ import markdownit from './markdownitInstance';
 import { schema as pubSchema } from '../prosemirror-setup/schema';
 
 const newSpec = pubSchema.spec;
-newSpec.topNode = "article";
 
 const markdownSchema = new Schema(newSpec);
 
@@ -13,6 +12,8 @@ const context = {};
 export const markdownParser = new MarkdownParser(markdownSchema,
 	markdownit,
 	{
+		article: {block: 'article'},
+
 		blockquote: {block: 'blockquote'},
 		paragraph: {block: 'paragraph'},
 		list_item: {block: 'list_item'},
@@ -29,21 +30,14 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 
 		image: {node: 'embed'},
 
-		embed: {node: 'embed', attrs: tok => ({
-			source: tok.attrGet('source'),
-			className: tok.attrGet('className') || null,
-			id: tok.attrGet('id') || null,
-			align: tok.attrGet('align') || null,
-			size: tok.attrGet('size') || null,
-			caption: tok.attrGet('caption') || null,
-			mode: tok.attrGet('mode') || 'embed',
-			data: JSON.parse(decodeURIComponent(tok.attrGet('data'))) || null,
-		})},
+		embed: {node: 'embed'},
 		emoji: {node: 'emoji', attrs: tok => ({
 			content: tok.content,
 			markup: tok.markup,
 		})},
 		hardbreak: {node: 'hard_break'},
+
+		citations: {node: 'citations'},
 
 		table: {block: 'table'},
 		tbody: {block: 'none'},
@@ -58,14 +52,7 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 		strike: {mark: 'strike'},
 		// s: {mark: 'strike'}, // Used for Migration. Handles strikethroughs more gracefully
 
-		reference: {node: 'reference', attrs: tok => {
-				let text, type, link;
-				const citationID = tok.attrGet('citationID').slice(1);
-				console.log('Got reference!!!!', tok, citationID);
-
-				return {citationID};
-			}
-		},
+		reference: {node: 'reference'},
 
 		link: {node: 'mention', attrs: tok => {
 			console.log('got reference!!');
@@ -151,6 +138,23 @@ const addEmbed = function(state, tok) {
 	state.openNode(topNode.type, topNode.attrs);
 };
 
+
+const addReference = function(state, tok) {
+
+	if (!state.citationsDict) {
+		state.citationsDict = {};
+		state.citationOrder = [];
+	}
+
+	const citationID = tok.attrGet('citationID').slice(1);
+	if (!state.citationsDict[citationID]) {
+		state.citationOrder.push(citationID);
+	}
+
+	const attrs = { citationID: citationID };
+	state.addNode(markdownSchema.nodeType('reference'), attrs);
+};
+
 const addMention = function(state, tok) {
 	const topNode = state.top();
 	if (topNode.type.name === 'paragraph') {
@@ -167,6 +171,7 @@ const addMention = function(state, tok) {
 };
 
 markdownParser.tokenHandlers.image = addEmbed;
+markdownParser.tokenHandlers.reference = addReference;
 
 
 markdownParser.tokenHandlers.table_open = openTable;

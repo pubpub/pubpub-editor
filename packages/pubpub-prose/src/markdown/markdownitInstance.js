@@ -1,4 +1,5 @@
 import attrs from 'markdown-it-attrs';
+import citations from './markdown-it-citations';
 import highlight from './markdown-it-highlight';
 import markdownit from 'markdown-it';
 import mk from 'markdown-it-katex';
@@ -10,6 +11,7 @@ export const markdownitInstance = markdownit({
 	html: false,
 	linkify: true,
 })
+.use(citations) // Pub Citation Parser
 .use(sub) // Subscript
 .use(sup) // Superscript
 .use(mk) // Latex math
