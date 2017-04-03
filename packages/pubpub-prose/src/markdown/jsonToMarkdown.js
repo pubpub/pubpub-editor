@@ -7,7 +7,6 @@ const jsonToMarkdown = (docJSON) => {
   	doc: schema.nodeFromJSON(docJSON),
   });
   const doc = newState.doc;
-  console.log('Attrs', doc.attrs);
   const markdown = markdownSerializer.serialize(doc);
   return markdown;
 };

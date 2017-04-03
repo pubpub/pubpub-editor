@@ -55,6 +55,8 @@ class CitationEngine {
 
   getShortForm = (citationID) => {
 
+    console.log('Trying this', citationID);
+
     if (!this.items[citationID]) {
       return null;
     }
@@ -112,8 +114,6 @@ class CitationEngine {
       ]
    }
     const result = this.citeproc.makeBibliography(query);
-
-    console.log('Found result!', result, this.items[itemID], query);
 
     if (result && result.length >= 1 && result[1].length > 0) {
       return result[1][0];

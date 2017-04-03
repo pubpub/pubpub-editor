@@ -83,21 +83,15 @@ export const markdownSerializer = new MarkdownSerializer({
 		state.write('$$\n');
 	},
 	mention: function mention(state, node) {
-		state.write(`[@${node.attrs.text}](${node.attrs.url})`);
+		state.write(`[${node.attrs.text}](${node.attrs.url})`);
 	},
 	reference: function reference(state, node) {
-		console.log('reference', node);
-		console.log(state.options);
-		state.write('');
+		state.write(`[@${node.attrs.citationID}]`);
 	},
 	citation: function citation(state, node) {
-		const CSLData = node.attrs.data;
-		const bibtexStr = generateBibTexString(CSLData);
-		console.log('bibtex', CSLData);
-		state.write(bibtexStr);
+		state.write('');
 	},
 	citations: function citations(state, node) {
-		state.renderContent(node);
 		state.write('');
 	},
 	aside: function aside(state) {

@@ -83,6 +83,8 @@ var CitationEngine = function () {
 
     this.getShortForm = function (citationID) {
 
+      console.log('Trying this', citationID);
+
       if (!_this.items[citationID]) {
         return null;
       }
@@ -190,8 +192,6 @@ var CitationEngine = function () {
         }]
       };
       var result = this.citeproc.makeBibliography(query);
-
-      console.log('Found result!', result, this.items[itemID], query);
 
       if (result && result.length >= 1 && result[1].length > 0) {
         return result[1][0];

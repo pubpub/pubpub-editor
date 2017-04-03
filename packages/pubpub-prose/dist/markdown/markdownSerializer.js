@@ -98,18 +98,12 @@ var markdownSerializer = exports.markdownSerializer = new _prosemirrorMarkdown.M
 	state.write(node.attrs.content);
 	state.write('$$\n');
 }), _defineProperty(_ref, 'mention', function mention(state, node) {
-	state.write('[@' + node.attrs.text + '](' + node.attrs.url + ')');
+	state.write('[' + node.attrs.text + '](' + node.attrs.url + ')');
 }), _defineProperty(_ref, 'reference', function reference(state, node) {
-	console.log('reference', node);
-	console.log(state.options);
-	state.write('');
+	state.write('[@' + node.attrs.citationID + ']');
 }), _defineProperty(_ref, 'citation', function citation(state, node) {
-	var CSLData = node.attrs.data;
-	var bibtexStr = (0, _citationConversion.generateBibTexString)(CSLData);
-	console.log('bibtex', CSLData);
-	state.write(bibtexStr);
+	state.write('');
 }), _defineProperty(_ref, 'citations', function citations(state, node) {
-	state.renderContent(node);
 	state.write('');
 }), _defineProperty(_ref, 'aside', function aside(state) {
 	state.write('');

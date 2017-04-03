@@ -46,7 +46,6 @@ function insertReference(_ref) {
 	    start = _ref.start,
 	    end = _ref.end;
 
-	console.log('making ref', citationData, start, end);
 	var referenceNode = _prosemirrorSetup.schema.nodes.reference.create({ citationID: citationData.id });
 	var transaction = view.state.tr.replaceRangeWith(start, end, referenceNode);
 	transaction = transaction.setMeta('createReference', citationData);

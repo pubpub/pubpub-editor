@@ -39,7 +39,6 @@ exports.createMarkdownMention = function(cm, selectedObject) {
 /* -------------- */
 
 function insertReference({view, citationData, start, end}) {
-	console.log('making ref', citationData, start, end);
 	const referenceNode = schema.nodes.reference.create({ citationID: citationData.id });
 	let transaction = view.state.tr.replaceRangeWith(start, end, referenceNode);
 	transaction = transaction.setMeta('createReference', citationData);
