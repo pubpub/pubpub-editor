@@ -57,7 +57,7 @@ export const markdownSerializer = new MarkdownSerializer({
 	embed: function embed(state, node) {
 		// state.write('[[source=\"' + node.attrs.source + '\" id=\"' + node.attrs.id + '\" className=\"' + node.attrs.className + '\" align=\"' + node.attrs.align + '\" size=\"' + node.attrs.size + '\" caption=\"' + node.attrs.caption + '\" mode=\"' + node.attrs.mode + '\" data=\"' + encodeURIComponent(JSON.stringify(node.attrs.data)) + '\"]]');
 		state.write('\n![');
-		state.renderInline(node);
+		state.write(node.textContent);
 		state.write('](' + state.esc(node.attrs.filename) + ')');
 		if (node.attrs.align || node.attrs.size || node.attrs.caption) {
 			const alignText = (node.attrs.align) ? `align=${node.attrs.align}` : '';

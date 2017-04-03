@@ -146,8 +146,11 @@ var closeRow = function closeRow(state, tok) {
 };
 
 var addEmbed = function addEmbed(state, tok) {
+	console.log('Got iamge!', tok);
 	var topNode = state.top();
+	var didClose = false;
 	if (topNode.type.name === 'paragraph') {
+		didClose = true;
 		state.closeNode();
 	}
 	var attrs = {
@@ -155,9 +158,17 @@ var addEmbed = function addEmbed(state, tok) {
 		size: tok.attrGet('width'),
 		align: tok.attrGet('align')
 	};
-	state.addNode(markdownSchema.nodeType('embed'), attrs);
+	var caption = tok.content;
 
-	state.openNode(topNode.type, topNode.attrs);
+	var textnode = markdownSchema.text(caption);
+
+	state.openNode(markdownSchema.nodeType('embed'), attrs);
+	state.addNode(markdownSchema.nodeType('caption'), {}, textnode);
+	state.closeNode();
+
+	if (didClose) {
+		state.openNode(topNode.type, topNode.attrs);
+	}
 };
 
 var addReference = function addReference(state, tok) {

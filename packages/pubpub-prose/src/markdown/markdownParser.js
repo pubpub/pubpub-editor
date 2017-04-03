@@ -124,8 +124,11 @@ const closeRow = function(state, tok) {
 };
 
 const addEmbed = function(state, tok) {
+	console.log('Got iamge!', tok);
 	const topNode = state.top();
+	let didClose = false;
 	if (topNode.type.name === 'paragraph') {
+		didClose = true;
 		state.closeNode();
 	}
 	const attrs = {
@@ -133,9 +136,17 @@ const addEmbed = function(state, tok) {
 		size: tok.attrGet('width'),
 		align: tok.attrGet('align')
 	};
-	state.addNode(markdownSchema.nodeType('embed'), attrs);
+	const caption = tok.content;
 
-	state.openNode(topNode.type, topNode.attrs);
+	const textnode = markdownSchema.text(caption);
+
+	state.openNode(markdownSchema.nodeType('embed'), attrs);
+	state.addNode(markdownSchema.nodeType('caption'), {}, textnode);
+	state.closeNode();
+
+	if (didClose) {
+		state.openNode(topNode.type, topNode.attrs);
+	}
 };
 
 
