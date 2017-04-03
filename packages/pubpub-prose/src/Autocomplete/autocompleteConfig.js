@@ -46,7 +46,9 @@ function insertReference({view, citationData, start, end}) {
 }
 
 function insertMention({ start, end, view, url, type, text }) {
-	const transaction = view.state.tr.replaceRangeWith(start, end, schema.nodes.mention.create({ url, type, text }));
+
+	const textnode = schema.text(text);
+	const transaction = view.state.tr.replaceRangeWith(start, end, schema.nodes.mention.create({ url, type }, textnode));
 	view.dispatch(transaction);
 }
 

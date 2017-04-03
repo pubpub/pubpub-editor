@@ -60,7 +60,9 @@ function insertMention(_ref2) {
 	    type = _ref2.type,
 	    text = _ref2.text;
 
-	var transaction = view.state.tr.replaceRangeWith(start, end, _prosemirrorSetup.schema.nodes.mention.create({ url: url, type: type, text: text }));
+
+	var textnode = _prosemirrorSetup.schema.text(text);
+	var transaction = view.state.tr.replaceRangeWith(start, end, _prosemirrorSetup.schema.nodes.mention.create({ url: url, type: type }, textnode));
 	view.dispatch(transaction);
 }
 
