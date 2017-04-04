@@ -205,7 +205,7 @@ function ppubToPandoc(ppub, options) {
 				caption = node.content && node.content[0] && node.content[0].content[0] ? node.content[0].content[0].text : '';
 			}
 			newNode.c[1] = caption ? createTextNodes(caption) : [];
-			newNode.c[2] = [node.attrs.url || node.attrs.data.content.url, node.attrs.figureName || ''];
+			newNode.c[2] = [node.attrs.url || node.attrs.filename || node.attrs.data.content.url, node.attrs.figureName || ''];
 			break;
 			case 'citations':
 			// Create a header node that goes above that says 'References'
