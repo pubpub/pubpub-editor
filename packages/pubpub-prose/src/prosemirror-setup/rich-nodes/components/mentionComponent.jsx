@@ -18,7 +18,7 @@ export const MentionComponent = React.createClass({
   render() {
     const { url, type, text } = this.props;
     return (
-      <a className="mention" href={url}>@{text}</a>
+      <a className="mention" href={url}>{text}</a>
     );
   }
 });

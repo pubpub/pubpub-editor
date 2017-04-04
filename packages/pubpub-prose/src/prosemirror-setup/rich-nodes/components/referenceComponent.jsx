@@ -46,7 +46,7 @@ export const ReferenceComponent = React.createClass({
       'selected': this.state.selected,
     });
 
-		const popoverContent = (<div>
+		const popoverContent = (<div className="pub-reference-popover">
 			<span dangerouslySetInnerHTML={{__html:this.props.getCitationString()}}></span>
 		</div>);
 

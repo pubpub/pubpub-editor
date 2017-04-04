@@ -62,7 +62,7 @@ var ReferenceComponent = exports.ReferenceComponent = _react2.default.createClas
 
 		var popoverContent = _react2.default.createElement(
 			'div',
-			null,
+			{ className: 'pub-reference-popover' },
 			_react2.default.createElement('span', { dangerouslySetInnerHTML: { __html: this.props.getCitationString() } })
 		);
 
