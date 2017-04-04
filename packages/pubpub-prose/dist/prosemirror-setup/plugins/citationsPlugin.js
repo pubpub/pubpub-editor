@@ -125,7 +125,7 @@ var citationsPlugin = new _prosemirrorState.Plugin({
 			}
 
 			var set = state.decos;
-			if (transaction.getMeta('createdReference') || transaction.getMeta('deleteReference')) {
+			if (transaction.getMeta('createdReference') || transaction.getMeta('deleteReference') || transaction.getMeta('history$')) {
 				var blueSet = createDecorations(editorState.doc, state.decos, state.engine);
 				return { decos: blueSet, engine: state.engine };
 			} else if (transaction.mapping) {

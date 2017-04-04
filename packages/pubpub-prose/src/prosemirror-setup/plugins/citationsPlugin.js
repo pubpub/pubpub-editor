@@ -112,8 +112,9 @@ const citationsPlugin = new Plugin({
 				return {decos: newSet, engine: state.engine};
 			}
 
+
 			let set = state.decos;
-			if (transaction.getMeta('createdReference') || transaction.getMeta('deleteReference')) {
+			if (transaction.getMeta('createdReference') || transaction.getMeta('deleteReference') || transaction.getMeta('history$')) {
 				const blueSet = createDecorations(editorState.doc, state.decos, state.engine);
 				return {decos: blueSet, engine: state.engine};
 			} else if (transaction.mapping) {
