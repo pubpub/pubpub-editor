@@ -3,7 +3,6 @@
 var _prosemirrorSetup = require('../prosemirror-setup');
 
 exports.createMarkdownMention = function (cm, selectedObject) {
-	// console.log('Got ', selectedObject);
 	var currentCursor = cm.getCursor();
 	var currentLine = cm.getLine(currentCursor.line);
 	var nextChIndex = currentCursor.ch;
@@ -98,7 +97,6 @@ exports.createRichMention = function (editor, selectedObject, start, end) {
 	    url = void 0,
 	    filename = void 0;
 
-	console.log('Selected object', selectedObject);
 	switch (selectedObject.itemType) {
 		case 'file':
 			filename = selectedObject.name;
@@ -110,7 +108,6 @@ exports.createRichMention = function (editor, selectedObject, start, end) {
 			insertMention({ view: editor.view, start: start, end: end, text: text, url: url, type: 'pub' });
 			break;
 		case 'reference':
-			console.log('CHOSE', selectedObject);
 			insertReference({ view: editor.view, start: start, end: end, citationData: selectedObject });
 			break;
 		case 'user':

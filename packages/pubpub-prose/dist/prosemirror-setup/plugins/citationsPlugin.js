@@ -90,7 +90,7 @@ var createReference = function createReference(citationData, state, engine) {
 	// tries to find the closest place to insert this note
 	var newPoint = (0, _prosemirrorTransform.insertPoint)(state.doc, pos, _schema.schema.nodes.citation, { data: citationData });
 	var tr = state.tr.insert(newPoint, newNode);
-	tr.setMeta('createdReference');
+	tr.setMeta('createdReference', citationID);
 	engine.addCitation(citationData);
 	return tr;
 };

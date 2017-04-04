@@ -79,7 +79,7 @@ const createReference = (citationData, state, engine) => {
 	// tries to find the closest place to insert this note
 	const newPoint = insertPoint(state.doc, pos, schema.nodes.citation, {data: citationData});
 	let tr = state.tr.insert(newPoint, newNode);
-	tr.setMeta('createdReference');
+	tr.setMeta('createdReference', citationID);
 	engine.addCitation(citationData);
 	return tr;
 }

@@ -1,7 +1,6 @@
 import { schema } from '../prosemirror-setup';
 
 exports.createMarkdownMention = function(cm, selectedObject) {
-		// console.log('Got ', selectedObject);
 		const currentCursor = cm.getCursor();
 		const currentLine = cm.getLine(currentCursor.line);
 		const nextChIndex = currentCursor.ch;
@@ -79,7 +78,6 @@ exports.createRichMention = function(editor, selectedObject, start, end) {
 
 	let text, url, filename;
 
-	console.log('Selected object', selectedObject);
 	switch (selectedObject.itemType) {
 		case 'file':
 			filename = selectedObject.name;
@@ -91,7 +89,6 @@ exports.createRichMention = function(editor, selectedObject, start, end) {
 			insertMention({ view: editor.view, start, end, text, url, type: 'pub' });
 			break;
 		case 'reference':
-			console.log('CHOSE', selectedObject);
 			insertReference({ view: editor.view, start, end, citationData: selectedObject });
 			break;
 		case 'user':
