@@ -121,7 +121,7 @@ var CitationEngine = function () {
       _this.citeproc.updateItems(_this.itemIDs, true);
     };
 
-    this.getBibliography = function (itemIDs) {
+    this.getBibliography = function (itemIDs, strip) {
       if (!_this.citeproc) {
         return null;
       }
@@ -139,7 +139,8 @@ var CitationEngine = function () {
             var extractRegex = /\s*\<div[^>]*\>(.*)\<\/div.*\>\s*/;
             var bib = bibArray.map(function (bibEntry, index) {
               if (bibEntry) {
-                return { text: (0, _striptags2.default)(bibEntry), id: entries[index] };
+                return { text: bibEntry, id: entries[index] };
+                // return {text: striptags(bibEntry), id: entries[index]};
               }
               return null;
             });

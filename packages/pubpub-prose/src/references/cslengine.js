@@ -121,7 +121,7 @@ class CitationEngine {
     return null;
   }
 
-  getBibliography = (itemIDs) => {
+  getBibliography = (itemIDs, strip) => {
     if (!this.citeproc) {
       return null;
     }
@@ -136,7 +136,8 @@ class CitationEngine {
         const extractRegex = /\s*\<div[^>]*\>(.*)\<\/div.*\>\s*/;
         const bib = bibArray.map((bibEntry, index) => {
           if (bibEntry) {
-            return {text: striptags(bibEntry), id: entries[index]};
+            return {text: bibEntry, id: entries[index]};
+            // return {text: striptags(bibEntry), id: entries[index]};
           }
           return null;
         });

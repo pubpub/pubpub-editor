@@ -1,7 +1,5 @@
 import React, {PropTypes} from 'react';
 
-let styles = {};
-
 export const CitationsComponent = React.createClass({
 	propTypes: {
 		value: PropTypes.string,
@@ -48,12 +46,9 @@ export const CitationsComponent = React.createClass({
 					<div>
 		        <h3>Citations: </h3>
 						{bib.map((bibItem) => {
-
 							return (<div className="pub-citation">
 								<span dangerouslySetInnerHTML={{__html:bibItem.text}}></span>
-								{/*
-								<button type="button" className="pt-button pt-icon-cross pt-minimal pub-citation-btn" onClick={this.deleteClick}></button>
-								*/}
+								{/*<button type="button" className="pt-button pt-icon-cross pt-minimal pub-citation-btn" onClick={this.deleteClick}></button>*/}
 								</div>);
 						})}
 					</div>
@@ -69,26 +64,5 @@ export const CitationsComponent = React.createClass({
 		return this.renderDisplay();
 	}
 });
-
-styles = {
-  wrapper: {
-    backgroundColor: 'blue',
-  },
-  display: {
-
-  },
-  editing: function({clientWidth}) {
-    return {
-      display: 'inline',
-      minWidth: '100px',
-      fontSize: '12px',
-      margin: '0px',
-      padding: '0px',
-      lineHeight: '1em',
-      border: '2px solid #BBBDC0',
-      borderRadius: '2px',
-    }
-  },
-};
 
 export default CitationsComponent;

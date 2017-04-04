@@ -27,10 +27,6 @@
     background-color: white;
 }
 
-.pub-citation:hover {
-  background-color: #CED9E0;
-}
-
 .pub-citation-btn {
   opacity: 0.5;
   float: right;
@@ -241,11 +237,6 @@ li.ProseMirror-selectednode:after {
 TESTING CSS
 */
 
-.csl-entry {
-  display: list-item;
-  list-style-type: decimal;
-  list-style-position: inside;
-}
 
 .reference {
   border: 1px solid transparent;
@@ -356,8 +347,17 @@ textarea::-webkit-resizer {
   display: none;
 }
 
-.pub-reference-popover .csl-entry {
+.csl-entry {
   display: block;
+}
+
+.csl-left-margin {
+  display: inline;
+  padding-right: 5px;
+}
+
+.csl-right-inline {
+  display: inline;
 }
 
 
