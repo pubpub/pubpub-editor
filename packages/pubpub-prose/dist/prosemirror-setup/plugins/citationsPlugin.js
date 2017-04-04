@@ -42,22 +42,21 @@ var findCitationNode = function findCitationNode(doc, citationID) {
 	if (!foundNode) {
 		return null;
 	}
-	var from = foundNode.index + 1;
+	var from = foundNode.index;
 	var to = from + foundNode.node.nodeSize;
 	return { from: from, to: to };
 };
 
-// need to check if there are other references with nodes?
 var removeDecoration = function removeDecoration(citationID, engine, view) {
-	// engine.removeCitation(citationID);
-
-	// NEED TO CHECK IF THERE ARE OTHERS
-
 	var action = function action() {
 		var doc = view.state.doc;
 		var foundNodePos = findCitationNode(doc, citationID);
-		if (foundNodePos) {
-			var transaction = view.state.tr.delete(foundNodePos.from, foundNodePos.to);
+		var countReferences = (0, _docOperations.findNodesByFunc)(doc, function (_node) {
+			return _node.type === 'reference' && _node.attrs.citationID === citationID;
+		});
+
+		if (foundNodePos && countReferences.length === 0) {
+			var transaction = view.state.tr.deleteRange(foundNodePos.from, foundNodePos.to);
 			transaction.setMeta('deleteReference', citationID);
 			view.dispatch(transaction);
 		}
@@ -130,7 +129,7 @@ var citationsPlugin = new _prosemirrorState.Plugin({
 				return { decos: blueSet, engine: state.engine };
 			} else if (transaction.mapping) {
 				var _newSet = set.map(transaction.mapping, editorState.doc, { onRemove: function onRemove(deco) {
-						removeDecoration(deco.citationID, state.engine, _this.spec.view);
+						removeDecoration(deco.citationID, state.engine, _this.spec.editorView);
 					} });
 				return { decos: _newSet, engine: state.engine };
 			}

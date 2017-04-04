@@ -83,8 +83,6 @@ var CitationEngine = function () {
 
     this.getShortForm = function (citationID) {
 
-      console.log('Trying this', citationID);
-
       if (!_this.items[citationID]) {
         return null;
       }

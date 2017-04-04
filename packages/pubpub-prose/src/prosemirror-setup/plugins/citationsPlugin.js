@@ -1,4 +1,4 @@
-import { findNodeByAttr, findNodeByFunc, findNodesWithIndex } from '../../utils/doc-operations';
+import { findNodeByAttr, findNodeByFunc, findNodesByFunc, findNodesWithIndex } from '../../utils/doc-operations';
 
 import { CitationEngine } from '../../references';
 import { Plugin } from 'prosemirror-state';
@@ -28,23 +28,19 @@ const findCitationNode = (doc, citationID) => {
 	if (!foundNode) {
 		return null;
 	}
-	const from = foundNode.index + 1;
+	const from = foundNode.index;
 	const to = from + foundNode.node.nodeSize;
 	return {from, to};
 }
 
-
-// need to check if there are other references with nodes?
 const removeDecoration = (citationID, engine, view) => {
-	// engine.removeCitation(citationID);
-
-	// NEED TO CHECK IF THERE ARE OTHERS
-
 	const action = () => {
 		const doc = view.state.doc;
 		const foundNodePos = findCitationNode(doc, citationID);
-		if (foundNodePos) {
-			const transaction = view.state.tr.delete(foundNodePos.from, foundNodePos.to);
+		const countReferences = findNodesByFunc(doc, (_node) => (_node.type === 'reference' && _node.attrs.citationID === citationID));
+
+		if (foundNodePos && countReferences.length === 0) {
+			const transaction = view.state.tr.deleteRange(foundNodePos.from, foundNodePos.to);
 			transaction.setMeta('deleteReference', citationID);
 			view.dispatch(transaction);
 		}
@@ -52,7 +48,6 @@ const removeDecoration = (citationID, engine, view) => {
 
 	window.setTimeout(action, 0);
 	return;
-
 }
 
 const createDecorations = (doc, set, engine) => {
@@ -112,14 +107,13 @@ const citationsPlugin = new Plugin({
 				return {decos: newSet, engine: state.engine};
 			}
 
-
 			let set = state.decos;
 			if (transaction.getMeta('createdReference') || transaction.getMeta('deleteReference') || transaction.getMeta('history$')) {
 				const blueSet = createDecorations(editorState.doc, state.decos, state.engine);
 				return {decos: blueSet, engine: state.engine};
 			} else if (transaction.mapping) {
 				const newSet = set.map(transaction.mapping, editorState.doc,
-					{ onRemove: (deco) => { removeDecoration(deco.citationID, state.engine, this.spec.view) } });
+					{ onRemove: (deco) => { removeDecoration(deco.citationID, state.engine, this.spec.editorView) } });
 				return {decos: newSet, engine: state.engine};
 			}
 

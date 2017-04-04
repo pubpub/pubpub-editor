@@ -55,8 +55,6 @@ class CitationEngine {
 
   getShortForm = (citationID) => {
 
-    console.log('Trying this', citationID);
-
     if (!this.items[citationID]) {
       return null;
     }

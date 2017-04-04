@@ -1,5 +1,3 @@
-
-
 const loopThroughNodes = (doc, nodeFunc) => {
 	const nodeLoop = (node, offset, index) => {
 		nodeFunc(node, offset, index);
@@ -42,10 +40,19 @@ const findNodeByFunc = (doc, nodeEval) => {
 			foundNode = {node, index};
 		}
 	};
-
 	doc.descendants(nodeMatch);
-	// loopThroughNodes(doc, nodeMatch);
   return foundNode;
+};
+
+const findNodesByFunc = (doc, nodeEval) => {
+	const foundNodes = [];
+	const nodeMatch = (node, index, parent) => {
+		if (nodeEval(node)) {
+			foundNodes.push({node, index});
+		}
+	};
+	doc.descendants(nodeMatch);
+  return foundNodes;
 };
 
 
@@ -79,3 +86,4 @@ exports.findNodes = findNodes;
 exports.findNodesWithIndex = findNodesWithIndex;
 exports.findNodeByAttr = findNodeByAttr;
 exports.findNodeByFunc = findNodeByFunc;
+exports.findNodesByFunc = findNodesByFunc;
