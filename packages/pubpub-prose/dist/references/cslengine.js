@@ -22,6 +22,8 @@ var _striptags2 = _interopRequireDefault(_striptags);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var CitationEngine = function () {
@@ -35,6 +37,7 @@ var CitationEngine = function () {
       var itemIDs = refItems.map(function (item) {
         return item.id;
       });
+      itemIDs = [].concat(_toConsumableArray(new Set(itemIDs)));
       var items = {};
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
@@ -81,6 +84,23 @@ var CitationEngine = function () {
       return _this.items;
     };
 
+    this.buildState = function (citations) {
+      var buildCitation = function buildCitation(citationID, index) {
+        return {
+          "citationID": citationID,
+          "citationItems": [{
+            "id": citationID
+          }],
+          "properties": {
+            "noteIndex": index
+          }
+        };
+      };
+      var citationObjects = citations.map(buildCitation);
+      var bib = _this.citeproc.rebuildProcessorState(citationObjects, 'text', []);
+      return bib;
+    };
+
     this.getShortForm = function (citationID) {
 
       if (!_this.items[citationID]) {
@@ -90,33 +110,42 @@ var CitationEngine = function () {
       try {
 
         var citation_object = {
-          // items that are in a citation that we want to add. in this case,
-          // there is only one citation object, and we know where it is in
-          // advance.
+          "citationID": citationID,
           "citationItems": [{
             "id": citationID
           }],
           "properties": {
             "noteIndex": 0
           }
-
         };
 
         var citation = _this.items[citationID];
         var cluster = _this.citeproc.appendCitationCluster(citation_object, true);
+
         if (cluster && cluster.length > 0) {
-          return cluster[0][1];
+          var foundCluster = void 0;
+          if (cluster.length === 1) {
+            foundCluster = cluster[0];
+          } else {
+            foundCluster = cluster.find(function (_cluster) {
+              return _cluster[2] === citationID;
+            });
+          }
+          return foundCluster[1];
         }
         return null;
       } catch (err) {
-        return null;
+        console.log('Error making reference!', err);
+        return "";
       }
     };
 
     this.addCitation = function (citation) {
-      _this.items[citation.id] = citation;
-      _this.itemIDs.push(citation.id);
-      _this.citeproc.updateItems(_this.itemIDs, true);
+      if (!_this.items[citation.id]) {
+        _this.items[citation.id] = citation;
+        _this.itemIDs.push(citation.id);
+        _this.citeproc.updateItems(_this.itemIDs, true);
+      }
     };
 
     this.getBibliography = function (itemIDs, strip) {

@@ -32,7 +32,8 @@ class CitationEngine {
 
   setBibliography = (refItems) => {
     const citeproc = new CSL.Engine(this.sys, styles[this.style]);
-    const itemIDs = refItems.map((item) => item.id);
+    let itemIDs = refItems.map((item) => item.id);
+    itemIDs = [ ...new Set(itemIDs) ];
     const items = {};
     for (const item of refItems) {
       items[item.id] = item;
@@ -53,6 +54,25 @@ class CitationEngine {
     return this.items;
   }
 
+  buildState = (citations) => {
+    const buildCitation = (citationID, index) => {
+      return {
+          "citationID": citationID,
+          "citationItems": [
+              {
+                  "id": citationID
+              }
+          ],
+          "properties": {
+              "noteIndex": index,
+          },
+      };
+    }
+    const citationObjects = citations.map(buildCitation);
+    const bib = this.citeproc.rebuildProcessorState(citationObjects, 'text', []);
+    return bib;
+  }
+
   getShortForm = (citationID) => {
 
     if (!this.items[citationID]) {
@@ -61,39 +81,48 @@ class CitationEngine {
 
     try {
 
-      var citation_object =
+      const citation_object =
       {
-          // items that are in a citation that we want to add. in this case,
-          // there is only one citation object, and we know where it is in
-          // advance.
+          "citationID": citationID,
           "citationItems": [
               {
                   "id": citationID
               }
           ],
           "properties": {
-              "noteIndex": 0
-          }
-
-      }
+              "noteIndex": 0,
+          },
+      };
 
 
       const citation = this.items[citationID];
       const cluster = this.citeproc.appendCitationCluster(citation_object, true);
+
       if (cluster && cluster.length > 0) {
-        return cluster[0][1];
+        let foundCluster;
+        if (cluster.length === 1) {
+          foundCluster = cluster[0];
+        } else {
+          foundCluster = cluster.find((_cluster) => {
+            return (_cluster[2] === citationID);
+          });
+        }
+        return foundCluster[1];
       }
       return null;
 
     } catch (err) {
-      return null;
+      console.log('Error making reference!', err);
+      return "";
     }
   }
 
   addCitation = (citation) =>  {
-    this.items[citation.id] = citation;
-    this.itemIDs.push(citation.id);
-    this.citeproc.updateItems(this.itemIDs, true);
+    if (!this.items[citation.id]) {
+      this.items[citation.id] = citation;
+      this.itemIDs.push(citation.id);
+      this.citeproc.updateItems(this.itemIDs, true);
+    }
   }
 
   getSingleBibliography(itemID) {

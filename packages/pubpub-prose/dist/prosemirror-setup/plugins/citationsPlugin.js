@@ -37,7 +37,7 @@ var findCitationNode = function findCitationNode(doc, citationID) {
 		return null;
 	}
 	var foundNode = (0, _docOperations.findNodeByFunc)(doc, function (_node) {
-		return _node.attrs.citationID === citationID;
+		return _node.type.name === 'citation' && _node.attrs.citationID === citationID;
 	});
 	if (!foundNode) {
 		return null;
@@ -52,7 +52,7 @@ var removeDecoration = function removeDecoration(citationID, engine, view) {
 		var doc = view.state.doc;
 		var foundNodePos = findCitationNode(doc, citationID);
 		var countReferences = (0, _docOperations.findNodesByFunc)(doc, function (_node) {
-			return _node.type === 'reference' && _node.attrs.citationID === citationID;
+			return _node.type.name === 'reference' && _node.attrs.citationID === citationID;
 		});
 
 		if (foundNodePos && countReferences.length === 0) {
@@ -61,21 +61,22 @@ var removeDecoration = function removeDecoration(citationID, engine, view) {
 			view.dispatch(transaction);
 		}
 	};
-
 	window.setTimeout(action, 0);
 	return;
 };
 
 var createDecorations = function createDecorations(doc, set, engine) {
 	var nodes = (0, _docOperations.findNodesWithIndex)(doc, 'reference') || [];
-	var decos = nodes.map(function (node) {
-		var label = engine.getShortForm(node.node.attrs.citationID);
+	var decos = nodes.map(function (node, index) {
+		var citationID = node.node.attrs.citationID;
+		var label = engine.getShortForm(citationID);
 		if (label) {
 			var deco = createReferenceDecoration(node.index, node.node, label);
 			return deco;
 		}
 		return null;
 	});
+
 	var newSet = DecorationSet.create(doc, decos);
 	return newSet;
 };
@@ -106,7 +107,6 @@ var createAllCitations = function createAllCitations(engine, doc, decorations) {
 
 var citationsPlugin = new _prosemirrorState.Plugin({
 	state: {
-		// Need to parse citations at the bottom of the document
 		init: function init(config, instance) {
 			var engine = new _references.CitationEngine();
 			var set = createAllCitations(engine, instance.doc, DecorationSet.empty);
@@ -118,20 +118,27 @@ var citationsPlugin = new _prosemirrorState.Plugin({
 		apply: function apply(transaction, state, prevEditorState, editorState) {
 			var _this = this;
 
-			if (transaction.getMeta('docReset')) {
-				var newSet = createAllCitations(state.engine, editorState.doc, state.decos);
-				return { decos: newSet, engine: state.engine };
-			}
+			/*
+   if (transaction.getMeta('docReset')) {
+   	const newSet = createAllCitations(state.engine, editorState.doc, state.decos);
+   	return {decos: newSet, engine: state.engine};
+   }
+   */
 
 			var set = state.decos;
+
+			if (transaction.getMeta('history$')) {
+				console.log('got history', transaction);
+			}
+
 			if (transaction.getMeta('createdReference') || transaction.getMeta('deleteReference') || transaction.getMeta('history$')) {
 				var blueSet = createDecorations(editorState.doc, state.decos, state.engine);
 				return { decos: blueSet, engine: state.engine };
 			} else if (transaction.mapping) {
-				var _newSet = set.map(transaction.mapping, editorState.doc, { onRemove: function onRemove(deco) {
+				var newSet = set.map(transaction.mapping, editorState.doc, { onRemove: function onRemove(deco) {
 						removeDecoration(deco.citationID, state.engine, _this.spec.editorView);
 					} });
-				return { decos: _newSet, engine: state.engine };
+				return { decos: newSet, engine: state.engine };
 			}
 
 			return { decos: set, engine: state.engine };
@@ -150,6 +157,7 @@ var citationsPlugin = new _prosemirrorState.Plugin({
 			}
 		};
 	},
+
 	appendTransaction: function appendTransaction(transactions, oldState, newState) {
 		var firstTransaction = transactions[0];
 		if (!firstTransaction) {

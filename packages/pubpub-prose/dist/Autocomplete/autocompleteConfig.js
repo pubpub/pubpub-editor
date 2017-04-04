@@ -18,7 +18,7 @@ exports.createMarkdownMention = function (cm, selectedObject) {
 			content = '[' + selectedObject.title + '](/pub/' + selectedObject.slug + ')';
 			break;
 		case 'reference':
-			content = '[@' + selectedObject.key + ']';
+			content = '[@' + selectedObject.id + ']';
 			break;
 		case 'user':
 			content = '[' + selectedObject.firstName + ' ' + selectedObject.lastName + '](/user/' + selectedObject.username + ')';

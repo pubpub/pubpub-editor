@@ -14,7 +14,6 @@ Problem:
 	- problem: remote diffs do not have meta data
 */
 
-
 const createReferenceDecoration = (index, node, label) => {
 	return Decoration.node(index , index + 1, {}, { citationID: node.attrs.citationID, label });
 }
@@ -24,20 +23,20 @@ const findCitationNode = (doc, citationID) => {
 	if (!citationsNode) {
 		return null;
 	}
-	let foundNode = findNodeByFunc(doc, (_node) => (_node.attrs.citationID === citationID));
+	let foundNode = findNodeByFunc(doc, (_node) => (_node.type.name === 'citation' && _node.attrs.citationID === citationID));
 	if (!foundNode) {
 		return null;
 	}
 	const from = foundNode.index;
 	const to = from + foundNode.node.nodeSize;
-	return {from, to};
+	return { from, to };
 }
 
 const removeDecoration = (citationID, engine, view) => {
 	const action = () => {
 		const doc = view.state.doc;
 		const foundNodePos = findCitationNode(doc, citationID);
-		const countReferences = findNodesByFunc(doc, (_node) => (_node.type === 'reference' && _node.attrs.citationID === citationID));
+		const countReferences = findNodesByFunc(doc, (_node) => (_node.type.name === 'reference' && _node.attrs.citationID === citationID));
 
 		if (foundNodePos && countReferences.length === 0) {
 			const transaction = view.state.tr.deleteRange(foundNodePos.from, foundNodePos.to);
@@ -45,21 +44,22 @@ const removeDecoration = (citationID, engine, view) => {
 			view.dispatch(transaction);
 		}
 	}
-
 	window.setTimeout(action, 0);
 	return;
 }
 
 const createDecorations = (doc, set, engine) => {
 	const nodes = findNodesWithIndex(doc, 'reference') || [];
-	const decos = nodes.map((node) => {
-		const label = engine.getShortForm(node.node.attrs.citationID);
+	const decos = nodes.map((node, index) => {
+		const citationID = node.node.attrs.citationID;
+		const label = engine.getShortForm(citationID);
 		if (label) {
 			const deco = createReferenceDecoration(node.index, node.node, label);
 			return deco;
 		}
 		return null;
 	});
+
 	const newSet = DecorationSet.create(doc, decos);
 	return newSet;
 }
@@ -89,9 +89,9 @@ const createAllCitations = (engine, doc, decorations) => {
 	return createDecorations(doc, decorations, engine);
 }
 
+
 const citationsPlugin = new Plugin({
 	state: {
-		// Need to parse citations at the bottom of the document
 		init(config, instance) {
 			const engine = new CitationEngine();
 			const set = createAllCitations(engine, instance.doc, DecorationSet.empty);
@@ -102,12 +102,19 @@ const citationsPlugin = new Plugin({
 		},
 		apply(transaction, state, prevEditorState, editorState) {
 
+			/*
 			if (transaction.getMeta('docReset')) {
 				const newSet = createAllCitations(state.engine, editorState.doc, state.decos);
 				return {decos: newSet, engine: state.engine};
 			}
+			*/
 
 			let set = state.decos;
+
+			if (transaction.getMeta('history$')) {
+				console.log('got history', transaction);
+			}
+
 			if (transaction.getMeta('createdReference') || transaction.getMeta('deleteReference') || transaction.getMeta('history$')) {
 				const blueSet = createDecorations(editorState.doc, state.decos, state.engine);
 				return {decos: blueSet, engine: state.engine};
@@ -131,6 +138,7 @@ const citationsPlugin = new Plugin({
 			}
 		}
 	},
+
 	appendTransaction: function (transactions, oldState, newState)  {
 		const firstTransaction = transactions[0];
 		if (!firstTransaction) {

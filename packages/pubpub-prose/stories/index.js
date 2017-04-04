@@ -1,4 +1,4 @@
-import { SingleMention, SingleReference, TableMarkdown, SampleMarkdown } from './sampledocs';
+import { ReferenceOrdering, SampleMarkdown, SingleMention, SingleReference, TableMarkdown } from './sampledocs';
 
 import FullEditor from './storybookFullEditor';
 import MarkdownEditor from './storybookMarkdownEditor';
@@ -35,5 +35,8 @@ storiesOf('Full Editor', module)
 ))
 .add('Full Markdown Test', () => (
 	<FullEditor mode={'markdown'} initialContent={SampleMarkdown} />
+))
+.add('Reference Ordering Test', () => (
+	<FullEditor mode={'markdown'} initialContent={ReferenceOrdering} />
 ))
 ;
