@@ -205,13 +205,12 @@ function ppubToPandoc(ppub, options) {
 				caption = node.content && node.content[0] && node.content[0].content[0] ? node.content[0].content[0].text : '';
 			}
 			newNode.c[1] = caption ? createTextNodes(caption) : [];
-			newNode.c[2] = [node.attrs.url || node.attrs.filename || node.attrs.data.content.url, node.attrs.figureName || ''];
+			newNode.c[2] = [node.attrs.url  || node.attrs.filename || node.attrs.data.content.url, node.attrs.figureName || ''];
 			break;
 			case 'citations':
 			// Create a header node that goes above that says 'References'
 
-			var bibContents = csltoBibtex(bibData);
-			if (bibContents.length !== 1) {
+			if (bibData.length !== 1) {
 				var aboveNode = { t: 'Header', c: [1, ['references', ['unnumbered'], []], [{ t:'Str', 'c':'References' }]]};
 				blocks.push(aboveNode)
 			}			// insert this node at the root
