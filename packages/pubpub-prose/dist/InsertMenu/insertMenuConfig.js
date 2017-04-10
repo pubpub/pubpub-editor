@@ -64,6 +64,18 @@ function insertEmbed(view, filename, url) {
 	view.dispatch(transaction);
 }
 
+function canUseInsertMenu(view) {
+	var state = view.state;
+	var nodeType = _prosemirrorSetup.schema.nodes.paragraph;
+	var attrs = {};
+	var $from = state.selection.$from;
+	for (var d = $from.depth; d >= 0; d--) {
+		var index = $from.index(d);
+		if ($from.node(d).canReplaceWith(index, index, nodeType, attrs)) return true;
+	}
+	return false;
+}
+
 function getMenuItems(editor, openDialog) {
 
 	if (!editor) {
@@ -109,3 +121,4 @@ exports.default = getMenuItems;
 
 exports.insertEmbed = insertEmbed;
 exports.insertReference = insertReference;
+exports.canUseInsertMenu = canUseInsertMenu;
