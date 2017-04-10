@@ -1,3 +1,5 @@
+import samplepolicy from './samplepolicy';
+
 export function s3Upload(file, progressEvent, finishEvent, index) {
 	function beginUpload() {
 		let folderName = '';
@@ -12,24 +14,33 @@ export function s3Upload(file, progressEvent, finishEvent, index) {
 		formData.append('key', filename);
 		formData.append('AWSAccessKeyId', 'AKIAJQ5MNLCTIMY2ZF7Q');
 		formData.append('acl', 'public-read');
-		formData.append('policy', JSON.parse(this.responseText).policy);
-		formData.append('signature', JSON.parse(this.responseText).signature);
+		formData.append('policy', samplepolicy.policy);
+		formData.append('signature', samplepolicy.signature);
 		formData.append('Content-Type', fileType);
 		formData.append('success_action_status', '200');
 		formData.append('file', file);
 		const sendFile = new XMLHttpRequest();
 		sendFile.upload.addEventListener('progress', (evt)=>{
-			progressEvent(evt, index);
+			if (progressEvent) {
+				progressEvent(evt, index);
+			}
 		}, false);
+
 		sendFile.upload.addEventListener('load', (evt)=>{
-			finishEvent(evt, index, file.type, filename, file.name);
+			if (finishEvent) {
+				const fileURL = 'https://assets.pubpub.org/' + filename;
+				finishEvent(evt, index, file.type, filename, file.name, fileURL);
+			}
 		}, false);
 		sendFile.open('POST', 'https://s3-external-1.amazonaws.com/assets.pubpub.org', true);
 		sendFile.send(formData);
 	}
+	beginUpload();
 
+	/*
 	const getPolicy = new XMLHttpRequest();
 	getPolicy.addEventListener('load', beginUpload);
-	getPolicy.open('GET', '/api/uploadPolicy?contentType=' + file.type);
+	getPolicy.open('GET', 'https://www.pubpub.org/api/uploadPolicy?contentType=' + file.type);
 	getPolicy.send();
+	*/
 }

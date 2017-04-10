@@ -7,19 +7,6 @@ import { RichEditor as ProseEditor } from '../prosemirror-setup';
 // import ReactDOM from 'react-dom';
 import { createRichMention } from '../Autocomplete/autocompleteConfig';
 
-/*
-Props outline:
-<Editor
-	mentionsComponent={component}
-	files={array}, // Array of file objects.
-	handleFileUpload={function}
-	fileUploadComplete={object} // Data about completed file upload
-	onChange={function} // To update editorState which is managed above Editor
-	initialState={object}
-	/>
-*/
-
-
 export const RichEditor = React.createClass({
 	propTypes: {
 		initialContent: PropTypes.object,
@@ -38,8 +25,6 @@ export const RichEditor = React.createClass({
 
 	getInitialState() {
 		return {
-			// docJSON: null,
-			// fileMap: null,
 			visible: undefined,
 			top: 0,
 			left: 0,
@@ -117,9 +102,15 @@ export const RichEditor = React.createClass({
 				fileMap: fileMap,
 				referencesList: this.props.localFiles,
 			},
-			// components: {
-			// 	suggestComponent: mentionsComponent,
-			// },
+			props: {
+				fileMap: fileMap,
+				referencesList: this.props.localFiles,
+				createFile: this.props.handleFileUpload,
+				createReference: this.props.handleReferenceAdd,
+				captureError: this.props.onError,
+				onChange: this.onChange,
+				updateMentions: this.updateMentions,
+			},
 			handlers: {
 				createFile: this.props.handleFileUpload,
 				captureError: this.props.onError,

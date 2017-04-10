@@ -27,18 +27,6 @@ var _autocompleteConfig = require('../Autocomplete/autocompleteConfig');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/*
-Props outline:
-<Editor
-	mentionsComponent={component}
-	files={array}, // Array of file objects.
-	handleFileUpload={function}
-	fileUploadComplete={object} // Data about completed file upload
-	onChange={function} // To update editorState which is managed above Editor
-	initialState={object}
-	/>
-*/
-
 var RichEditor = exports.RichEditor = _react2.default.createClass({
 	displayName: 'RichEditor',
 
@@ -59,8 +47,6 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 
 	getInitialState: function getInitialState() {
 		return {
-			// docJSON: null,
-			// fileMap: null,
 			visible: undefined,
 			top: 0,
 			left: 0,
@@ -133,9 +119,15 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 				fileMap: fileMap,
 				referencesList: this.props.localFiles
 			},
-			// components: {
-			// 	suggestComponent: mentionsComponent,
-			// },
+			props: {
+				fileMap: fileMap,
+				referencesList: this.props.localFiles,
+				createFile: this.props.handleFileUpload,
+				createReference: this.props.handleReferenceAdd,
+				captureError: this.props.onError,
+				onChange: this.onChange,
+				updateMentions: this.updateMentions
+			},
 			handlers: {
 				createFile: this.props.handleFileUpload,
 				captureError: this.props.onError,

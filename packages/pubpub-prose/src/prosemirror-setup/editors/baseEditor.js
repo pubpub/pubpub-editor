@@ -13,7 +13,7 @@ class BaseEditor {
 		this.reconfigure = this.reconfigure.bind(this);
 	}
 
-	create({ place, contents, plugins, config, components: { suggestComponent } = {}, handlers: { createFile, onChange, captureError, updateMentions } }) {
+	create({ place, contents, plugins, props, config, components: { suggestComponent } = {}, handlers: { createFile, onChange, captureError, updateMentions } }) {
 		const { clipboardParser, clipboardSerializer, transformPastedHTML } = require('../clipboard');
 		const { markdownParser } = require('../../markdown/markdownParser');
 
@@ -72,7 +72,8 @@ class BaseEditor {
 				reference: (node, view, getPos, decorations) => new ReferenceView(node, view, getPos, { decorations, block: false }),
 				citations: (node, view, getPos) => new CitationsView(node, view, getPos, { block: false }),
 				iframe: (node, view, getPos) => new IframeView(node, view, getPos, {}),
-			}
+			},
+			...props
 		});
 
 		this.menuComponent = ReactDOM.render(<BaseMenu createFile={createFile} menu={menu.fullMenu} view={this.view} />, reactMenu);

@@ -55,7 +55,6 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 		reference: {node: 'reference'},
 
 		link: {block: 'mention', attrs: tok => {
-			console.log('got reference!!');
 				let text, type, link;
 				const titleAttr = tok.attrGet('title');
 				const hrefAttr = tok.attrGet('href');
@@ -124,7 +123,6 @@ const closeRow = function(state, tok) {
 };
 
 const addEmbed = function(state, tok) {
-	console.log('Got iamge!', tok);
 	const topNode = state.top();
 	let didClose = false;
 	if (topNode.type.name === 'paragraph') {

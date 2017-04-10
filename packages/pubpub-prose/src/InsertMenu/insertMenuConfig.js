@@ -1,60 +1,70 @@
-// import { toggleMark, lift, joinUp, selectParentNode, wrapIn, setBlockType } from 'prosemirror-commands';
 import { createTable } from 'prosemirror-schema-table';
-
 import { schema } from '../prosemirror-setup';
+
+/* -------------- */
+/* Horizontal Rule */
+/* -------------- */
+function insertHorizontalRule(view) {
+	view.dispatch(view.state.tr.replaceSelectionWith(schema.nodes.horizontal_rule.create()));
+}
+
+/* -------------- */
+/* Latex Equation */
+/* -------------- */
+function insertLatexEquation(view) {
+	const newNode = schema.nodes.equation.create({ content: '\\sum_ix^i' });
+	view.dispatch(view.state.tr.replaceSelectionWith(newNode));
+}
+
+/* -------------- */
+/* Table */
+/* -------------- */
+function insertTable(view) {
+	const rows = 2;
+	const cols = 2;
+	view.dispatch(view.state.tr.replaceSelectionWith(createTable(schema.nodes.table, rows, cols)));
+}
+
+/* -------------- */
+/* Reference */
+/* -------------- */
+function insertReference(view, citationObject) {
+	// view.props.
+	view.dispatch(view.state.tr.setMeta('createCitation', citationObject));
+	view.props.createReference(citationObject)
+}
+
+/* -------------- */
+/* Embed */
+/* -------------- */
+function insertEmbed(view, filename, url) {
+	// const filename = 'test.jpg'; // Should be passed in
+	console.log('INSERTING', filename, url);
+	// const url = 'http://cdn3-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-5.jpg';
+	console.log('filename is', filename)
+	const textnode = schema.text('Enter caption.');
+	const captionNode = schema.nodes.caption.create({}, textnode);
+	const embedNode = schema.nodes.embed.create(
+		{
+			filename,
+			align: 'full',
+			size: '50%',
+		},
+		captionNode
+	);
+
+	let transaction = view.state.tr.replaceSelectionWith(embedNode);
+	transaction = transaction.setMeta('uploadedFile', { filename, url });
+	view.dispatch(transaction);
+}
+
+
 
 function getMenuItems(editor, openDialog) {
 
-	/* Horizontal Rule */
-	/* -------------- */
-	function insertHorizontalRule() {
-		editor.view.dispatch(editor.view.state.tr.replaceSelectionWith(schema.nodes.horizontal_rule.create()));
+	if (!editor) {
+		return [];
 	}
-
-	/* Latex Equation */
-	/* -------------- */
-	function insertLatexEquation() {
-		const newNode = schema.nodes.equation.create({ content: '\\sum_ix^i' });
-		editor.view.dispatch(editor.view.state.tr.replaceSelectionWith(newNode));
-	}
-
-	/* -------------- */
-	/* Table */
-	/* -------------- */
-	function insertTable() {
-		const rows = 2;
-		const cols = 2;
-		editor.view.dispatch(editor.view.state.tr.replaceSelectionWith(createTable(schema.nodes.table, rows, cols)));
-	}
-
-	/* Reference */
-	/* -------------- */
-	function insertReference(citationObject) {
-		editor.view.dispatch(editor.view.state.tr.setMeta('createCitation', citationObject));
-	}
-
-	/* Embed */
-	/* -------------- */
-	function insertEmbed(filename) {
-		// const filename = 'test.jpg'; // Should be passed in
-		const url = 'http://cdn3-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-5.jpg'; // Should be passed in
-		console.log('filename is', filename)
-		const textnode = schema.text('Enter caption.');
-		const captionNode = schema.nodes.caption.create({}, textnode);
-		const embedNode = schema.nodes.embed.create(
-			{
-				filename,
-				align: 'full',
-				size: '50%',
-			}, 
-			captionNode
-		);
-
-		let transaction = editor.view.state.tr.replaceSelectionWith(embedNode);
-		transaction = transaction.setMeta('uploadedFile', { filename, url });
-		editor.view.dispatch(transaction);
-	}
-	
 
 	const menuItems = [
 		{
@@ -66,29 +76,29 @@ function getMenuItems(editor, openDialog) {
 			// 	</label>
 			// </li>,
 			text: 'Upload Files',
-			run: ()=> { openDialog('files', insertEmbed); }, 
+			run: ()=> { openDialog('files', insertEmbed.bind(null, editor.view)); },
 		},
 		{
 			icon: 'pt-icon-h1',
 			text: 'Insert Table',
-			run: insertTable,
+			run: insertTable.bind(null, editor.view),
 		},
 		{
 			icon: 'pt-icon-h1',
 			text: 'Insert Equation',
-			run: insertLatexEquation,
+			run: insertLatexEquation.bind(null, editor.view),
 		},
 		{
 			icon: 'pt-icon-h1',
 			text: 'Insert Horizontal Line',
-			run: insertHorizontalRule,
+			run: insertHorizontalRule.bind(null, editor.view),
 		},
 		{
 			icon: 'pt-icon-h1',
 			text: 'Add References',
-			run: ()=> { openDialog('references', insertReference); }, 
+			run: ()=> { openDialog('references', insertReference.bind(null, editor.view)); },
 		},
-		
+
 	];
 
 
@@ -96,3 +106,5 @@ function getMenuItems(editor, openDialog) {
 }
 
 export default getMenuItems;
+exports.insertEmbed = insertEmbed;
+exports.insertReference = insertReference;

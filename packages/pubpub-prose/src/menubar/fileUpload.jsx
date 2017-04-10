@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 import Dropzone from 'react-dropzone';
 import Radium from 'radium';
 import { URLToType } from '@pubpub/render-files';
-import { s3Upload } from '../utils/uploadFile';
+import { s3Upload } from '../../stories/utils/uploadFile';
 
 let styles;
 
@@ -56,7 +56,7 @@ export const FileUploadDialog = React.createClass({
 		this.setState({uploadRates: tempUploadRates});
 	},
 
-	onFileFinish: function(evt, index, type, filename, title) {
+	onFileFinish: function(evt, index, type, filename, url, title) {
 
 		const fileURL = 'https://assets.pubpub.org/' + filename;
 		const realFileName = filename.split('/').pop();

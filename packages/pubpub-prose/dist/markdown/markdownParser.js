@@ -77,7 +77,6 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 	reference: { node: 'reference' },
 
 	link: { block: 'mention', attrs: function attrs(tok) {
-			console.log('got reference!!');
 			var text = void 0,
 			    type = void 0,
 			    link = void 0;
@@ -146,7 +145,6 @@ var closeRow = function closeRow(state, tok) {
 };
 
 var addEmbed = function addEmbed(state, tok) {
-	console.log('Got iamge!', tok);
 	var topNode = state.top();
 	var didClose = false;
 	if (topNode.type.name === 'paragraph') {

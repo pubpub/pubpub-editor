@@ -5,6 +5,8 @@ import { localDiscussions, localFiles, localHighlights, localPages, localPubs, l
 // import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
 // import RichEditor from '../src/editorComponents/RichEditor';
 import FullEditor from '../src/editorComponents/FullEditor';
+import csltoBibtex from '../src/references/csltobibtex';
+import { s3Upload } from './utils/uploadFile';
 
 // requires style attributes that would normally be up to the wrapping library to require
 require('@blueprintjs/core/dist/blueprint.css');
@@ -48,21 +50,28 @@ export const StoryBookFullEditor = React.createClass({
 		this.setState({ content: newContent });
 	},
 
-	onFileUpload: function(file, callback) {
+	handleFileUpload: function(file, callback) {
 		// Do the uploading - then callback
-		callback('giphy.gif');
+		const onFinish = (evt, index, type, filename, title, url) => {
+			console.log(index, type, filename, name);
+			callback(title, url);
+		};
+		s3Upload(file, null, onFinish, 0);
 	},
 
-	onReferenceAdd: function(newCitationObject, callback) {
+	handleReferenceAdd: function(newCitationObject) {
+		console.log('made reference!', newCitationObject);
+		const bibtexString = csltoBibtex([newCitationObject]);
+		console.log('made bibtex!', bibtexString);
 		// Do the adding/creation to the bibtex file - then callback
-		callback(newCitationObject);
+		// callback(newCitationObject);
 	},
 
 	render: function() {
 		const editorProps = {
 			initialContent: this.state.initialContent,
 			onChange: this.onChange,
-			handleFileUpload: this.onFileUpload,
+			handleFileUpload: this.handleFileUpload,
 			handleReferenceAdd: this.onReferenceAdd,
 			localFiles: localFiles,
 			localPubs: localPubs,

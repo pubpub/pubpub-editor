@@ -90,6 +90,7 @@ var BaseEditor = function () {
 			var place = _ref.place,
 			    contents = _ref.contents,
 			    plugins = _ref.plugins,
+			    props = _ref.props,
 			    config = _ref.config,
 			    _ref$components = _ref.components;
 			_ref$components = _ref$components === undefined ? {} : _ref$components;
@@ -140,7 +141,7 @@ var BaseEditor = function () {
 
 			this.menuElem = reactMenu;
 
-			this.view = new EditorView(editorView, {
+			this.view = new EditorView(editorView, _extends({
 				state: state,
 				dispatchTransaction: this._onAction,
 				spellcheck: true,
@@ -182,7 +183,7 @@ var BaseEditor = function () {
 						return new _richNodes.IframeView(node, view, getPos, {});
 					}
 				}
-			});
+			}, props));
 
 			this.menuComponent = _reactDom2.default.render(_react2.default.createElement(_menubar.BaseMenu, { createFile: createFile, menu: menu.fullMenu, view: this.view }), reactMenu);
 		}

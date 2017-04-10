@@ -23,6 +23,19 @@ var RelativeFilesPlugin = new _prosemirrorState.Plugin({
 			return state;
 		}
 	},
+	view: function view(editorView) {
+		var _this = this;
+
+		this.editorView = editorView;
+		return {
+			update: function update(newView, prevState) {
+				_this.editorView = newView;
+			},
+			destroy: function destroy() {
+				_this.editorView = null;
+			}
+		};
+	},
 	props: {
 		getFile: function getFile(_ref) {
 			var filename = _ref.filename,

@@ -1,5 +1,6 @@
 import { Button, Dialog, Item, Menu, MenuItem, Popover, PopoverInteractionKind, Position, Tab, TabList, TabPanel, Tabs } from '@blueprintjs/core';
 import React, { PropTypes } from 'react';
+
 import parseBibTeX from '../references/bibtextocsl';
 
 const TabIndexes = {
@@ -100,6 +101,7 @@ export const InsertMenuDialogReferences = React.createClass({
 				citationData[field] = this.refs[field].value;
 			}
 			*/
+			console.log('reference data!', this.state.referenceData);
 			bibTexString = this.generateBibTexString(this.state.referenceData);
 		} else if (selectedTabIndex === TabIndexes.BIBTEX) {
 			bibTexString = this.refs.bibtexText.value;
@@ -120,7 +122,7 @@ export const InsertMenuDialogReferences = React.createClass({
 
 	changedTab (selectedTabIndex, prevSelectedTabIndex) {
 		this.setState({ selectedTabIndex: selectedTabIndex });
-	},        
+	},
 
 	render() {
 		const allFields = Object.keys(this.state.referenceData);
@@ -144,7 +146,7 @@ export const InsertMenuDialogReferences = React.createClass({
 				<div className="pt-dialog-body">
 					<b>References are kept in a bibtex file (references.bib) stored in your pub. Type '@' in the editor to insert references from your this file.</b>
 					Click here to edit that bibtex file directly - or add new files below
-					
+
 					<Tabs onChange={this.changedTab} selectedTabIndex={this.state.selectedTabIndex}>
 						<TabList>
 							<Tab key="manual">Manual Add</Tab>
@@ -165,7 +167,7 @@ export const InsertMenuDialogReferences = React.createClass({
 
 						<div className="pt-input-group">
 
-							<Popover 
+							<Popover
 								content={manualAddPopover}
 								interactionKind={PopoverInteractionKind.CLICK}
 								popoverClassName="pt-popover-content-sizing pt-minimal editorMenuPopover"
@@ -196,7 +198,7 @@ export const InsertMenuDialogReferences = React.createClass({
 				</div>
 				<div className="pt-dialog-footer">
 					<div className="pt-dialog-footer-actions">
-						<Button onClick={this.saveReference} text="Insert" />		
+						<Button onClick={this.saveReference} text="Insert" />
 					</div>
 				</div>
 			</Dialog>

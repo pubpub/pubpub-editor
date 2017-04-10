@@ -108,6 +108,7 @@ var InsertMenuDialogReferences = exports.InsertMenuDialogReferences = _react2.de
    	citationData[field] = this.refs[field].value;
    }
    */
+			console.log('reference data!', this.state.referenceData);
 			bibTexString = this.generateBibTexString(this.state.referenceData);
 		} else if (selectedTabIndex === TabIndexes.BIBTEX) {
 			bibTexString = this.refs.bibtexText.value;

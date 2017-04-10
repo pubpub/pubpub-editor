@@ -5,11 +5,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.InsertMenu = undefined;
 
+var _core = require('@blueprintjs/core');
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
-
-var _core = require('@blueprintjs/core');
 
 var _insertMenuConfig = require('./insertMenuConfig');
 
@@ -46,7 +46,6 @@ var InsertMenu = exports.InsertMenu = _react2.default.createClass({
 
 
 	openDialog: function openDialog(dialogType, callback) {
-		console.log('hi', dialogType, callback);
 		this.setState({
 			openDialog: dialogType,
 			callback: callback
@@ -67,11 +66,10 @@ var InsertMenu = exports.InsertMenu = _react2.default.createClass({
 		// Need to add new file object to file list
 		// Need to insert file content into editor
 		var file = evt.target.files[0];
-		console.log(file);
 		evt.target.value = null;
-		this.props.handleFileUpload(file, function (filename) {
-			console.log('Going to insert filename');
-			_this.state.callback(filename); // This shouldn't use the callback - it should import the function rom insertMenu and call it.
+		this.props.handleFileUpload(file, function (filename, url) {
+			// insertEmbed(filename);
+			_this.state.callback(filename, url); // This shouldn't use the callback - it should import the function rom insertMenu and call it.
 
 			_this.setState({
 				openDialog: undefined,
@@ -86,7 +84,7 @@ var InsertMenu = exports.InsertMenu = _react2.default.createClass({
 		console.log(item);
 		// Need to update or create bibtex file
 		// Need to make sure that updated file is sent to editor props
-		// Need to call inserReference function 
+		// Need to call inserReference function
 		this.props.handleReferenceAdd(item, function (itemToAdd) {
 
 			console.log('Going to insert reference');

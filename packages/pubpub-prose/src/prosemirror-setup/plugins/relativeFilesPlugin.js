@@ -16,6 +16,17 @@ const RelativeFilesPlugin = new Plugin({
 			return state;
 		}
 	},
+	view: function(editorView) {
+		this.editorView = editorView;
+		return {
+			update: (newView, prevState) => {
+				this.editorView = newView;
+			},
+			destroy: () => {
+				this.editorView = null;
+			}
+		};
+	},
 	props: {
 		getFile({ filename, state }) {
 			let pluginState;

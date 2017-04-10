@@ -21,7 +21,7 @@ var _radium2 = _interopRequireDefault(_radium);
 
 var _renderFiles = require('@pubpub/render-files');
 
-var _uploadFile = require('../utils/uploadFile');
+var _uploadFile = require('../../stories/utils/uploadFile');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -76,7 +76,7 @@ var FileUploadDialog = exports.FileUploadDialog = _react2.default.createClass({
 		this.setState({ uploadRates: tempUploadRates });
 	},
 
-	onFileFinish: function onFileFinish(evt, index, type, filename, title) {
+	onFileFinish: function onFileFinish(evt, index, type, filename, url, title) {
 
 		var fileURL = 'https://assets.pubpub.org/' + filename;
 		var realFileName = filename.split('/').pop();
