@@ -48,9 +48,10 @@ var InsertMenu = exports.InsertMenu = _react2.default.createClass({
 
 		var container = document.getElementById('rich-editor-container');
 		var canUse = (0, _insertMenuConfig.canUseInsertMenu)(view);
-		var currentPos = view.state.selection.$to.pos;
+		var sel = view.state.selection;
+		var currentPos = sel.$to.pos;
 
-		if (canUse) {
+		if (sel.empty && canUse) {
 			this.setState({ top: view.coordsAtPos(currentPos).top - container.getBoundingClientRect().top + 5 });
 		} else {
 			this.setState({ top: null });
