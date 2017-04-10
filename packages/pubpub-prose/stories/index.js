@@ -2,6 +2,7 @@ import { ReferenceOrdering, SampleMarkdown, SingleMention, SingleReference, Tabl
 
 import FullEditor from './storybookFullEditor';
 import MarkdownEditor from './storybookMarkdownEditor';
+import CodeEditor from './storybookCodeEditor';
 import React from 'react';
 import RichEditor from './storybookRichEditor';
 import { storiesOf } from '@kadira/storybook';
@@ -17,6 +18,10 @@ storiesOf('Rich Editor', module)
 	<RichEditor initialState={SingleMention} />
 ));
 
+storiesOf('Code Editor', module)
+.add('basic ', () => (
+	<CodeEditor />
+));
 
 storiesOf('Markdown Editor', module)
 .add('basic ', () => (
