@@ -28,10 +28,12 @@ function insertTable(view) {
 /* -------------- */
 /* Reference */
 /* -------------- */
-function insertReference(view, citationObject) {
+function insertReference(view, citationData) {
 	// view.props.
-	view.dispatch(view.state.tr.setMeta('createCitation', citationObject));
-	view.props.createReference(citationObject)
+	const referenceNode = schema.nodes.reference.create({ citationID: citationData.id });
+	let transaction = view.state.tr.replaceSelectionWith(referenceNode);
+	transaction = transaction.setMeta('createReference', citationData);
+	return view.dispatch(transaction);
 }
 
 /* -------------- */

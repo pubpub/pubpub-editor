@@ -1,4 +1,5 @@
 import parseBibTeX from './bibtextocsl';
+import slugify from 'slugify';
 
 const	generateBibTexString = (jsonInfo) => {
 	const fields = ['title', 'author', 'journal', 'volume', 'number', 'pages', 'year'];
@@ -6,9 +7,17 @@ const	generateBibTexString = (jsonInfo) => {
 		'journal_title': 'journal',
 		'author_instituion': 'institution',
 	};
+	if (jsonInfo['title'] === undefined) {
+		jsonInfo['title'] = '';
+	}
+	if (jsonInfo['year'] === undefined) {
+		jsonInfo['year'] = '';
+	}
+
 	const jsonKeys = Object.keys(jsonInfo);
+	const id = slugify(jsonInfo['title'] + jsonInfo['year']);
 	return `
-		@article{bibgen,
+		@article{${id},
 			${jsonKeys.map(function(key) {
 				if (jsonInfo[key]) {
 					return `${key}={${jsonInfo[key]}}`;

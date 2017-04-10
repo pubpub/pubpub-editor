@@ -55,7 +55,7 @@ export const ReferenceComponent = React.createClass({
       <span className={referenceClass} onClick={this.preventClick}>
 				<Popover content={popoverContent}
 						 interactionKind={PopoverInteractionKind.CLICK}
-						 popoverClassName="pt-popover-content-sizing"
+						 popoverClassName="pt-popover-content-sizing pt-minimal"
 						 position={Position.BOTTOM}
 						 autoFocus={false}
 						 useSmartPositioning={false}>

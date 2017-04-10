@@ -5,7 +5,7 @@ import { localDiscussions, localFiles, localHighlights, localPages, localPubs, l
 // import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
 // import RichEditor from '../src/editorComponents/RichEditor';
 import FullEditor from '../src/editorComponents/FullEditor';
-import csltoBibtex from '../src/references/csltobibtex';
+import {csltoBibtex} from '../src/references/csltobibtex';
 import { s3Upload } from './utils/uploadFile';
 
 // requires style attributes that would normally be up to the wrapping library to require
@@ -53,18 +53,15 @@ export const StoryBookFullEditor = React.createClass({
 	handleFileUpload: function(file, callback) {
 		// Do the uploading - then callback
 		const onFinish = (evt, index, type, filename, title, url) => {
-			console.log(index, type, filename, name);
 			callback(title, url);
 		};
 		s3Upload(file, null, onFinish, 0);
 	},
 
-	handleReferenceAdd: function(newCitationObject) {
-		console.log('made reference!', newCitationObject);
+	handleReferenceAdd: function(newCitationObject, callback) {
 		const bibtexString = csltoBibtex([newCitationObject]);
-		console.log('made bibtex!', bibtexString);
 		// Do the adding/creation to the bibtex file - then callback
-		// callback(newCitationObject);
+		callback(newCitationObject);
 	},
 
 	render: function() {
@@ -72,7 +69,7 @@ export const StoryBookFullEditor = React.createClass({
 			initialContent: this.state.initialContent,
 			onChange: this.onChange,
 			handleFileUpload: this.handleFileUpload,
-			handleReferenceAdd: this.onReferenceAdd,
+			handleReferenceAdd: this.handleReferenceAdd,
 			localFiles: localFiles,
 			localPubs: localPubs,
 			localReferences: localReferences,

@@ -4,6 +4,10 @@ var _bibtextocsl = require('./bibtextocsl');
 
 var _bibtextocsl2 = _interopRequireDefault(_bibtextocsl);
 
+var _slugify = require('slugify');
+
+var _slugify2 = _interopRequireDefault(_slugify);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var generateBibTexString = function generateBibTexString(jsonInfo) {
@@ -12,8 +16,16 @@ var generateBibTexString = function generateBibTexString(jsonInfo) {
 		'journal_title': 'journal',
 		'author_instituion': 'institution'
 	};
+	if (jsonInfo['title'] === undefined) {
+		jsonInfo['title'] = '';
+	}
+	if (jsonInfo['year'] === undefined) {
+		jsonInfo['year'] = '';
+	}
+
 	var jsonKeys = Object.keys(jsonInfo);
-	return '\n\t\t@article{bibgen,\n\t\t\t' + jsonKeys.map(function (key) {
+	var id = (0, _slugify2.default)(jsonInfo['title'] + jsonInfo['year']);
+	return '\n\t\t@article{' + id + ',\n\t\t\t' + jsonKeys.map(function (key) {
 		if (jsonInfo[key]) {
 			return key + '={' + jsonInfo[key] + '}';
 		}

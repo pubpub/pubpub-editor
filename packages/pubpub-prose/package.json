@@ -58,6 +58,7 @@
     "request": "2.79.0",
     "request-promise": "4.2.0",
     "simplemde": "^1.11.2",
+    "slugify": "^1.1.0",
     "striptags": "^3.0.1",
     "superagent": "^3.0.0",
     "to-markdown": "^3.0.4"

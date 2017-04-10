@@ -1,6 +1,7 @@
 import { Button, Dialog, Item, Menu, MenuItem, Popover, PopoverInteractionKind, Position, Tab, TabList, TabPanel, Tabs } from '@blueprintjs/core';
 import React, { PropTypes } from 'react';
 
+import { generateBibTexString } from '../references/citationConversion';
 import parseBibTeX from '../references/bibtextocsl';
 
 const TabIndexes = {
@@ -19,7 +20,7 @@ export const InsertMenuDialogReferences = React.createClass({
 
 	getInitialState() {
 		return {
-			// selectedTabIndex: TabIndexes.MANUAL,
+			selectedTabIndex: TabIndexes.MANUAL,
 			addedFields: [
 				'title', 'author', 'journal', 'year',
 			],
@@ -65,8 +66,9 @@ export const InsertMenuDialogReferences = React.createClass({
 		// 	'author_instituion': 'institution',
 		// };
 		const jsonKeys = Object.keys(jsonInfo);
+		const id = slugify(jsonInfo['title'] + jsonInfo['year']);
 		return `
-			@article{bibgen,
+			@article{${id},
 				${jsonKeys.map(function(key) {
 					if (jsonInfo[key]) {
 						return `${key}={${jsonInfo[key]}}`;
@@ -96,25 +98,18 @@ export const InsertMenuDialogReferences = React.createClass({
 		let bibTexString;
 
 		if (selectedTabIndex === TabIndexes.MANUAL) {
-			/*
-			for (const field of this.state.addedFields) {
-				citationData[field] = this.refs[field].value;
-			}
-			*/
-			console.log('reference data!', this.state.referenceData);
-			bibTexString = this.generateBibTexString(this.state.referenceData);
+			bibTexString = generateBibTexString(this.state.referenceData);
 		} else if (selectedTabIndex === TabIndexes.BIBTEX) {
 			bibTexString = this.refs.bibtexText.value;
 		}
 
-
 		const cslJSON = parseBibTeX(bibTexString);
-
 
 		if (cslJSON && cslJSON.length > 0 && Object.keys(cslJSON[0]).length > 0) {
 
-			const randomCitationId = (!cslJSON.id || isNaN(cslJSON.id)) ? Math.round(Math.random()*100000000) : cslJSON.id;
-			cslJSON.id = String(randomCitationId);
+			// const randomCitationId = (!cslJSON.id || isNaN(cslJSON.id)) ? Math.round(Math.random()*100000000) : cslJSON.id;
+			// 	cslJSON.id = String(randomCitationId);
+			console.log(cslJSON[0]);
 			this.props.onReferenceAdd(cslJSON[0]);
 		}
 

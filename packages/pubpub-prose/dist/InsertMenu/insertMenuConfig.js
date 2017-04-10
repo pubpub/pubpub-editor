@@ -35,10 +35,12 @@ function insertTable(view) {
 /* -------------- */
 /* Reference */
 /* -------------- */
-function insertReference(view, citationObject) {
+function insertReference(view, citationData) {
 	// view.props.
-	view.dispatch(view.state.tr.setMeta('createCitation', citationObject));
-	view.props.createReference(citationObject);
+	var referenceNode = _prosemirrorSetup.schema.nodes.reference.create({ citationID: citationData.id });
+	var transaction = view.state.tr.replaceSelectionWith(referenceNode);
+	transaction = transaction.setMeta('createReference', citationData);
+	return view.dispatch(transaction);
 }
 
 /* -------------- */
