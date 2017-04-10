@@ -13,6 +13,8 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _citationConversion = require('../references/citationConversion');
+
 var _bibtextocsl = require('../references/bibtextocsl');
 
 var _bibtextocsl2 = _interopRequireDefault(_bibtextocsl);
@@ -39,7 +41,7 @@ var InsertMenuDialogReferences = exports.InsertMenuDialogReferences = _react2.de
 
 	getInitialState: function getInitialState() {
 		return {
-			// selectedTabIndex: TabIndexes.MANUAL,
+			selectedTabIndex: TabIndexes.MANUAL,
 			addedFields: ['title', 'author', 'journal', 'year'],
 			referenceData: {
 				title: '',
@@ -79,7 +81,8 @@ var InsertMenuDialogReferences = exports.InsertMenuDialogReferences = _react2.de
 		// 	'author_instituion': 'institution',
 		// };
 		var jsonKeys = Object.keys(jsonInfo);
-		return '\n\t\t\t@article{bibgen,\n\t\t\t\t' + jsonKeys.map(function (key) {
+		var id = slugify(jsonInfo['title'] + jsonInfo['year']);
+		return '\n\t\t\t@article{' + id + ',\n\t\t\t\t' + jsonKeys.map(function (key) {
 			if (jsonInfo[key]) {
 				return key + '={' + jsonInfo[key] + '}';
 			}
@@ -103,13 +106,7 @@ var InsertMenuDialogReferences = exports.InsertMenuDialogReferences = _react2.de
 		var bibTexString = void 0;
 
 		if (selectedTabIndex === TabIndexes.MANUAL) {
-			/*
-   for (const field of this.state.addedFields) {
-   	citationData[field] = this.refs[field].value;
-   }
-   */
-			console.log('reference data!', this.state.referenceData);
-			bibTexString = this.generateBibTexString(this.state.referenceData);
+			bibTexString = (0, _citationConversion.generateBibTexString)(this.state.referenceData);
 		} else if (selectedTabIndex === TabIndexes.BIBTEX) {
 			bibTexString = this.refs.bibtexText.value;
 		}
@@ -118,8 +115,9 @@ var InsertMenuDialogReferences = exports.InsertMenuDialogReferences = _react2.de
 
 		if (cslJSON && cslJSON.length > 0 && Object.keys(cslJSON[0]).length > 0) {
 
-			var randomCitationId = !cslJSON.id || isNaN(cslJSON.id) ? Math.round(Math.random() * 100000000) : cslJSON.id;
-			cslJSON.id = String(randomCitationId);
+			// const randomCitationId = (!cslJSON.id || isNaN(cslJSON.id)) ? Math.round(Math.random()*100000000) : cslJSON.id;
+			// 	cslJSON.id = String(randomCitationId);
+			console.log(cslJSON[0]);
 			this.props.onReferenceAdd(cslJSON[0]);
 		}
 	},

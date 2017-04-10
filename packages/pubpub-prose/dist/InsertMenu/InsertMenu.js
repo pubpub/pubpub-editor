@@ -81,13 +81,10 @@ var InsertMenu = exports.InsertMenu = _react2.default.createClass({
 	onReferenceAdd: function onReferenceAdd(item) {
 		var _this2 = this;
 
-		console.log(item);
 		// Need to update or create bibtex file
 		// Need to make sure that updated file is sent to editor props
 		// Need to call inserReference function
 		this.props.handleReferenceAdd(item, function (itemToAdd) {
-
-			console.log('Going to insert reference');
 			_this2.state.callback(itemToAdd);
 			_this2.setState({
 				openDialog: undefined,

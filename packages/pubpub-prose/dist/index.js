@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.bibtexToCSL = exports.markdownToJSON = exports.jsonToMarkdown = exports.markdownSerializer = exports.markdownParser = exports.FullEditor = exports.RichEditor = exports.MarkdownEditor = exports.Autocomplete = undefined;
+exports.csltoBibtex = exports.bibtexToCSL = exports.markdownToJSON = exports.jsonToMarkdown = exports.markdownSerializer = exports.markdownParser = exports.FullEditor = exports.RichEditor = exports.MarkdownEditor = exports.Autocomplete = undefined;
 
 var _markdownParser = require('./markdown/markdownParser');
 
@@ -38,6 +38,15 @@ Object.defineProperty(exports, 'markdownToJSON', {
   enumerable: true,
   get: function get() {
     return _markdownToJson.markdownToJSON;
+  }
+});
+
+var _csltobibtex = require('./references/csltobibtex');
+
+Object.defineProperty(exports, 'csltoBibtex', {
+  enumerable: true,
+  get: function get() {
+    return _csltobibtex.csltoBibtex;
   }
 });
 

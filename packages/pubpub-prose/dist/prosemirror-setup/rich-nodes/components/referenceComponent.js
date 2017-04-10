@@ -73,7 +73,7 @@ var ReferenceComponent = exports.ReferenceComponent = _react2.default.createClas
 				_core.Popover,
 				{ content: popoverContent,
 					interactionKind: _core.PopoverInteractionKind.CLICK,
-					popoverClassName: 'pt-popover-content-sizing',
+					popoverClassName: 'pt-popover-content-sizing pt-minimal',
 					position: _core.Position.BOTTOM,
 					autoFocus: false,
 					useSmartPositioning: false },
