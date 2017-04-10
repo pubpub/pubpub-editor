@@ -9,4 +9,4 @@ export { jsonToMarkdown } from './markdown/jsonToMarkdown';
 export { markdownToJSON } from './markdown/markdownToJson';
 
 export bibtexToCSL from './references/bibtextocsl';
-
+export { csltoBibtex } from './references/csltobibtex';
