@@ -10,7 +10,7 @@ export const StoryBookCodeEditor = React.createClass({
 
 	render: function() {
 		return (
-			<CodeEditor onChange={this.onChange} {...this.props} />
+			<CodeEditor onChange={this.onChange} initialContent={'Hello'} {...this.props} />
 		);
 	}
 });

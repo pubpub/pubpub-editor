@@ -4,8 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _csldata = require('./csldata');
@@ -158,25 +156,19 @@ var CitationEngine = function () {
       if (_this.citeproc.bibliography.tokens.length) {
         var bibRes = _this.citeproc.makeBibliography();
         if (bibRes && bibRes.length > 1) {
-          var _ret = function () {
-            var entries = bibRes[0].entry_ids.map(function (entry) {
-              return entry[0];
-            });
-            var bibArray = bibRes[1];
-            var extractRegex = /\s*\<div[^>]*\>(.*)\<\/div.*\>\s*/;
-            var bib = bibArray.map(function (bibEntry, index) {
-              if (bibEntry) {
-                return { text: bibEntry, id: entries[index] };
-                // return {text: striptags(bibEntry), id: entries[index]};
-              }
-              return null;
-            });
-            return {
-              v: bib
-            };
-          }();
-
-          if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+          var entries = bibRes[0].entry_ids.map(function (entry) {
+            return entry[0];
+          });
+          var bibArray = bibRes[1];
+          var extractRegex = /\s*\<div[^>]*\>(.*)\<\/div.*\>\s*/;
+          var bib = bibArray.map(function (bibEntry, index) {
+            if (bibEntry) {
+              return { text: bibEntry, id: entries[index] };
+              // return {text: striptags(bibEntry), id: entries[index]};
+            }
+            return null;
+          });
+          return bib;
         }
         return null;
       }

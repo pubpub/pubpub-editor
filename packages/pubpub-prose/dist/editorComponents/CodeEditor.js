@@ -34,8 +34,7 @@ var CodeEditor = exports.CodeEditor = _react2.default.createClass({
 		var element = document.getElementById('myCodeEditor');
 		if (element) {
 			this.codeMirror = _codemirror2.default.fromTextArea(element, {
-				autofocus: true,
-				value: this.props.initialContent || ''
+				autofocus: true
 			});
 
 			if (this.props.onChange) {
@@ -54,7 +53,7 @@ var CodeEditor = exports.CodeEditor = _react2.default.createClass({
 		return _react2.default.createElement(
 			'div',
 			{ id: 'code-editor-container', style: styles.container },
-			_react2.default.createElement('textarea', { id: 'myCodeEditor' })
+			_react2.default.createElement('textarea', { id: 'myCodeEditor', value: this.props.initialContent })
 		);
 	}
 });

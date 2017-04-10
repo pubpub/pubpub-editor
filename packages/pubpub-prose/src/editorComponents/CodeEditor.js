@@ -17,7 +17,6 @@ export const CodeEditor = React.createClass({
 		if (element) {
 			this.codeMirror = CodeMirror.fromTextArea(element, {
 				autofocus: true,
-				value: this.props.initialContent || '',
 			});
 
 			if (this.props.onChange) {
@@ -38,7 +37,7 @@ export const CodeEditor = React.createClass({
 	render() {
 		return (
 			<div id={'code-editor-container'} style={styles.container}>
-				<textarea id={'myCodeEditor'} />
+				<textarea id={'myCodeEditor'} value={this.props.initialContent} />
 			</div>
 		);
 	},
