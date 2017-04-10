@@ -21,25 +21,34 @@ const mentionsPlugin = new Plugin({
 				return { decos: DecorationSet.empty, start: null, };
 			}
 
-			// const doc = editorState.doc;
 			const currentPos = editorState.selection.$to;
 			const currentNode = editorState.doc.nodeAt(currentPos.pos - 1);
+
+
 			if (currentNode && currentNode.text) {
 				const currentLine = currentNode.text.replace(/\s/g, ' ');
-				const nextChIndex = currentPos.parentOffset;
-
 				const nextCh = currentLine.length > nextChIndex ? currentLine.charAt(nextChIndex) : ' ';
 
-				const prevChars = currentLine.substring(0, currentPos.parentOffset);
-				// const startIndex = Math.max(prevChars.lastIndexOf(' ') + 1, prevChars.lastIndexOf(' ') + 1);
+				let parentOffset = currentPos.parentOffset;
+
+				// sometimes the parent offset may not be describing the offset into the text node
+				// if so, we need to correct for this.
+				if (currentNode !== currentPos.parent) {
+					const child = currentPos.parent.childAfter(currentPos.parentOffset - 1);
+					if (child.node === currentNode) {
+						parentOffset = parentOffset - child.offset;
+					}
+				}
+				const nextChIndex = parentOffset;
+
+				const prevChars = currentLine.substring(0, parentOffset);
 				const startIndex = prevChars.lastIndexOf(' ') + 1;
 				const startLetter = currentLine.charAt(startIndex);
-				// const shouldMark = startLetter === '@' && (nextCh.charCodeAt(0) === 32 || nextCh.charCodeAt(0) === 160);
 				const shouldMark = startLetter === '@' && nextCh.charCodeAt(0) === 32;
 				if (shouldMark) {
 					const substring = currentLine.substring(startIndex + 1, nextChIndex) || ' ';
-					const start = currentPos.pos - currentPos.parentOffset + startIndex;
-					const end = currentPos.pos - currentPos.parentOffset + startIndex + 1 + substring.length;
+					const start = currentPos.pos - parentOffset + startIndex;
+					const end = currentPos.pos - parentOffset + startIndex + 1 + substring.length;
 					const decorations = [Decoration.inline(start, end, { class: 'mention-marker' })];
 					const decos = DecorationSet.create(editorState.doc, decorations);
 

@@ -44,6 +44,7 @@ export const RichEditor = React.createClass({
 
 	onChange() {
 		this.props.onChange(this.editor.view.state.toJSON().doc);
+		this.insertMenu.updateInputPosition(this.editor.view);
 		// this.props.onChange(this.editor.view.state.doc);
 		this.updateCoordsForMenus();
 	},
@@ -55,7 +56,6 @@ export const RichEditor = React.createClass({
 		const isRoot = this.editor.view.state.selection.$to.depth === 2;
 
 		const container = document.getElementById('rich-editor-container');
-		const menuTop = isRoot && currentNode && !currentNode.text ? this.editor.view.coordsAtPos(currentPos).top - container.getBoundingClientRect().top + 5 : 0;
 
 		if (!this.editor.view.state.selection.$cursor && currentNode && currentNode.text) {
 			const currentFromPos = this.editor.view.state.selection.$from.pos;
@@ -65,14 +65,12 @@ export const RichEditor = React.createClass({
 			const inlineCenter = left + ((right - left) / 2);
 			const inlineTop = this.editor.view.coordsAtPos(currentFromPos).top - container.getBoundingClientRect().top;
 			return this.setState({
-				menuTop: menuTop,
 				inlineCenter: inlineCenter,
 				inlineTop: inlineTop,
 			});
 		}
 
 		return this.setState({
-			menuTop: menuTop,
 			inlineTop: 0,
 			inlineCenter: 0,
 		});
@@ -175,13 +173,11 @@ export const RichEditor = React.createClass({
 					localPages={this.props.localPages}
 					globalCategories={this.props.globalCategories} />
 
-				{!!this.state.menuTop &&
 					<InsertMenu
+						ref={(input) => { this.insertMenu = input; }}
 						editor={this.editor}
-						top={this.state.menuTop}
 						handleFileUpload={this.props.handleFileUpload}
 						handleReferenceAdd={this.props.handleReferenceAdd} />
-				}
 
 				{this.editor && !!this.state.inlineTop &&
 					<FormattingMenu

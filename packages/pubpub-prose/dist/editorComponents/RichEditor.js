@@ -62,6 +62,7 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 	},
 	onChange: function onChange() {
 		this.props.onChange(this.editor.view.state.toJSON().doc);
+		this.insertMenu.updateInputPosition(this.editor.view);
 		// this.props.onChange(this.editor.view.state.doc);
 		this.updateCoordsForMenus();
 	},
@@ -74,7 +75,6 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 		var isRoot = this.editor.view.state.selection.$to.depth === 2;
 
 		var container = document.getElementById('rich-editor-container');
-		var menuTop = isRoot && currentNode && !currentNode.text ? this.editor.view.coordsAtPos(currentPos).top - container.getBoundingClientRect().top + 5 : 0;
 
 		if (!this.editor.view.state.selection.$cursor && currentNode && currentNode.text) {
 			var currentFromPos = this.editor.view.state.selection.$from.pos;
@@ -84,14 +84,12 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 			var inlineCenter = left + (right - left) / 2;
 			var inlineTop = this.editor.view.coordsAtPos(currentFromPos).top - container.getBoundingClientRect().top;
 			return this.setState({
-				menuTop: menuTop,
 				inlineCenter: inlineCenter,
 				inlineTop: inlineTop
 			});
 		}
 
 		return this.setState({
-			menuTop: menuTop,
 			inlineTop: 0,
 			inlineCenter: 0
 		});
@@ -198,6 +196,7 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 	},
 
 	render: function render() {
+		var _this2 = this;
 
 		return _react2.default.createElement(
 			'div',
@@ -215,9 +214,11 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 				localHighlights: this.props.localHighlights,
 				localPages: this.props.localPages,
 				globalCategories: this.props.globalCategories }),
-			!!this.state.menuTop && _react2.default.createElement(_InsertMenu2.default, {
+			_react2.default.createElement(_InsertMenu2.default, {
+				ref: function ref(input) {
+					_this2.insertMenu = input;
+				},
 				editor: this.editor,
-				top: this.state.menuTop,
 				handleFileUpload: this.props.handleFileUpload,
 				handleReferenceAdd: this.props.handleReferenceAdd }),
 			this.editor && !!this.state.inlineTop && _react2.default.createElement(_FormattingMenu2.default, {

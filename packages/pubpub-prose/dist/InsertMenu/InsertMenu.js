@@ -40,8 +40,22 @@ var InsertMenu = exports.InsertMenu = _react2.default.createClass({
 	getInitialState: function getInitialState() {
 		return {
 			openDialog: undefined,
-			callback: undefined
+			callback: undefined,
+			top: null
 		};
+	},
+	updateInputPosition: function updateInputPosition(view) {
+
+		var container = document.getElementById('rich-editor-container');
+		var canUse = (0, _insertMenuConfig.canUseInsertMenu)(view);
+		var sel = view.state.selection;
+		var currentPos = sel.$to.pos;
+
+		if (sel.empty && canUse) {
+			this.setState({ top: view.coordsAtPos(currentPos).top - container.getBoundingClientRect().top + 5 });
+		} else {
+			this.setState({ top: null });
+		}
 	},
 
 
@@ -96,9 +110,13 @@ var InsertMenu = exports.InsertMenu = _react2.default.createClass({
 	render: function render() {
 		var menuItems = (0, _insertMenuConfig2.default)(this.props.editor, this.openDialog);
 
+		if (!this.state.top) {
+			return null;
+		}
+
 		return _react2.default.createElement(
 			'div',
-			{ style: styles.container(this.props.top) },
+			{ style: styles.container(this.state.top) },
 			_react2.default.createElement(
 				_core.Popover,
 				{

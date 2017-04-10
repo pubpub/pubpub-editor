@@ -1,6 +1,6 @@
 import { Menu, MenuItem, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 import React, { PropTypes } from 'react';
-import getMenuItems ,{ insertEmbed, insertReference } from './insertMenuConfig';
+import getMenuItems ,{ canUseInsertMenu, insertEmbed, insertReference } from './insertMenuConfig';
 
 import InsertMenuDialogFiles from './InsertMenuDialogFiles';
 import InsertMenuDialogReferences from './InsertMenuDialogReferences';
@@ -19,7 +19,23 @@ export const InsertMenu = React.createClass({
 		return {
 			openDialog: undefined,
 			callback: undefined,
+			top: null,
 		};
+	},
+
+	updateInputPosition(view) {
+
+		const container = document.getElementById('rich-editor-container');
+		const canUse = canUseInsertMenu(view);
+		const sel = view.state.selection;
+		const currentPos = sel.$to.pos;
+
+
+		if (sel.empty && canUse) {
+			this.setState({ top: view.coordsAtPos(currentPos).top - container.getBoundingClientRect().top + 5 });
+		} else {
+			this.setState({ top: null });
+		}
 	},
 
 	openDialog: function(dialogType, callback) {
@@ -51,8 +67,6 @@ export const InsertMenu = React.createClass({
 				callback: undefined,
 			});
 		});
-
-
 	},
 
 	onReferenceAdd: function(item) {
@@ -72,8 +86,12 @@ export const InsertMenu = React.createClass({
 	render: function() {
 		const menuItems = getMenuItems(this.props.editor, this.openDialog);
 
+		if (!this.state.top) {
+			return null;
+		}
+
 		return (
-			<div style={styles.container(this.props.top)}>
+			<div style={styles.container(this.state.top)}>
 				<Popover
 					content={
 						<Menu>

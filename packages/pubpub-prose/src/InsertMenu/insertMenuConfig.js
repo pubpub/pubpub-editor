@@ -60,6 +60,17 @@ function insertEmbed(view, filename, url) {
 	view.dispatch(transaction);
 }
 
+function canUseInsertMenu(view) {
+	const state = view.state;
+	const nodeType = schema.nodes.paragraph;
+	const attrs = {};
+	let $from = state.selection.$from
+	for (let d = $from.depth; d >= 0; d--) {
+		let index = $from.index(d)
+		if ($from.node(d).canReplaceWith(index, index, nodeType, attrs)) return true
+	}
+	return false
+}
 
 
 function getMenuItems(editor, openDialog) {
@@ -110,3 +121,4 @@ function getMenuItems(editor, openDialog) {
 export default getMenuItems;
 exports.insertEmbed = insertEmbed;
 exports.insertReference = insertReference;
+exports.canUseInsertMenu = canUseInsertMenu;
