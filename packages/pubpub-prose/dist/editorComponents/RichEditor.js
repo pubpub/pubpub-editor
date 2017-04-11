@@ -65,11 +65,13 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 		this.createEditor(null);
 	},
 	onChange: function onChange() {
+		// Should be called on every document change (delete, addition, etc)
 		this.props.onChange(this.editor.view.state.toJSON().doc);
+	},
+	onCursorChange: function onCursorChange() {
+		// Should be called on every cursor update
 		this.insertMenu.updatePosition(this.editor.view);
 		this.tableMenu.updatePosition(this.editor.view);
-
-		// this.props.onChange(this.editor.view.state.doc);
 		this.updateCoordsForMenus();
 	},
 
@@ -130,12 +132,12 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 				createReference: this.props.handleReferenceAdd,
 				captureError: this.props.onError,
 				onChange: this.onChange,
+				onCursor: this.onCursorChange,
 				updateMentions: this.updateMentions
 			},
 			handlers: {
 				createFile: this.props.handleFileUpload,
 				captureError: this.props.onError,
-				onChange: this.onChange,
 				updateMentions: this.updateMentions
 			}
 		});

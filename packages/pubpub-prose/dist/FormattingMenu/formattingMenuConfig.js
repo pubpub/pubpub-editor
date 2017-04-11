@@ -4,11 +4,11 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
+var _prosemirrorSchemaList = require('prosemirror-schema-list');
+
 var _prosemirrorCommands = require('prosemirror-commands');
 
 var _prosemirrorSetup = require('../prosemirror-setup');
-
-var _prosemirrorSchemaList = require('prosemirror-schema-list');
 
 function getMenuItems(editor) {
 
@@ -89,69 +89,60 @@ function getMenuItems(editor) {
 		return wrapFunction(editor.view.state, editor.view.dispatch);
 	}
 	/* -------------- */
-	/* Create Link */
-
-	function insertMention(state, dispatch, view, _ref) {
-		var url = _ref.url,
-		    type = _ref.type;
-
-
-		var selection = view.selection;
-
-		var textnode = _prosemirrorSetup.schema.text(text);
-		var transaction = view.state.tr.replaceSelectionWith(start, end, _prosemirrorSetup.schema.nodes.mention.create({ url: url, type: type }, textnode));
-		view.dispatch(transaction);
-	}
-
 	/* -------------- */
 
 	var menuItems = [{
+		icon: 'icon-header icon-h1',
 		text: 'H1',
 		run: toggleBlockType.bind(this, _prosemirrorSetup.schema.nodes.heading, { level: 1 }),
 		isActive: blockTypeIsActive(_prosemirrorSetup.schema.nodes.heading, { level: 1 })
 	}, {
+		icon: 'icon-header icon-h2',
 		text: 'H2',
 		run: toggleBlockType.bind(this, _prosemirrorSetup.schema.nodes.heading, { level: 2 }),
 		isActive: blockTypeIsActive(_prosemirrorSetup.schema.nodes.heading, { level: 2 })
 	}, {
-		icon: 'pt-icon-bold',
+		icon: 'icon-bold',
 		text: 'B',
 		run: applyToggleMark.bind(this, _prosemirrorSetup.schema.marks.strong),
 		isActive: markIsActive(_prosemirrorSetup.schema.marks.strong)
 	}, {
-		icon: 'pt-icon-italic',
+		icon: 'icon-italic',
 		text: 'I',
 		run: applyToggleMark.bind(this, _prosemirrorSetup.schema.marks.em),
 		isActive: markIsActive(_prosemirrorSetup.schema.marks.em)
 	}, {
-		icon: 'pt-icon-code',
+		icon: 'icon-code',
 		text: '</>',
 		run: applyToggleMark.bind(this, _prosemirrorSetup.schema.marks.code),
 		isActive: markIsActive(_prosemirrorSetup.schema.marks.code)
 	}, {
+		icon: 'icon-subscript',
 		text: 'Sub',
 		run: applyToggleMark.bind(this, _prosemirrorSetup.schema.marks.sub),
 		isActive: markIsActive(_prosemirrorSetup.schema.marks.sub)
 	}, {
+		icon: 'icon-superscript',
 		text: 'Sup',
 		run: applyToggleMark.bind(this, _prosemirrorSetup.schema.marks.sup),
 		isActive: markIsActive(_prosemirrorSetup.schema.marks.sup)
 	}, {
+		icon: 'icon-strike',
 		text: '-',
 		run: applyToggleMark.bind(this, _prosemirrorSetup.schema.marks.strike),
 		isActive: markIsActive(_prosemirrorSetup.schema.marks.strike)
 	}, {
-		icon: 'pt-icon-citation',
+		icon: 'icon-quote-right',
 		text: '"',
 		run: toggleWrap.bind(this, _prosemirrorSetup.schema.nodes.blockquote),
 		isActive: blockTypeIsActive(_prosemirrorSetup.schema.nodes.blockquote)
 	}, {
-		icon: 'pt-icon-properties',
+		icon: 'icon-list-bullet',
 		text: 'UL',
 		run: toggleWrapList.bind(this, _prosemirrorSetup.schema.nodes.bullet_list),
 		isActive: blockTypeIsActive(_prosemirrorSetup.schema.nodes.bullet_list)
 	}, {
-		icon: 'pt-icon-numbered-list',
+		icon: 'icon-list-numbered',
 		text: 'OL',
 		run: toggleWrapList.bind(this, _prosemirrorSetup.schema.nodes.ordered_list),
 		isActive: blockTypeIsActive(_prosemirrorSetup.schema.nodes.ordered_list)

@@ -100,7 +100,7 @@ class BaseEditor {
 		return null;
 	}
 
-	_onAction (action) {
+	_onAction (transaction) {
 		/*
 		if (action.transform) {
 			for (const step of action.transform.steps) {
@@ -113,9 +113,16 @@ class BaseEditor {
 			}
 		}
 		*/
-		const newState = this.view.state.apply(action);
+		const newState = this.view.state.apply(transaction);
 		this.view.updateState(newState);
-		this.handlers.onChange();
+		if (transaction.docChanged) {
+			if (this.view.props.onChange) {
+				this.view.props.onChange();
+			}
+		} else if (this.view.props.onCursor) {
+			this.view.props.onCursor();
+		}
+
 	}
 
 	changeNode = (currentFrom, nodeType, nodeAttrs) => {

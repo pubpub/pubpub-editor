@@ -46,7 +46,9 @@ export const RichEditor = React.createClass({
 	onChange() {
 		// Should be called on every document change (delete, addition, etc)
 		this.props.onChange(this.editor.view.state.toJSON().doc);
+	},
 
+	onCursorChange() {
 		// Should be called on every cursor update
 		this.insertMenu.updatePosition(this.editor.view);
 		this.tableMenu.updatePosition(this.editor.view);
@@ -111,12 +113,12 @@ export const RichEditor = React.createClass({
 				createReference: this.props.handleReferenceAdd,
 				captureError: this.props.onError,
 				onChange: this.onChange,
+				onCursor: this.onCursorChange,
 				updateMentions: this.updateMentions,
 			},
 			handlers: {
 				createFile: this.props.handleFileUpload,
 				captureError: this.props.onError,
-				onChange: this.onChange,
 				updateMentions: this.updateMentions,
 			}
 		});

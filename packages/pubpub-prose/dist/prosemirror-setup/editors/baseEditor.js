@@ -213,7 +213,7 @@ var BaseEditor = function () {
 		}
 	}, {
 		key: '_onAction',
-		value: function _onAction(action) {
+		value: function _onAction(transaction) {
 			/*
    if (action.transform) {
    	for (const step of action.transform.steps) {
@@ -226,9 +226,15 @@ var BaseEditor = function () {
    	}
    }
    */
-			var newState = this.view.state.apply(action);
+			var newState = this.view.state.apply(transaction);
 			this.view.updateState(newState);
-			this.handlers.onChange();
+			if (transaction.docChanged) {
+				if (this.view.props.onChange) {
+					this.view.props.onChange();
+				}
+			} else if (this.view.props.onCursor) {
+				this.view.props.onCursor();
+			}
 		}
 	}]);
 

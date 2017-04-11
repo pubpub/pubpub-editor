@@ -18,6 +18,7 @@ var _formattingMenuConfig2 = _interopRequireDefault(_formattingMenuConfig);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var styles = void 0;
+require('../../style/fonts.scss');
 
 var FormattingMenu = exports.FormattingMenu = _react2.default.createClass({
 	displayName: 'FormattingMenu',
@@ -71,17 +72,15 @@ var FormattingMenu = exports.FormattingMenu = _react2.default.createClass({
 			'div',
 			{ className: 'pt-card pt-elevation-0 pt-dark', style: styles.container(this.props.top, this.props.left, 400) },
 			menuItems.map(function (item, index) {
+				// return <button key={`menuItem-${index}`} className={'pt-button pt-minimal'} style={item.isActive ? { ...styles.button, ...styles.active } : styles.button} onClick={item.run}>{item.text}</button>;
+				// return <button key={`menuItem-${index}`} className={`pt-button pt-minimal ${item.icon}`} style={item.isActive ? { ...styles.button, ...styles.active } : styles.button} onClick={item.run} />;
 				var onClick = void 0;
 				if (item.input === 'text' && !item.isActive) {
 					onClick = _this2.startInput.bind(_this2, item.input, item.run);
 				} else {
 					onClick = item.run;
 				}
-				return _react2.default.createElement(
-					'button',
-					{ key: 'menuItem-' + index, className: 'pt-button pt-minimal', style: item.isActive ? _extends({}, styles.button, styles.active) : styles.button, onClick: onClick },
-					item.icon ? _react2.default.createElement('span', { className: 'pt-icon-standard ' + item.icon }) : item.text
-				);
+				return _react2.default.createElement('button', { key: 'menuItem-' + index, className: 'pt-button pt-minimal ' + item.icon, style: item.isActive ? _extends({}, styles.button, styles.active) : styles.button, onClick: onClick });
 			})
 		);
 	}
