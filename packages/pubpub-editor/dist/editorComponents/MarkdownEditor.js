@@ -79,44 +79,46 @@ var MarkdownEditor = exports.MarkdownEditor = _react2.default.createClass({
 			this.simpleMDE.value(this.props.initialContent || '');
 			this.simpleMDE.codemirror.on('cursorActivity', function () {
 				if (_this.props.onChange) {
-					_this.props.onChange(_this.simpleMDE.value());
-					var cm = _this.simpleMDE.codemirror;
-					var currentCursor = cm.getCursor();
-					var currentLine = cm.getLine(currentCursor.line);
-					var nextChIndex = currentCursor.ch;
-					var nextCh = currentLine.length > nextChIndex ? currentLine.charAt(nextChIndex) : ' ';
-					var prevChars = currentLine.substring(0, currentCursor.ch);
-					var startIndex = prevChars.lastIndexOf(' ') + 1;
-					var startLetter = currentLine.charAt(startIndex);
-					var shouldMark = startLetter === '@' && nextCh === ' ' && !cm.getSelection();
+					(function () {
+						_this.props.onChange(_this.simpleMDE.value());
+						var cm = _this.simpleMDE.codemirror;
+						var currentCursor = cm.getCursor();
+						var currentLine = cm.getLine(currentCursor.line);
+						var nextChIndex = currentCursor.ch;
+						var nextCh = currentLine.length > nextChIndex ? currentLine.charAt(nextChIndex) : ' ';
+						var prevChars = currentLine.substring(0, currentCursor.ch);
+						var startIndex = prevChars.lastIndexOf(' ') + 1;
+						var startLetter = currentLine.charAt(startIndex);
+						var shouldMark = startLetter === '@' && nextCh === ' ' && !cm.getSelection();
 
-					if (shouldMark && !_this.autocompleteMarker) {
-						_this.autocompleteMarker = cm.markText({ line: currentCursor.line, ch: prevChars.lastIndexOf(' ') + 1 }, { line: currentCursor.line, ch: prevChars.lastIndexOf(' ') + 2 }, { className: 'testmarker' });
+						if (shouldMark && !_this.autocompleteMarker) {
+							_this.autocompleteMarker = cm.markText({ line: currentCursor.line, ch: prevChars.lastIndexOf(' ') + 1 }, { line: currentCursor.line, ch: prevChars.lastIndexOf(' ') + 2 }, { className: 'testmarker' });
 
-						setTimeout(function () {
-							var container = document.getElementById('markdown-editor-container');
-							var mark = document.getElementsByClassName('testmarker')[0];
-							var top = mark.getBoundingClientRect().bottom - container.getBoundingClientRect().top;
-							var left = mark.getBoundingClientRect().left - container.getBoundingClientRect().left;
+							setTimeout(function () {
+								var container = document.getElementById('markdown-editor-container');
+								var mark = document.getElementsByClassName('testmarker')[0];
+								var top = mark.getBoundingClientRect().bottom - container.getBoundingClientRect().top;
+								var left = mark.getBoundingClientRect().left - container.getBoundingClientRect().left;
 
+								_this.setState({
+									visible: true,
+									top: top,
+									left: left,
+									input: currentLine.substring(startIndex + 1, nextChIndex) || ' '
+								});
+							}, 0);
+						} else if (shouldMark) {
 							_this.setState({
-								visible: true,
-								top: top,
-								left: left,
-								input: currentLine.substring(startIndex + 1, nextChIndex) || ' '
+								input: currentLine.substring(startIndex + 1, nextChIndex)
 							});
-						}, 0);
-					} else if (shouldMark) {
-						_this.setState({
-							input: currentLine.substring(startIndex + 1, nextChIndex)
-						});
-					} else if (!shouldMark && _this.autocompleteMarker) {
-						_this.autocompleteMarker.clear();
-						_this.autocompleteMarker = undefined;
-						_this.setState({
-							visible: false
-						});
-					}
+						} else if (!shouldMark && _this.autocompleteMarker) {
+							_this.autocompleteMarker.clear();
+							_this.autocompleteMarker = undefined;
+							_this.setState({
+								visible: false
+							});
+						}
+					})();
 				}
 			});
 			this.simpleMDE.codemirror.setOption('extraKeys', {

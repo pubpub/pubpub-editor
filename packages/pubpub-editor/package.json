@@ -1,7 +1,7 @@
 {
-  "name": "@pubpub/prose",
+  "name": "@pubpub/editor",
   "version": "2.0.19",
-  "description": "Prosemirror Plugins for the PubPub Editor",
+  "description": "A variety of editors (WSIWYG, Markdown, Code, etc.) geared towards Academic Publishing. Used in the PubPub platform.",
   "main": "./dist/index.js",
   "scripts": {
     "build": "cross-env BABEL_ENV=development babel src --out-dir dist --copy-files",
