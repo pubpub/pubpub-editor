@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import getMenuItems from './formattingMenuConfig';
 
 let styles;
+require('../../style/fonts.scss');
 
 export const FormattingMenu = React.createClass({
 	propTypes: {
@@ -16,7 +17,8 @@ export const FormattingMenu = React.createClass({
 		return (
 			<div className={'pt-card pt-elevation-0 pt-dark'} style={styles.container(this.props.top, this.props.left)}>
 				{menuItems.map((item, index)=> {
-					return <button key={`menuItem-${index}`} className={'pt-button pt-minimal'} style={item.isActive ? { ...styles.button, ...styles.active } : styles.button} onClick={item.run}>{item.text}</button>;
+					// return <button key={`menuItem-${index}`} className={'pt-button pt-minimal'} style={item.isActive ? { ...styles.button, ...styles.active } : styles.button} onClick={item.run}>{item.text}</button>;
+					return <button key={`menuItem-${index}`} className={`pt-button pt-minimal ${item.icon}`} style={item.isActive ? { ...styles.button, ...styles.active } : styles.button} onClick={item.run} />;
 				})}
 				
 			</div>

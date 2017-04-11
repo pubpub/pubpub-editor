@@ -1,0 +1,37 @@
+@font-face {
+  font-family: 'fontello';
+  src: url('./fonts/fontello.eot');
+  src: url('./fonts/fontello.eot') format('embedded-opentype'),
+       url('./fonts/fontello.ttf') format('truetype'),
+       url('./fonts/fontello.svg') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.icon-bold:before { font-family: 'fontello'; content: '\e800'; } /* '' */
+.icon-italic:before { font-family: 'fontello'; content: '\e801'; } /* '' */
+.icon-code:before { font-family: 'fontello'; content: '\e802'; } /* '' */
+.icon-list-bullet:before { font-family: 'fontello'; content: '\f0ca'; } /* '' */
+.icon-list-numbered:before { font-family: 'fontello'; content: '\f0cb'; } /* '' */
+.icon-strike:before { font-family: 'fontello'; content: '\f0cc'; } /* '' */
+.icon-quote-right:before { font-family: 'fontello'; content: '\f10e'; } /* '' */
+.icon-superscript:before { font-family: 'fontello'; content: '\f12b'; } /* '' */
+.icon-subscript:before { font-family: 'fontello'; content: '\f12c'; } /* '' */
+.icon-header:before { font-family: 'fontello'; content: '\f1dc'; } /* '' */
+
+
+.icon-header.icon-h1:after {
+  content: "1";
+  font-family: sans-serif;
+  position: absolute;
+  bottom: -4px;
+  font-size: 0.85em;
+}
+
+.icon-header.icon-h2:after {
+  content: "2";
+  font-family: sans-serif;
+  position: absolute;
+  bottom: -4px;
+  font-size: 0.85em;
+}

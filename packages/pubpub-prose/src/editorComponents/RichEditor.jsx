@@ -43,9 +43,11 @@ export const RichEditor = React.createClass({
 	},
 
 	onChange() {
+		// Should be called on every document change (delete, addition, etc)
 		this.props.onChange(this.editor.view.state.toJSON().doc);
+
+		// Should be called on every cursor update
 		this.insertMenu.updateInputPosition(this.editor.view);
-		// this.props.onChange(this.editor.view.state.doc);
 		this.updateCoordsForMenus();
 	},
 

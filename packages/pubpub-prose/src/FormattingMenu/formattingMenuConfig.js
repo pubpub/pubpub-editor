@@ -1,6 +1,6 @@
 import { toggleMark, lift, joinUp, selectParentNode, wrapIn, setBlockType } from 'prosemirror-commands';
 import { wrapInList } from 'prosemirror-schema-list';
-
+import React from 'react';
 import { schema } from '../prosemirror-setup';
 
 function getMenuItems(editor) {
@@ -83,67 +83,67 @@ function getMenuItems(editor) {
 
 	const menuItems = [
 		{
-			icon: 'pt-icon-h1',
+			icon: 'icon-header icon-h1',
 			text: 'H1',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 1 }),
 			isActive: blockTypeIsActive(schema.nodes.heading, { level: 1 }),
 		},
 		{
-			icon: 'pt-icon-h2',
+			icon: 'icon-header icon-h2',
 			text: 'H2',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 2 }),
 			isActive: blockTypeIsActive(schema.nodes.heading, { level: 2 }),
 		},
 		{ 
-			icon: 'pt-icon-bold',
+			icon: 'icon-bold',
 			text: 'B',
 			run: applyToggleMark.bind(this, schema.marks.strong),
 			isActive: markIsActive(schema.marks.strong),
 		},
 		{ 
-			icon: 'pt-icon-italic',
+			icon: 'icon-italic',
 			text: 'I',
 			run: applyToggleMark.bind(this, schema.marks.em),
 			isActive: markIsActive(schema.marks.em),
 		},
 		{ 
-			icon: 'pt-icon-code',
+			icon: 'icon-code',
 			text: '</>',
 			run: applyToggleMark.bind(this, schema.marks.code),
 			isActive: markIsActive(schema.marks.code),
 		},
 		{ 
-			icon: 'pt-icon-sub',
+			icon: 'icon-subscript',
 			text: 'Sub',
 			run: applyToggleMark.bind(this, schema.marks.sub),
 			isActive: markIsActive(schema.marks.sub),
 		},
 		{ 
-			icon: 'pt-icon-sup',
+			icon: 'icon-superscript',
 			text: 'Sup',
 			run: applyToggleMark.bind(this, schema.marks.sup),
 			isActive: markIsActive(schema.marks.sup),
 		},
 		{ 
-			icon: 'pt-icon-strike',
+			icon: 'icon-strike',
 			text: '-',
 			run: applyToggleMark.bind(this, schema.marks.strike),
 			isActive: markIsActive(schema.marks.strike),
 		},
 		{
-			icon: 'pt-icon-citation',
+			icon: 'icon-quote-right',
 			text: '"',
 			run: toggleWrap.bind(this, schema.nodes.blockquote),
 			isActive: blockTypeIsActive(schema.nodes.blockquote),
 		},
 		{
-			icon: 'pt-icon-bulletList',
+			icon: 'icon-list-bullet',
 			text: 'UL',
 			run: toggleWrapList.bind(this, schema.nodes.bullet_list),
 			isActive: blockTypeIsActive(schema.nodes.bullet_list),
 		},
 		{
-			icon: 'pt-icon-orderedList',
+			icon: 'icon-list-numbered',
 			text: 'OL',
 			run: toggleWrapList.bind(this, schema.nodes.ordered_list),
 			isActive: blockTypeIsActive(schema.nodes.ordered_list),
