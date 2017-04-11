@@ -82,10 +82,12 @@ var TableMenu = exports.TableMenu = _react2.default.createClass({
 					_react2.default.createElement(
 						_core.Tooltip,
 						{
+							tooltipClassName: 'pt-dark',
+							transitionDuration: 25,
 							className: 'pt-dark pt-tooltip-indicator pt-minimal',
 							content: _react2.default.createElement(
 								'span',
-								null,
+								{ style: { fontSize: '0.75em' } },
 								item.text
 							) },
 						item.icon ? _react2.default.createElement('span', { className: 'pt-icon-standard ' + item.icon }) : item.text

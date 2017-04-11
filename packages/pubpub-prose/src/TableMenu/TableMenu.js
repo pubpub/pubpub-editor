@@ -57,8 +57,10 @@ export const TableMenu = React.createClass({
 					return (<button key={`menuItem-${index}`} className={'pt-button pt-minimal'} style={isActive ? { ...styles.button, ...styles.active } : styles.button} onClick={run}>
 
             <Tooltip
+								tooltipClassName="pt-dark"
+								transitionDuration={25}
                 className="pt-dark pt-tooltip-indicator pt-minimal"
-                content={<span>{item.text}</span>}>
+                content={<span style={{fontSize: '0.75em'}}>{item.text}</span>}>
                {(item.icon) ? <span className={`pt-icon-standard ${item.icon}`}></span> :  item.text }
             </Tooltip>
 

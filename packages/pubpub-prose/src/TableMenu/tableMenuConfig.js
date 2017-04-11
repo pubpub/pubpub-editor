@@ -31,13 +31,13 @@ const menuItems = [
 	*/
 	{
 		icon: 'pt-icon-add-column-right',
-		text: "Add Column After",
+		text: "Add Column",
 		run: addColumnAfter,
 		isActive(state) { return addColumnAfter(state) }
 	},
 	{
 		icon: 'pt-icon-add-row-bottom',
-		text: "Add Row After",
+		text: "Add Row",
 		run: addRowAfter,
 		isActive(state) { return addRowAfter(state) }
 	},
