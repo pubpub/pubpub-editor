@@ -89,20 +89,6 @@ function getMenuItems(editor) {
 		return wrapFunction(editor.view.state, editor.view.dispatch);
 	}
 	/* -------------- */
-	/* Create Link */
-
-	function insertMention(state, dispatch, view, _ref) {
-		var url = _ref.url,
-		    type = _ref.type;
-
-
-		var selection = view.selection;
-
-		var textnode = _prosemirrorSetup.schema.text(text);
-		var transaction = view.state.tr.replaceSelectionWith(start, end, _prosemirrorSetup.schema.nodes.mention.create({ url: url, type: type }, textnode));
-		view.dispatch(transaction);
-	}
-
 	/* -------------- */
 
 	var menuItems = [{
@@ -160,12 +146,6 @@ function getMenuItems(editor) {
 		text: 'OL',
 		run: toggleWrapList.bind(this, _prosemirrorSetup.schema.nodes.ordered_list),
 		isActive: blockTypeIsActive(_prosemirrorSetup.schema.nodes.ordered_list)
-	}, {
-		icon: 'pt-icon-link',
-		text: 'link',
-		input: 'text',
-		run: applyToggleMark.bind(this, _prosemirrorSetup.schema.marks.link),
-		isActive: markIsActive(_prosemirrorSetup.schema.marks.link)
 	}];
 
 	return menuItems;

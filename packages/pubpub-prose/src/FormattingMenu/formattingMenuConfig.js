@@ -1,7 +1,7 @@
-import { toggleMark, lift, joinUp, selectParentNode, wrapIn, setBlockType } from 'prosemirror-commands';
-import { wrapInList } from 'prosemirror-schema-list';
+import { joinUp, lift, selectParentNode, setBlockType, toggleMark, wrapIn } from 'prosemirror-commands';
 
 import { schema } from '../prosemirror-setup';
+import { wrapInList } from 'prosemirror-schema-list';
 
 function getMenuItems(editor) {
 
@@ -40,7 +40,7 @@ function getMenuItems(editor) {
 			if (isType) { wrapperDepth = currentDepth; }
 			currentDepth -= 1;
 		}
-		
+
 		// return wrapperDepth !== undefined;
 		return wrapperDepth;
 	}
@@ -78,6 +78,17 @@ function getMenuItems(editor) {
 		return wrapFunction(editor.view.state, editor.view.dispatch);
 	}
 	/* -------------- */
+	/* Create Link */
+
+	function insertMention(state, dispatch, view,{url, type }) {
+
+		const selection = view.selection;
+
+		const textnode = schema.text(text);
+		const transaction = view.state.tr.replaceSelectionWith(start, end, schema.nodes.mention.create({ url, type }, textnode));
+		view.dispatch(transaction);
+	}
+
 	/* -------------- */
 
 
@@ -94,37 +105,37 @@ function getMenuItems(editor) {
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 2 }),
 			isActive: blockTypeIsActive(schema.nodes.heading, { level: 2 }),
 		},
-		{ 
+		{
 			icon: 'pt-icon-bold',
 			text: 'B',
 			run: applyToggleMark.bind(this, schema.marks.strong),
 			isActive: markIsActive(schema.marks.strong),
 		},
-		{ 
+		{
 			icon: 'pt-icon-italic',
 			text: 'I',
 			run: applyToggleMark.bind(this, schema.marks.em),
 			isActive: markIsActive(schema.marks.em),
 		},
-		{ 
+		{
 			icon: 'pt-icon-code',
 			text: '</>',
 			run: applyToggleMark.bind(this, schema.marks.code),
 			isActive: markIsActive(schema.marks.code),
 		},
-		{ 
+		{
 			icon: 'pt-icon-sub',
 			text: 'Sub',
 			run: applyToggleMark.bind(this, schema.marks.sub),
 			isActive: markIsActive(schema.marks.sub),
 		},
-		{ 
+		{
 			icon: 'pt-icon-sup',
 			text: 'Sup',
 			run: applyToggleMark.bind(this, schema.marks.sup),
 			isActive: markIsActive(schema.marks.sup),
 		},
-		{ 
+		{
 			icon: 'pt-icon-strike',
 			text: '-',
 			run: applyToggleMark.bind(this, schema.marks.strike),
@@ -148,13 +159,20 @@ function getMenuItems(editor) {
 			run: toggleWrapList.bind(this, schema.nodes.ordered_list),
 			isActive: blockTypeIsActive(schema.nodes.ordered_list),
 		},
+		{
+			icon: 'pt-icon-link',
+			text: 'link',
+			input: 'text',
+			run: applyToggleMark.bind(this, schema.marks.link),
+			isActive: markIsActive(schema.marks.link),
+		},
 		// {
 		// 	icon: 'pt-icon-cb',
 		// 	text: 'CodeB',
 		// 	run: toggleBlockType.bind(this, schema.nodes.code_block, {}),
 		// 	isActive: blockTypeIsActive(schema.nodes.code_block, {}),
 		// },
-		
+
 	];
 
 
