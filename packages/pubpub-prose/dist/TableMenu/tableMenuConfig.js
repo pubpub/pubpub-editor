@@ -18,25 +18,41 @@ var inTable = function findRow($pos, pred) {
 };
 
 var menuItems = [{
-	icon: 'pt-icon-h1',
-	text: "Add Column Before",
-	run: addColumnBefore,
-	isActive: function isActive(state) {
-		return addColumnBefore(state);
-	}
-}, {
-	icon: 'pt-icon-h1',
+	icon: 'pt-icon-remove-column',
 	text: "Remove Column",
 	run: removeColumn,
 	isActive: function isActive(state) {
 		return removeColumn(state);
 	}
 }, {
-	icon: 'pt-icon-h1',
+	icon: 'pt-icon-exclude-row',
+	text: "Remove Row",
+	run: removeRow,
+	isActive: function isActive(state) {
+		return removeRow(state);
+	}
+},
+/*
+{
+	icon: 'pt-icon-add-column-left',
+	text: "Add Column Before",
+	run: addColumnBefore,
+	isActive(state) { return addColumnBefore(state) }
+},
+*/
+{
+	icon: 'pt-icon-add-column-right',
 	text: "Add Column After",
 	run: addColumnAfter,
 	isActive: function isActive(state) {
 		return addColumnAfter(state);
+	}
+}, {
+	icon: 'pt-icon-add-row-bottom',
+	text: "Add Row After",
+	run: addRowAfter,
+	isActive: function isActive(state) {
+		return addRowAfter(state);
 	}
 }];
 

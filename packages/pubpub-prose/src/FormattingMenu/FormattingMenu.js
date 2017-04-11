@@ -49,7 +49,9 @@ export const FormattingMenu = React.createClass({
 					} else {
 						onClick = item.run;
 					}
-					return <button key={`menuItem-${index}`} className={'pt-button pt-minimal'} style={item.isActive ? { ...styles.button, ...styles.active } : styles.button} onClick={onClick}>{item.text}</button>;
+					return <button key={`menuItem-${index}`} className={'pt-button pt-minimal'} style={item.isActive ? { ...styles.button, ...styles.active } : styles.button} onClick={onClick}>
+						{(item.icon) ? <span className={`pt-icon-standard ${item.icon}`}></span> : item.text }
+					</button>;
 				})}
 
 			</div>

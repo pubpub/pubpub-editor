@@ -80,7 +80,7 @@ var FormattingMenu = exports.FormattingMenu = _react2.default.createClass({
 				return _react2.default.createElement(
 					'button',
 					{ key: 'menuItem-' + index, className: 'pt-button pt-minimal', style: item.isActive ? _extends({}, styles.button, styles.active) : styles.button, onClick: onClick },
-					item.text
+					item.icon ? _react2.default.createElement('span', { className: 'pt-icon-standard ' + item.icon }) : item.text
 				);
 			})
 		);

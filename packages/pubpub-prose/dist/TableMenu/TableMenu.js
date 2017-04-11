@@ -13,6 +13,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _tableMenuConfig = require('./tableMenuConfig');
 
+var _core = require('@blueprintjs/core');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var styles = void 0;
@@ -77,7 +79,17 @@ var TableMenu = exports.TableMenu = _react2.default.createClass({
 				return _react2.default.createElement(
 					'button',
 					{ key: 'menuItem-' + index, className: 'pt-button pt-minimal', style: isActive ? _extends({}, styles.button, styles.active) : styles.button, onClick: run },
-					item.text
+					_react2.default.createElement(
+						_core.Tooltip,
+						{
+							className: 'pt-dark pt-tooltip-indicator pt-minimal',
+							content: _react2.default.createElement(
+								'span',
+								null,
+								item.text
+							) },
+						item.icon ? _react2.default.createElement('span', { className: 'pt-icon-standard ' + item.icon }) : item.text
+					)
 				);
 			})
 		);
@@ -90,8 +102,9 @@ exports.default = TableMenu;
 
 styles = {
 	container: function container(top, left) {
-		var width = 350;
+		var width = 175;
 		return {
+			zIndex: 10,
 			width: width + 'px',
 			position: 'absolute',
 			height: '30px',

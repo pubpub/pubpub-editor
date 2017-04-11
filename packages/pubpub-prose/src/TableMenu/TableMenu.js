@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import { inTable, menuItems } from './tableMenuConfig';
 
+import { Tooltip } from '@blueprintjs/core';
+
 let styles;
 
 export const TableMenu = React.createClass({
@@ -53,7 +55,14 @@ export const TableMenu = React.createClass({
 					const isActive = item.isActive(view.state);
 					const run = item.run.bind(this, view.state, view.dispatch);
 					return (<button key={`menuItem-${index}`} className={'pt-button pt-minimal'} style={isActive ? { ...styles.button, ...styles.active } : styles.button} onClick={run}>
-						{item.text}
+
+            <Tooltip
+                className="pt-dark pt-tooltip-indicator pt-minimal"
+                content={<span>{item.text}</span>}>
+               {(item.icon) ? <span className={`pt-icon-standard ${item.icon}`}></span> :  item.text }
+            </Tooltip>
+
+
 					</button>);
 				})}
 			</div>
@@ -66,8 +75,9 @@ export default TableMenu;
 
 styles = {
 	container: function(top, left) {
-		const width = 350;
+		const width = 175;
 		return {
+			zIndex: 10,
 			width: `${width}px`,
 			position: 'absolute',
 			height: '30px',

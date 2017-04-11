@@ -94,13 +94,11 @@ function getMenuItems(editor) {
 
 	const menuItems = [
 		{
-			icon: 'pt-icon-h1',
 			text: 'H1',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 1 }),
 			isActive: blockTypeIsActive(schema.nodes.heading, { level: 1 }),
 		},
 		{
-			icon: 'pt-icon-h2',
 			text: 'H2',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 2 }),
 			isActive: blockTypeIsActive(schema.nodes.heading, { level: 2 }),
@@ -124,19 +122,16 @@ function getMenuItems(editor) {
 			isActive: markIsActive(schema.marks.code),
 		},
 		{
-			icon: 'pt-icon-sub',
 			text: 'Sub',
 			run: applyToggleMark.bind(this, schema.marks.sub),
 			isActive: markIsActive(schema.marks.sub),
 		},
 		{
-			icon: 'pt-icon-sup',
 			text: 'Sup',
 			run: applyToggleMark.bind(this, schema.marks.sup),
 			isActive: markIsActive(schema.marks.sup),
 		},
 		{
-			icon: 'pt-icon-strike',
 			text: '-',
 			run: applyToggleMark.bind(this, schema.marks.strike),
 			isActive: markIsActive(schema.marks.strike),
@@ -148,13 +143,13 @@ function getMenuItems(editor) {
 			isActive: blockTypeIsActive(schema.nodes.blockquote),
 		},
 		{
-			icon: 'pt-icon-bulletList',
+			icon: 'pt-icon-properties',
 			text: 'UL',
 			run: toggleWrapList.bind(this, schema.nodes.bullet_list),
 			isActive: blockTypeIsActive(schema.nodes.bullet_list),
 		},
 		{
-			icon: 'pt-icon-orderedList',
+			icon: 'pt-icon-numbered-list',
 			text: 'OL',
 			run: toggleWrapList.bind(this, schema.nodes.ordered_list),
 			isActive: blockTypeIsActive(schema.nodes.ordered_list),
