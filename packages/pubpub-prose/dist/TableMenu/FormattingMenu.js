@@ -27,60 +27,18 @@ var FormattingMenu = exports.FormattingMenu = _react2.default.createClass({
 		top: _react.PropTypes.number,
 		left: _react.PropTypes.number
 	},
-	getInitialState: function getInitialState() {
-		return { input: null };
-	},
-
-	startInput: function startInput(type, run) {
-		this.setState({ input: 'text', run: run });
-	},
-
-	submitInput: function submitInput(evt) {
-		if (evt.key === 'Enter') {
-			var link = this.textInput.value;
-			this.state.run({ href: link });
-			this.setState({ input: null, run: null });
-		}
-	},
-
-	renderTextInput: function renderTextInput() {
-		var _this = this;
-
-		return _react2.default.createElement(
-			'div',
-			{ onKeyPress: this.submitInput, className: 'pt-card pt-elevation-0 pt-dark', style: styles.container(this.props.top, this.props.left, 200) },
-			_react2.default.createElement('input', { style: styles.textInput, ref: function ref(input) {
-					_this.textInput = input;
-				}, className: 'pt-input', type: 'text', placeholder: 'link', dir: 'auto' })
-		);
-	},
-
 
 	render: function render() {
-		var _this2 = this;
-
 		var menuItems = (0, _formattingMenuConfig2.default)(this.props.editor);
-		var input = this.state.input;
-
-
-		if (input === 'text') {
-			return this.renderTextInput();
-		}
 
 		return _react2.default.createElement(
 			'div',
-			{ className: 'pt-card pt-elevation-0 pt-dark', style: styles.container(this.props.top, this.props.left, 400) },
+			{ className: 'pt-card pt-elevation-0 pt-dark', style: styles.container(this.props.top, this.props.left) },
 			menuItems.map(function (item, index) {
-				var onClick = void 0;
-				if (item.input === 'text' && !item.isActive) {
-					onClick = _this2.startInput.bind(_this2, item.input, item.run);
-				} else {
-					onClick = item.run;
-				}
 				return _react2.default.createElement(
 					'button',
-					{ key: 'menuItem-' + index, className: 'pt-button pt-minimal', style: item.isActive ? _extends({}, styles.button, styles.active) : styles.button, onClick: onClick },
-					item.icon ? _react2.default.createElement('span', { className: 'pt-icon-standard ' + item.icon }) : item.text
+					{ key: 'menuItem-' + index, className: 'pt-button pt-minimal', style: item.isActive ? _extends({}, styles.button, styles.active) : styles.button, onClick: item.run },
+					item.text
 				);
 			})
 		);
@@ -92,11 +50,8 @@ exports.default = FormattingMenu;
 
 
 styles = {
-	textInput: {
-		height: '80%',
-		verticalAlign: 'baseline'
-	},
-	container: function container(top, left, width) {
+	container: function container(top, left) {
+		var width = 350;
 		return {
 			width: width + 'px',
 			position: 'absolute',

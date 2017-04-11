@@ -126,12 +126,11 @@ var LatexView = function (_ReactView) {
   }, {
     key: 'stopEvent',
     value: function stopEvent(evt) {
-      return true;
-      console.log(evt.type);
-      if (evt.type === "keypress" || evt.type === "input" || evt.type === "keydown" || evt.type === "keyup" || evt.type === "paste") {
-        console.log('stopping event!');
+      if (evt.type === "keypress" || evt.type === "input" || evt.type === "keydown" || evt.type === "keyup" || evt.type === "paste" || evt.type === "mousedown") {
+        // console.log('Stopped ', evt.type);
         return true;
       }
+      console.log('Stop and play ', evt.type);
       return false;
     }
   }]);

@@ -4,6 +4,7 @@ import Autocomplete from '../Autocomplete/Autocomplete';
 import FormattingMenu from '../FormattingMenu/FormattingMenu';
 import InsertMenu from '../InsertMenu/InsertMenu';
 import { RichEditor as ProseEditor } from '../prosemirror-setup';
+import TableMenu from '../TableMenu/TableMenu';
 // import ReactDOM from 'react-dom';
 import { createRichMention } from '../Autocomplete/autocompleteConfig';
 
@@ -47,7 +48,8 @@ export const RichEditor = React.createClass({
 		this.props.onChange(this.editor.view.state.toJSON().doc);
 
 		// Should be called on every cursor update
-		this.insertMenu.updateInputPosition(this.editor.view);
+		this.insertMenu.updatePosition(this.editor.view);
+		this.tableMenu.updatePosition(this.editor.view);
 		this.updateCoordsForMenus();
 	},
 
@@ -180,6 +182,10 @@ export const RichEditor = React.createClass({
 						editor={this.editor}
 						handleFileUpload={this.props.handleFileUpload}
 						handleReferenceAdd={this.props.handleReferenceAdd} />
+
+					<TableMenu
+						ref={(input) => { this.tableMenu = input; }}
+						editor={this.editor} />
 
 				{this.editor && !!this.state.inlineTop &&
 					<FormattingMenu

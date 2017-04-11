@@ -23,6 +23,10 @@ var _InsertMenu2 = _interopRequireDefault(_InsertMenu);
 
 var _prosemirrorSetup = require('../prosemirror-setup');
 
+var _TableMenu = require('../TableMenu/TableMenu');
+
+var _TableMenu2 = _interopRequireDefault(_TableMenu);
+
 var _autocompleteConfig = require('../Autocomplete/autocompleteConfig');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -62,7 +66,9 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 	},
 	onChange: function onChange() {
 		this.props.onChange(this.editor.view.state.toJSON().doc);
-		this.insertMenu.updateInputPosition(this.editor.view);
+		this.insertMenu.updatePosition(this.editor.view);
+		this.tableMenu.updatePosition(this.editor.view);
+
 		// this.props.onChange(this.editor.view.state.doc);
 		this.updateCoordsForMenus();
 	},
@@ -221,6 +227,11 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 				editor: this.editor,
 				handleFileUpload: this.props.handleFileUpload,
 				handleReferenceAdd: this.props.handleReferenceAdd }),
+			_react2.default.createElement(_TableMenu2.default, {
+				ref: function ref(input) {
+					_this2.tableMenu = input;
+				},
+				editor: this.editor }),
 			this.editor && !!this.state.inlineTop && _react2.default.createElement(_FormattingMenu2.default, {
 				editor: this.editor,
 				top: this.state.inlineTop,

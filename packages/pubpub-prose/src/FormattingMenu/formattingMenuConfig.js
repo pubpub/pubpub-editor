@@ -1,6 +1,5 @@
-import { toggleMark, lift, joinUp, selectParentNode, wrapIn, setBlockType } from 'prosemirror-commands';
 import { wrapInList } from 'prosemirror-schema-list';
-import React from 'react';
+import { joinUp, lift, selectParentNode, setBlockType, toggleMark, wrapIn } from 'prosemirror-commands';
 import { schema } from '../prosemirror-setup';
 
 function getMenuItems(editor) {
@@ -40,7 +39,7 @@ function getMenuItems(editor) {
 			if (isType) { wrapperDepth = currentDepth; }
 			currentDepth -= 1;
 		}
-		
+
 		// return wrapperDepth !== undefined;
 		return wrapperDepth;
 	}
@@ -79,7 +78,6 @@ function getMenuItems(editor) {
 	}
 	/* -------------- */
 	/* -------------- */
-
 
 	const menuItems = [
 		{
@@ -148,13 +146,20 @@ function getMenuItems(editor) {
 			run: toggleWrapList.bind(this, schema.nodes.ordered_list),
 			isActive: blockTypeIsActive(schema.nodes.ordered_list),
 		},
+		{
+			icon: 'pt-icon-link',
+			text: 'link',
+			input: 'text',
+			run: applyToggleMark.bind(this, schema.marks.link),
+			isActive: markIsActive(schema.marks.link),
+		},
 		// {
 		// 	icon: 'pt-icon-cb',
 		// 	text: 'CodeB',
 		// 	run: toggleBlockType.bind(this, schema.nodes.code_block, {}),
 		// 	isActive: blockTypeIsActive(schema.nodes.code_block, {}),
 		// },
-		
+
 	];
 
 
