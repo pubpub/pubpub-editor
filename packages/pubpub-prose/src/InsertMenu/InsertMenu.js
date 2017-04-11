@@ -23,7 +23,7 @@ export const InsertMenu = React.createClass({
 		};
 	},
 
-	updateInputPosition(view) {
+	updatePosition(view) {
 
 		const container = document.getElementById('rich-editor-container');
 		const canUse = canUseInsertMenu(view);

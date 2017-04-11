@@ -44,7 +44,7 @@ var InsertMenu = exports.InsertMenu = _react2.default.createClass({
 			top: null
 		};
 	},
-	updateInputPosition: function updateInputPosition(view) {
+	updatePosition: function updatePosition(view) {
 
 		var container = document.getElementById('rich-editor-container');
 		var canUse = (0, _insertMenuConfig.canUseInsertMenu)(view);
