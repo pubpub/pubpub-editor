@@ -5,11 +5,14 @@ import { localDiscussions, localFiles, localHighlights, localPages, localPubs, l
 // import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
 // import RichEditor from '../src/editorComponents/RichEditor';
 import FullEditor from '../src/editorComponents/FullEditor';
+import RenderDocument from '../src/RenderDocument/RenderDocument';
 import {csltoBibtex} from '../src/references/csltobibtex';
 import { s3Upload } from './utils/uploadFile';
 
 // requires style attributes that would normally be up to the wrapping library to require
 require('@blueprintjs/core/dist/blueprint.css');
+require('./utils/pubBody.scss');
+
 // require('../style/base.scss');
 // require('../style/markdown.scss');
 
@@ -38,13 +41,32 @@ export const StoryBookFullEditor = React.createClass({
 	},
 
 	setRich: function() {
-		const newJSON = markdownToJSON(this.state.content || '', localReferences);
+		let newJSON;
+		if (this.state.mode === 'markdown') {
+			newJSON = markdownToJSON(this.state.content || '', localReferences);
+		} else {
+			newJSON = this.state.content;
+		}
 		this.setState({
 			mode: 'rich',
 			initialContent: newJSON,
 			content: newJSON,
 		});
 	},
+
+	setPreview: function() {
+		let json;
+		if (this.state.mode === 'markdown') {
+			json = markdownToJSON(this.state.content || '', localReferences);
+		} else if (this.state.mode === 'rich') {
+			json = this.state.content;
+		}
+		this.setState({
+			mode: 'preview',
+			content: json,
+		});
+	},
+
 
 	onChange: function(newContent) {
 		this.setState({ content: newContent });
@@ -86,11 +108,17 @@ export const StoryBookFullEditor = React.createClass({
 					<div className={'pt-button-group'}>
 						<div className={`pt-button${this.state.mode === 'markdown' ? ' pt-active' : ''}`} onClick={this.setMarkdown}>Markdown</div>
 						<div className={`pt-button${this.state.mode === 'rich' ? ' pt-active' : ''}`} onClick={this.setRich}>Rich</div>
+						<div className={`pt-button${this.state.mode === 'preview' ? ' pt-active' : ''}`} onClick={this.setPreview}>Preview</div>
 					</div>
 				</div>
 				<div style={{ padding: '1em 4em', minHeight: '400px' }}>
+				{(this.state.mode === 'preview') ?
+					<RenderDocument json={this.state.content} />
+					:
 					<FullEditor {...editorProps} mode={this.state.mode} />
+				}
 				</div>
+
 
 			</div>
 

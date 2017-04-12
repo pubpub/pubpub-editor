@@ -47,23 +47,6 @@ export const LatexEditor = React.createClass({
 });
 
 styles = {
-  wrapper: {
-    backgroundColor: 'blue',
-  },
-  block: {
-    position: 'absolute',
-    left: '0px',
-    fontSize: '15px',
-    border: '1px solid black',
-    borderRadius: '1px',
-    width: '100px',
-    height: '25px',
-    lineHeight: '25px',
-    width: 'auto',
-    padding: '3px 6px',
-    marginTop: '5px',
-    cursor: 'pointer',
-  },
   display: function({block})  {
     return {
       fontSize: (block) ? '20px' : '0.9em',

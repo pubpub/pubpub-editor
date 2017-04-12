@@ -1,19 +1,11 @@
 import React, {PropTypes} from 'react';
 
-let styles = {};
-
-// citations HTML..
-
 export const CitationsRender = React.createClass({
 	propTypes: {
 		citations: PropTypes.array,
 	},
 	getInitialState: function() {
-    return {editing: true};
-	},
-
-	setSelected: function(selected) {
-		this.setState({selected});
+    return {};
 	},
 
   renderDisplay() {
@@ -36,31 +28,10 @@ export const CitationsRender = React.createClass({
     );
   },
 
-
-
-
   render: function() {
     const {editing} = this.state;
 		return this.renderDisplay();
 	}
 });
-
-styles = {
-  wrapper: {
-    backgroundColor: 'blue',
-  },
-  editing: function({clientWidth}) {
-    return {
-      display: 'inline',
-      minWidth: '100px',
-      fontSize: '12px',
-      margin: '0px',
-      padding: '0px',
-      lineHeight: '1em',
-      border: '2px solid #BBBDC0',
-      borderRadius: '2px',
-    }
-  },
-};
 
 export default CitationsRender;
