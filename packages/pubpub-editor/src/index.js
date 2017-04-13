@@ -3,6 +3,7 @@ export MarkdownEditor from './editorComponents/MarkdownEditor';
 export RichEditor from './editorComponents/RichEditor';
 export FullEditor from './editorComponents/FullEditor';
 export CodeEditor from './editorComponents/CodeEditor';
+export RenderDocument from './RenderDocument/RenderDocument';
 
 export { markdownParser } from './markdown/markdownParser';
 export { markdownSerializer } from './markdown/markdownSerializer';

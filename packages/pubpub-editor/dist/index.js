@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.csltoBibtex = exports.bibtexToCSL = exports.markdownToJSON = exports.jsonToMarkdown = exports.markdownSerializer = exports.markdownParser = exports.CodeEditor = exports.FullEditor = exports.RichEditor = exports.MarkdownEditor = exports.Autocomplete = undefined;
+exports.csltoBibtex = exports.bibtexToCSL = exports.markdownToJSON = exports.jsonToMarkdown = exports.markdownSerializer = exports.markdownParser = exports.RenderDocument = exports.CodeEditor = exports.FullEditor = exports.RichEditor = exports.MarkdownEditor = exports.Autocomplete = undefined;
 
 var _markdownParser = require('./markdown/markdownParser');
 
@@ -70,6 +70,10 @@ var _CodeEditor2 = require('./editorComponents/CodeEditor');
 
 var _CodeEditor3 = _interopRequireDefault(_CodeEditor2);
 
+var _RenderDocument2 = require('./RenderDocument/RenderDocument');
+
+var _RenderDocument3 = _interopRequireDefault(_RenderDocument2);
+
 var _bibtextocsl = require('./references/bibtextocsl');
 
 var _bibtextocsl2 = _interopRequireDefault(_bibtextocsl);
@@ -81,4 +85,5 @@ exports.MarkdownEditor = _MarkdownEditor3.default;
 exports.RichEditor = _RichEditor3.default;
 exports.FullEditor = _FullEditor3.default;
 exports.CodeEditor = _CodeEditor3.default;
+exports.RenderDocument = _RenderDocument3.default;
 exports.bibtexToCSL = _bibtextocsl2.default;

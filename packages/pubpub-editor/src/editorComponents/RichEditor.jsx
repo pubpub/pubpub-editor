@@ -46,7 +46,8 @@ export const RichEditor = React.createClass({
 
 	onChange() {
 		// Should be called on every document change (delete, addition, etc)
-		this.props.onChange(this.editor.view.state.toJSON().doc);
+		// is toJSON expensive?
+		this.props.onChange(this.editor.view.state.toJSON());
 	},
 
 	onCursorChange() {

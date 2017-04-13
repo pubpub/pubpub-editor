@@ -52,6 +52,7 @@
     "prosemirror-schema-table": "^0.19.0",
     "prosemirror-state": "^0.19.1",
     "prosemirror-view": "^0.19.1",
+    "react": "15.4.2",
     "react-dom": "^15.4.2",
     "react-dropzone": "^3.7.3",
     "react-resizable-box": "^1.8.1",
@@ -65,7 +66,6 @@
   },
   "peerDependencies": {
     "@blueprintjs/core": "^1.12.0",
-    "react": "15.4.2",
     "react-addons-css-transition-group": "^15.4.2"
   },
   "devDependencies": {
