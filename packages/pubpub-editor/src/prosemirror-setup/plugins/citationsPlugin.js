@@ -9,11 +9,6 @@ import { schema } from '../schema';
 
 const { DecorationSet, Decoration } = require('prosemirror-view');
 
-/*
-Problem:
-	- problem: remote diffs do not have meta data
-*/
-
 const createReferenceDecoration = (index, node, label) => {
 	return Decoration.node(index , index + 1, {}, { citationID: node.attrs.citationID, label });
 }
@@ -110,10 +105,6 @@ const citationsPlugin = new Plugin({
 			*/
 
 			let set = state.decos;
-
-			if (transaction.getMeta('history$')) {
-				console.log('got history', transaction);
-			}
 
 			if (transaction.getMeta('createdReference') || transaction.getMeta('deleteReference') || transaction.getMeta('history$')) {
 				const blueSet = createDecorations(editorState.doc, state.decos, state.engine);

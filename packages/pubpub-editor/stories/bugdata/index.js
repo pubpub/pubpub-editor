@@ -1,0 +1,1 @@
+export MentionContentBug from './mentioncontent';

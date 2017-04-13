@@ -100,7 +100,7 @@ export const InsertMenuDialogReferences = React.createClass({
 		if (selectedTabIndex === TabIndexes.MANUAL) {
 			bibTexString = generateBibTexString(this.state.referenceData);
 		} else if (selectedTabIndex === TabIndexes.BIBTEX) {
-			bibTexString = this.refs.bibtexText.value;
+			bibTexString = this.bibtexText.value;
 		}
 
 		const cslJSON = parseBibTeX(bibTexString);
@@ -183,7 +183,7 @@ export const InsertMenuDialogReferences = React.createClass({
 							Paste in BiBTeX data and we will automatically create a reference.
 						</div>
 
-						<textarea className="pt-input pt-fill" dir="auto" ref="bibtexText" />
+						<textarea className="pt-input pt-fill" dir="auto" ref={(input) => { this.bibtexText = input; }} />
 
 					</TabPanel>
 

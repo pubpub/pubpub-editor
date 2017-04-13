@@ -30,7 +30,7 @@ const nodes = {
 
 
 	mention: {
-		content: 'text*',
+		content: 'inline<_>*',
 		atom: true,
 		group: 'inline',
 		attrs: {

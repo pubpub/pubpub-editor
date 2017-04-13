@@ -7,7 +7,7 @@ var _markdownParser = require('./markdownParser');
 var _schema = require('../prosemirror-setup/schema');
 
 var markdownToJSON = function markdownToJSON(markdown, citationsList) {
-  var contents = _markdownParser.markdownParser.parse(markdown);
+  var contents = _markdownParser.markdownParser.parse(markdown, citationsList);
   var newState = _prosemirrorState.EditorState.create({
     doc: contents
   });

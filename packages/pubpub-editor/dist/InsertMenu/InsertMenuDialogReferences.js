@@ -108,7 +108,7 @@ var InsertMenuDialogReferences = exports.InsertMenuDialogReferences = _react2.de
 		if (selectedTabIndex === TabIndexes.MANUAL) {
 			bibTexString = (0, _citationConversion.generateBibTexString)(this.state.referenceData);
 		} else if (selectedTabIndex === TabIndexes.BIBTEX) {
-			bibTexString = this.refs.bibtexText.value;
+			bibTexString = this.bibtexText.value;
 		}
 
 		var cslJSON = (0, _bibtextocsl2.default)(bibTexString);
@@ -214,7 +214,9 @@ var InsertMenuDialogReferences = exports.InsertMenuDialogReferences = _react2.de
 							{ className: 'pt-callout' },
 							'Paste in BiBTeX data and we will automatically create a reference.'
 						),
-						_react2.default.createElement('textarea', { className: 'pt-input pt-fill', dir: 'auto', ref: 'bibtexText' })
+						_react2.default.createElement('textarea', { className: 'pt-input pt-fill', dir: 'auto', ref: function ref(input) {
+								_this.bibtexText = input;
+							} })
 					)
 				)
 			),

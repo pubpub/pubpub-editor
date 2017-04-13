@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.markdownParser = undefined;
 
+var _references = require('../references');
+
 var _prosemirrorMarkdown = require('prosemirror-markdown');
 
 var _prosemirrorModel = require('prosemirror-model');
@@ -250,6 +252,25 @@ markdownParser.tokenHandlers.tbody_open = emptyAdd;
 markdownParser.tokenHandlers.tbody_close = emptyAdd;
 markdownParser.tokenHandlers.thead_open = emptyAdd;
 markdownParser.tokenHandlers.thead_close = emptyAdd;
+
+markdownParser._parse = markdownParser.parse;
+
+// add 50ms to pre-rendering citations?
+markdownParser.parse = function (md, localReferences) {
+	/*
+ console.log('Parsing!');
+ console.log(md);
+ console.time('parsing function');
+ if (localReferences) {
+ 	const engine = new CitationEngine();
+ 	const refs = engine.buildFromArray(localReferences);
+ 	console.log('Got logs!', refs);
+ }
+ */
+	var result = markdownParser._parse(md);
+	// console.timeEnd('parsing function');
+	return result;
+};
 
 markdownParser.parseSlice = function (md) {
 	return markdownParser.parse(md);

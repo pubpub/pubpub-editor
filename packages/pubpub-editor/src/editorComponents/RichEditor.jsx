@@ -7,6 +7,7 @@ import { RichEditor as ProseEditor } from '../prosemirror-setup';
 import TableMenu from '../TableMenu/TableMenu';
 // import ReactDOM from 'react-dom';
 import { createRichMention } from '../Autocomplete/autocompleteConfig';
+import { migrateMarks } from '../migrate/migrateDiffs';
 
 export const RichEditor = React.createClass({
 	propTypes: {
@@ -99,9 +100,12 @@ export const RichEditor = React.createClass({
 		const place = document.getElementById('pubEditor');
 		const fileMap = this.generateFileMap();
 
+		const contents = this.props.initialContent;
+		migrateMarks(contents);
+
 		this.editor = new ProseEditor({
 			place: place,
-			contents: this.props.initialContent,
+			contents: contents,
 			config: {
 				fileMap: fileMap,
 				referencesList: this.props.localFiles,

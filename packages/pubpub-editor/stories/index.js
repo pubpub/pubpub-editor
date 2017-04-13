@@ -1,8 +1,9 @@
 import { ReferenceOrdering, SampleMarkdown, SingleMention, SingleReference, TableMarkdown } from './sampledocs';
 
+import CodeEditor from './storybookCodeEditor';
 import FullEditor from './storybookFullEditor';
 import MarkdownEditor from './storybookMarkdownEditor';
-import CodeEditor from './storybookCodeEditor';
+import { MentionContentBug } from './bugdata';
 import React from 'react';
 import RichEditor from './storybookRichEditor';
 import { storiesOf } from '@kadira/storybook';
@@ -43,5 +44,11 @@ storiesOf('Full Editor', module)
 ))
 .add('Reference Ordering Test', () => (
 	<FullEditor mode={'markdown'} initialContent={ReferenceOrdering} />
+))
+;
+
+storiesOf('Debugging', module)
+.add('basic ', () => (
+	<FullEditor mode={'markdown'} initialContent={MentionContentBug} />
 ))
 ;

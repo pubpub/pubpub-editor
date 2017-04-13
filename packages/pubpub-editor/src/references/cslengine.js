@@ -30,6 +30,10 @@ class CitationEngine {
 
   }
 
+  renderBibliography = (references, referenceOrder) => {
+
+  }
+
   setBibliography = (refItems) => {
     const citeproc = new CSL.Engine(this.sys, styles[this.style]);
     let itemIDs = refItems.map((item) => item.id);
@@ -52,6 +56,13 @@ class CitationEngine {
 
   getAllReferences = () => {
     return this.items;
+  }
+
+  buildFromArray = (citationsArray) => {
+    this.setBibliography(citationsArray);
+    const state =  this.buildState(this.itemIDs);
+    const bib = this.getBibliography(this.itemIDs);
+    return {state, bib};
   }
 
   buildState = (citations) => {

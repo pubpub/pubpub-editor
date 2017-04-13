@@ -29,8 +29,11 @@ var _TableMenu2 = _interopRequireDefault(_TableMenu);
 
 var _autocompleteConfig = require('../Autocomplete/autocompleteConfig');
 
+var _migrateDiffs = require('../migrate/migrateDiffs');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import ReactDOM from 'react-dom';
 var RichEditor = exports.RichEditor = _react2.default.createClass({
 	displayName: 'RichEditor',
 
@@ -118,9 +121,12 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 		var place = document.getElementById('pubEditor');
 		var fileMap = this.generateFileMap();
 
+		var contents = this.props.initialContent;
+		(0, _migrateDiffs.migrateMarks)(contents);
+
 		this.editor = new _prosemirrorSetup.RichEditor({
 			place: place,
-			contents: this.props.initialContent,
+			contents: contents,
 			config: {
 				fileMap: fileMap,
 				referencesList: this.props.localFiles
@@ -243,5 +249,5 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 	}
 
 });
-// import ReactDOM from 'react-dom';
+
 exports.default = RichEditor;

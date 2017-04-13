@@ -22,11 +22,6 @@ var _require = require('prosemirror-view'),
     DecorationSet = _require.DecorationSet,
     Decoration = _require.Decoration;
 
-/*
-Problem:
-	- problem: remote diffs do not have meta data
-*/
-
 var createReferenceDecoration = function createReferenceDecoration(index, node, label) {
 	return Decoration.node(index, index + 1, {}, { citationID: node.attrs.citationID, label: label });
 };
@@ -126,10 +121,6 @@ var citationsPlugin = new _prosemirrorState.Plugin({
    */
 
 			var set = state.decos;
-
-			if (transaction.getMeta('history$')) {
-				console.log('got history', transaction);
-			}
 
 			if (transaction.getMeta('createdReference') || transaction.getMeta('deleteReference') || transaction.getMeta('history$')) {
 				var blueSet = createDecorations(editorState.doc, state.decos, state.engine);

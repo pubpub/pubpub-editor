@@ -65,7 +65,7 @@
   },
   "peerDependencies": {
     "@blueprintjs/core": "^1.12.0",
-    "react": "^15.4.2",
+    "react": "15.4.2",
     "react-addons-css-transition-group": "^15.4.2"
   },
   "devDependencies": {

@@ -148,15 +148,12 @@ class EmbedView extends ReactView {
 
   stopEvent(evt) {
     if (evt.type === "keypress" || evt.type === "input" || evt.type === "keydown" || evt.type === "keyup" || evt.type === "paste" || evt.type === "mousedown") {
-      // console.log('Stopped ', evt.type);
       return true;
     }
-    console.log('Stop and play ', evt.type);
     return false;
   }
 
   selectNode() {
-    console.log('selected!');
     this.reactElement.focusAndSelect();
   }
 
