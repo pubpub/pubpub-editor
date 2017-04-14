@@ -4,11 +4,7 @@ import { Schema } from 'prosemirror-model';
 import markdownit from './markdownitInstance';
 import { schema as pubSchema } from '../prosemirror-setup/schema';
 
-const newSpec = pubSchema.spec;
-
-const markdownSchema = new Schema(newSpec);
-
-const context = {};
+const markdownSchema = pubSchema;
 
 export const markdownParser = new MarkdownParser(markdownSchema,
 	markdownit,
@@ -217,21 +213,8 @@ markdownParser.tokenHandlers.thead_close = emptyAdd;
 
 markdownParser._parse = markdownParser.parse;
 
-
-// add 50ms to pre-rendering citations?
 markdownParser.parse = (md, localReferences) => {
-	/*
-	console.log('Parsing!');
-	console.log(md);
-	console.time('parsing function');
-	if (localReferences) {
-		const engine = new CitationEngine();
-		const refs = engine.buildFromArray(localReferences);
-		console.log('Got logs!', refs);
-	}
-	*/
 	const result = markdownParser._parse(md);
-	// console.timeEnd('parsing function');
 	return result;
 }
 

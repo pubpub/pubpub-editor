@@ -19,11 +19,7 @@ var _schema = require('../prosemirror-setup/schema');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var newSpec = _schema.schema.spec;
-
-var markdownSchema = new _prosemirrorModel.Schema(newSpec);
-
-var context = {};
+var markdownSchema = _schema.schema;
 
 var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownParser(markdownSchema, _markdownitInstance2.default, {
 	article: { block: 'article' },
@@ -257,20 +253,8 @@ markdownParser.tokenHandlers.thead_close = emptyAdd;
 
 markdownParser._parse = markdownParser.parse;
 
-// add 50ms to pre-rendering citations?
 markdownParser.parse = function (md, localReferences) {
-	/*
- console.log('Parsing!');
- console.log(md);
- console.time('parsing function');
- if (localReferences) {
- 	const engine = new CitationEngine();
- 	const refs = engine.buildFromArray(localReferences);
- 	console.log('Got logs!', refs);
- }
- */
 	var result = markdownParser._parse(md);
-	// console.timeEnd('parsing function');
 	return result;
 };
 

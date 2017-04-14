@@ -9,8 +9,8 @@ export const RenderDocument = React.createClass({
 	propTypes: {
     json: PropTypes.object,
     markdown: PropTypes.string,
-		localFiles: PropTypes.array,
-		localReferences: PropTypes.array,
+		allFiles: PropTypes.array,
+		allReferences: PropTypes.array,
 	},
 	getInitialState() {
 		return { };
@@ -21,7 +21,7 @@ export const RenderDocument = React.createClass({
 
 
 	generateFileMap: function() {
-		const files = this.props.localFiles || [];
+		const files = this.props.allFiles || [];
 		const fileMap = {};
 		for (const file of files) {
 			fileMap[file.name] = file.url;
@@ -31,18 +31,19 @@ export const RenderDocument = React.createClass({
 
 	render: function() {
 
-    const { json, markdown, localReferences, localFiles } = this.props;
+    const { json, markdown, allReferences, allFiles } = this.props;
 
     let renderedJSON;
     if (markdown) {
-      renderedJSON = markdownToJSON(markdown, localReferences);
+      renderedJSON = markdownToJSON(markdown, allReferences);
     } else {
       renderedJSON = json;
     }
 
+
 		return (
 			<div className="pub-body">
-				{renderReactFromJSON(renderedJSON, this.generateFileMap())}
+				{renderReactFromJSON(renderedJSON, this.generateFileMap(), allReferences)}
 			</div>
 		);
 	}

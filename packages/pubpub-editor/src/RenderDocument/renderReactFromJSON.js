@@ -1,5 +1,6 @@
 import { CitationsRender, EmbedRender, IframeRender, LatexRender, MentionRender, ReferenceRender } from './renderComponents';
 
+import { CitationEngine } from '../references';
 import React from 'react';
 
 /*
@@ -7,9 +8,16 @@ CSL engine API endpoint...
 - serialize each reference decorations?
 */
 
-export const renderReactFromJSON = function(doc, fileMap) {
-	const meta = doc.attrs.meta;
-	meta.fileMap = fileMap;
+// use engine or not?
+
+
+export const renderReactFromJSON = function(doc, fileMap, allReferences) {
+
+	const engine = new CitationEngine();
+	engine.setBibliography(allReferences);
+
+	const meta = {fileMap, allReferences, engine};
+
 
 	const content = renderSubLoop(doc.content, meta);
 	return (
@@ -114,12 +122,15 @@ const renderSubLoop = function(item, meta) {
 
 		case 'reference':
 			const citationID = node.attrs.citationID;
+			const label = meta.engine.getShortForm(citationID);
+			/*
 			let label;
 			if (meta && meta.inlineBib) {
 				label = meta.inlineBib[citationID];
 			} else {
 				label = null;
 			}
+			*/
 			return <ReferenceRender key={index} label={label}{...node.attrs} />
 		case 'citations':
 			const bib = meta.bib;

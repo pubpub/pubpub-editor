@@ -113,7 +113,7 @@ export const StoryBookFullEditor = React.createClass({
 				</div>
 				<div style={{ padding: '1em 4em', minHeight: '400px' }}>
 				{(this.state.mode === 'preview') ?
-					<RenderDocument json={this.state.content} />
+					<RenderDocument json={this.state.content} allFiles={localFiles} allReferences={localReferences} />
 					:
 					<FullEditor {...editorProps} mode={this.state.mode} />
 				}

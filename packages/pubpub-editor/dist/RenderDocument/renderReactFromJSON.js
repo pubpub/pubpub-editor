@@ -9,6 +9,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _renderComponents = require('./renderComponents');
 
+var _references = require('../references');
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -20,9 +22,15 @@ CSL engine API endpoint...
 - serialize each reference decorations?
 */
 
-var renderReactFromJSON = exports.renderReactFromJSON = function renderReactFromJSON(doc, fileMap) {
-	var meta = doc.attrs.meta;
-	meta.fileMap = fileMap;
+// use engine or not?
+
+
+var renderReactFromJSON = exports.renderReactFromJSON = function renderReactFromJSON(doc, fileMap, allReferences) {
+
+	var engine = new _references.CitationEngine();
+	engine.setBibliography(allReferences);
+
+	var meta = { fileMap: fileMap, allReferences: allReferences, engine: engine };
 
 	var content = renderSubLoop(doc.content, meta);
 	return _react2.default.createElement(
@@ -222,12 +230,15 @@ var renderSubLoop = function renderSubLoop(item, meta) {
 
 			case 'reference':
 				var citationID = node.attrs.citationID;
-				var label = void 0;
-				if (meta && meta.inlineBib) {
-					label = meta.inlineBib[citationID];
-				} else {
-					label = null;
-				}
+				var label = meta.engine.getShortForm(citationID);
+				/*
+    let label;
+    if (meta && meta.inlineBib) {
+    	label = meta.inlineBib[citationID];
+    } else {
+    	label = null;
+    }
+    */
 				return _react2.default.createElement(_renderComponents.ReferenceRender, _extends({ key: index, label: label }, node.attrs));
 			case 'citations':
 				var bib = meta.bib;

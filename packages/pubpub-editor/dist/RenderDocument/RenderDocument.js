@@ -23,8 +23,8 @@ var RenderDocument = exports.RenderDocument = _react2.default.createClass({
 	propTypes: {
 		json: _react.PropTypes.object,
 		markdown: _react.PropTypes.string,
-		localFiles: _react.PropTypes.array,
-		localReferences: _react.PropTypes.array
+		allFiles: _react.PropTypes.array,
+		allReferences: _react.PropTypes.array
 	},
 	getInitialState: function getInitialState() {
 		return {};
@@ -33,7 +33,7 @@ var RenderDocument = exports.RenderDocument = _react2.default.createClass({
 
 
 	generateFileMap: function generateFileMap() {
-		var files = this.props.localFiles || [];
+		var files = this.props.allFiles || [];
 		var fileMap = {};
 		var _iteratorNormalCompletion = true;
 		var _didIteratorError = false;
@@ -67,13 +67,13 @@ var RenderDocument = exports.RenderDocument = _react2.default.createClass({
 		var _props = this.props,
 		    json = _props.json,
 		    markdown = _props.markdown,
-		    localReferences = _props.localReferences,
-		    localFiles = _props.localFiles;
+		    allReferences = _props.allReferences,
+		    allFiles = _props.allFiles;
 
 
 		var renderedJSON = void 0;
 		if (markdown) {
-			renderedJSON = (0, _markdown.markdownToJSON)(markdown, localReferences);
+			renderedJSON = (0, _markdown.markdownToJSON)(markdown, allReferences);
 		} else {
 			renderedJSON = json;
 		}
@@ -81,7 +81,7 @@ var RenderDocument = exports.RenderDocument = _react2.default.createClass({
 		return _react2.default.createElement(
 			'div',
 			{ className: 'pub-body' },
-			(0, _renderReactFromJSON.renderReactFromJSON)(renderedJSON, this.generateFileMap())
+			(0, _renderReactFromJSON.renderReactFromJSON)(renderedJSON, this.generateFileMap(), allReferences)
 		);
 	}
 
