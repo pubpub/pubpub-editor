@@ -8,8 +8,6 @@ CSL engine API endpoint...
 - serialize each reference decorations?
 */
 
-// use engine or not?
-
 
 export const renderReactFromJSON = function(doc, fileMap, allReferences) {
 
@@ -133,7 +131,7 @@ const renderSubLoop = function(item, meta) {
 			*/
 			return <ReferenceRender key={index} label={label}{...node.attrs} />
 		case 'citations':
-			const bib = meta.bib;
+			const bib = meta.engine.getBibliography();
 			return <CitationsRender key={index} renderedBib={bib} {...node.attrs} citations={node.content} />
 		default:
 			console.log('Error with ', node);

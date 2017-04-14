@@ -22,9 +22,6 @@ CSL engine API endpoint...
 - serialize each reference decorations?
 */
 
-// use engine or not?
-
-
 var renderReactFromJSON = exports.renderReactFromJSON = function renderReactFromJSON(doc, fileMap, allReferences) {
 
 	var engine = new _references.CitationEngine();
@@ -241,7 +238,7 @@ var renderSubLoop = function renderSubLoop(item, meta) {
     */
 				return _react2.default.createElement(_renderComponents.ReferenceRender, _extends({ key: index, label: label }, node.attrs));
 			case 'citations':
-				var bib = meta.bib;
+				var bib = meta.engine.getBibliography();
 				return _react2.default.createElement(_renderComponents.CitationsRender, _extends({ key: index, renderedBib: bib }, node.attrs, { citations: node.content }));
 			default:
 				console.log('Error with ', node);
