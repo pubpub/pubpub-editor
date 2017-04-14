@@ -142,7 +142,7 @@ class BaseEditor {
 	}
 
 	toJSON = () => {
-		return this.view.state.doc.toJSON();
+		return this.view.state.doc.toJSON().doc;
 	}
 
 	toMarkdown = () => {

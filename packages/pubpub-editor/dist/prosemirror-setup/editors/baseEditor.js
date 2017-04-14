@@ -47,7 +47,7 @@ var BaseEditor = function () {
 		};
 
 		this.toJSON = function () {
-			return _this.view.state.doc.toJSON();
+			return _this.view.state.doc.toJSON().doc;
 		};
 
 		this.toMarkdown = function () {

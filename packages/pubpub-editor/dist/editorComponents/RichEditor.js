@@ -70,7 +70,7 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 	onChange: function onChange() {
 		// Should be called on every document change (delete, addition, etc)
 		// is toJSON expensive?
-		this.props.onChange(this.editor.view.state.toJSON());
+		this.props.onChange(this.editor.view.state.doc.toJSON());
 	},
 	onCursorChange: function onCursorChange() {
 		// Should be called on every cursor update
