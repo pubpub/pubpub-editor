@@ -8,7 +8,7 @@ import { renderReactFromJSON } from './renderReactFromJSON';
 export const RenderDocument = React.createClass({
 	propTypes: {
     json: PropTypes.object,
-    markdown: PropTypes.object,
+    markdown: PropTypes.string,
 		localFiles: PropTypes.array,
 		localReferences: PropTypes.array,
 	},

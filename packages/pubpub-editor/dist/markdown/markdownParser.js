@@ -160,10 +160,12 @@ var addEmbed = function addEmbed(state, tok) {
 	};
 	var caption = tok.content;
 
-	var textnode = markdownSchema.text(caption);
-
 	state.openNode(markdownSchema.nodeType('embed'), attrs);
-	state.addNode(markdownSchema.nodeType('caption'), {}, textnode);
+	if (caption && caption.length > 0) {
+		var textnode = markdownSchema.text(caption);
+		state.addNode(markdownSchema.nodeType('caption'), {}, textnode);
+	}
+
 	state.closeNode();
 
 	if (didClose) {

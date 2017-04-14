@@ -22,7 +22,7 @@ var RenderDocument = exports.RenderDocument = _react2.default.createClass({
 
 	propTypes: {
 		json: _react.PropTypes.object,
-		markdown: _react.PropTypes.object,
+		markdown: _react.PropTypes.string,
 		localFiles: _react.PropTypes.array,
 		localReferences: _react.PropTypes.array
 	},
