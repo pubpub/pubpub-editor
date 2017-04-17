@@ -73,7 +73,6 @@ export const LatexEditor = React.createClass({
 	},
 
 	generateHTML(text) {
-		console.log('GENERATING HTML', text, this.props.block);
 		try {
 			return katex.renderToString(text, { displayMode: this.props.block });
 		} catch (err) {

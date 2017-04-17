@@ -26,6 +26,7 @@ const nodes = {
 		group: 'inline',
 		content: 'text*',
 		inline: true,
+		toDOM() { return ['div', 0]; }
 	},
 
 
@@ -123,7 +124,16 @@ const nodes = {
 		toDOM() { return ['p', 0]; }
 	},
 
+	// removable, but think some legacy docs may use this
 	aside: {
+		content: 'inline<_>*',
+		group: 'block',
+		parseDOM: [{ tag: 'aside' }],
+		toDOM() { return ['aside']; }
+	},
+
+
+	footnote: {
 		content: 'inline<_>*',
 		group: 'block',
 		parseDOM: [{ tag: 'aside' }],

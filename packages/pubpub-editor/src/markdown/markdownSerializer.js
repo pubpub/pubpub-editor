@@ -111,6 +111,12 @@ export const markdownSerializer = new MarkdownSerializer({
 	text(state, node) {
 		state.text(node.text);
 	},
+
+	iframe(state, node) {
+		const { url, height, width } = node.attrs;
+		state.write(`\n<iframe src=${url} width=${width} height=${height}></iframe>\n`);
+	},
+
 	table: function table(state, node) {
 		state.write('\n');
 		let rowCount = undefined;

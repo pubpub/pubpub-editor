@@ -31,6 +31,8 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 		math_block: {node: 'block_equation', attrs: tok => { return {content: tok.content}; }},
 
 		image: {node: 'embed'},
+		highlight: {node: 'highlight'},
+		footnote: {node: 'footnote'},
 
 		embed: {node: 'embed'},
 		emoji: {node: 'emoji', attrs: tok => ({
@@ -153,6 +155,8 @@ const addEmbed = function(state, tok) {
 
 
 const addReference = function(state, tok) {
+
+	console.log('GOT REFERENCE!', tok);
 
 	if (!state.citationsDict) {
 		state.citationsDict = {};

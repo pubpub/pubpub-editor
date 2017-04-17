@@ -117,6 +117,13 @@ var markdownSerializer = exports.markdownSerializer = new _prosemirrorMarkdown.M
 	state.write('\\\n');
 }), _defineProperty(_ref, 'text', function text(state, node) {
 	state.text(node.text);
+}), _defineProperty(_ref, 'iframe', function iframe(state, node) {
+	var _node$attrs = node.attrs,
+	    url = _node$attrs.url,
+	    height = _node$attrs.height,
+	    width = _node$attrs.width;
+
+	state.write('\n<iframe src=' + url + ' width=' + width + ' height=' + height + '></iframe>\n');
 }), _defineProperty(_ref, 'table', function table(state, node) {
 	state.write('\n');
 	var rowCount = undefined;

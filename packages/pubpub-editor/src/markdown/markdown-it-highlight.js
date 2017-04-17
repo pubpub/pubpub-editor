@@ -23,19 +23,18 @@ function highlightParser(state, silent) {
 	state.posMax = state.pos;
 	state.pos = start + 1;
 
-	// Earlier we checked !silent, but this implementation does not need it
-	token = state.push('highlight_open', 'highlight', 1);
+	token = state.push('highlight', '', 0);
+	token.attrs = [];
+	const highlightID = content.replace(UNESCAPE_RE, '$1');
+	token.attrs.push(['highlightID', highlightID]);
 
-	token = state.push('text', '', 0);
-	token.content = content.replace(UNESCAPE_RE, '$1');
 
-	token = state.push('highlight_close', 'highlight', -1);
-	
 	state.pos = state.posMax + 1;
 	state.posMax = max;
 	return true;
 }
 
 module.exports = function highlightPlugin(md) {
-	md.inline.ruler.push('highlight', highlightParser);
+	md.inline.ruler.before('reference', 'highlight', highlightParser);
+	// md.inline.ruler.push('highlight', highlightParser);
 };

@@ -32,7 +32,10 @@ var nodes = {
 	highlight: {
 		group: 'inline',
 		content: 'text*',
-		inline: true
+		inline: true,
+		toDOM: function toDOM() {
+			return ['div', 0];
+		}
 	},
 
 	mention: {
@@ -134,7 +137,17 @@ var nodes = {
 		}
 	},
 
+	// removable, but think some legacy docs may use this
 	aside: {
+		content: 'inline<_>*',
+		group: 'block',
+		parseDOM: [{ tag: 'aside' }],
+		toDOM: function toDOM() {
+			return ['aside'];
+		}
+	},
+
+	footnote: {
 		content: 'inline<_>*',
 		group: 'block',
 		parseDOM: [{ tag: 'aside' }],
