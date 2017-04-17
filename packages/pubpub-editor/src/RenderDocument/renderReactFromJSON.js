@@ -131,7 +131,13 @@ const renderSubLoop = function(item, meta) {
 			*/
 			return <ReferenceRender key={index} label={label}{...node.attrs} />
 		case 'citations':
-			const bib = meta.engine.getBibliography();
+			let bib;
+
+			if (allReferences && allReferences.length > 0) {
+				bib = meta.engine.getBibliography();
+			} else if (doc && doc.attrs.meta && doc.attrs.meta.bib) {
+				bib = meta.bib;
+			}
 			return <CitationsRender key={index} renderedBib={bib} {...node.attrs} citations={node.content} />
 		default:
 			console.log('Error with ', node);

@@ -238,7 +238,13 @@ var renderSubLoop = function renderSubLoop(item, meta) {
     */
 				return _react2.default.createElement(_renderComponents.ReferenceRender, _extends({ key: index, label: label }, node.attrs));
 			case 'citations':
-				var bib = meta.engine.getBibliography();
+				var bib = void 0;
+
+				if (allReferences && allReferences.length > 0) {
+					bib = meta.engine.getBibliography();
+				} else if (doc && doc.attrs.meta && doc.attrs.meta.bib) {
+					bib = meta.bib;
+				}
 				return _react2.default.createElement(_renderComponents.CitationsRender, _extends({ key: index, renderedBib: bib }, node.attrs, { citations: node.content }));
 			default:
 				console.log('Error with ', node);
