@@ -60,8 +60,7 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
       _react2.default.createElement('span', {
         ref: 'latexElem',
         className: 'pub-embed-latex',
-        dangerouslySetInnerHTML: { __html: displayHTML },
-        style: styles.output })
+        dangerouslySetInnerHTML: { __html: displayHTML } })
     );
   },
 

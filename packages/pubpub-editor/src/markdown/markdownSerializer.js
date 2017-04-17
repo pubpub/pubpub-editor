@@ -82,6 +82,11 @@ export const markdownSerializer = new MarkdownSerializer({
 		state.write(node.attrs.content);
 		state.write('$$\n');
 	},
+	html_block: function html_block(state, node) {
+		state.write('\n');
+		state.write(node.attrs.content);
+		state.write('\n');
+	},
 	mention: function mention(state, node) {
 		state.write(`[${node.textContent}](${node.attrs.url})`);
 	},

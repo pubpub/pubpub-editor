@@ -4,3 +4,4 @@ export MentionComponent from './mentionComponent';
 export ReferenceComponent from './referenceComponent';
 export CitationsComponent from './citationsComponent';
 export IframeComponent from './iframeComponent';
+export HtmlComponent from './htmlComponent';

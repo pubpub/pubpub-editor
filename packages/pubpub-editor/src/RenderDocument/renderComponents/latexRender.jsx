@@ -33,8 +33,7 @@ export const LatexEditor = React.createClass({
 	        <span
 						ref={'latexElem'}
 						className={'pub-embed-latex'}
-	          dangerouslySetInnerHTML={{__html: displayHTML}}
-	          style={styles.output}>
+	          dangerouslySetInnerHTML={{__html: displayHTML}}>
 	        </span>
       </span>
     );

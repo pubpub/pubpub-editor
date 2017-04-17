@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.LatexEditor = undefined;
+exports.HTMLEditor = undefined;
 
 var _core = require('@blueprintjs/core');
 
@@ -19,55 +19,24 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _katex = require('katex');
-
-var _katex2 = _interopRequireDefault(_katex);
-
-var _katexCss = require('./katex.css.js');
-
-var _katexCss2 = _interopRequireDefault(_katexCss);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import {safeGetInToJS} from 'utils/safeParse';
-
-var ERROR_MSG_HTML = "<div class='pub-latex-error'>Error rendering equation</div>";
-
-var LatexEditor = exports.LatexEditor = _react2.default.createClass({
-	displayName: 'LatexEditor',
+var HTMLEditor = exports.HTMLEditor = _react2.default.createClass({
+	displayName: 'HTMLEditor',
 
 	propTypes: {
 		value: _react.PropTypes.string,
-		block: _react.PropTypes.bool,
 		updateValue: _react.PropTypes.func,
-		changeToBlock: _react.PropTypes.func,
-		changeToInline: _react.PropTypes.func,
 		forceSelection: _react.PropTypes.func
 	},
 	getInitialState: function getInitialState() {
-		var displayHTML = this.generateHTML(this.props.value);
 		return {
-			editing: false,
-			displayHTML: displayHTML,
-			value: null
+			editing: false
 		};
 	},
 
 	getDefaultProps: function getDefaultProps() {
 		return {};
-	},
-
-	componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-		if (this.props.block !== nextProps.block) {
-			this.setState({ closePopOver: false });
-		}
-		if (this.props.value !== nextProps.value) {
-			var text = nextProps.value;
-			if (!this.state.editing) {
-				var displayHTML = this.generateHTML(text);
-				this.setState({ displayHTML: displayHTML });
-			}
-		}
 	},
 
 	forceSelection: function forceSelection(evt) {
@@ -101,16 +70,6 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 		// this.props.updateValue(value);
 	},
 
-	generateHTML: function generateHTML(text) {
-		console.log('GENERATING HTML', text, this.props.block);
-		try {
-			return _katex2.default.renderToString(text, { displayMode: this.props.block });
-		} catch (err) {
-			return ERROR_MSG_HTML;
-		}
-	},
-
-
 	handleKeyPress: function handleKeyPress(evt) {
 		if (evt.key === 'Enter' && !this.props.block) {
 			this.changeToNormal();
@@ -121,16 +80,6 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 		this.setState({ selected: selected });
 	},
 
-	changeToInline: function changeToInline() {
-		this.setState({ closePopOver: true });
-		this.props.changeToInline();
-	},
-
-	changeToBlock: function changeToBlock() {
-		this.setState({ closePopOver: true });
-		this.props.changeToBlock();
-	},
-
 	renderDisplay: function renderDisplay() {
 		var _state = this.state,
 		    displayHTML = _state.displayHTML,
@@ -138,49 +87,16 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 		    closePopOver = _state.closePopOver;
 		var _props = this.props,
 		    block = _props.block,
-		    value = _props.value;
+		    content = _props.content;
 
-
-		var popoverContent = _react2.default.createElement(
-			'div',
-			{ className: 'pt-button-group pt-minimal' },
-			_react2.default.createElement(
-				_core.Button,
-				{ iconName: 'annotation', onClick: this.changeToEditing },
-				'Edit'
-			),
-			!block ? _react2.default.createElement(
-				_core.Button,
-				{ iconName: 'maximize', onClick: this.changeToBlock },
-				'Block'
-			) : _react2.default.createElement(
-				_core.Button,
-				{ iconName: 'minimize', onClick: this.changeToInline },
-				'Inline'
-			)
-		);
-
-		var isPopOverOpen = closePopOver ? false : undefined;
 
 		return _react2.default.createElement(
 			'span',
 			{ onClick: this.forceSelection },
-			_react2.default.createElement(_radium.Style, { rules: _katexCss2.default }),
-			_react2.default.createElement(
-				_core.Popover,
-				{
-					content: popoverContent,
-					isOpen: isPopOverOpen,
-					interactionKind: _core.PopoverInteractionKind.CLICK,
-					className: 'blockPopover',
-					popoverClassName: '',
-					position: _core.Position.BOTTOM,
-					useSmartPositioning: false },
-				_react2.default.createElement('span', {
-					ref: 'latexElem',
-					className: 'pub-embed-latex',
-					dangerouslySetInnerHTML: { __html: displayHTML } })
-			)
+			_react2.default.createElement('span', {
+				ref: 'htmlElem',
+				className: 'pub-embed-html',
+				dangerouslySetInnerHTML: { __html: content } })
 		);
 	},
 	renderEdit: function renderEdit() {
@@ -256,4 +172,4 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 
 });
 
-exports.default = LatexEditor;
+exports.default = HTMLEditor;

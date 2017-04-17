@@ -40,7 +40,7 @@ var _markdownItSup2 = _interopRequireDefault(_markdownItSup);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var markdownitInstance = exports.markdownitInstance = (0, _markdownIt2.default)({
-	html: false,
+	html: true,
 	linkify: true
 }).use(_markdownItCitations2.default) // Pub Citation Parser
 .use(_markdownItSub2.default) // Subscript

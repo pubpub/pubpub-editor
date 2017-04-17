@@ -1,4 +1,4 @@
-import { CitationsView, EmbedView, IframeView, LatexView, MentionView, ReferenceView } from '../rich-nodes';
+import { CitationsView, EmbedView, HtmlView, IframeView, LatexView, MentionView, ReferenceView } from '../rich-nodes';
 
 import { BaseMenu } from '../../menubar';
 import React from 'react';
@@ -72,6 +72,7 @@ class BaseEditor {
 				reference: (node, view, getPos, decorations) => new ReferenceView(node, view, getPos, { decorations, block: false }),
 				citations: (node, view, getPos) => new CitationsView(node, view, getPos, { block: false }),
 				iframe: (node, view, getPos) => new IframeView(node, view, getPos, {}),
+				html_block: (node, view, getPos) => new HtmlView(node, view, getPos, {}),
 			},
 			...props
 		});

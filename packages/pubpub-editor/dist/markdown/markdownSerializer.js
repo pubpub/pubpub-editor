@@ -97,6 +97,10 @@ var markdownSerializer = exports.markdownSerializer = new _prosemirrorMarkdown.M
 	state.write('\n$$');
 	state.write(node.attrs.content);
 	state.write('$$\n');
+}), _defineProperty(_ref, 'html_block', function html_block(state, node) {
+	state.write('\n');
+	state.write(node.attrs.content);
+	state.write('\n');
 }), _defineProperty(_ref, 'mention', function mention(state, node) {
 	state.write('[' + node.textContent + '](' + node.attrs.url + ')');
 }), _defineProperty(_ref, 'reference', function reference(state, node) {

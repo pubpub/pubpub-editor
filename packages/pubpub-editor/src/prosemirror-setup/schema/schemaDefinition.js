@@ -166,6 +166,17 @@ const nodes = {
 		toDOM() { return ['pre', ['code', 0]]; }
 	},
 
+	html_block: {
+		atom: true,
+		attrs: {
+			content: { default: '' },
+		},
+		parseDOM: [{ tag: 'div.customHTML' }],
+		inline: false,
+		group: 'block',
+		draggable: false,
+		selectable: true
+	},
 
 	text: {
 		group: 'inline',

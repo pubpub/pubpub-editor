@@ -8,7 +8,7 @@ import sub from 'markdown-it-sub';
 import sup from 'markdown-it-sup';
 
 export const markdownitInstance = markdownit({
-	html: false,
+	html: true,
 	linkify: true,
 })
 .use(citations) // Pub Citation Parser

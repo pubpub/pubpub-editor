@@ -181,6 +181,9 @@ var BaseEditor = function () {
 					},
 					iframe: function iframe(node, view, getPos) {
 						return new _richNodes.IframeView(node, view, getPos, {});
+					},
+					html_block: function html_block(node, view, getPos) {
+						return new _richNodes.HtmlView(node, view, getPos, {});
 					}
 				}
 			}, props));

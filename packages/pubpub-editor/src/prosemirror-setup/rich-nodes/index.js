@@ -4,3 +4,4 @@ export MentionView from './mentionView';
 export ReferenceView from './referenceView';
 export CitationsView from './citationsView';
 export IframeView from './iframeView';
+export HtmlView from './htmlView';

@@ -180,6 +180,18 @@ var nodes = {
 		}
 	},
 
+	html_block: {
+		atom: true,
+		attrs: {
+			content: { default: '' }
+		},
+		parseDOM: [{ tag: 'div.customHTML' }],
+		inline: false,
+		group: 'block',
+		draggable: false,
+		selectable: true
+	},
+
 	text: {
 		group: 'inline',
 		toDOM: function toDOM(node) {

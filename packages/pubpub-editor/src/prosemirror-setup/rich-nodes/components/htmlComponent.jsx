@@ -3,28 +3,16 @@ import Radium, { Style } from 'radium';
 import React, { PropTypes } from 'react';
 
 import ReactDOM from 'react-dom';
-import katex from 'katex';
-import katexStyles from './katex.css.js';
 
-// import {safeGetInToJS} from 'utils/safeParse';
-
-const ERROR_MSG_HTML = "<div class='pub-latex-error'>Error rendering equation</div>";
-
-export const LatexEditor = React.createClass({
+export const HTMLEditor = React.createClass({
 	propTypes: {
 		value: PropTypes.string,
-		block: PropTypes.bool,
 		updateValue: PropTypes.func,
-		changeToBlock: PropTypes.func,
-		changeToInline: PropTypes.func,
 		forceSelection: PropTypes.func,
 	},
 	getInitialState: function() {
-		const displayHTML = this.generateHTML(this.props.value);
 		return {
 			editing: false,
-			displayHTML,
-			value: null,
 		};
 	},
 
@@ -32,18 +20,6 @@ export const LatexEditor = React.createClass({
 		return { };
 	},
 
-	componentWillReceiveProps: function(nextProps) {
-		if (this.props.block !== nextProps.block) {
-			this.setState({ closePopOver: false });
-		}
-		if (this.props.value !== nextProps.value) {
-			const text = nextProps.value;
-			if (!this.state.editing) {
-				const displayHTML = this.generateHTML(text);
-				this.setState({ displayHTML });
-			}
-		}
-	},
 
 	forceSelection: function(evt) {
 		if (!this.state.selected) {
@@ -72,15 +48,6 @@ export const LatexEditor = React.createClass({
 		// this.props.updateValue(value);
 	},
 
-	generateHTML(text) {
-		console.log('GENERATING HTML', text, this.props.block);
-		try {
-			return katex.renderToString(text, { displayMode: this.props.block });
-		} catch (err) {
-			return ERROR_MSG_HTML;
-		}
-	},
-
 	handleKeyPress: function(evt) {
 		if (evt.key === 'Enter' && !this.props.block) {
 			this.changeToNormal();
@@ -91,49 +58,17 @@ export const LatexEditor = React.createClass({
 		this.setState({ selected });
 	},
 
-	changeToInline: function() {
-		this.setState({ closePopOver: true });
-		this.props.changeToInline();
-	},
-
-	changeToBlock: function() {
-		this.setState({ closePopOver: true });
-		this.props.changeToBlock();
-	},
 
 	renderDisplay() {
 		const { displayHTML, selected, closePopOver } = this.state;
-		const { block, value } = this.props;
-
-		const popoverContent = (
-			<div className="pt-button-group pt-minimal">
-				<Button iconName="annotation" onClick={this.changeToEditing}>Edit</Button>
-				{!block
-					? <Button iconName="maximize" onClick={this.changeToBlock}>Block</Button>
-					: <Button iconName="minimize" onClick={this.changeToInline}>Inline</Button>
-				}
-			</div>
-		);
-
-		const isPopOverOpen = (closePopOver) ? false : undefined;
+		const { block, content } = this.props;
 
 		return (
 			<span onClick={this.forceSelection}>
-				<Style rules={katexStyles} />
-				<Popover
-					content={popoverContent}
-					isOpen={isPopOverOpen}
-					interactionKind={PopoverInteractionKind.CLICK}
-					className={'blockPopover'}
-					popoverClassName={''}
-					position={Position.BOTTOM}
-					useSmartPositioning={false}>
-
-					<span
-						ref={'latexElem'}
-						className={'pub-embed-latex'}
-	          dangerouslySetInnerHTML={{__html: displayHTML}}/>
-				</Popover>
+				<span
+					ref={'htmlElem'}
+					className={'pub-embed-html'}
+          dangerouslySetInnerHTML={{__html: content}}/>
 			</span>
 		);
 	},
@@ -199,4 +134,4 @@ export const LatexEditor = React.createClass({
 
 });
 
-export default LatexEditor;
+export default HTMLEditor;

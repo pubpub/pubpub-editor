@@ -37,6 +37,10 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 	code_block: { block: 'code_block' },
 	fence: { block: 'code_block' },
 	html_inline: { node: 'code_block' },
+	html_block: { node: 'html_block', attrs: function attrs(tok) {
+			return { content: tok.content };
+		} },
+
 	hr: { node: 'horizontal_rule' },
 	pagebreak: { node: 'page_break' },
 	math_inline: { node: 'equation', attrs: function attrs(tok) {
