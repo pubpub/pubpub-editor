@@ -39,7 +39,7 @@ function highlightParser(state, silent) {
 
 	token = state.push('highlight', '', 0);
 	token.attrs = [];
-	var highlightID = content.replace(UNESCAPE_RE, '$1');
+	var highlightID = content.split('@highlight/')[1];
 	token.attrs.push(['highlightID', highlightID]);
 
 	state.pos = state.posMax + 1;

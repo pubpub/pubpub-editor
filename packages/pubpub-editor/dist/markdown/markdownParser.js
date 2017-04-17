@@ -51,7 +51,9 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 		} },
 
 	image: { node: 'embed' },
-	highlight: { node: 'highlight' },
+	highlight: { node: 'highlight', attrs: function attrs(tok) {
+			return { highlightID: tok.attrGet('highlightID') };
+		} },
 	footnote: { node: 'footnote' },
 
 	embed: { node: 'embed' },
@@ -176,8 +178,6 @@ var addEmbed = function addEmbed(state, tok) {
 };
 
 var addReference = function addReference(state, tok) {
-
-	console.log('GOT REFERENCE!', tok);
 
 	if (!state.citationsDict) {
 		state.citationsDict = {};

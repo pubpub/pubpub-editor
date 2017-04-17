@@ -24,8 +24,10 @@ const nodes = {
 
 	highlight: {
 		group: 'inline',
-		content: 'text*',
 		inline: true,
+		attrs: {
+			highlightID: { default: null },
+		},
 		toDOM() { return ['div', 0]; }
 	},
 

@@ -31,8 +31,10 @@ var nodes = {
 
 	highlight: {
 		group: 'inline',
-		content: 'text*',
 		inline: true,
+		attrs: {
+			highlightID: { default: null }
+		},
 		toDOM: function toDOM() {
 			return ['div', 0];
 		}

@@ -25,7 +25,7 @@ function highlightParser(state, silent) {
 
 	token = state.push('highlight', '', 0);
 	token.attrs = [];
-	const highlightID = content.replace(UNESCAPE_RE, '$1');
+	const highlightID = content.split('@highlight/')[1];
 	token.attrs.push(['highlightID', highlightID]);
 
 
