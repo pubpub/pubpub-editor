@@ -14,7 +14,9 @@ export const renderReactFromJSON = function(doc, fileMap, allReferences) {
 	const engine = new CitationEngine();
 	engine.setBibliography(allReferences);
 
-	const meta = {fileMap, allReferences, engine};
+	const docAttrs = (doc.attrs && doc.attrs.meta) ? doc.attrs.meta : null;
+
+	const meta = {fileMap, allReferences, engine, docAttrs};
 
 
 	const content = renderSubLoop(doc.content, meta);
@@ -120,23 +122,23 @@ const renderSubLoop = function(item, meta) {
 
 		case 'reference':
 			const citationID = node.attrs.citationID;
-			const label = meta.engine.getShortForm(citationID);
-			/*
+
 			let label;
-			if (meta && meta.inlineBib) {
-				label = meta.inlineBib[citationID];
-			} else {
-				label = null;
+
+			if (meta.allReferences && meta.allReferences.length > 0) {
+				label = meta.engine.getShortForm(citationID);
+			} else if (meta.docAttrs && meta.docAttrs.inlineBib) {
+				label = meta.docAttrs.inlineBib[citationID];
 			}
-			*/
-			return <ReferenceRender key={index} label={label}{...node.attrs} />
+
+			return <ReferenceRender key={index} label={label} {...node.attrs} />
 		case 'citations':
 			let bib;
 
-			if (allReferences && allReferences.length > 0) {
+			if (meta.allReferences && meta.allReferences.length > 0) {
 				bib = meta.engine.getBibliography();
-			} else if (doc && doc.attrs.meta && doc.attrs.meta.bib) {
-				bib = meta.bib;
+			} else if (meta.docAttrs && meta.docAttrs.bib) {
+				bib = meta.docAttrs.bib;
 			}
 			return <CitationsRender key={index} renderedBib={bib} {...node.attrs} citations={node.content} />
 		default:

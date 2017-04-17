@@ -27,7 +27,9 @@ var renderReactFromJSON = exports.renderReactFromJSON = function renderReactFrom
 	var engine = new _references.CitationEngine();
 	engine.setBibliography(allReferences);
 
-	var meta = { fileMap: fileMap, allReferences: allReferences, engine: engine };
+	var docAttrs = doc.attrs && doc.attrs.meta ? doc.attrs.meta : null;
+
+	var meta = { fileMap: fileMap, allReferences: allReferences, engine: engine, docAttrs: docAttrs };
 
 	var content = renderSubLoop(doc.content, meta);
 	return _react2.default.createElement(
@@ -227,23 +229,23 @@ var renderSubLoop = function renderSubLoop(item, meta) {
 
 			case 'reference':
 				var citationID = node.attrs.citationID;
-				var label = meta.engine.getShortForm(citationID);
-				/*
-    let label;
-    if (meta && meta.inlineBib) {
-    	label = meta.inlineBib[citationID];
-    } else {
-    	label = null;
-    }
-    */
+
+				var label = void 0;
+
+				if (meta.allReferences && meta.allReferences.length > 0) {
+					label = meta.engine.getShortForm(citationID);
+				} else if (meta.docAttrs && meta.docAttrs.inlineBib) {
+					label = meta.docAttrs.inlineBib[citationID];
+				}
+
 				return _react2.default.createElement(_renderComponents.ReferenceRender, _extends({ key: index, label: label }, node.attrs));
 			case 'citations':
 				var bib = void 0;
 
-				if (allReferences && allReferences.length > 0) {
+				if (meta.allReferences && meta.allReferences.length > 0) {
 					bib = meta.engine.getBibliography();
-				} else if (doc && doc.attrs.meta && doc.attrs.meta.bib) {
-					bib = meta.bib;
+				} else if (meta.docAttrs && meta.docAttrs.bib) {
+					bib = meta.docAttrs.bib;
 				}
 				return _react2.default.createElement(_renderComponents.CitationsRender, _extends({ key: index, renderedBib: bib }, node.attrs, { citations: node.content }));
 			default:
