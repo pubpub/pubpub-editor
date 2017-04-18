@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+
 import MarkdownEditor from './MarkdownEditor';
 import RichEditor from './RichEditor';
 
@@ -29,7 +30,7 @@ export const FullEditor = React.createClass({
 			return <RichEditor {...this.props} />;
 		}
 		return <MarkdownEditor {...this.props} />;
-	}
+	},
 });
 
 export default FullEditor;

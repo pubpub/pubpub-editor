@@ -241,7 +241,7 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 					_this2.tableMenu = input;
 				},
 				editor: this.editor }),
-			this.editor && !!this.state.inlineTop && _react2.default.createElement(_FormattingMenu2.default, {
+			this.editor && _react2.default.createElement(_FormattingMenu2.default, {
 				editor: this.editor,
 				top: this.state.inlineTop,
 				left: this.state.inlineCenter }),

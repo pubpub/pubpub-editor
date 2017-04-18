@@ -194,7 +194,7 @@ export const RichEditor = React.createClass({
 						ref={(input) => { this.tableMenu = input; }}
 						editor={this.editor} />
 
-				{this.editor && !!this.state.inlineTop &&
+				{this.editor &&
 					<FormattingMenu
 						editor={this.editor}
 						top={this.state.inlineTop}

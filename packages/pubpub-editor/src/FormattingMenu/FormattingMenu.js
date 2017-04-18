@@ -69,6 +69,11 @@ styles = {
 		verticalAlign: 'baseline',
 	},
 	container: function(top, left, width) {
+		if (!top) {
+			return {
+				display: 'none'
+			};
+		}
 		return {
 			width: `${width}px`,
 			position: 'absolute',
