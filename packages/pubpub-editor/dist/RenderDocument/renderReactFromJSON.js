@@ -29,7 +29,9 @@ var renderReactFromJSON = exports.renderReactFromJSON = function renderReactFrom
 
 	var docAttrs = doc.attrs && doc.attrs.meta ? doc.attrs.meta : null;
 
-	var meta = { fileMap: fileMap, allReferences: allReferences, engine: engine, docAttrs: docAttrs };
+	var citationsInDoc = [];
+
+	var meta = { fileMap: fileMap, allReferences: allReferences, engine: engine, docAttrs: docAttrs, citationsInDoc: citationsInDoc };
 
 	var content = renderSubLoop(doc.content, meta);
 	return _react2.default.createElement(
@@ -233,6 +235,7 @@ var renderSubLoop = function renderSubLoop(item, meta) {
 				var label = void 0;
 
 				if (meta.allReferences && meta.allReferences.length > 0) {
+					meta.citationsInDoc.push(citationID);
 					label = meta.engine.getShortForm(citationID);
 				} else if (meta.docAttrs && meta.docAttrs.inlineBib) {
 					label = meta.docAttrs.inlineBib[citationID];
@@ -243,7 +246,7 @@ var renderSubLoop = function renderSubLoop(item, meta) {
 				var bib = void 0;
 
 				if (meta.allReferences && meta.allReferences.length > 0) {
-					bib = meta.engine.getBibliography();
+					bib = meta.engine.getBibliography(meta.citationsInDoc);
 				} else if (meta.docAttrs && meta.docAttrs.bib) {
 					bib = meta.docAttrs.bib;
 				}

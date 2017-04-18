@@ -16,7 +16,9 @@ export const renderReactFromJSON = function(doc, fileMap, allReferences) {
 
 	const docAttrs = (doc.attrs && doc.attrs.meta) ? doc.attrs.meta : null;
 
-	const meta = {fileMap, allReferences, engine, docAttrs};
+	const citationsInDoc = [];
+
+	const meta = {fileMap, allReferences, engine, docAttrs, citationsInDoc};
 
 
 	const content = renderSubLoop(doc.content, meta);
@@ -126,6 +128,7 @@ const renderSubLoop = function(item, meta) {
 			let label;
 
 			if (meta.allReferences && meta.allReferences.length > 0) {
+				meta.citationsInDoc.push(citationID);
 				label = meta.engine.getShortForm(citationID);
 			} else if (meta.docAttrs && meta.docAttrs.inlineBib) {
 				label = meta.docAttrs.inlineBib[citationID];
@@ -136,7 +139,7 @@ const renderSubLoop = function(item, meta) {
 			let bib;
 
 			if (meta.allReferences && meta.allReferences.length > 0) {
-				bib = meta.engine.getBibliography();
+				bib = meta.engine.getBibliography(meta.citationsInDoc);
 			} else if (meta.docAttrs && meta.docAttrs.bib) {
 				bib = meta.docAttrs.bib;
 			}

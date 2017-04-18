@@ -108,6 +108,8 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 		var data = this.props.data || {};
 		var file = { url: url, name: filename, type: (0, _renderFiles.URLToType)(url) };
 
+		console.log('RENDERING URL', url);
+
 		var popoverContent = _react2.default.createElement(_embedMenu2.default, { createCaption: this.props.createCaption, removeCaption: this.props.removeCaption, embedAttrs: this.props, updateParams: this.updateAttrs });
 
 		return _react2.default.createElement(
@@ -131,7 +133,7 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 								_this.refs.embedroot.focus();
 							},
 							useSmartPositioning: false },
-						_react2.default.createElement(
+						!url ? _react2.default.createElement(
 							_reactResizableBox2.default,
 							{
 								width: '100%',
@@ -143,6 +145,16 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 									_this.updateAttrs({ size: ratio + '%' });
 								} },
 							_react2.default.createElement(_renderFiles.RenderFile, { draggable: 'false', style: styles.image({ selected: selected }), file: file })
+						) : _react2.default.createElement(
+							'div',
+							{ className: 'pt-callout pt-intent-danger' },
+							_react2.default.createElement(
+								'h5',
+								null,
+								'Could not find file: ',
+								filename
+							),
+							'The file you\'re including is not uploaded to your pub, so it cannot be displayed.'
 						)
 					)
 				),

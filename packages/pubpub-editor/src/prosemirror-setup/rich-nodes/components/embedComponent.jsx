@@ -80,6 +80,8 @@ export const EmbedComponent = React.createClass({
 		const data = this.props.data || {};
 		const file = {url, name: filename, type: URLToType(url)}
 
+		console.log('RENDERING URL', url);
+
 		const popoverContent = (<EmbedMenu createCaption={this.props.createCaption} removeCaption={this.props.removeCaption} embedAttrs={this.props} updateParams={this.updateAttrs}/>);
 
 		return (
@@ -96,17 +98,25 @@ export const EmbedComponent = React.createClass({
 									 this.refs.embedroot.focus();
 								 }}
 								 useSmartPositioning={false}>
-				<Resizable
-					width={'100%'}
-					height={'auto'}
-					maxWidth={this.DOC_WIDTH}
-					customStyle={styles.outline({false})}
-					onResizeStop={(direction, styleSize, clientSize, delta) => {
-						const ratio = (clientSize.width / this.DOC_WIDTH ) * 100;
-						this.updateAttrs({size: ratio + '%' });
-					}}>
-					<RenderFile draggable="false" style={styles.image({selected})} file={file}/>
-				</Resizable>
+
+				{ (!url) ?
+					<Resizable
+						width={'100%'}
+						height={'auto'}
+						maxWidth={this.DOC_WIDTH}
+						customStyle={styles.outline({false})}
+						onResizeStop={(direction, styleSize, clientSize, delta) => {
+							const ratio = (clientSize.width / this.DOC_WIDTH ) * 100;
+							this.updateAttrs({size: ratio + '%' });
+						}}>
+						<RenderFile draggable="false" style={styles.image({selected})} file={file}/>
+						</Resizable>
+					:
+					<div className="pt-callout pt-intent-danger">
+					  <h5>Could not find file: {filename}</h5>
+					  The file you're including is not uploaded to your pub, so it cannot be displayed.
+					</div>
+				}
 				</Popover>
 			</div>
 			<figcaption style={styles.caption({size, align})}>
