@@ -108,6 +108,16 @@ var CitationEngine = function () {
       return bib;
     };
 
+    this.getMissingCitations = function (citationsList) {
+      var existingItems = Object.values(_this.items);
+      var notfoundIds = existingItems.filter(function (_existing) {
+        return !citationsList.find(function (_citation) {
+          return _existing.id === _citation.id;
+        });
+      });
+      return notfoundIds;
+    };
+
     this.getShortForm = function (citationID) {
 
       if (!_this.items[citationID]) {

@@ -84,6 +84,16 @@ class CitationEngine {
     return bib;
   }
 
+  getMissingCitations = (citationsList) => {
+    const existingItems = Object.values(this.items);
+    const notfoundIds = existingItems.filter((_existing) => {
+      return !(citationsList.find((_citation) => {
+        return (_existing.id === _citation.id);
+      }));
+    });
+    return notfoundIds;
+  }
+
   getShortForm = (citationID) => {
 
     if (!this.items[citationID]) {

@@ -82,8 +82,11 @@ export const StoryBookFullEditor = React.createClass({
 
 	handleReferenceAdd: function(newCitationObject, callback) {
 		const bibtexString = csltoBibtex([newCitationObject]);
+		console.log('Adding string!', bibtexString);
 		// Do the adding/creation to the bibtex file - then callback
-		callback(newCitationObject);
+		if (callback) {
+			callback(newCitationObject);
+		}
 	},
 
 	render: function() {

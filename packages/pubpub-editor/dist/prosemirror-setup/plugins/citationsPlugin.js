@@ -12,6 +12,8 @@ var _prosemirrorState = require('prosemirror-state');
 
 var _prosemirrorModel = require('prosemirror-model');
 
+var _plugins = require('../plugins');
+
 var _prosemirrorTransform = require('prosemirror-transform');
 
 var _pluginKeys = require('./pluginKeys');
@@ -139,6 +141,34 @@ var citationsPlugin = new _prosemirrorState.Plugin({
 		var _this2 = this;
 
 		this.editorView = editorView;
+		var pluginState = (0, _plugins.getPluginState)('citations', editorView.state);
+		var notFound = pluginState.engine.getMissingCitations(editorView.props.referencesList);
+		console.log('Viewprops', editorView.props);
+		var _iteratorNormalCompletion = true;
+		var _didIteratorError = false;
+		var _iteratorError = undefined;
+
+		try {
+			for (var _iterator = notFound[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+				var notFoundCitation = _step.value;
+
+				editorView.props.createReference(notFoundCitation);
+			}
+		} catch (err) {
+			_didIteratorError = true;
+			_iteratorError = err;
+		} finally {
+			try {
+				if (!_iteratorNormalCompletion && _iterator.return) {
+					_iterator.return();
+				}
+			} finally {
+				if (_didIteratorError) {
+					throw _iteratorError;
+				}
+			}
+		}
+
 		return {
 			update: function update(newView, prevState) {
 				_this2.editorView = newView;
@@ -163,6 +193,12 @@ var citationsPlugin = new _prosemirrorState.Plugin({
 	},
 
 	props: {
+		getNewCitations: function getNewCitations(state, allReferences) {
+			if (state && this.getState(state)) {
+				var engine = this.getState(state).engine;
+				console.log('Got engine!', engine);
+			}
+		},
 		getCitationString: function getCitationString(state, citationID) {
 			if (state && this.getState(state)) {
 				var engine = this.getState(state).engine;

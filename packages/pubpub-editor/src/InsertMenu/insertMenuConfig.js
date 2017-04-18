@@ -29,7 +29,6 @@ function insertTable(view) {
 /* Reference */
 /* -------------- */
 function insertReference(view, citationData) {
-	// view.props.
 	const referenceNode = schema.nodes.reference.create({ citationID: citationData.id });
 	let transaction = view.state.tr.replaceSelectionWith(referenceNode);
 	transaction = transaction.setMeta('createReference', citationData);
@@ -40,10 +39,6 @@ function insertReference(view, citationData) {
 /* Embed */
 /* -------------- */
 function insertEmbed(view, filename, url) {
-	// const filename = 'test.jpg'; // Should be passed in
-	console.log('INSERTING', filename, url);
-	// const url = 'http://cdn3-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-5.jpg';
-	console.log('filename is', filename)
 	const textnode = schema.text('Enter caption.');
 	const captionNode = schema.nodes.caption.create({}, textnode);
 	const embedNode = schema.nodes.embed.create(

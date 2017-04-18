@@ -36,7 +36,6 @@ function insertTable(view) {
 /* Reference */
 /* -------------- */
 function insertReference(view, citationData) {
-	// view.props.
 	var referenceNode = _prosemirrorSetup.schema.nodes.reference.create({ citationID: citationData.id });
 	var transaction = view.state.tr.replaceSelectionWith(referenceNode);
 	transaction = transaction.setMeta('createReference', citationData);
@@ -47,10 +46,6 @@ function insertReference(view, citationData) {
 /* Embed */
 /* -------------- */
 function insertEmbed(view, filename, url) {
-	// const filename = 'test.jpg'; // Should be passed in
-	console.log('INSERTING', filename, url);
-	// const url = 'http://cdn3-www.dogtime.com/assets/uploads/gallery/30-impossibly-cute-puppies/impossibly-cute-puppy-5.jpg';
-	console.log('filename is', filename);
 	var textnode = _prosemirrorSetup.schema.text('Enter caption.');
 	var captionNode = _prosemirrorSetup.schema.nodes.caption.create({}, textnode);
 	var embedNode = _prosemirrorSetup.schema.nodes.embed.create({

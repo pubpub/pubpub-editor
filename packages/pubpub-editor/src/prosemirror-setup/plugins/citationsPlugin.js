@@ -3,6 +3,7 @@ import { findNodeByAttr, findNodeByFunc, findNodesByFunc, findNodesWithIndex } f
 import { CitationEngine } from '../../references';
 import { Plugin } from 'prosemirror-state';
 import { Slice } from 'prosemirror-model';
+import { getPluginState } from '../plugins';
 import { insertPoint } from 'prosemirror-transform';
 import { keys } from './pluginKeys';
 import { schema } from '../schema';
@@ -120,6 +121,12 @@ const citationsPlugin = new Plugin({
 	},
 	view: function(editorView) {
 		this.editorView = editorView;
+		const pluginState = getPluginState('citations', editorView.state);
+		const notFound = pluginState.engine.getMissingCitations(editorView.props.referencesList);
+		console.log('Viewprops', editorView.props);
+		for (const notFoundCitation of notFound) {
+			editorView.props.createReference(notFoundCitation);
+		}
 		return {
 			update: (newView, prevState) => {
 				this.editorView = newView;
@@ -130,7 +137,7 @@ const citationsPlugin = new Plugin({
 		}
 	},
 
-	appendTransaction: function (transactions, oldState, newState)  {
+	appendTransaction: function (transactions, oldState, newState) {
 		const firstTransaction = transactions[0];
 		if (!firstTransaction) {
 			return;
@@ -144,6 +151,12 @@ const citationsPlugin = new Plugin({
 	},
 
 	props: {
+		getNewCitations(state, allReferences) {
+			if (state && this.getState(state)) {
+				const engine = this.getState(state).engine;
+				console.log('Got engine!', engine);
+			}
+		},
 		getCitationString(state, citationID) {
 			if (state && this.getState(state)) {
 				const engine = this.getState(state).engine;
