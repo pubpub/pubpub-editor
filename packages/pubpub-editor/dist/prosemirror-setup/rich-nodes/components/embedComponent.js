@@ -133,7 +133,7 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 								_this.refs.embedroot.focus();
 							},
 							useSmartPositioning: false },
-						!url ? _react2.default.createElement(
+						!!url ? _react2.default.createElement(
 							_reactResizableBox2.default,
 							{
 								width: '100%',

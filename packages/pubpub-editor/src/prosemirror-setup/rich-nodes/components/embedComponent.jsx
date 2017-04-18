@@ -99,7 +99,7 @@ export const EmbedComponent = React.createClass({
 								 }}
 								 useSmartPositioning={false}>
 
-				{ (!url) ?
+				{ (!!url) ?
 					<Resizable
 						width={'100%'}
 						height={'auto'}
