@@ -73,13 +73,29 @@ export const markdownSerializer = new MarkdownSerializer({
 		state.renderInline(node);
 	},
 	equation: function equation(state, node) {
+
+		let content;
+    if (node.attrs.content) {
+      content = node.attrs.content;
+    } else if (node && this.node.firstChild) {
+      content = node.firstChild.text;
+    }
+
 		state.write('$');
-		state.write(node.attrs.content);
+		state.write(content);
 		state.write('$');
 	},
 	block_equation: function block_equation(state, node) {
+
+		let content;
+    if (node.attrs.content) {
+      content = node.attrs.content;
+    } else if (node && node.firstChild) {
+      content = node.firstChild.text;
+    }
+
 		state.write('\n$$');
-		state.write(node.attrs.content);
+		state.write(content);
 		state.write('$$\n');
 	},
 	html_block: function html_block(state, node) {

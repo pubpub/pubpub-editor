@@ -90,12 +90,28 @@ var markdownSerializer = exports.markdownSerializer = new _prosemirrorMarkdown.M
 }), _defineProperty(_ref, 'caption', function caption(state, node) {
 	state.renderInline(node);
 }), _defineProperty(_ref, 'equation', function equation(state, node) {
+
+	var content = void 0;
+	if (node.attrs.content) {
+		content = node.attrs.content;
+	} else if (node && this.node.firstChild) {
+		content = node.firstChild.text;
+	}
+
 	state.write('$');
-	state.write(node.attrs.content);
+	state.write(content);
 	state.write('$');
 }), _defineProperty(_ref, 'block_equation', function block_equation(state, node) {
+
+	var content = void 0;
+	if (node.attrs.content) {
+		content = node.attrs.content;
+	} else if (node && node.firstChild) {
+		content = node.firstChild.text;
+	}
+
 	state.write('\n$$');
-	state.write(node.attrs.content);
+	state.write(content);
 	state.write('$$\n');
 }), _defineProperty(_ref, 'html_block', function html_block(state, node) {
 	state.write('\n');

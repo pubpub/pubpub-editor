@@ -1,9 +1,9 @@
 import { HtmlDoc, ReferenceOrdering, SampleMarkdown, SingleMention, SingleReference, TableMarkdown } from './sampledocs';
+import { LongLegacyBug, MentionContentBug } from './bugdata';
 
 import CodeEditor from './storybookCodeEditor';
 import FullEditor from './storybookFullEditor';
 import MarkdownEditor from './storybookMarkdownEditor';
-import { MentionContentBug } from './bugdata';
 import React from 'react';
 import RichEditor from './storybookRichEditor';
 import { storiesOf } from '@kadira/storybook';
@@ -51,7 +51,10 @@ storiesOf('Full Editor', module)
 ;
 
 storiesOf('Debugging', module)
-.add('basic ', () => (
+.add('mention content ', () => (
 	<FullEditor mode={'markdown'} initialContent={MentionContentBug} />
+))
+.add('long legacy ', () => (
+	<FullEditor mode={'rich'} initialContent={LongLegacyBug} />
 ))
 ;
