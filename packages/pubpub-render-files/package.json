@@ -30,11 +30,11 @@
     "markdown-it-sub": "^1.0.0",
     "markdown-it-sup": "^1.0.0",
     "markdown-react-js": "^0.3.0",
-    "radium": "^0.18.1",
+    "radium": "^0.18.1"
   },
   "peerDependencies": {
     "react": "^15.4.2",
-    "react-dom": "^15.4.2",
+    "react-dom": "^15.4.2"
   },
   "devDependencies": {
     "babel-cli": "^6.14.0",
