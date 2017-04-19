@@ -1,6 +1,6 @@
 {
   "name": "@pubpub/editor",
-  "version": "2.0.27",
+  "version": "2.0.28",
   "description": "A variety of editors (WSIWYG, Markdown, Code, etc.) geared towards Academic Publishing. Used in the PubPub platform.",
   "main": "./dist/index.js",
   "scripts": {
