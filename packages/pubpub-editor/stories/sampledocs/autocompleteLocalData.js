@@ -3,6 +3,28 @@ import samplebibtex from './samplebibtex';
 
 export const localFiles = [
 	{
+		id: 580,
+		type: "text/markdown",
+		name: "chapter1.md",
+		url: "https://assets.pubpub.org/wkqopzxk/5851486428116139.gif",
+		content: null,
+		hash: "4cfd14a765f93c20ggafssas",
+		originalDate: null,
+		createdAt: "2016-02-24T02:09:24.760Z",
+		updatedAt: "2017-02-07T00:44:21.661Z",
+		slug: 'temp',
+		pubId: 369,
+		sources: [ ],
+		destinations: [ ],
+		attributions: [ ],
+		VersionFile: {
+			createdAt: "2016-02-24T02:09:24.760Z",
+			updatedAt: "2017-02-07T00:47:45.798Z",
+			fileId: 585,
+			versionId: 386
+		}
+	},
+	{
 		id: 585,
 		type: "image/gif",
 		name: "giphy.gif",

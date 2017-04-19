@@ -80,8 +80,6 @@ export const EmbedComponent = React.createClass({
 		const data = this.props.data || {};
 		const file = {url, name: filename, type: URLToType(url)}
 
-		console.log('RENDERING URL', url);
-
 		const popoverContent = (<EmbedMenu createCaption={this.props.createCaption} removeCaption={this.props.removeCaption} embedAttrs={this.props} updateParams={this.updateAttrs}/>);
 
 		return (

@@ -100,7 +100,13 @@ exports.createRichMention = function (editor, selectedObject, start, end) {
 	switch (selectedObject.itemType) {
 		case 'file':
 			filename = selectedObject.name;
-			insertEmbed({ view: editor.view, filename: filename, start: start, end: end });
+			if (selectedObject.slug) {
+				url = '/pub/' + selectedObject.slug + '/files/' + filename;
+				text = filename;
+				insertMention({ view: editor.view, start: start, end: end, text: text, url: url, type: 'file' });
+			} else {
+				insertEmbed({ view: editor.view, filename: filename, start: start, end: end });
+			}
 			break;
 		case 'pub':
 			text = selectedObject.title;
