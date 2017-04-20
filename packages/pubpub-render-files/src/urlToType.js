@@ -1,7 +1,5 @@
 exports.urlToType = (url, defaultType) => {
 
-
-
   if (!url) {
     return null;
   }
