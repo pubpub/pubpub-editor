@@ -164,9 +164,11 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 
 		return localArray.filter(function (item) {
 			return searchKeys.reduce(function (previous, current) {
-				var contained = (0, _fuzzysearch2.default)(input.toLowerCase(), item[current].toLowerCase());
-				if (contained) {
-					return true;
+				if (item[current]) {
+					var contained = (0, _fuzzysearch2.default)(input.toLowerCase(), item[current].toLowerCase());
+					if (contained) {
+						return true;
+					}
 				}
 				return previous;
 			}, false);
@@ -301,9 +303,15 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 					label = 'File: ' + result.itemType;
 				}
 				if (result.itemType === 'reference') {
-					label = 'Ref: ' + result.author.reduce(function (previous, current) {
-						return previous + ('' + current.given + (current.given ? ' ' : '') + current.family);
-					}, '');
+					if (result.author && Array.isArray(result.author)) {
+						label = 'Ref: ' + result.author.reduce(function (previous, current) {
+							return previous + ('' + current.given + (current.given ? ' ' : '') + current.family);
+						}, '');
+					} else if (result.id) {
+						label = 'Ref: ' + result.id;
+					} else {
+						label = 'Ref: undefined';
+					}
 				}
 				if (result.itemType === 'highlight') {
 					label = 'Highlight';

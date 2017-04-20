@@ -148,8 +148,10 @@ export const Autocomplete = React.createClass({
 
 		return localArray.filter((item)=> {
 			return searchKeys.reduce((previous, current)=> {
-				const contained = fuzzysearch(input.toLowerCase(), item[current].toLowerCase());
-				if (contained) { return true; }
+				if (item[current]) {
+					const contained = fuzzysearch(input.toLowerCase(), item[current].toLowerCase());
+					if (contained) { return true; }
+				}
 				return previous;
 			}, false);
 		}).map((item) => {
@@ -261,7 +263,16 @@ export const Autocomplete = React.createClass({
 					let label = result.itemType;
 					if (result.itemType === 'pub' && result.local) { label = 'Featured Pub'; }
 					if (result.itemType === 'file') { label = `File: ${result.itemType}`; }
-					if (result.itemType === 'reference') { label = `Ref: ${result.author.reduce((previous, current)=> { return previous + `${current.given}${current.given ? ' ' : ''}${current.family}`; }, '')}`; }
+					if (result.itemType === 'reference') {
+						if (result.author && Array.isArray(result.author)) {
+							label = `Ref: ${result.author.reduce((previous, current)=> { return previous + `${current.given}${current.given ? ' ' : ''}${current.family}`; }, '')}`;
+						} else if (result.id) {
+							label = `Ref: ${result.id}`;
+						} else {
+							label = 'Ref: undefined';
+						}
+
+					}
 					if (result.itemType === 'highlight') { label = `Highlight`; }
 					if (result.itemType === 'page') { label = `Page`; }
 
