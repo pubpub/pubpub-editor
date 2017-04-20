@@ -1,6 +1,6 @@
 {
   "name": "@pubpub/pubpub-pandoc-converter",
-  "version": "2.0.31",
+  "version": "2.0.42",
   "description": "Convert PubPub (ProseMirror) to Pandoc JSON",
   "main": "dist/index.js",
   "scripts": {
