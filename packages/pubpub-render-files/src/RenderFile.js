@@ -34,7 +34,7 @@ export const RenderFile = React.createClass({
 		case 'application/pdf':
 			return (
 				<div id={'content-wrapper'}>
-					Cannot currently render PDF.
+					<RenderFilePDF file={file} />
 				</div>
 			);
 		case 'application/vnd.ms-powerpoint':

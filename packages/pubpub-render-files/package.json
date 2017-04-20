@@ -30,6 +30,7 @@
     "markdown-it-sub": "^1.0.0",
     "markdown-it-sup": "^1.0.0",
     "markdown-react-js": "^0.3.0",
+    "pdfjs-dist": "^1.8.241",
     "radium": "^0.18.1"
   },
   "peerDependencies": {
