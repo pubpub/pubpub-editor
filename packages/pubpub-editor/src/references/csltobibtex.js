@@ -1,3 +1,6 @@
+var slugify = require('slugify');
+
+
 var varBibTeXSyntaxTokens = {
   "|":"{\\textbar}",
   "<":"{\\textless}",
@@ -214,7 +217,7 @@ var getBibTeXJSON = function ( src ) {
     , res = {}
     , props = {}
 
-  res.label = src.label || getBibTeXLabel( src )
+  res.label = src.id || src.label || getBibTeXLabel( src )
   res.type  = fetchBibTeXType( src.type )
 
   if ( src.hasOwnProperty( 'author'    ) ) props.author    = src.author.slice().map( getName ).join( ' and ' )

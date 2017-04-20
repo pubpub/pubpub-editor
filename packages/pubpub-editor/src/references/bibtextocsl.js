@@ -548,6 +548,8 @@ var parseBibTeXJSON = function ( data ) {
 
     entry.type = parseBibTeXType( entry.type )
     entry.id   = entry.label
+    // entry.id   = slugify(enety.title + entry.year);
+
 
     delete entry.label
     delete entry.properties

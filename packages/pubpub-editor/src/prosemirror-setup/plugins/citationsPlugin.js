@@ -123,7 +123,6 @@ const citationsPlugin = new Plugin({
 		this.editorView = editorView;
 		const pluginState = getPluginState('citations', editorView.state);
 		const notFound = pluginState.engine.getMissingCitations(editorView.props.referencesList);
-		console.log('Viewprops', editorView.props);
 		for (const notFoundCitation of notFound) {
 			editorView.props.createReference(notFoundCitation);
 		}
@@ -154,7 +153,6 @@ const citationsPlugin = new Plugin({
 		getNewCitations(state, allReferences) {
 			if (state && this.getState(state)) {
 				const engine = this.getState(state).engine;
-				console.log('Got engine!', engine);
 			}
 		},
 		getCitationString(state, citationID) {

@@ -143,7 +143,6 @@ var citationsPlugin = new _prosemirrorState.Plugin({
 		this.editorView = editorView;
 		var pluginState = (0, _plugins.getPluginState)('citations', editorView.state);
 		var notFound = pluginState.engine.getMissingCitations(editorView.props.referencesList);
-		console.log('Viewprops', editorView.props);
 		var _iteratorNormalCompletion = true;
 		var _didIteratorError = false;
 		var _iteratorError = undefined;
@@ -196,7 +195,6 @@ var citationsPlugin = new _prosemirrorState.Plugin({
 		getNewCitations: function getNewCitations(state, allReferences) {
 			if (state && this.getState(state)) {
 				var engine = this.getState(state).engine;
-				console.log('Got engine!', engine);
 			}
 		},
 		getCitationString: function getCitationString(state, citationID) {
