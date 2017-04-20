@@ -37,6 +37,14 @@ exports.urlToType = function (url, defaultType) {
       return 'video/mov';
     case 'avi':
       return 'video/avi';
+    case 'pdf':
+      return 'application/pdf';
+    case 'ppt':
+    case 'pptx':
+      return 'application/vnd.ms-powerpoint';
+    case 'doc':
+    case 'docx':
+      return 'application/msword';
     case 'stl':
       return 'stl';
     default:
