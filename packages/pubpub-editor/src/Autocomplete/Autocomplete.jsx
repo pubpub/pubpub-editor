@@ -148,8 +148,10 @@ export const Autocomplete = React.createClass({
 
 		return localArray.filter((item)=> {
 			return searchKeys.reduce((previous, current)=> {
-				const contained = fuzzysearch(input.toLowerCase(), item[current].toLowerCase());
-				if (contained) { return true; }
+				if (item[current]) {
+					const contained = fuzzysearch(input.toLowerCase(), item[current].toLowerCase());
+					if (contained) { return true; }
+				}
 				return previous;
 			}, false);
 		}).map((item) => {

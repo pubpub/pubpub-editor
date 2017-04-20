@@ -164,9 +164,11 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 
 		return localArray.filter(function (item) {
 			return searchKeys.reduce(function (previous, current) {
-				var contained = (0, _fuzzysearch2.default)(input.toLowerCase(), item[current].toLowerCase());
-				if (contained) {
-					return true;
+				if (item[current]) {
+					var contained = (0, _fuzzysearch2.default)(input.toLowerCase(), item[current].toLowerCase());
+					if (contained) {
+						return true;
+					}
 				}
 				return previous;
 			}, false);
