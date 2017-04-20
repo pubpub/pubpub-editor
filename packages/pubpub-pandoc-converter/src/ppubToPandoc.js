@@ -205,14 +205,16 @@ function ppubToPandoc(ppub, options) {
 				caption = node.content && node.content[0] && node.content[0].content[0] ? node.content[0].content[0].text : '';
 			}
 			newNode.c[1] = caption ? createTextNodes(caption) : [];
-			newNode.c[2] = [node.attrs.url || node.attrs.data.content.url, node.attrs.figureName || ''];
+			newNode.c[2] = [node.attrs.url  || node.attrs.filename || node.attrs.data.content.url, node.attrs.figureName || ''];
 			break;
 			case 'citations':
 			// Create a header node that goes above that says 'References'
 
-			var aboveNode = { t: 'Header', c: [1, ['references', ['unnumbered'], []], [{ t:'Str', 'c':'References' }]]};
-			// insert this node at the root
-			blocks.push(aboveNode)
+			if (bibData.length !== 1) {
+				var aboveNode = { t: 'Header', c: [1, ['references', ['unnumbered'], []], [{ t:'Str', 'c':'References' }]]};
+				blocks.push(aboveNode)
+			}			// insert this node at the root
+
 			newNode.t = 'DoNotAddThisNode';
 
 			break;
@@ -535,10 +537,34 @@ function ppubToPandoc(ppub, options) {
 				};
 			}
 			if (metadata['institute']) {
+
 				pandocJSON.meta.institute = {
-					t: 'MetaInlines',
-					c: createTextNodes(metadata['institute'])
+					t: 'MetaList',
+					c: []
 				};
+
+				for (var i = 0; i < metadata.institute.length; i++){
+					var institute = {
+						t: 'MetaInlines',
+						c: createTextNodes(metadata.institute[i])
+					};
+					pandocJSON.meta.institute.c.push(institute);
+				}
+			}
+			if (metadata['previous-degrees']) {
+
+				pandocJSON.meta.pubprevdegrees = {
+					t: 'MetaList',
+					c: []
+				};
+
+				for (var i = 0; i < metadata['previous-degrees'].length; i++){
+					var pubprevdegree = {
+						t: 'MetaInlines',
+						c: createTextNodes(metadata['previous-degrees'][i])
+					};
+					pandocJSON.meta.pubprevdegrees.c.push(pubprevdegree);
+				}
 			}
 			if (metadata['date']) {
 				pandocJSON.meta.pubdate = {
