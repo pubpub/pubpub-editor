@@ -42,19 +42,19 @@ export const CitationsComponent = React.createClass({
 		let hideCitations = !(bib && bib.length > 0);
     return (
       <div className="pub-citations" onClick={this.preventClick}>
-				{(!hideCitations) ?
-					<div>
+      	{!hideCitations && 
+      		<div>
 		        <h3>Citations: </h3>
-						{bib.map((bibItem) => {
-							return (<div className="pub-citation">
-								<span dangerouslySetInnerHTML={{__html:bibItem.text}}></span>
-								{/*<button type="button" className="pt-button pt-icon-cross pt-minimal pub-citation-btn" onClick={this.deleteClick}></button>*/}
-								</div>);
-						})}
-					</div>
-					:
-					null
-				}
+				{bib.map((bibItem, index) => {
+					return (
+						<div className="pub-citation" key={`citation-${index}`}>
+							<span dangerouslySetInnerHTML={{__html:bibItem.text}}></span>
+							{/*<button type="button" className="pt-button pt-icon-cross pt-minimal pub-citation-btn" onClick={this.deleteClick}></button>*/}
+						</div>
+					);
+				})}
+			</div>
+      	}
       </div>
     );
   },
