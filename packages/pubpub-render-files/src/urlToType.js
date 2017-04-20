@@ -1,5 +1,7 @@
 exports.urlToType = (url, defaultType) => {
 
+
+
   if (!url) {
     return null;
   }
@@ -38,7 +40,7 @@ exports.urlToType = (url, defaultType) => {
     case 'pdf':
       return 'application/pdf';
     case 'ppt':
-    case 'pptx': 
+    case 'pptx':
       return 'application/vnd.ms-powerpoint';
     case 'doc':
     case 'docx':
