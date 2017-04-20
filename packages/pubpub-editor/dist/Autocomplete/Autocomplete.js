@@ -301,9 +301,15 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 					label = 'File: ' + result.itemType;
 				}
 				if (result.itemType === 'reference') {
-					label = 'Ref: ' + result.author.reduce(function (previous, current) {
-						return previous + ('' + current.given + (current.given ? ' ' : '') + current.family);
-					}, '');
+					if (result.author && Array.isArray(result.author)) {
+						label = 'Ref: ' + result.author.reduce(function (previous, current) {
+							return previous + ('' + current.given + (current.given ? ' ' : '') + current.family);
+						}, '');
+					} else if (result.id) {
+						label = 'Ref: ' + result.id;
+					} else {
+						label = 'Ref: undefined';
+					}
 				}
 				if (result.itemType === 'highlight') {
 					label = 'Highlight';
