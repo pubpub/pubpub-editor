@@ -46,7 +46,7 @@ export const LatexEditor = React.createClass({
 });
 
 styles = {
-  display: function({block})  {
+  display: function({ block }){
     return {
       fontSize: (block) ? '20px' : '0.9em',
     };
