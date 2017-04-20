@@ -63,7 +63,7 @@ var CitationsComponent = exports.CitationsComponent = _react2.default.createClas
 		return _react2.default.createElement(
 			"div",
 			{ className: "pub-citations", onClick: this.preventClick },
-			!hideCitations ? _react2.default.createElement(
+			!hideCitations && _react2.default.createElement(
 				"div",
 				null,
 				_react2.default.createElement(
@@ -71,14 +71,14 @@ var CitationsComponent = exports.CitationsComponent = _react2.default.createClas
 					null,
 					"Citations: "
 				),
-				bib.map(function (bibItem) {
+				bib.map(function (bibItem, index) {
 					return _react2.default.createElement(
 						"div",
-						{ className: "pub-citation" },
+						{ className: "pub-citation", key: "citation-" + index },
 						_react2.default.createElement("span", { dangerouslySetInnerHTML: { __html: bibItem.text } })
 					);
 				})
-			) : null
+			)
 		);
 	},
 

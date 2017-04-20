@@ -19,6 +19,10 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
+var _sanitizehtml = require('../../../utils/sanitizehtml');
+
+var _sanitizehtml2 = _interopRequireDefault(_sanitizehtml);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var HTMLEditor = exports.HTMLEditor = _react2.default.createClass({
@@ -96,7 +100,7 @@ var HTMLEditor = exports.HTMLEditor = _react2.default.createClass({
 			_react2.default.createElement('span', {
 				ref: 'htmlElem',
 				className: 'pub-embed-html',
-				dangerouslySetInnerHTML: { __html: content } })
+				dangerouslySetInnerHTML: { __html: (0, _sanitizehtml2.default)(content) } })
 		);
 	},
 	renderEdit: function renderEdit() {

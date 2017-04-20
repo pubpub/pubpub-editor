@@ -3,6 +3,7 @@ import Radium, { Style } from 'radium';
 import React, { PropTypes } from 'react';
 
 import ReactDOM from 'react-dom';
+import filterXSS from '../../../utils/sanitizehtml';
 
 export const HTMLEditor = React.createClass({
 	propTypes: {
@@ -68,7 +69,7 @@ export const HTMLEditor = React.createClass({
 				<span
 					ref={'htmlElem'}
 					className={'pub-embed-html'}
-          dangerouslySetInnerHTML={{__html: content}}/>
+          dangerouslySetInnerHTML={{__html: filterXSS(content)}}/>
 			</span>
 		);
 	},

@@ -9,9 +9,9 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _xss = require('xss');
+var _sanitizehtml = require('../../utils/sanitizehtml');
 
-var _xss2 = _interopRequireDefault(_xss);
+var _sanitizehtml2 = _interopRequireDefault(_sanitizehtml);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29,7 +29,7 @@ var HtmlRender = exports.HtmlRender = _react2.default.createClass({
     var content = this.props.content;
 
 
-    return _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: (0, _xss2.default)(content) } });
+    return _react2.default.createElement('div', { dangerouslySetInnerHTML: { __html: (0, _sanitizehtml2.default)(content) } });
   }
 });
 

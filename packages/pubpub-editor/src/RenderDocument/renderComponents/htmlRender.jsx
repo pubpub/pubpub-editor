@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import filterXSS from 'xss';
+import filterXSS from '../../utils/sanitizehtml';
 
 export const HtmlRender = React.createClass({
 	propTypes: {
