@@ -13,6 +13,8 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
+var _radium = require('radium');
+
 var _katex = require('katex');
 
 var _katex2 = _interopRequireDefault(_katex);
@@ -52,7 +54,7 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
     return _react2.default.createElement(
       'span',
       { style: styles.display({ block: block }) },
-      _react2.default.createElement(Style, { rules: _katexCss2.default }),
+      _react2.default.createElement(_radium.Style, { rules: _katexCss2.default }),
       _react2.default.createElement('span', {
         ref: 'latexElem',
         className: 'pub-embed-latex',

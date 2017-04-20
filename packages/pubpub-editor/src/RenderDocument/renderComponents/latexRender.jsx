@@ -1,6 +1,7 @@
 import React, {PropTypes} from 'react';
 
 import ReactDOM from 'react-dom';
+import { Style } from 'radium';
 import katex from 'katex';
 import katexStyles from './katex.css.js';
 

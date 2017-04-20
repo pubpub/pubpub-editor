@@ -53,7 +53,7 @@ var RenderFileDoc = exports.RenderFileDoc = _react2.default.createClass({
 			'div',
 			{ className: 'doc-container' },
 			_react2.default.createElement('iframe', {
-				src: 'http://docs.google.com/gview?url=' + file.url + '&embedded=true',
+				src: 'https://docs.google.com/gview?url=' + file.url + '&embedded=true',
 				style: { width: this.state.width, height: this.state.height },
 				frameBorder: '0' })
 		);

@@ -64,7 +64,7 @@ var RenderFile = exports.RenderFile = _react2.default.createClass({
 				return _react2.default.createElement(
 					'div',
 					{ id: 'content-wrapper' },
-					'Cannot currently render PDF.'
+					_react2.default.createElement(RenderFilePDF, { file: file })
 				);
 			case 'application/vnd.ms-powerpoint':
 			case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
