@@ -139,7 +139,7 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 								maxWidth: this.DOC_WIDTH,
 								customStyle: styles.outline({ false: false }),
 								onResizeStop: function onResizeStop(direction, styleSize, clientSize, delta) {
-									var ratio = clientSize.width / _this.DOC_WIDTH * 100;
+									var ratio = (clientSize.width / _this.DOC_WIDTH * 100).toFixed(1);
 									_this.updateAttrs({ size: ratio + '%' });
 								} },
 							_react2.default.createElement(_renderFiles.RenderFile, { draggable: 'false', style: styles.image({ selected: selected }), file: file })
@@ -202,7 +202,7 @@ styles = {
 		    selected = _ref3.selected;
 
 		var style = {
-			width: size,
+			width: !!size ? size : 'auto',
 			display: 'table',
 			outline: selected ? '3px solid #BBBDC0' : '3px solid transparent',
 			transition: 'outline-color 0.15s ease-in',
@@ -212,7 +212,7 @@ styles = {
 			style.float = 'left';
 		} else if (align === 'right') {
 			style.float = 'right';
-		} else if (align === 'full') {
+		} else if (align === 'full' || !align) {
 			style.margin = '0 auto';
 		}
 		return style;

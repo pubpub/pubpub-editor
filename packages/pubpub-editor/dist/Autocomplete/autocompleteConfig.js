@@ -77,9 +77,7 @@ function insertEmbed(_ref3) {
 	var textnode = _prosemirrorSetup.schema.text('Enter caption.');
 	var captionNode = _prosemirrorSetup.schema.nodes.caption.create({}, textnode);
 	var embedNode = _prosemirrorSetup.schema.nodes.embed.create({
-		filename: filename,
-		align: 'full',
-		size: '50%'
+		filename: filename
 	}, captionNode);
 	var transaction = void 0;
 

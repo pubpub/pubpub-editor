@@ -59,8 +59,6 @@ function insertEmbed({ view, filename, url, start, end }) {
 	const embedNode = schema.nodes.embed.create(
 		{
 			filename,
-			align: 'full',
-			size: '50%',
 		},
 		captionNode
 	);

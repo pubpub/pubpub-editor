@@ -104,7 +104,7 @@ export const EmbedComponent = React.createClass({
 						maxWidth={this.DOC_WIDTH}
 						customStyle={styles.outline({false})}
 						onResizeStop={(direction, styleSize, clientSize, delta) => {
-							const ratio = (clientSize.width / this.DOC_WIDTH ) * 100;
+							const ratio = ((clientSize.width / this.DOC_WIDTH ) * 100).toFixed(1);
 							this.updateAttrs({size: ratio + '%' });
 						}}>
 						<RenderFile draggable="false" style={styles.image({selected})} file={file}/>
@@ -154,9 +154,9 @@ styles = {
 
 		};
 	},
-	figure: function({size, align, selected}) {
+	figure: function({ size, align, selected }) {
 		const style = {
-			width: size,
+			width: (!!size) ? size : 'auto',
 			display: 'table',
 			outline: (selected) ? '3px solid #BBBDC0' : '3px solid transparent',
 			transition: 'outline-color 0.15s ease-in',
@@ -166,7 +166,7 @@ styles = {
 			style.float = 'left';
 		} else if (align === 'right') {
 			style.float = 'right';
-		} else if (align === 'full') {
+		} else if (align === 'full' || !align) {
 			style.margin = '0 auto';
 		}
  		return style;
