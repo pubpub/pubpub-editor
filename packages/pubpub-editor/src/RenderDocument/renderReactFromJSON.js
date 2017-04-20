@@ -1,4 +1,4 @@
-import { CitationsRender, EmbedRender, IframeRender, LatexRender, MentionRender, ReferenceRender } from './renderComponents';
+import { CitationsRender, EmbedRender, HtmlRender, IframeRender, LatexRender, MentionRender, ReferenceRender } from './renderComponents';
 
 import { CitationEngine } from '../references';
 import React from 'react';
@@ -116,7 +116,10 @@ const renderSubLoop = function(item, meta) {
 				blockEquationText = node.content[0].text
 			} else if (node.attrs.content) {
 				blockEquationText = node.attrs.content;
-			}			return <LatexRender key={index} value={blockEquationText} block={true} />
+			}
+			return <LatexRender key={index} value={blockEquationText} block={true} />
+		case 'html_block':
+			return <HtmlRender key={index} {...node.attrs} />
 		case 'iframe':
 			return <IframeRender key={index} {...node.attrs} />
 		case 'mention':

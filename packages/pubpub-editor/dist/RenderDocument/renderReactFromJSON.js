@@ -219,7 +219,10 @@ var renderSubLoop = function renderSubLoop(item, meta) {
 					blockEquationText = node.content[0].text;
 				} else if (node.attrs.content) {
 					blockEquationText = node.attrs.content;
-				}return _react2.default.createElement(_renderComponents.LatexRender, { key: index, value: blockEquationText, block: true });
+				}
+				return _react2.default.createElement(_renderComponents.LatexRender, { key: index, value: blockEquationText, block: true });
+			case 'html_block':
+				return _react2.default.createElement(_renderComponents.HtmlRender, _extends({ key: index }, node.attrs));
 			case 'iframe':
 				return _react2.default.createElement(_renderComponents.IframeRender, _extends({ key: index }, node.attrs));
 			case 'mention':

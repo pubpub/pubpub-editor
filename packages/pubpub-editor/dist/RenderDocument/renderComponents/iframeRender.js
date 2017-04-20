@@ -5,17 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.IframeRender = undefined;
 
-var _radium = require('radium');
-
-var _radium2 = _interopRequireDefault(_radium);
-
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _katex = require('katex');
 

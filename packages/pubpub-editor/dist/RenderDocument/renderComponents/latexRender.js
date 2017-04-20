@@ -5,10 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.LatexEditor = undefined;
 
-var _radium = require('radium');
-
-var _radium2 = _interopRequireDefault(_radium);
-
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -56,7 +52,7 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
     return _react2.default.createElement(
       'span',
       { style: styles.display({ block: block }) },
-      _react2.default.createElement(_radium.Style, { rules: _katexCss2.default }),
+      _react2.default.createElement(Style, { rules: _katexCss2.default }),
       _react2.default.createElement('span', {
         ref: 'latexElem',
         className: 'pub-embed-latex',
