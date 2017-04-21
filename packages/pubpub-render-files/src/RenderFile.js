@@ -22,12 +22,14 @@ export const RenderFile = React.createClass({
 		console.log('RENDEIRNG', file);
 
 		switch (file.type) {
+		/*
 		case 'text/markdown':
 			return (
 				<div id={'content-wrapper'} className={'pub-body'} style={styles.pubBody}>
 					<RenderFileMarkdown file={file} allFiles={this.props.allFiles} />
 				</div>
 			);
+		*/
 		case 'image/png':
 		case 'image/jpg': // Is this ever actually used?
 		case 'image/jpeg':
@@ -55,7 +57,7 @@ export const RenderFile = React.createClass({
 		default:
 			return (
 				<div className={'pt-callout'}>
-					<p>Can not render this file. Click to download the file in your browser.</p>
+					<p>Can not render {file.name}. Click to download the file in your browser.</p>
 					<a href={file.url}><button className={'pt-button'}>Click to Download</button></a>
 				</div>
 			);
