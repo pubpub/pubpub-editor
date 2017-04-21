@@ -90,7 +90,11 @@ function ppubToPandoc(ppub, options) {
 					} else if (node.marks[i].type === 'link') {
 						newerNode = {};
 						newerNode.t = 'Link';
-						newerNode.c = [['', [], []], [], [node.content.text, node.marks[i].attrs.title || '']];
+						let text = (node.content && node.content.text) ? node.content.text : '';
+						if (!text) {
+							text = node.marks[i].attrs.text ? node.marks[i].attrs.text : '';
+						}
+						newerNode.c = [['', [], []], [], [text, node.marks[i].attrs.title || '']];
 						newerNodes.push(newerNode);
 						markCount++;
 					} else if (node.marks[i].type === 'code') {

@@ -1,0 +1,3910 @@
+{
+  "type": "doc",
+  "attrs": {
+    "meta": {}
+  },
+  "content": [
+    {
+      "type": "article",
+      "content": [
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 1
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Promoting Trust and Good-Faith in Scientific Communications"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "This document is a working document meant to capture the progress of Travis Rich's PhD Thesis. Over time, this will slowly transform into the final document."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 1
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Abstract"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 1
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Acknowledgments"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 1
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Committee Signature Pages"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 1
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Context"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "This thesis introduces PubPub, a complete publishing system that is consonant with the way software and research ideas are developed. It is author-driven, continuous, collaborative, and allows for data and code to be directly integrated into the document. PubPub is optimized for collaboration and iterative document creation; taking inspiration from the software development cycle it allows for more participatory forms of review. We hypothesize that by changing the scientific review process from one of static critique to one of interactive collaboration we can increase the error-detection rate of scientific review. We present an experiment to test this hypothesis by measuring error detection rates across several interactive and non-interactive documents. This work is motivated by a growing recognition that in many fields, notably those that rely on data analysis and computing, the existing review process is not sufficiently fair, accurate, or timely."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "This work began with a simple need. After building GIFGIF [@gifgif], an interactive GIF-emotion rating game, we wanted a means to share our data and publish our findings while maintaing the interactivity of the project. Our goal was not to get credit for the work, but rather to open a discussion that would generate feedback on how we could iterate to make the work better. Publishing the work as a PDF in a scientific journal or conference, spending months waiting for a decision, and receiving feedback that could be months to a year late did not fit the bill for our goals."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "We felt our goals were not so unique that we were an odd edge-case and began to dig deeper into exploring what scientists with complex publishing needs actually do. This question is the catalyst for this thesis work. To communicate this thesis research, the tools built, and the experiments performed we structure the thesis into the following sections:"
+            }
+          ]
+        },
+        {
+          "type": "ordered_list",
+          "attrs": {
+            "order": 1
+          },
+          "content": [
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "marks": [
+                        {
+                          "type": "strong"
+                        }
+                      ],
+                      "text": "Context"
+                    },
+                    {
+                      "type": "text",
+                      "text": ": What is the context of the work and state of scientific publishing"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "marks": [
+                        {
+                          "type": "strong"
+                        }
+                      ],
+                      "text": "Platform"
+                    },
+                    {
+                      "type": "text",
+                      "text": ": What has been built as a result of this research"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "marks": [
+                        {
+                          "type": "strong"
+                        }
+                      ],
+                      "text": "Experiment"
+                    },
+                    {
+                      "type": "text",
+                      "text": ": How do we test the goals and efforts of this research"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "marks": [
+                        {
+                          "type": "strong"
+                        }
+                      ],
+                      "text": "Discussion"
+                    },
+                    {
+                      "type": "text",
+                      "text": ": What are next steps and longer-term goals"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "To begin, it it helpful to understand what exactly is meant by scientific publishing. At the conclusion of academic research, or scientific research in corporate or public environments, the authors of the research look for a means to disseminate their findings. This action serves both to inform the community of their results, as well as provide a badge of accomplishment that can be used when fundraising, looking for jobs, or applying for awards. It is common for authors to disseminate their work through an academic conference or scholarly journal. Before publication though, authors must first submit their work to these conferences and journals. This submission typically consists of a text document with static images, equations, tables, and figures. Supplementary data, videos, and documents sometimes accompany the main submission depending on the capacity of the journal or conference that the work is submitted to. After submission, it is common for the work to go through a peer review process that deems whether the work is of sufficient quality and relevance to the conference or publication."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The main focus of much of the scientific publishing process (and indeed, much of this thesis) is this peer review process. During peer review a group of outside experts (typically 2-4) evaluate a work to decide whether it should be accepted for publication, requires editing, or should be rejected. If the work is accepted, it is deemed by the community to be reputable and of a particular level of quality. To reduce the effects of personal bias, it is common that the identity of the author and the reviewers is kept secret (called double-blind peer review). The reviewer and the critique they provide is, as John Ziman states, \"the lynchpin about which the whole business of Science is pivoted\" [@ziman1968public]. Given the importance of this review process for the advancement if science, it is critical that it be a fair, logical, and accurate tool."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "To understand how peer review in its current form became so critically important and why the scientific publishing structure is what it is, we look at the history of scientific publishing."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "History of Scientific Publishing"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "While the practice of scientific methods and inquiry date back for hundreds of years, the modern structure of scientific publishing did not establish until the late 1600s. Before this time, scientific luminaries such as Galileo or Newton were either self-published in larger manuscripts, such as Newton's Principia, or were subject to the oversight of a larger governing body, such as the Church in Galileo's case [@casadevall2009peer]. The first journals, Journal des sçavans and the Royal Society of London's Philosophical Transactions came about in in 1665. These predecessors to the modern scientific journal were managed by editors whose sole discretion decided what content filled their publications."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "firstJournals.jpg",
+            "url": "",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "As the quantity of work grew throughout the 1700s and 1800s, many journals began employing the help of external committees to make recommendations [@spier2002history]. However, the exact function of these committees varied between journals and fields. In many cases, these external committees reported privately to the editor - excluding the author of work from the process. In fact, before the mid 1900s, the processes and traditions of publishing scientific results were heterogeneous. There is no single history of scientific review."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "sputnikAnnouncement.gif",
+            "url": "https://assets.pubpub.org/_testing/31491151583693.gif",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The shift towards the modern and ubiquitous peer review we use today occurred in the mid 1900s [@baldwin2015credibility]. Science historians highlight that the mid 1900s ushered in a new era of science as its role in the public sphere grew [@baldwin2016referees]. During this time, events such as the Cold War and the Russian launch of the first satellite, Sputnik, led to enormous amounts of public funding being poured into science. Along with this funding came higher levels of public scrutiny and a demand for greater accountability. To avoid some more constraining proposals, such as having Congress review all science grants and publications, the scientific community quickly adopted peer review as the self-regulation and self-correction mechanism where society could place its faith [@neal2008beyond]."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Unfortunately, many find the ubiquitous current peer review system to be failing in its goal of serving as a tool for fair and effective quality control [@allison2016reproducibility] [@smith2006peer] [@csiszar2016peer] [@powell2016does]. In response to this growing doubt, researchers have begun to systematically collect and analyze data about the peer review process. One group took previously accepted journal articles, edited them slightly, changed the institutional names to fake universities, and resubmitted the manuscripts to the original journals that had published them. Only three of twelve resubmissions were correctly identified as fraudulent, while eight of twelve were rejected for low quality [@peters1982peer]. This inconsistent behavior is problematic in its own regard, but also suggests a bias against authors from lesser known universities. Additional results have shown unchecked nepotism [@sandstrom2008persistent], sexism [@wenneras2001nepotism], and inconsistency [@smith2006peer] to be consistent problems. Others have called into doubt the ability of peer review to effectively curate quality science, as a study found only 36 of 100 papers published across three psychology journals to have reproducible results [@open2015estimating]."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The ubiquity of the current peer review process makes these shortcomings more pernicious as these errors therefore exist found across the entire spectrum of scientific fields and practices. This ubiquity is due to the homoginization of scientific journals and publishers. For decades, scientific journals were led by scientific societies as a means to communicate results within their field. However, around the same time as the homoginization of the peer review process, the 1960s, commerical publishers began to see a business opportunity in owning leading scientific journals. Contrast a heterogeneous landscape of diverse scientific societies, by 2013, 50% of all published scientific work was published through 5 for-profit publishers [@lariviere2015oligopoly]. As this trend was becoming clear Deutsche Bank released a research report [@bank2005reed] on the impact of these large publishing empires, claiming:"
+            }
+          ]
+        },
+        {
+          "type": "blockquote",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "We believe the publisher adds relatively little value to the publishing process.  We are not attempting to dismiss what 7,000 people at [Reed-Elsevier] do for a living.  We are simply observing that if the process really were as complex, costly and value-added as the publishers protest that it is, 40% margins wouldn’t be available."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The homogonization not only represents a risk in that it appears to be an effort with profit goals rather than scientific motives, but it unifies the process for most scientific endeavors. Taylor expresses the risk this unified process presents in relation to the incentives scientists are under by citing Goodhart's Law and Campbell's Law [@everyAttemptScience], which respectively state:"
+            }
+          ]
+        },
+        {
+          "type": "blockquote",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "When a measure becomes a target, it ceases to be a good measure. [@goodhartsLaw]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "blockquote",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "The more any quantitative social indicator is used for social decision-making, the more subject it will be to corruption pressures and the more apt it will be to distort and corrupt the social processes it is intended to monitor. [@campbellsLaw]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Publishing Incentives"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Many of the challenges facing the scientific publishing process are attributed to misaligned incentives [@nosek2012scientific] [@edwards2017academic] [@wilhite2012coercive] [@alberts2014rescuing]. Given the homogonization of the publishing process, the metrics by which science progress have in turn also become uniform. A dangerous side effect of this is that the metric no longer become useful, but rather are subject to gaming. Scientists are encouraged to do what is good for the scientist rather than what is good for science."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Edwards and Roy expand on this notion by detailing a history of attempts to change these homogenized incentives, which unfortunately only results in other corrupted homogonized incentives. The table below enumerates these attempts and their side effects."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "everythingFailsTable.png",
+            "url": "https://assets.pubpub.org/_testing/31491151583803.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Research from Foster et al. focuses on the types of research questsions that are asked under these incentive systems and finds that scientists are not sufficiently rewarded for breaking the status quo. Lower-risk questions with more certainty of falling into some established model of understanding is a more worthwhile use of time if their goal is to be rewarded by the existing incentive system [@foster2015tradition]. The research notes that while many journals do stress impact, novelty, and innovation, the associated reward is not justifiably large given the risk that such work entails. I may promise to pay you more to train a lion than a dog, but if it's only a dollar more, you'll likely forego the higher pay and take the safer option of training a dog."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Kevin Esvelt details other undesired behaviors that the incentive system creates such as data-hoarding, research secrecy, and refusing to publish negative findings [@esveltNewYorker]."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Ioannidis also argues that such incentives silo research into very specific domains. Given the complexity of much research, this can cause situations where the reviewers of work are insufficiently qualified to conduct a complete peer review. A cardiologist submitting work to a major cardiology journal is likely to get reviewers who are also trained cardiologists. However, much of the research may rely on statistical analysis, of which none of the cardiologists are formally trained. Ioannidis argues that the reviewers and scientific focuses have become to narrow to be effective, results in huge numbers of incorrectly stated conclusions[@ioannidis2005most]."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "One component of these arguments has shown in data that suggests the journals with the highest levels of prestige provide the least reliable science [@leastReliable] [@prestigiousBadScience] [@stopPretending]. For example, taking a field that has quantifiable quality measurements, Brown and Ramaswamy looked at the quality of protein structure crystals presented in research published in a variety of journals. They found that 'top' journals, such as Cell, Nature, and Science had the worst quality measures (see images below) [@brown2007quality]."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "crystalQuality.jpg",
+            "url": "https://assets.pubpub.org/_testing/61491151583648.jpg",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Other research found that top journals also had a higher rate of gene name errors in their supplementary data than those publishing in 'lower' quality journals [@ziemann2016gene]."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "excelErrors.jpg",
+            "url": "https://assets.pubpub.org/_testing/61491151584080.jpg",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A major danger of an ultra-homogenized and gamed system is that it erodes the public's trust in science. The dangers are that 1) the public only sees the end result of this process - not the iteration, and 2) the public often sees over-hyped results that have been pushed for the sake of optimizing novelty rather than sustainability. This erodes the public's trust in science as conflicting results and over-dramatized findings are presented, yet with no lasting effect."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The need for trust in publishing is not rooted in a 'wouldn't it be nice' mindset, but rather given the society-level importance of decisions and advancements that are being made in recent research. The advancement of powerful learning algorithms, self-driving cars, and genetically altered biology experiments are technologies that will have the potential for extreme social impact [@socalAI][@esveltNewYorker]. Gangarosa et al. show the danger of a lack of public trust in science, demonstrating the anti-vaccine movements relation to a revival of pertussis [@gangarosa1998impact]. Such topics have life or death consequences in the public domain, yet face little controversy or argument in the scientific circles they call home. This inability for scientific concensus to permeate past the academic boundary is critically important and a major motivator in the quest to advance scientific communication."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "These problems can appear often to scientists and have catalyzed groups to begin working on solutions."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Tools for New Science"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Many groups, for-profit, non-profit, and academic, have begun building solutions to dimensions of these problems. The efforts most commonly seem to isolate a certain component of the science publication process, be it writing, journal creation, or peer review. While their goals are often larger than we will discuss, the products they deliver often fall into one of three categories:"
+            }
+          ]
+        },
+        {
+          "type": "ordered_list",
+          "attrs": {
+            "order": 1
+          },
+          "content": [
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Tools for writing"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Tools for review"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Tools for journals"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Tools for Writing"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "One component of modern research that many groups identify is the collaborative nature of writing work. Teams are often large and collaborations are sometimes spread across countries. Given this, a common focus of writing tools is to support collaborative writing environments. Tools like Overleaf [@overleaf] or ShareLatex [@sharelatex] allow authors to write Latex in real-time with one another. Other products like Authorea [@authorea] or Google Docs [@googleDocs] allows editing of WSYWIG documents. Many of these tools focus on streamlining the submission process as well. Authorea and Overleaf allow authors to export their work in many different formats for submission - or even direct submission - to existing traditional journals and conferences."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Tools for Review"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Other groups identify the peer review process as an area to provide alternative solutions. Altmetric [@altmetric] adds a measurement of social impact (through tweets, facebook shares, url shares, citations) to articles allowing the review process to be both formally understood through the journal and informally understaood through the articles impact in social circles. This can create bias though, where shocking articles are rated more highly than quality-yet-boring articles."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Publons [@publons] is a tool that seeks to reward reviewers for their work. Traditionally, a peer reviewer does their work unpaid and anonoymously and thus has no means for broadcasting their contribution to society. Given the importance of peer review and the complexity and difficulty of the task, being unrewarded for the task can have detrimental effects on the quality and commitment to reviews. Publons allows reviewing to aggregate their contributions and build a profile of activity which can be shared."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Tools for Journals"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A number of groups have created tools that allow groups to create their own journal environment. One such example of a tool that facilitates this is Open Journal Systems (OJS) [@ojs]. OJS allows organizations to implement their own review process and submission pipeline outside of traditional, larger journaling organizations. Others have taken the opportunity to create new journals with a few critical alterations to the publication process. F1000 [@f1000] allows post-publication, double open review. eLife [@eLife] similary explores alternative tools for publishing and open peer review. PLoS [@plos] is a non-profit that offers open reviews and opportunities for more rapid publishing."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "One major split we identify between these groups is whether they are for-profit or not. In many aspects of life, competitive for-profit organizations are best suited to deliver the highest quality product and most sustainable business model. Unfortunately, given the time-scales and incentives of scientific research, we find these models to be less optimal. Like healthcare, scientific research is a public utility whose value is weakened when key players have high-stakes in the direction of scientific discovery. As seen by the large transition to for-profit journals - organizations are often incentived to be exclusive, headline-worthy, or secure in a way that advances their own goals rather than the unpredictable trends of scientific inquiry."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Given the large numbers of groups that are working towards a more productive scientific publication environment, it is fair to ask what aspects have been left untouched. We suggest that a unifying aspect of all of these works is that they focus on making the tools for the existing scientific community better. There is little focus on making these tools available or accesible to the broader public. More importantly, there is little focus on how these tools allow the public, or scientists in other domains, to more meaningfully engage in the work. Little effort is made to break down the boundaries in which researchers are forced to exist, resulting in less job-mobility for academics, less public trust in research, and more self-serving behaviors in publication."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Towards more functional reviews"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "At the end of the day, a peer review is a social signal that a given piece of work is - to the best of its ability - a good-faith effort towards advancing our understanding of the topic. It is necessary because the work often explores an area whose truth cannot be completely known at the given time. Journals, in this sense, have a relative ranking. Those journals that are considered top-tier are ones whose peer-review is deemed to be more valid and influential. However, as previously mentioned, there is data showing that 'top' journals have the least reputable science [@ziemann2016gene] [@brown2007quality] [@stopPretending] [@prestigiousBadScience] [@leastReliable]. However, the need for a strong social signal still remains."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "One possible means of avoiding erroneous measures of social signal is to have a multitude of groups review and deem a piece of work as qualifying. That will only come from a diversity of people who can ackowledge, reward, and employ based on scientific efforts."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "We also need tools that encourage fairness in publishing. Citing the problems with sexism, nepotism, and prestige noted above, few tools ackowledge a balanced review field as one of their core responsibilities."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A hallmark of research, as we often see at the Media Lab, is that new areas of interest are can be extremely difficult to predict. The ability for communities to quickly assemble and emerge based on small communities is critical to enabling diverse sets of research and understanding to exist."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "We believe that more meaningful and accessible peer reviews are an important first step to addresing these challenges and opportunities. The next section discusses the development of PubPub - a platform we have built during the course of this thesis. A key goal of the platform is to explore the development of more powerful peer review mechanisms that allow peers, scientists, and the public to access research in a manner that allows them have faith and understanding in the described work."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "To paraphrase Alan Kay:"
+            }
+          ]
+        },
+        {
+          "type": "blockquote",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Most ideas are bad - which is fine - as long as we have a process to debug ideas. Science is a tool to debug ideas, and problems arise when we refuse to debug the idea or give to much credit to the idea itself."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "We hope that PubPub and the open, collaborative, fair review process it strives for can enable people to see and use science as this process for debugging ideas, rather than a series of stated facts. Not all science will uncover truths of the universe, but that doesn't it isn't an important step in the process of arriving at these truths."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 1
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The Platform"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Throughout the course of this thesis, Thariq Shihipar and I have built and launched several iterations of PubPub. PubPub is a complete publishing system that is consonant with the way software and research ideas are developed. It is author-driven, continuous, collaborative, and allows for data and code to be directly integrated into the document. PubPub seeks to be both a modern, dynamic research communication platform and a tool to generate evidence and data that can guide the design of future publishing systems. Bilder et al [@bilder2015principles] suggest some critical keys of open scholarly infrastructure, such as an open source codebase, accesible data practices, and keen choice of licensing options. We have built PubPub with many of these key tactics in mind."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The mission of PubPub has evolved and changed shape over the many months we have worked on it, so to give a thorough understanding of the platform, we present four major stages of PubPub and the motivation behind them.  After viewing each of the stages, a unifying thread that appears is that each stage of the platform has sought to enable research communication to be self-evident and a mechanism for trust creation. We identify many ways to accomplish this goal and each stage serves as a realization of a critical method for accomplishing the higher task. The story of PubPub is the story of building attemps to answer the question, 'How do we make this work (accurately) trusted?'."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "v1 - Rich, Collaborative, Versioned Documents"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "We began building PubPub to publish our work on GIFGIF [@gifgif] - an interactive and data-rich project that sought to measure the emotional content of animated GIFs through pairwise comparison. GIFGIF's playful and animated design is much more engaging on web platforms than in a PDF. Furthermore, given that GIFGIF was a project that relied on many users, we wanted to gather feedback about how to improve the project from an audience as wide as our userbase. For these reasons, the first focuses of PubPub were to allow for 1) the creation of rich, interactive documents and 2) direct reader interaction. Interaction in this case means both with the document itself (where interaction is added) and in a conversation alongside the document. Early designs showing conversation alongside the rich-document are show below."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "pubpub_v0travis.png",
+            "url": "",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "\n"
+            }
+          ]
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "pubpub_v0thariq.png",
+            "url": "",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "\n"
+            }
+          ]
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "pubpub_v0.png",
+            "url": "",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The conversation aspect is key to the feature set of early PubPub designs. The goals of the conversation are to provide new readers with context into any community consensus regarding the work and to create a pathway for readers to ask questions, identify errors, and suggest future directions. In order to facilitate this conversation and make discussions around errors and suggestions actionable, it was critical that PubPub allow authors to quickly update their work. To maintain an honest account of these changes and how they came to be, a versioning system was implemented. These versions allowed readers to view the evolution of the documents."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "In the software development world, this practice of having richly versioned and collaborative projects has been successful. The best demonstration of this success is Git and Github - where open-source projects are documented, maintained, and built by communities. We argue that versioning and collaborative development is equally important for scientific publishing and communication. To explore this topic more deeply, we focus on retractions in scientific publishing and argue that many serious problems associated with retractions would be alleviated by a rich and accepted versioning system."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Why Versioning Matters: Scientific Retractions"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Scientists are not infallible. Unsurprisingly, the work produced and published by these scientists is sometimes found to be wrong. Currently, the central mechanism for correcting these published errors is for the publisher to issue a Retraction Notice. This mechanism is bundled with such strong social and political context that its use and value deviates from the core goal of enabling science to be a self-correcting process. Alberts et al. expand upon this notion and even suggest that reliance on the word \"retraction\" causes behavior that is against the best interest of the scientific process [@alberts2015self]."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "We identify four underlying causes why a published piece of work may be invalidated and retracted."
+            }
+          ]
+        },
+        {
+          "type": "ordered_list",
+          "attrs": {
+            "order": 1
+          },
+          "content": [
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Honest mistakes in documentation (e.g. typos, calculation errors, etc)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Findings invalidated by newer science (e.g. the discovery of a new piece of evidence invalidating a conclusion)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Fraudulent reporting (e.g. creating false data, fabricating results)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Incompetence (e.g. not being sufficiently skilled in a technique or domain to identify a mistake)"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Of these, two of them are contributory towards the scientific process (items 1 and 2), and two of them are detrimental to the scientific process and require corrective repercussions (items 3 and 4). Two questions that can be asked are 1) How does one identify and discriminate between different types of retractions, and 2) What is the proportion of retractions due to each type?"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A comprehensive analysis of retracted work, performed by Grieneisen et al., found that 47% of retracted work was due to publishing misconduct, 20% due to research misconduct, and 42% due to questionable results interpretation (multiple causes can be assigned to a single retraction, hence the greater than 100% total) [@grieneisen2012comprehensive]. This work differs in their analysis of types of causes, and almost entirely ignores the use of retraction as a tool for correction and progress (items 1 and 2 in the above numbered list)."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The tendency to view retractions as a purely negative process has led some to encourage the adoption of multiple terms (such as 'withdrawal by author' or 'withdrawal due to causes') to distinguish between the underlying cause of a retraction [@alberts2015self]."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Unfortunately, little effort is made to differentiate, and the effect is a generalized and very strong professional stigma against scientific retractions. While such stigma is appropriate for retractions due to fraud or incompetence, it creates an environment where even small risks are avoided due to the fear of potential retraction. Such risk aversion is seen to have negative effects in other domains as well, such as the culture of entrepreneurship in many European countries."
+            }
+          ]
+        },
+        {
+          "type": "blockquote",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "In Europe, a serious social stigma is attached to bankruptcy. In the USA bankruptcy laws allow entrepreneurs who fail to start again relatively quickly and failure is considered to be part of the learning process. In Europe those who go bankrupt tend to be considered as 'losers'. They face great difficulty to finance a new venture.\nCommunication by the European Commission, 1998 [@landier2005entrepreneurship]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "blockquote",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "If you start a company in London or Paris and go bust, you have just ruined your future; do it in Silicon Valley and you have simply completed your entrepreneurial training.\nThe Economist, 1998 [@landier2005entrepreneurship]"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The current realization of the scientific process has been increasingly critiqued as a large number of papers, notably in the life and health sciences, have been found to be irreproducible. One form of critique has been analyses of retracted papers to understand trends in their countries of origin, field of science, and publishing journal [@grieneisen2012comprehensive] [@budd1998phenomena] [@fang2012misconduct]. However, little work is done to understand whether retractions are even an effective tool for enabling science to be self-correcting and so below we attempt to provide some data towards that question."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "One startling aspect of the retraction process is that there is no centralized mechanism for how a journal retracts a publication, how scientists are notified, or where retracted work can be checked. There is no central database to crosscheck a new work's references with those that are known to be retracted."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Several tools have been launched by communities to try and aggregate retraction knowledge. Most notably is the Retraction Watch blog [@retractionWatch]. Retraction Watch posts retracted papers as they are announced. The tool has found much success as it is one of the only centralized mechanisms for being notified of retracted work."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "As an experiment we scrape Google Scholar. Google Scholar is fed by Thomson Reuter's Web of Science and Elsevier's Scopus tools. Unfortunately, Google Scholar does not provide an API to their data, so we must manually scrape HTML pages to extract the data we need. This significantly reduces the size of data we can analyze."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Our collected dataset includes the top 100 retracted publications as listed by Google Scholar, and all of the 'children' of those retracted publications. We define children to be any publication which cites the retracted paper. Also, we rely on Google's ranking of academic publications to collect the 'top 100'. Google Scholar claims: \"Google Scholar aims to rank documents the way researchers do, weighing the full text of each document, where it was published, who it was written by, as well as how often and how recently it has been cited in other scholarly literature\" [@googleScholar]."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "For each publication, the retracted papers and their children, we collect the year of publication, title, number of citations (according to Google Scholar), and the BibTeX reference citation."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "We begin the analysis by exploring some simple statistics relating to the retracted papers. Specifically, we are interested in understanding the citation rates of a paper before and after the point of retraction. Due to the poorly documented process of many retractions, it is not possible to get an exact retraction date, so we rely on the granularity of a year."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Given that we also collect the number of citations of children publications, we can also calculate the number of 'grandchildren' of a retracted paper. Here, we use the term grandchild to refer to a publication that has cited a paper which cites a retracted paper. Grandchildren can be used to give us an insight into whether papers that cite retracted work are influential or not. For example, a retracted paper having 5 children and 10,000 grandchildren would mean that the retracted paper was cited by highly influential papers."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 4
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Retraction Statistics"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "For all papers, we analyze the papers that cite them and compare the year of retraction with the year of publication of the child paper. We find that the average number of citations before and after retraction is nearly identical. We also find that the median number of citations after a retraction is larger than before. These numbers indicate that the retraction is not serving its purpose of removing content from the scientific discussion."
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "attrs": {
+            "columns": 4
+          },
+          "content": [
+            {
+              "type": "table_row",
+              "attrs": {
+                "columns": 4
+              },
+              "content": [
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph"
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Median"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Mean"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Standard Deviation"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "table_row",
+              "attrs": {
+                "columns": 4
+              },
+              "content": [
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Citations before Retraction"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "34.5"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "73.86"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "116.27"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "table_row",
+              "attrs": {
+                "columns": 4
+              },
+              "content": [
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Citations during Retraction Year"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "13.0"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "16.23"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "17.60"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "table_row",
+              "attrs": {
+                "columns": 4
+              },
+              "content": [
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Citations after Retraction"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "50.0"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "72.63"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "67.03"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "We can also explore the statistics of second-order, \"grandchildren\", citations."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "| | Median | Mean | Standard Deviation | |--------------------------------------|:-------:|:-------:|:------------------:|\n| Grandchildren before Retraction | 1054.0 | 3866.44 | 116.27 |\n| Grandchildren during Retraction Year | 231.5 | 380.80 | 1326.27 |\n| Grandchildren after Retraction | 8040.30 | 565.34 | 2009.17 |"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "These grandchildren statistics are in some way even more startling as they show the real impact of a retracted paper. Of the papers in our data set, on average, a retracted paper (after retraction) will be cited 72 times and those citations will be cited themselves 565 times. This trend of course grows exponentially as your explore third and fourth order citations, making clear the continued impact of retracted work."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "To understand the general trends of pre- and post-retraction citation rates, we can visually aggregate our results. The following graph shows all the papers we have collected and their citation counts. The x-axis shows the number of years since retraction (either positive or negative), while the y-axis shows the total citation count. The colors differentiate different publications, but carry no additional meaning. The graph is centered around year 0 (0 years since retraction) and a grey vertical line in the middle separates the pre- and post-retraction citations."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "retractionsCumulative.png",
+            "url": "https://assets.pubpub.org/_testing/51491151604357.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "We find a few notes of interest in looking at this graph:"
+            }
+          ]
+        },
+        {
+          "type": "ordered_list",
+          "attrs": {
+            "order": 1
+          },
+          "content": [
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "A retraction does generate an overall negative trend in the citation rate. After retraction the cumulative trend is towards 0."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "The graph is roughly symmetric, implying that there are as many citations before a retraction as there are after."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "The tail of citations after retraction is incredibly long. There continue to be citations 10-15+ years after retraction. Such a time period is often longer than the lifespan of a non-retracted publication."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Some publications don't seem phased by retractions. That is, their citation rate increases after retraction."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "In analyzing these graphs, it is also important to take a moment and realize we're still subject to causality. That is, the past has already happened, but the future hasn't. All of the citations that will be made before retraction have been measured, but there could exist many more citations to come afterwards. This is especially true for those publications in our dataset which were retracted in 2015. Some of these publications had years to aggregate citations, until their 2015 retraction, the effects of which we could not possibly yet measure, and thus skew our graph."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "One of the main takeaways from this analysis is that there is a problem in the efficacy of retraction. Not only is it mired in potentially-destructive social stigma, it also doesn't seem to serve the function of ending a paper's lifetime."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "To understand the many factors that contribute to this, we have to be honest about the way in which many papers are written. The long tail of citations after publication could be due to the fact that:"
+            }
+          ]
+        },
+        {
+          "type": "ordered_list",
+          "attrs": {
+            "order": 1
+          },
+          "content": [
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "People could be knowingly citing retracted work."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Many people download PDFs of papers well in advance of citing them for publication"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "People may simply copy references from other papers that were published before the retraction"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "People may add a reference for the sake of having more references, without ever reading the associated paper."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "The publication could have been physically printed and the only source of reference used before citation."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Fixing or minimizing these behaviors seems to be incredibly complex and difficult, and so perhaps the burden of responsibility should fall at the time of publication. Either peer-reviewers or an automated system should be checking to ensure that no references used in a publication are retracted. This of course is currently very difficult to do due to the lack of centralized retraction data."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "For many of these works, fixing the challenges around scientific retractions may be overkill. Rather, the suggestion proposed by PubPub therefore is that versioning is critical in its ability to not simply label something as wrong or retracted, but to issue a correction to those errors and have the proper communication channels to notify those who need to know (notably those who have previously cited or referenced the work). When versions are rapid, accessible, and easy - problems can be caught early and without embarrassing fanfare of shame. Errors in research become approachable and thus more like software bugs to be fixed than critical failing of the scientists authoring the work."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "When updates to documents are not seen as errors, but as normal update procedures, we are left with an infrastrucutre that allows for more general behaviors around the dissemination of changing documents. For example, staying up to date with legislation (e.g. how does a realtor stay up to date as realty laws change) or hardware documentation (e.g. how do you know when your circuit board component has been discontinued) can be extremely costly or difficult. As mentioned before, the world of software development, heavily relying on git and github, have many tools that make this exact task simple. Updated software packages are often well documented and many services exist to provide notifications when an update is made or a package is out of date."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "While perhaps subtle, these versions are an important design feature because it changes scientific communication from a static announcement to a living conversation. Through that transition many new methods of interaction become available. These new methods are perhaps best detailed by two deployment efforts made with the first version of PubPub."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Deployment: Government of Mexico City"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "In January of 2016, Mexico City transitioned from a district to a state [@mexicoCityState]. This legal procedure allowed them to build a new constitution for their newly formed state. In the process of building this constituion, key players within the government, notably Gabriella Gomez-Mont, felt it critical to incorporate the public opinion through the design and writing process. Later that year, Gabriella and her team launched ConstitucionCDMX on PubPub. The goal of this was to publish in-progress elements of the constitution and to open it up to public interaction. Legislators, private-sector leaders, and the public had a unified forum where they could debate and iterate on these critical documents. In the end, ~3,500 people participated in commenting on 12 publications put out by the team in Mexico city."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "cdmxGlobal.png",
+            "url": "https://assets.pubpub.org/_testing/11491151583171.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "\n"
+            }
+          ]
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "cdmxGlobalPub.png",
+            "url": "https://assets.pubpub.org/_testing/41491151583172.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "\n"
+            }
+          ]
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "journal_cdmx.png",
+            "url": "https://assets.pubpub.org/_testing/51491151585010.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Not only did this deployment allow the public to voice their input in the creation of these important documents, but it also captured the history and evolution of the work. Versions of the documents were accessible to all and can be used in reflection to understand what conversations led to certain elements of the constitution. In this manner, the deployment highlighted a critical feature of richly versioned research communication, which is that the end product is not only (hopefully) a more stable and agreed upon piece of work, but that the process for reaching that final version is available for inspection and learning. This is especially important in science and research where the path to new discoveries is often circuitous. In ackowledging the reality and noisiness of many research processes, we are better able to communicate fair expectations and goals."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Deployment: Impacts of Engineering"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Another, smaller scale, deployment of PubPub in this early stage was led by Devin Berg. Devin is a associate professor at University of Wisconsin-Stout and leads freshman introductory classes. Devin launched Impacts of Engineering to be a forum for his classes to write articles which would be peer-reviewed by the other students in the class. The power in this is that young scientists and engineers begin working with the peer-review process earlier in their career. It gives students an opportunity to realize that any given work is a result of the community in which it was formed and teaches that value of participating in the advancement of work led by others."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "journal_impacts.png",
+            "url": "https://assets.pubpub.org/_testing/31491151586842.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Devin's students have published 70 articles to date."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "While at the time, the message was not so clear, in retrospect we like to articulate the purpose of this phase towards the end of creating research that is trustworthy is that by making research interactive (both in terms of content and conversation), better tools for understanding the work are available (playing with it to dig deeper, reading conversations to understand expert opinion) and a demonstration of oppenness to correct errors, to accept outside contribution, and to involve the community towards an honest goal."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "One of the critical aspects we found still lacking though, was while data was available, it was too difficult to actually use it."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "v2 - Accessible Data"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The second stage of PubPub focuses on the challenges associated with using providing realistic access to data associated with research publications. While data is often appended as a file to publications, the means of using this data to verify the work are often much more cumbersome than simply downloaded the file. Typically steps may include:"
+            }
+          ]
+        },
+        {
+          "type": "ordered_list",
+          "attrs": {
+            "order": 1
+          },
+          "content": [
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Downloading a (potentially very large) dataset"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Providing a computer with sufficient hardware specifications to load the data into memory"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Creating a software environment that mimics the environment the work was originally analyzed in"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "If the software to analyze the data is available, it has to be found, understood, and executed. If not, it has to be reproduced (at best effort)"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "For small datasets, this can sometimes be a quick process. For large, GB or TB datasets, this is typically prohibitively expensive. For those not familiar with data processing techniques or software, this is prohibitively complex. For a peer reviewer who is working for free under otherwise busy schedules, this is prohibitively time consuming. We expand on these issues in the section below which detail applying PubPub's philosophy of rich, accessible, versioned content to data."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Accessible Data: DbDb"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "There exist both technical and cultural challenges to realizing the open-data goals of many scientists. One of the more obvious technical challenges is the transfer of large scientific datasets, which can range from gigabytes to petabytes depending on the domain [@reichman2011challenges]. This challenge is compounded by the facts that derivative data and analyses can often be larger than the raw data, the format of data and its applications are rapidly evolving (e.g. the rise of voxel or genetic datasets), and that many journals impose restrictively small maximums for supplemental data attachments [@rowe2011disappearing]. Furthermore, research by Alsheikh-Ali et al. [@alsheikh2011public] concludes that despite being prompted with data guidelines, research articles in high impact journals are failing to be supported by accompanying data, highlights the space for major improvement."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Attempts to use peer-to-peer networks to alleviate and distribute some of this load have been made, notably the Biotorrent project which focused on distributing large scientific datasets [@langille2010biotorrents]. Another key challenge of keeping track of changes to datasets as it evolves is approached by a number of projects that do everything from schema-recommendation to git-like version control [@bhardwaj2014datahub][@datData]."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "However, simply tracking the data is often insufficient. Analyses, methods, and provenance are critically important, especially in instances where the measurement environment is sufficiently complex or rare (e.g. data collected from the Deep Horizons oil spill) [@reichman2011challenges]."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "To address these issues, we have built DbDb (pronounced dub-dub), a project whose core deliverable is a web system that:"
+            }
+          ]
+        },
+        {
+          "type": "bullet_list",
+          "content": [
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Allows datasets to be uploaded and stored"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Allows uploaded datasets to be analyzed (using python as a first common language, but capable of expanding to other languages)"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Provides a tool for \"forking\" and re-analyzing data at any stage in its analysis timeline"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Provides a visual tool for exploring the map of forked and re-analyzed datasets"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Provides access to data at any stage in a dataset’s analysis timeline (for visualization, external storage, etc)"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The first step to creating a new project is to upload a dataset. Uploading a dataset triggers our backend service to store the original file as well as cache the content for easy access. Currently DbDb supports csv upload, but it is trivial to implement support for other formats such as JSON, XLS, or direct database URI connections. Once the dataset has been processed and is available in our backend, we trigger a notification on the frontend (a green flash of the 'create new' node) and populate a data node in its place."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Clicking this data node allows you to explore the dataset uploaded as well as add a title to describe the dataset. Clicking the '+' icon below the data node creates a new code node. A code node by default is sourced with a variable 'inputData' that represents the parent data node (in this initial case, the uploaded csv)."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Code can be written in a code node. Currently, DbDb supports python, but it is straightforward to implement support for other languages. When code is entered and run, a notification is triggered on our backend. This notification is received by a python worker module that takes in the given code, executes it, and returns the output. All print output is returned as text to the code node 'output' section. Error messages are returned in a similar way and marked with red text. If a figure is plotted with the code, this figure will be saved and made accessible from within the code node (as well as through a small thumbnail image on top of the node icon). If there is a returned variable, this variable will be interpreted as the output dataset of the code nodes 'transition function' and will generate the creation of a new data node below the current code node."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "This new data node is now identical in functionality to the original data node. A code node can be appended as its child and the chain of data processing can continue."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "dbdbForking.gif",
+            "url": "https://assets.pubpub.org/_testing/51491151583572.gif",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "At certain points in the analysis chain of a dataset, it may be desired to fork off a new line of processing and exploration. To support this, DbDb allows any node to be 'forked'. Forking a node creates a new code node which replaces any child nodes at the point of forking. This allows a user to have a new independent chain of analysis that does not interfere with other written analyses."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "As nodes are forked and the analysis chain grows, the branching structure of this node tree is captured and made explorable. Clicking the Tree button reveals the full node tree. Hovering nodes shows the chain that they are a member of and clicking a node isolates the view to show only that line of analysis. In this isolated view, edits to the code nodes can be made and the step-by-step datasets can be inspected. A button exists to toggle whether node titles are displayed to allow simple viewing of tree hierarchies."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "dbdbFullTree.gif",
+            "url": "https://assets.pubpub.org/_testing/41491151583621.gif",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Importantly, the data at each stage of every analysis tree is archived and available for download. This makes it simple to download and use only the portion of data that is needed."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "dbdbProject.png",
+            "url": "https://assets.pubpub.org/_testing/71491151583642.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The work above describes a proof-of-concept build of a data-archiving and data-analysis tracking system. The end goal is for tools such as this to be directly integrated into PubPub and alongside articles."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "While the first two stages of PubPub focused primarily on the features of the platform, it soon become evident that the tools would go unused if there was no mechanism for creating and maintaining communities of people who care about their work being more accessible and valuable through use of such a system. For stage 3, we turned our focus to communities and journals."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "v3 - Emergent Journals"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "In order to facilitate communities of people organized around a specific focus of research, the third stage of PubPub focused on journals. In PubPub, a journal is a tool that allows a set of administrators to 'Feature' work, accept submissions of work, curate discussions, and communicate social signals of support. A piece of work submitted to a journal undergoes some review process, after which the journal chooses to either Feature or Reject the work. Featuring the work serves to act as a social signal that the given community approves of the quality and intent of the work. In PubPub, the measurement of quality or approval and mechanism for determining it is left to each journal. Journals could feature work that they simply find interesting or outline and enforce a rigorous peer-review process. Journals can be created by anyone, from individuals to institutions. The core goal of the journal in PubPub is to allow communities of various sizes to quickly assemble and organize."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "This ability to create 'pop-up' journals allows researchers to quickly organize as new topics of interest arise. As highlighted in earlier sections, many of the first journals were created by members of scientific societies that wanted to communicate with their community. The journals often reflected the meeting notes that were collected during meetings of these scientific societies. If one person was unable to attend the meeting, it was common to send their meeting updates in the form of a 'letter'. This is the source of scientific papers and journals sometimes references 'Letters' [@mcclellan1985science]. With that history in mind, we seek to enable PubPub journals to be as simple to create as it is to organize a gathering of like-minded researchers. Users who create journals on PubPub, like those members of scientific socities hundreds of years ago, simply want a means to easily communicate with their group."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Importantly, works featured by PubPub journals are not the exclusive content of that journal. Traditionally, when an article is submitted to a scientific journal, the journal handles the review process, typesetting, publishing, and copyright. Often, the work becomes the property of the journal who has published it. In PubPub, the author is responsible for publishing the work, and the journal acts as a curator. Given this, a single piece of work can exist in multiple journals. We find this to be important as it lets multiple communities (e.g. statiticians and heart-surgeons) discuss a single piece of work (e.g. Statistical analysis of various heart surgery procedures) in a way that allows the authors and others to have multiple expert perspectives on a topic."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Journals can be tailored to communicate with specific audiences. We find this to be of increasing importance as a number of high impact research areas have risen in the past years. Researchers studying climate change, self-driving cars, gene-altered biological technologies, and artificial intelligence are producing work that will have profound impact on society. As such, many [@socalAI][@esveltNewYorker] are ackowledging the importance of involving the public and a diversity of perspective in designing these tools and systems."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "In a number of deployments, we use PubPub journals to enable researchers to explore the processes for involving the public and outside perspectives into their work."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Deployment: Journal of Design and Science"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The Journal of Design and Science, launched as a collaborative effort between the MIT Media Lab and the MIT Press. The goal of the Journal is to provide a forum for continuous discussion along certains topics. In the initial release, the Journal published four articles. The articles gathered over 170 discussion items which in turn led to over 40 revisions. The idea of having influential authors interact and update their work based on the discussion of the community is the foremost goal of the journal. To date, the articles have over 125,000 views."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "journal_jods.png",
+            "url": "https://assets.pubpub.org/_testing/71491151590843.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Deployment: Natural History Observer"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The Natural History Observer is a journal led by Kent McFarland of the Vermont Center for Ecostudies. The journal facilitates communities of non-professional scientists to report findings and studies of wildlife around their neighborhoods. My particular enthusiasm about this journal is that is offers non-professionals a means of conducting themselves scientifically in a way that feels very reminiscent of early scientific societies. During a call with Melinda Baldwin, she quipped that early scientists were nobels who had a cow died, cut it open, and documented on what they found. These early attempts at anatomy or probing the physical world feels like they have given way to professional scientists being the only ones 'allowed' to conduct scientific inquiry. Science becomes motivated by passion rather than profession."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "barredOwlPub.png",
+            "url": "https://assets.pubpub.org/_testing/11491151583159.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "One of the first articles in the Natural History Observer which reminds me of Baldwin's quip, is titled 'Cannabilism by Barred Owl'. In the article, author John Lloyd descibes the coincidental sighting of a barred owl eating another barred owl. His hastily captured picture providing evidence of the event provide insights into the ways scientific observations can be made outside of the professional environment. As of writing, the journal is gearing up for a more signifant launch."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "barredOwlImage.jpg",
+            "url": "https://assets.pubpub.org/_testing/11491151583173.jpg",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Deployment: Responsive Science"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Kevin Esvelt is leading an effort he calls 'Responsive Science'. The goal of Responsive Science is to allow public discussion around topics of research that are criticaly important to that communities well being. One of his first examples is working with the communities of Martha's Vineyard around the use of a new gene-altering technology to rid the island's mice of gene's that enable the growth of tick communities. The solution would reduce or eliminate the occurence of Lyme disease on the island. Such an experiment is both utterly groundbreaking and required to be incredibly conservative. Proposing to genetically alter an entire species on a given island is a big proposal that simply cannot be made without the consent, co-design, and collaboration of those who live on the island."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "journal_resci.png",
+            "url": "https://assets.pubpub.org/_testing/51491151591566.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "In Responsive Science, Kevin is looking to pioneer a process that allows many domains of socially-important experiments to be discussed, designed, and communicated. He argues that these technologies are potentially too powerful to not have public concensus and approval on their use. In areas such as self-driving cars or climate change - research fields that impact even those who choose to ignore it, the work must progress in collaboration with the public."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Using PubPub, Kevin and the Responsive Science team are able to publish work that is interactive, media-rich, and open to discussion and feedback from the community."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "In creating journals and facilitating groups to organize the research of their community, questions of information stability and ownership arise. In the next stage of PubPub's evolution, we look at the progression towards decentralization of PubPub's architecture and data."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "v4 - Decentralization"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "PubPub is structured as a centralized website. All data and interactions are stored on core PubPub servers that then distribute this work to anyone requesting it. While this provides coherent and up-to-date content to anyone who requests it, more complex data archival and ownership requirements are beginning to come into play."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "One major need for those who are using PubPub as a publishing platform is that a backup of all work associated with them (as an author) or with their journal be available. This allows them to guarentee the data is secure even if PubPub servers were to go offline. More importantly, in EU countries, there is a legal requirement that tax-funded work published by universities be archived and available through servers physically located on that university's campus. In cases like these, schemes exist where the day-to-day requests for content still happen through central PubPub servers, but archives of the work and backups are always available through other means."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Beyond these requirements, there has been interest in using the platform for the aggregation of public domain records such as patents. For this use case, while it is again performant to have a single entity aggregate all of the content, there is a weakness in trusting that single entity to faithfully maintain the entirety of the work. In reaction to this, it is prudent that a decentralized architecture be built that allows for a centralized performant service to be verifiable and redundantly available through a multitude of duplication nodes or services. Technologies such as the blockchain allow for similar requirements to be met. Most famously applied to finances, blockchains allow for a distributed and verifiable ledger. It it a truly networked solution, allowing no single node in the network to successfully corrupt any bit of data without it being identifiable."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "While still in progress, this is the direction of the fourth stage of PubPub development. PubPub will continue to offer a centralized and performant service, but additionally offer a decentralized architecture that allows the archival and verifiability of work to be available through alternative provides."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Use to Date"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "As of writing, PubPub has been used to publish over 1780 pubs which have been discussed with over 2330 discussion items. These articles and comments were made by the PubPub community which currently has 4625 unique accounts. The platform is home to 158 journals."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "pubpubAccessMap.png",
+            "url": "",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "PubPub has served over 850,000 pages views. Users come primarily from the US, but PubPub has been accessed from almost every country on the planet."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Architecture"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Over the months and stages, PubPub has overgone major design changes. These changes come as we better understand the needs of the platform and identify more stable methods of achieving these needs. Throughout the project, the fundamental architecture has remained similar. There is a front-end - the site, a backend API that provides data and functionality to the frontend, and a database that serves as the ground-truth storage for all data."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Early versions of PubPub were written using Angular [@angularJS], yet as of version 2, PubPub's frontend has been written in React [@reactJS]. We've found React to be much more stable, debuggable, and performant. One aspect that the development team has struggled with from time to time with React though is that the community has a love for the cutting-edge. This means that the best solutions for a given problem (e.g. routing) are in development and subject to change or have major breaking API updates. Other than these few instances, the React community has been very supportive and rigorous in upholding best-practices."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The backend API for PubPub has used Node [@nodeJS] since the beginning. Node is a server framework written in javascript. The architecture of the backend is such that its sole purpose is to listen for requests and return the proper data upon request. The API serves both as the mechanism by which the frontend populates its content and the tool that developers and external platforms can use to access the broad corpus of PubPub data. The primary backend architecture is supported by a host of additional servers that provide specific, long-running services. Tasks such as processing large files or making long-running requests (typically greater than 1 second) are handled outside of the primary API server. This allows the API server to respond quickly to new requests while expensive tasks are handled by dedicated servers that can be individually scaled up or down as demand requires."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Early versions of PubPub used Mongo [@mongoDB] as the primary database technology. Mongo is a NoSQL database that makes it simpler to quickly change database schemas or support unstructured data. It's direct compatibilty with JSON structures made it a simple fit with our Node and front-end environment. However, as PubPub scaled, the loose schema employed by Mongo started to become more hassle than help. We found that our unstructured data tended to grow large quickly and in the end we were doing things that looked very much like SQL joins. Our data was indeed relational (User M owns Pubs A, B, C, which have comments F, G, H) and, in our opinion, would be better served by a relational database. Since then, and currently, PubPub uses PostgreSQL [@postgreSQL]. We've found that database with stricter schema and more common SQL accessibility has made the architecture of our data easier to communicate and more straight forward to access. We've also found reading from the database to be more performant, which is to be expected given the relational nature of many of our queries."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The clean separation of concerns between our front-end, backend, and data is important in that it makes interfacing external services very clear. For example, to build a system that archives and decentralizes PubPub's data we simply create a new server that is priveleged to communicate with our database with read-only permissions. These external services can be quickly added, tested, and removed if need be. Furthermore, it allows us to modularize other components of the platform. New front-end architectures or designs can be tested using the same backend and data services and swapped out whenever needed."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "At the time of writing, all of the components of PubPub are hosted on external cloud services. The front-end is served as static files from a CDN. The backend and databses are hosted on Amazon servers and managed using Heroku. Micro-services for converting documents or processing data similarly run on Amazon servers through Heroku or DigitalOcean. The machines these services run are are simple Linux servers and do not contain any proprietary or rare configuration. PubPub is able to migrate these servers to other cloud providers or to our own dedicated hardware should that need ever arise."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Continuing Efforts"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Like many software projects, the development of PubPub can never be 'finished'. We see countless potential features and interfaces that we're excited to explore. While we have no false hopes of building all of these features, we spend a much of our time deciding which are the highest priority and most exciting. In this section we briefly describe some of the coming PubPub features we're excited and why."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "PubPub captures many data points about researchers and their work. The articles that are published, the data that is made accessible, the frequency of their peer review, the impact of the peer review, their responsiveness to feedback, and so on. These metrics represent a more diverse set of characteristics than are commonly reviewed in grant proposals or job applications. Typically, publication counts and citation counts are the main currency of these applications. This however neglects to ackowledge the serious and hard work of peer reviewers, data cleaners, advisors, and so on. Given the richer set of data available to PubPub, one future feature we're excited to build is a 'contribution calculator'. Given all of the data available, how do you find who is the best fit for a given job or grant? Our suggestion is that, to avoid the monoculture of everyone using the same metric (and thus opening it to being gamed [@everyAttemptScience][@edwards2017academic]), we offer a calculator that allows people and institutions to define their own criteria. Lists that emphasize publishing, data sharing, or openness to feedback can be created."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Another feature of interest is to allow researchers to map the rich connections between their work and communities. The highlight relational data that builds the PubPub ecosystem can provide interesting visualizations and maps to show the flow of influence or ideas. Maps that show how ideas propagate from first mention to communicate consensus may be useful in designing methods for exploring new domains or properly identifying those who made major contributions. While this raw data is available through the API, we'd like to build tools that allow these maps and questions to be quickly built and explored."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "In the end, we build each of these features in hopes that the community will have more tools to identify trustworthy work and to fairly reward those involved in that work. The goal is to give the author and readers tools to validate and enahnce trust in a murky field. And recognize there are positive contributions that aren’t ‘true’. Importantly, we view PubPub as a platform that allows us to test the features and ideas. Many of these ideas likely won't provide useful interactions while others will. Regardless of whether the ideas work or not, the important thing is that their design and testing is documented so that other platforms and developers can use the work to better craft scientific communication tools. Open reviews, interactive data, free publishing, cross disciplinary reviews. But each are laden with assumptions. The focus of this thesis instead targets the focused attention of experimentation on one of these options. The hope is that this thesis can serve as a roadmap for exploring other assumptions about the correct way forward. For PubPub as a platform to be complete - there are many assumptions we have to make about best decisions. These assumptions may lead to success or failure of the tool, but regardless of the outcome, if the assumptions can be tested and learned from - we'll provide foundation to build upon."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 1
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "The Experiment"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "PubPub is a platform that allows us to test many of the assumptions about what makes a useful scientific communication tool. Towards this end, a primary focus of this thesis is to test one of the central assumptions about PubPub. Namely, that interactivity in scientific publications is important. More specifically, we identify interactivity of research as an important tool for reviewers. Nosek and Spies [@nosek2012scientific] argue that peer reviewers simply do not have the tools or time to effectively understand the depths of a research paper. For example, many articles make available the data and code that generates their primary figure. However, to understand that dataset more completely often takes hours or days of setting up code environments, downloading large files, and building interfaces to understand the work."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "To test the importance of interactivity in research articles, we conduct an experiment with the following hypotheses:"
+            }
+          ]
+        },
+        {
+          "type": "ordered_list",
+          "attrs": {
+            "order": 1
+          },
+          "content": [
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Reviewers with interactive data and figures more frequently identify incorrect methods and incorrect analysis that lead to wrong conclusions."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Reviewers with interactive data and figures assign less confidence to work that contains incorrect logic or analysis."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The second hypothesis follows from the first. If a research article has an error in it, and that error goes unfound because the reviewer did not have sufficient tools to understand the work, we hypothesize that the reviewer is more likely to assign a higher level of confidence in the quality and conclusion of the work than they would have if an error was to be discovered. We feel this is important for an endeavor such as science that has a high failure-rate."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Experiment Architecture"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The experiment takes the following form:"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A single user is presented with one of three articles. Each article can be viewed in one of two modes: either as a static article, or an article with an interactive figure. Each article has an error in the data analysis that leads to a false conclusion. Each article is presented to a group of people, with half viewing the static version and half viewing the interactive version. To homogenize our experiment user pool, we use Mechanical Turk and limit responses to users within the US that hold an undergraduate degree."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The experiment interface is built as a website that users go directly to. After a short page of instructions and privacy terms, the user is presented with a single article. To ensure a genuine effort is made, we track the users scroll rates, time on the page, and use of any available interactive elements. Each user reads the article, writes a short review, and assigns a 0-10 confidence rating to the work. After each article we also ask a series of survey questions:"
+            }
+          ]
+        },
+        {
+          "type": "bullet_list",
+          "content": [
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Highest academic position held"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Whether they consider themselves a scientit"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Whether they have ever published a scientific article"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Whether they have ever peer-reviewed a scientific article"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Whether they were interested in the work"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Any remaining feedback on the experience"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Experimental Articles"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The three articles are as follows:"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The articles listed in this table are described in greater depth below."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "1. Dinosaur Bone Growth"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The article examines a series of dinosaur femur bones that are found from two excavation sites. The bones are assumed to be from the same species but from animals of varying ages. To understand growth patterns, age is estimated and the age of the bone vs the circumference of the bone is plotted. The plot shows a strong growth spurt at a late stage of life and the conclusion is made that this dinosaur had at least two major growth spurts. The graph shows a growth pattern not seen anywhere else in biology. The alternative conclusion we are looking for is that in fact there are actually two curves, representing two animals of different genders or perhaps different species. An interactive graph is provided that allows the user to adjust age offsets directly - allowing them to identify the two separate curves."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "https://i.imgur.com/q1ZVMyo.png",
+            "url": "",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "2. Beef and Death"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The article examines the connection between diet and mortality rates. Three groups are studied, each one containing 500 participants that primarly eat at a single cafeteria (thus homogenizing the sample group). Samples are taken from 1) A retirement home in Missouri, 2) A university cafeteria in New Delhi, and 3) a ocean fishing crew in Maine. The incorrect conclusion is made that beef correlates to a higher rate of mortality. The correct conclusion is that older people and those with dangerous jobs are more likely to die. The data is biased given the very low rate of beef consumption in India compared to the US. Users have an interactive bar graph that they can use to filter and analyze the data differently to discover this misstep in logic."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "https://i.imgur.com/0TqXEa3.png",
+            "url": "",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "3. Politics and Economy"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The article correlates economic performance with the majority party of US governors from 1948 to 2015. The interaction and visualization is inspired by the article posted by 538 [@phackign538]. GDP, employemnt, inflation, and stock prices are used as proxies for economic performance. The focus is applied only to one of those dimensions though and the claim is made that Republican govenors are better for the US economy. The correct conclusion is that depending on which metrics (or combination of metrics) you use, it can be shown that either Democrats or Republicans lead to better economic performance. Since it can't be both, the correct conclusion is that the original statement is too broad, and depending on how you organize your data, either party could be argued as being better for economic performance."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "https://i.imgur.com/9RgtfxS.png",
+            "url": "",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Results and Analysis"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Each paper was hosted as a separate experiment on Mechanical Turk. Over the course of a week, a total of 1160 users participated in the experiment. These users were roughly split across the three papers. Users were presented with an interactive version of the experiment based on a random number generator. This provides us with a nearly 50-50 split amongst users with and without the interactive version. After the first batch of the experiment, we realized that not all users presented with the interactive figure were actually using the interactivity. Across the three papers, 35%, 60% and 63% of users who were given an interactive version actually used the interactivity. At this point, we ackowledged that we could not simply compare those who were presented with the interactivity against those who were not, but rather those who used the interactivity vs those who didn't. To increase the total number of users using the interactive elements, we ran a second batch. In this batch, all users were presented with the interactive figures. In the end, the total number of users presented without, presented with, and using the interactive figures are as follows:"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "attrs": {
+            "columns": 4
+          },
+          "content": [
+            {
+              "type": "table_row",
+              "attrs": {
+                "columns": 4
+              },
+              "content": [
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph"
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Not Presented"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Presented"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Used"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "table_row",
+              "attrs": {
+                "columns": 4
+              },
+              "content": [
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Diet Article"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "118"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "266"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "101"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "table_row",
+              "attrs": {
+                "columns": 4
+              },
+              "content": [
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Dinosaur Article"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "121"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "273"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "136"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "table_row",
+              "attrs": {
+                "columns": 4
+              },
+              "content": [
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "Government Article"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "105"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "277"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "table_cell",
+                  "content": [
+                    {
+                      "type": "paragraph",
+                      "content": [
+                        {
+                          "type": "text",
+                          "text": "148"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Interactivity"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Our primary focus is to compare whether the interactive elements of an article provided better ability to detect errors. Below we plot the rate of users detecting errors and identifying alternative conclusions split by whether they were presented with an interactive or non-interactive paper."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "performanceArticleType.png",
+            "url": "https://assets.pubpub.org/_testing/61491151593552.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "As noted above, we ackowledge that not all users presented with the interactive elements actually used them. So we can ask the question, 'do users have higher rates of error detection and conclusion identification because they are simply presented with the tool, or because they actively use the tool?'"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The first thing we can do is compare those who did not use the interactivity though being presented with it, vs those who did not use the interactivity because it was not presented."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "performanceNonInteractivityType.png",
+            "url": "https://assets.pubpub.org/_testing/11491151601902.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Regardless of cause, the claim can be made that simply being presented with the interactivity does not have much of an impact if it is not used. Those presented with interactivity did no better than those not presented when they failed to use it, and if fact (though the error margins are perhaps too large) seem to have performed worse. One explanation for this could be that within each group (presented and not-presented) there are a subset of users who are sufficiently critical that they will find the errors no matter what. These users factor into the numbers for the 'Presented Non-interactive', but those users are likely ones who would have been critical enough to use the interactivity tool when presented with it. So the second group, presented with interactivity but did not use it, lose out on those highly-critical users."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Next, we can instead focus on those presented with interactivity, and split the group between those who did use the interactivity and those who did not."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "performanceInteractivity.png",
+            "url": "https://assets.pubpub.org/_testing/61491151599439.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Here, we see in all papers, users who did use the interactive had a higher rate of both detecting the error and identifying an alternative solution. The rates do vary between papers though, with the Dinosaur paper have the smallest amount of difference. One explanation for this is that the dinosaur paper was simply harder. The interactive element did not provide enough insight into the complexities of the work to meaningfully enable people to identify the erroneous conclusion. In this direction, the topic of this paper is something that is less commonly thought about outside of the field. Politics, the economy, and diet are frequent topics of thought or discussion regardless of profession. In contrast, the methods of understanding dinosaur growth patterns is less commonly discussed, and so perhaps the tools and ideas were simply too foreign to be quickly grasped despite the interactivity. This is in a way supported by the fact that users with interactivity more commonly found the error in the dinosaur paper, but not the conclusion. They were able to identify that something fishy was going on, but not exactly what it was."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The second hypothesis we are interested in is that users who are able to interact with work will more appropriately assign confidence. Given these three papers with critical flaws, this means that we expect users with the interacte elements to more commmonly assign lower scores."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "scoresInteractivity.png",
+            "url": "https://assets.pubpub.org/_testing/21491151603587.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "This graph shows a distribution slightly skewed towards lower scores. With most precipitous drop in the upper section of scores. We can also look at the score distributions amonst those that found the error and those that did not."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "scoresError.png",
+            "url": "https://assets.pubpub.org/_testing/11491151604356.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "scoresConclusion.png",
+            "url": "https://assets.pubpub.org/_testing/71491151602741.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A couple possible interpretations:"
+            }
+          ]
+        },
+        {
+          "type": "ordered_list",
+          "attrs": {
+            "order": 1
+          },
+          "content": [
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Those who are more critical, and review work more harshly, more frequently detect errors and alternative conclusions."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Finding an error or alternative conclusion causes a reviewer to be much harsher in rating."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "It is intesting to note that those who did not find an error or alternative conclusions have a nearly-random, even distribution across scores (except extremes of 0 and 10). Again, two conclusions:"
+            }
+          ]
+        },
+        {
+          "type": "ordered_list",
+          "attrs": {
+            "order": 1
+          },
+          "content": [
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Those who don't know what they're doing and pretty much guess at the quality aren't critical enough to find flaws."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Without a concrete error or alternative conclusion to tie their score to, reviewers don't have a good method of assigning score."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Timing"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "To provide more accurate confidence in these results, we look at a few dimensions to sanity-check the work. One potential weakness is, given the experimental subjects may not have motivation to honestly perform the study, perhaps those not detecting the error are simply people who rush through without thought. We track the total time spent reading the article and writing the review. Below we plot the average and median times for users who did and did not find the error."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "timeVResult.png",
+            "url": "https://assets.pubpub.org/_testing/21491182299080.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "We see that both median and mean times are about a minute longer for those who detected the error, though those who did not detect the error still spent a sufficient amount of time  (6 minutes, rather than 7) . That is, the non-error-detectors were not simply people who rushed through. To account for the added minute of those who found the error, there are a few possibilities:"
+            }
+          ]
+        },
+        {
+          "type": "ordered_list",
+          "attrs": {
+            "order": 1
+          },
+          "content": [
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Those finding the error read more slowly and carefully"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Those find the error, upon finding the error, slowed their reading, backtracked to validate their confusion, or re-read the section to verify the error"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Those finding the error spent more time using the interactive element"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "list_item",
+              "content": [
+                {
+                  "type": "paragraph",
+                  "content": [
+                    {
+                      "type": "text",
+                      "text": "Those finding the error spent more time writing as they had more details to articulate."
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "To test the third possibility, on the second batch of reviews, we collected the total time spent writing. Below, we show the time spent writing for those who found the error, and those who did not."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "timeWritingVResult.png",
+            "url": "https://assets.pubpub.org/_testing/31491182299180.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "This chart shows that those who detect the error and find alternative conclusions spend a bit more time both reading and writing. But in both cases, the extra time spent is about a minute or less additional."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Given this data, an interesting conclusion is that simply sending more time does not seem to influence the ability of detecting errors. Doing a good job does not necessarily require more time. One future line of inquiry is to identify what the process is that allows those who detect the error to perform better in the same amount of time."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 3
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "User Background"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "We collect information after the review has been written through a user survey. While these results are self-reported, and thus not necessarily validated, they can help us eliminate some bias concerns in the experiment."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "One suggestion is that all of the people identifying errors and using the interactivity are simply already scientists or people who are familiar with peer review. Thus, we have a self-selection bias. To explore this idea, we plot the error detection rate of those who self identify as scientists."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "performanceScientists.png",
+            "url": "https://assets.pubpub.org/_testing/61491151601910.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Though the error margins are a bit large, there is no indication that scientists vastly out-perform non-scientists in this experiment."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Another suggestion is that those familiar with the peer-review process out perform those who are not."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "performanceHasReviewed.png",
+            "url": "https://assets.pubpub.org/_testing/11491151597529.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "performanceHasBeenReviewed.png",
+            "url": "https://assets.pubpub.org/_testing/51491151596652.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "We also ask participants whether the topic was of interest to them. Perhaps those who are interested in the topic have more extensive background knowledge they are able to use, or are more dedicated to closely readying the work. Below, we plot the error and conclusion detection rates for those that were interested in the work vs those who were not."
+            }
+          ]
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "filename": "performanceInterest.png",
+            "url": "https://assets.pubpub.org/_testing/61491151600559.png",
+            "figureName": "",
+            "size": "",
+            "align": ""
+          }
+        },
+        {
+          "type": "paragraph"
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "These graphs show that there no strong influence of being a scientist, being interested, or being previously involved on either side of the peer review process and more frequently finding errors or alternative conclusions."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Limitations"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "The experiment has a few limitations that could be improved upon with future study. The community of users that participated in the experiment is restricted to people using Mechanical Turk. Because Mechanical Turk is used by many to earn money, there may be some users motivated by simply completing the experiment for the sake of money rather than a genuine commitment to the work. The motivation displayed by these participants may not match the motivation that would exist in real-world review scenarios. To combat this, a more extensive effort could be made to provide the same experimental setup through established journal peer-review channels. The participants would be led to believe they were genuinely conducting a peer review for an established journal."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Another weakness is the ambiguity of the cause of the correlation between error detection and review score. Are those who give low scores more critical anyways, and thus detect the error - or does detecting the error influence their decision to report a low score?"
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 2
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Conclusions"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Given the same artice, reviewers who use interactive tools that communicate the claims made by research more frequently find errors and more frequently detect alternative conclusions compared to reviewers who do not use those interactive tools. Our data suggests that simply making these interactive tools available has little or no impact. This leads us to the conclusion that effort must not only be made to provide such interactivity, but to ensure that reviewers are aware and using it. We also come to the conclusions that those who do use the interactive tools more accurately assign ratings of confidence to a piece of work. Additionally, the data suggests that those who are not able to detect the errors assign scores almost at random. Given the small set of reviewers (3-4) that is common in scientific publishing, this raises concerns because a high scores do not necessarily correlate to good work, but rather lack of identification of errors. The data also suggests that the amount of time spent in correctly finding errors is not significantly greater than the time spent not detecting errors. This suggests that there is more than simply 'spending enough time on it' that is required to perform a quality review. Identifying the processes and approaches that enable this is important."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "One suggestion is that the opinion of peer reviewers who demonstrate interaction with the data and interactive components of an article should have their opinion more heavily considered. Of course, in reality there is a much more diverse set of factors in determining how to weight a single reviewers opinion (e.g. their known experience, their title, their familiarity with the topic), but measuring levels of interaction may be an important one to add."
+            }
+          ]
+        },
+        {
+          "type": "heading",
+          "attrs": {
+            "level": 1
+          },
+          "content": [
+            {
+              "type": "text",
+              "text": "Discussion"
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Scientific communication is an inherently complex task. The challenges associated with it are exasperated by many of the exisiting social and political structures that exist. The primary objective of this thesis and the work before it is to provide data and tools that allow for alternatives to these social and political structures to be tested, validated, and used. This thesis provides both a look back at the deployments made using PubPub and insight into the efficacy of interactive documents though a 1000+ user experiment. The data from this experiment suggest that errors are more frequently detected in documents that have interactive components which can reveal the inner workings of the claims of the article. Furthermore, the experiment provides a basis to suggest that measurements of how engaged a reviewer was with an article can be good tools for understanding how heavily to weight their opinion."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "These results are promising in that they represent one of the first steps to systematically understanding the processes that can make peer review more effective at identifying quality science. Of course, there are many dimensions of a peer review, and thus many more questions remain unexplored. One of our future intentions is to build a collective of scientists, developers, and organizations that are committed to understanding their publishing platforms and communities through structured experimentation and data collection. We're hopeful that such a collective will enable the broader community of scientific researchers to design and choose publishing tools that promote effective and fair modes of communicating their results."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "We are also eager to explore a few particular future experiments. The first of these experiments looks at the phrasing of what a peer review should be. Anecdotally, as software developers, we have experienced that trying to get code someone else's open source code to run leads to a much deeper understanding of the work than simply reading over the code. This prompts curiosity about the impact of changing the instructions of a peer review from 'critique this work' to 'build a reproduction plan for this work'. Perhaps the latter will force a more constructive mode of review that is less about being judgemental and more focused on identifying ways the work could be made more reproducible or more clear."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A second experiment of interest looks at the use of jargon in a paper and its influence on a peer reviewers opinion, as well as its acceptance with non-peer readers. Markowitz et al. have performed research that shows fraudulent work has higher levels of linguistic obfuscation [@markowitz2016linguistic]. Said more simply, fraudulant work is more likely to be unnecessarily complex. This interest is further motivated by some of the reviews left by users on our experimental articles which stated they trusted the work because the author 'seemed like he knew what he was talking about'. The goal of science communication should be that the work is trusted because it is understood and logical, not because it is so overly complex, users are coerced into believing the work because it seems 'smart'."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "A third experiment we have been dubbing 'horizontal science'. We identify that much of the modern scientific research process, from ideation to grant writing to experimental design to data collection to data analysis to identifying conclusions, is done by a single entity - or is completely vertically integrated. The same lab, and thus the same small set of people, perform the entire breadth of work. Risks associated with this include early biases propogating throughout the entire endeavor, existing personal biases influencing all stages of the work, and people being required to potentially perform outside of their expertise. The alternative we are interested in exploring, horizontal science, looks at architectures that allow each of the steps of the research process to be distributed amongst many different groups or labs. One benefit of this work is that it requires reproducibility to be 'built-in' as the hand-off at each stage requires the next group to fully understand and accept the procedures of the work being given to them. To test this, we are talking with local biology labs about opening their collected data and experimental architecture to the public early in the process. We would then partner with local high school classes or other groups and assign the analysis and conclusion identification steps to people outside of the original lab. The exciting prospect about testing this at a high school or undergraduate level is that eager young scientists would be able to participate in real scientific experiments, rather than simple reproducing classical known results. This again maps closely to a successful technique in the open-source community, which is to just dive into a larger project as an early software developer, rather than first attempting to create the entire software architecture yourself."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "Beyond these experiments, we're eager to build tools that allow research communities to expand beyond the bubble of traditional academic labs. Research and science performed in corporate or public settings is often seen as a separate entity, rather than a mutual pool of scientific results. We hope that tools that allow these groups to bridge the communications would also allow for job mobility between the sectors. Much has been claimed about the fast-growing rate of graduting PhD students compared to the steady and much lower rate professor position openings. There are simply too many PhD students for the number of faculty positions. Allowing research and science to exist outside of the traditional walls of academia may enable alternative career paths to accept the large numner of graduating PhDs."
+            }
+          ]
+        },
+        {
+          "type": "paragraph",
+          "content": [
+            {
+              "type": "text",
+              "text": "In the long term, we hope to see scientific communication transition from something largely controlled by for-profit, academically focused organizations to something that is seen as a public utility. As roads and electricity are fundamental tools we use to enable the operation of modern society, so too is the open and free communication of structured, scientific inquiry. We hope this research and our continued efforts will enable a society that views the process of scienctific inquiry as a tool to be used by anyone for any question, rather than a career that revolves around academic prestige and publishing."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "citations"
+    }
+  ]
+}
