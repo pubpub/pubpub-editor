@@ -23,6 +23,10 @@ var _RenderFileMarkdown = require('./RenderFileMarkdown');
 
 var _RenderFileMarkdown2 = _interopRequireDefault(_RenderFileMarkdown);
 
+var _RenderFilePDF = require('./RenderFilePDF');
+
+var _RenderFilePDF2 = _interopRequireDefault(_RenderFilePDF);
+
 var _RenderFilePPT = require('./RenderFilePPT');
 
 var _RenderFilePPT2 = _interopRequireDefault(_RenderFilePPT);
@@ -65,7 +69,7 @@ var RenderFile = exports.RenderFile = _react2.default.createClass({
 				return _react2.default.createElement(
 					'div',
 					{ id: 'content-wrapper' },
-					_react2.default.createElement(RenderFilePDF, { file: file })
+					_react2.default.createElement(_RenderFilePDF2.default, { file: file })
 				);
 			case 'application/vnd.ms-powerpoint':
 			case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':

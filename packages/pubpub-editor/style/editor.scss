@@ -45,18 +45,6 @@
 }
 
 
-.pub-body :focus {
-  outline: none !important;
-}
-
-.mention::selection {
-  background: none !important;
-}
-
-.mentionComponent::selection {
-  background: none !important;
-}
-
 .ProseMirror-menubar-wrapper{
   width: 100vw;
 }
@@ -405,4 +393,32 @@ textarea::-webkit-resizer {
 			opacity: 1;
 			transform: translate(0px, 0px);
 		}
+}
+
+/*
+Selection hovers
+*/
+
+.mention::selection {
+  background: none !important;
+}
+
+.mention::selection {
+  background: none !important;
+}
+
+.mentionComponent::selection {
+  background: none !important;
+}
+
+.pub-embed img::selection {
+    background-color: transparent !important;
+}
+
+.pub-embed-latex *::selection {
+    background-color: transparent !important;
+}
+
+.pub-body *:focus {
+  outline: none !important;
 }
