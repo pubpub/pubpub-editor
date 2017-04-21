@@ -137,7 +137,7 @@ const renderSubLoop = function(item, meta) {
 				label = meta.docAttrs.inlineBib[citationID];
 			}
 
-			return <ReferenceRender key={index} label={label} {...node.attrs} />
+			return <ReferenceRender citationID={citationID} engine={meta.engine} key={index} label={label} {...node.attrs} />
 		case 'citations':
 			let bib;
 
