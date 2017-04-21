@@ -26,7 +26,7 @@
     "url": "git://github.com/pubpub/pubpub-packages.git"
   },
   "dependencies": {
-    "@pubpub/render-files": "^1.1.6",
+    "@pubpub/render-files": "^2.0.43",
     "classnames": "^2.2.5",
     "diff": "^3.2.0",
     "fuzzysearch": "^1.0.3",
@@ -61,8 +61,7 @@
     "slugify": "^1.1.0",
     "striptags": "^3.0.1",
     "superagent": "^3.0.0",
-    "to-markdown": "^3.0.4",
-    "xss": "^0.3.3"
+    "to-markdown": "^3.0.4"
   },
   "peerDependencies": {
     "react": "^15.4.2",

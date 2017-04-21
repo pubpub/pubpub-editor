@@ -25,6 +25,27 @@ export const localFiles = [
 		}
 	},
 	{
+		id: 581,
+		type: "application/pdf",
+		name: "Chapter5.pdf",
+		url: "https://assets.pubpub.org/_testing/1488980449494.pdf",
+		content: null,
+		hash: "4cfd14a765f93c203a802d054d1998baa0c53022",
+		originalDate: null,
+		createdAt: "2016-02-24T02:09:24.760Z",
+		updatedAt: "2017-02-07T00:44:21.661Z",
+		pubId: 369,
+		sources: [ ],
+		destinations: [ ],
+		attributions: [ ],
+		VersionFile: {
+			createdAt: "2016-02-24T02:09:24.760Z",
+			updatedAt: "2017-02-07T00:47:45.798Z",
+			fileId: 515,
+			versionId: 386
+		}
+	},
+	{
 		id: 585,
 		type: "image/gif",
 		name: "giphy.gif",

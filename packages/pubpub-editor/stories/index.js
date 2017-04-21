@@ -1,4 +1,4 @@
-import { HtmlDoc, ReferenceOrdering, SampleMarkdown, SingleMention, SingleReference, TableMarkdown } from './sampledocs';
+import { HtmlDoc, PDFrendering, ReferenceOrdering, SampleMarkdown, SingleMention, SingleReference, TableMarkdown } from './sampledocs';
 import { LongLegacyBug, MentionContentBug } from './bugdata';
 
 import CodeEditor from './storybookCodeEditor';
@@ -47,6 +47,9 @@ storiesOf('Full Editor', module)
 ))
 .add('Html Test', () => (
 	<FullEditor mode={'markdown'} initialContent={HtmlDoc} />
+))
+.add('PDF rendering', () => (
+	<FullEditor mode={'markdown'} initialContent={PDFrendering} />
 ))
 ;
 
