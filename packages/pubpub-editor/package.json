@@ -61,7 +61,8 @@
     "slugify": "^1.1.0",
     "striptags": "^3.0.1",
     "superagent": "^3.0.0",
-    "to-markdown": "^3.0.4"
+    "to-markdown": "^3.0.4",
+    "xss": "^0.3.3"
   },
   "peerDependencies": {
     "react": "^15.4.2",
