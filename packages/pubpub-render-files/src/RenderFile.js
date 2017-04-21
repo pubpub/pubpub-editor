@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import Radium from 'radium';
 import RenderFileDoc from './RenderFileDoc';
 import RenderFileMarkdown from './RenderFileMarkdown';
+import RenderFilePDF from './RenderFilePDF';
 import RenderFilePPT from './RenderFilePPT';
 
 let styles;
