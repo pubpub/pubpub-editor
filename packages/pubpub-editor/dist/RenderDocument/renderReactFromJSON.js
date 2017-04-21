@@ -244,7 +244,7 @@ var renderSubLoop = function renderSubLoop(item, meta) {
 					label = meta.docAttrs.inlineBib[citationID];
 				}
 
-				return _react2.default.createElement(_renderComponents.ReferenceRender, _extends({ key: index, label: label }, node.attrs));
+				return _react2.default.createElement(_renderComponents.ReferenceRender, _extends({ citationID: citationID, engine: meta.engine, key: index, label: label }, node.attrs));
 			case 'citations':
 				var bib = void 0;
 

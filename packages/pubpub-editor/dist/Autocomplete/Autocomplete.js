@@ -184,7 +184,7 @@ var Autocomplete = exports.Autocomplete = _react2.default.createClass({
 
 		var globalCategories = this.props.globalCategories || [];
 		var emptySearch = input === '' || input === ' ';
-		var urlBase = window.location.hostname === 'localhost' ? 'http://localhost:9876' : 'https://www.pubpub.org';
+		var urlBase = window.location.hostname === 'localhost' ? 'http://localhost:9876' : 'https://www.pubpub.org/api';
 
 		// Get local results for this category
 		var localResults = emptySearch ? localArray.map(function (item) {

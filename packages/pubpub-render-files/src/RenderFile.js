@@ -19,7 +19,6 @@ export const RenderFile = React.createClass({
 	render() {
 		const {draggable, style} = this.props;
  		const file = this.props.file || {};
-		console.log('RENDEIRNG', file);
 
 		switch (file.type) {
 		/*

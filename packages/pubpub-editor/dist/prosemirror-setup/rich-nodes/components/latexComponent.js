@@ -172,7 +172,7 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 					isOpen: isPopOverOpen,
 					interactionKind: _core.PopoverInteractionKind.CLICK,
 					className: 'blockPopover',
-					popoverClassName: '',
+					popoverClassName: 'pt-minimal',
 					position: _core.Position.BOTTOM,
 					useSmartPositioning: false },
 				_react2.default.createElement('span', {
@@ -208,7 +208,7 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 					content: popoverContent,
 					defaultIsOpen: true,
 					interactionKind: _core.PopoverInteractionKind.CLICK,
-					popoverClassName: '',
+					popoverClassName: 'pt-minimal',
 					position: _core.Position.BOTTOM,
 					autoFocus: false,
 					enforceFocus: false,

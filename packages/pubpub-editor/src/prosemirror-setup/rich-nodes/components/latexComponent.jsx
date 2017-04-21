@@ -124,7 +124,7 @@ export const LatexEditor = React.createClass({
 					isOpen={isPopOverOpen}
 					interactionKind={PopoverInteractionKind.CLICK}
 					className={'blockPopover'}
-					popoverClassName={''}
+					popoverClassName={'pt-minimal'}
 					position={Position.BOTTOM}
 					useSmartPositioning={false}>
 
@@ -156,7 +156,7 @@ export const LatexEditor = React.createClass({
 						content={popoverContent}
 						defaultIsOpen={true}
 						interactionKind={PopoverInteractionKind.CLICK}
-						popoverClassName={''}
+						popoverClassName={'pt-minimal'}
 						position={Position.BOTTOM}
 						autoFocus={false}
 						enforceFocus={false}
