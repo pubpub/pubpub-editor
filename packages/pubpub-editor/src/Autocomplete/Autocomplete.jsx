@@ -164,7 +164,7 @@ export const Autocomplete = React.createClass({
 		const emptySearch = input === '' || input === ' ';
 		const urlBase = window.location.hostname === 'localhost'
 			? 'http://localhost:9876'
-			: 'https://www.pubpub.org';
+			: 'https://www.pubpub.org/api';
 
 		// Get local results for this category
 		const localResults = emptySearch
