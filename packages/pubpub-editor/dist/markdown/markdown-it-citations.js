@@ -6,7 +6,7 @@ function article(state, startLine) {
   var oldParentType = state.parentType;
   state.parentType = 'article';
 
-  if (startLine !== 0 || !!state.startedArticle) {
+  if (!!state.startedArticle) {
     return false;
   }
 
@@ -24,6 +24,6 @@ function article(state, startLine) {
 };
 
 module.exports = function citationsPlugin(md) {
-  md.block.ruler.before('fence', 'article', article);
+  md.block.ruler.before('table', 'article', article);
   // md.inline.ruler.push('citations', citations);
 };
