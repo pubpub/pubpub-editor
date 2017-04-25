@@ -1,6 +1,7 @@
 import { HtmlDoc, PDFrendering, ReferenceOrdering, SampleMarkdown, SingleMention, SingleReference, TableMarkdown } from './sampledocs';
 import { LongLegacyBug, MentionContentBug } from './bugdata';
 
+import APIEditor from './storybookAPI';
 import CodeEditor from './storybookCodeEditor';
 import FullEditor from './storybookFullEditor';
 import MarkdownEditor from './storybookMarkdownEditor';
@@ -50,6 +51,9 @@ storiesOf('Full Editor', module)
 ))
 .add('PDF rendering', () => (
 	<FullEditor mode={'markdown'} initialContent={PDFrendering} />
+))
+.add('API Search', () => (
+	<APIEditor />
 ))
 ;
 
