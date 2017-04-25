@@ -114,6 +114,10 @@ class BaseEditor {
 			}
 		}
 		*/
+		if (!this.view || !this.view.state) {
+			return;
+		}
+		
 		const newState = this.view.state.apply(transaction);
 		this.view.updateState(newState);
 		if (transaction.docChanged) {

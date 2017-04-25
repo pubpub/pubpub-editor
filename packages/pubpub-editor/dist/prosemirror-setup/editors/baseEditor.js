@@ -229,6 +229,10 @@ var BaseEditor = function () {
    	}
    }
    */
+			if (!this.view || !this.view.state) {
+				return;
+			}
+
 			var newState = this.view.state.apply(transaction);
 			this.view.updateState(newState);
 			if (transaction.docChanged) {
