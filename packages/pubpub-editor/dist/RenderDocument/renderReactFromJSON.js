@@ -22,7 +22,7 @@ CSL engine API endpoint...
 - serialize each reference decorations?
 */
 
-var renderReactFromJSON = exports.renderReactFromJSON = function renderReactFromJSON(doc, fileMap, allReferences) {
+var renderReactFromJSON = exports.renderReactFromJSON = function renderReactFromJSON(doc, fileMap, allReferences, slug) {
 
 	var engine = new _references.CitationEngine();
 	engine.setBibliography(allReferences);
@@ -31,7 +31,7 @@ var renderReactFromJSON = exports.renderReactFromJSON = function renderReactFrom
 
 	var citationsInDoc = [];
 
-	var meta = { fileMap: fileMap, allReferences: allReferences, engine: engine, docAttrs: docAttrs, citationsInDoc: citationsInDoc };
+	var meta = { fileMap: fileMap, allReferences: allReferences, engine: engine, docAttrs: docAttrs, citationsInDoc: citationsInDoc, slug: slug };
 
 	var content = renderSubLoop(doc.content, meta);
 	return _react2.default.createElement(
@@ -226,9 +226,14 @@ var renderSubLoop = function renderSubLoop(item, meta) {
 			case 'iframe':
 				return _react2.default.createElement(_renderComponents.IframeRender, _extends({ key: index }, node.attrs));
 			case 'mention':
+				var mentionURL = node.attrs.url;
+				if (meta.fileMap[mentionURL]) {
+					mentionURL = '/pub/' + meta.slug + '/files/' + mentionURL;
+				}
+
 				return _react2.default.createElement(
 					_renderComponents.MentionRender,
-					_extends({ key: index }, node.attrs),
+					{ key: index, type: node.attrs.type, url: mentionURL },
 					renderSubLoop(node.content, meta)
 				);
 

@@ -9,7 +9,7 @@ CSL engine API endpoint...
 */
 
 
-export const renderReactFromJSON = function(doc, fileMap, allReferences) {
+export const renderReactFromJSON = function(doc, fileMap, allReferences, slug) {
 
 	const engine = new CitationEngine();
 	engine.setBibliography(allReferences);
@@ -18,7 +18,7 @@ export const renderReactFromJSON = function(doc, fileMap, allReferences) {
 
 	const citationsInDoc = [];
 
-	const meta = {fileMap, allReferences, engine, docAttrs, citationsInDoc};
+	const meta = {fileMap, allReferences, engine, docAttrs, citationsInDoc, slug};
 
 
 	const content = renderSubLoop(doc.content, meta);
@@ -123,7 +123,12 @@ const renderSubLoop = function(item, meta) {
 		case 'iframe':
 			return <IframeRender key={index} {...node.attrs} />
 		case 'mention':
-			return <MentionRender key={index} {...node.attrs}>{renderSubLoop(node.content, meta)}</MentionRender>
+			let mentionURL = node.attrs.url;
+			if (meta.fileMap[mentionURL]) {
+				mentionURL = `/pub/${meta.slug}/files/${mentionURL}`;
+			}
+
+			return <MentionRender key={index} type={node.attrs.type} url={mentionURL}>{renderSubLoop(node.content, meta)}</MentionRender>
 
 		case 'reference':
 			const citationID = node.attrs.citationID;

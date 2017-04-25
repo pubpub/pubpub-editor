@@ -24,7 +24,8 @@ var RenderDocument = exports.RenderDocument = _react2.default.createClass({
 		json: _react.PropTypes.object,
 		markdown: _react.PropTypes.string,
 		allFiles: _react.PropTypes.array,
-		allReferences: _react.PropTypes.array
+		allReferences: _react.PropTypes.array,
+		slug: _react.PropTypes.string
 	},
 	getInitialState: function getInitialState() {
 		return {};
@@ -68,7 +69,8 @@ var RenderDocument = exports.RenderDocument = _react2.default.createClass({
 		    json = _props.json,
 		    markdown = _props.markdown,
 		    allReferences = _props.allReferences,
-		    allFiles = _props.allFiles;
+		    allFiles = _props.allFiles,
+		    slug = _props.slug;
 
 
 		var renderedJSON = void 0;
@@ -81,7 +83,7 @@ var RenderDocument = exports.RenderDocument = _react2.default.createClass({
 		return _react2.default.createElement(
 			'div',
 			{ className: 'pub-body' },
-			(0, _renderReactFromJSON.renderReactFromJSON)(renderedJSON, this.generateFileMap(), allReferences)
+			(0, _renderReactFromJSON.renderReactFromJSON)(renderedJSON, this.generateFileMap(), allReferences, slug)
 		);
 	}
 

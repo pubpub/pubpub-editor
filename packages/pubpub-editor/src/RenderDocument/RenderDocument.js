@@ -11,6 +11,7 @@ export const RenderDocument = React.createClass({
     markdown: PropTypes.string,
 		allFiles: PropTypes.array,
 		allReferences: PropTypes.array,
+		slug: PropTypes.string,
 	},
 	getInitialState() {
 		return { };
@@ -31,7 +32,7 @@ export const RenderDocument = React.createClass({
 
 	render: function() {
 
-    const { json, markdown, allReferences, allFiles } = this.props;
+    const { json, markdown, allReferences, allFiles, slug } = this.props;
 
     let renderedJSON;
     if (markdown) {
@@ -43,7 +44,7 @@ export const RenderDocument = React.createClass({
 
 		return (
 			<div className="pub-body">
-				{renderReactFromJSON(renderedJSON, this.generateFileMap(), allReferences)}
+				{renderReactFromJSON(renderedJSON, this.generateFileMap(), allReferences, slug)}
 			</div>
 		);
 	}
