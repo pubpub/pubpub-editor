@@ -17,19 +17,53 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var styles = void 0;
 
+var DragHandle = (0, _reactSortableHoc.SortableHandle)(function () {
+	return _react2.default.createElement(
+		'span',
+		null,
+		'::'
+	);
+});
+
 var SortableItem = (0, _reactSortableHoc.SortableElement)(function (_ref) {
-	var value = _ref.value;
-	return _react2.default.createElement(_core.MenuItem, { text: value });
+	var value = _ref.value,
+	    disabled = _ref.disabled,
+	    toggleItem = _ref.toggleItem;
+
+	console.log('got disabled', disabled);
+	return _react2.default.createElement(
+		'div',
+		null,
+		_react2.default.createElement(DragHandle, null),
+		_react2.default.createElement(_core.MenuItem, {
+			text: value,
+			label: _react2.default.createElement(
+				'label',
+				{ className: 'pt-control pt-checkbox' },
+				_react2.default.createElement('input', { type: 'checkbox', checked: !disabled }),
+				_react2.default.createElement('span', { onClick: toggleItem, className: 'pt-control-indicator' })
+			)
+		})
+	);
 });
 
 var SortableList = (0, _reactSortableHoc.SortableContainer)(function (_ref2) {
-	var files = _ref2.files;
+	var files = _ref2.files,
+	    toggleItem = _ref2.toggleItem;
 
 	return _react2.default.createElement(
 		_core.Menu,
 		null,
 		files.map(function (file, index) {
-			return _react2.default.createElement(SortableItem, { key: 'item-' + index, index: index, value: file.name });
+			var toggle = function toggle() {
+				toggleItem(index);
+			};
+			return _react2.default.createElement(SortableItem, {
+				key: 'item-' + index,
+				index: index,
+				toggleItem: toggle,
+				disabled: file.disabled,
+				value: file.name });
 		})
 	);
 });
@@ -41,18 +75,35 @@ var ExportMenu = exports.ExportMenu = _react2.default.createClass({
 		files: _react.PropTypes.object
 	},
 	getInitialState: function getInitialState() {
-		return { input: null };
+		return { files: this.props.files };
+	},
+
+	toggleItem: function toggleItem(index) {
+		var files = this.state.files;
+		files[index].disabled = !files[index].disabled;
+		this.setState({ files: files });
+	},
+
+	onSortEnd: function onSortEnd(_ref3) {
+		var oldIndex = _ref3.oldIndex,
+		    newIndex = _ref3.newIndex;
+
+		this.setState({
+			files: (0, _reactSortableHoc.arrayMove)(this.state.files, oldIndex, newIndex)
+		});
 	},
 
 	render: function render() {
-		var files = this.props.files;
+		var files = this.state.files || this.props.files;
 
-		// const files = Object.values(filesMap);
+		var docFiles = files.filter(function (file) {
+			return file.type === 'text/markdown' || file.type === 'ppub';
+		});
 
 		return _react2.default.createElement(
 			'div',
 			{ className: 'pt-card pt-elevation-0' },
-			_react2.default.createElement(SortableList, { files: files })
+			_react2.default.createElement(SortableList, { useDragHandle: true, files: docFiles, onSortEnd: this.onSortEnd, toggleItem: this.toggleItem })
 		);
 	}
 

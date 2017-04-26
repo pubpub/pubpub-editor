@@ -1,20 +1,42 @@
 import { Menu, MenuDivider, MenuItem } from "@blueprintjs/core";
 import React, { PropTypes } from 'react';
-import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
+import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
 
 let styles;
 
+const DragHandle = SortableHandle(() => <span>::</span>);
 
-const SortableItem = SortableElement(({value}) =>
-  <MenuItem text={value}/>
+const SortableItem = SortableElement(({ value, disabled, toggleItem }) => {
+  console.log('got disabled', disabled);
+  return (
+    <div>
+      <DragHandle />
+      <MenuItem
+        text={value}
+        label={<label className="pt-control pt-checkbox">
+          <input type="checkbox" checked={!disabled} />
+          <span onClick={toggleItem} className="pt-control-indicator"></span>
+        </label>}
+        />
+    </div>
+  );
+  }
 );
 
-const SortableList = SortableContainer(({files}) => {
+const SortableList = SortableContainer(({ files, toggleItem }) => {
   return (
     <Menu>
-      {files.map((file, index) => (
-        <SortableItem key={`item-${index}`} index={index} value={file.name} />
-      ))}
+      {files.map((file, index) => {
+        const toggle = () => {toggleItem(index)};
+        return (<SortableItem
+          key={`item-${index}`}
+          index={index}
+          toggleItem={toggle}
+          disabled={file.disabled}
+          value={file.name} />
+        );
+      }
+    )}
     </Menu>
   );
 });
@@ -25,17 +47,31 @@ export const ExportMenu = React.createClass({
 		files: PropTypes.object,
 	},
 	getInitialState: function() {
-		return { input: null };
+		return { files: this.props.files };
 	},
 
-	render: function() {
-		const { files } = this.props;
+  toggleItem: function(index) {
+    const files = this.state.files;
+    files[index].disabled = !files[index].disabled;
+    this.setState({ files });
+  },
 
-    // const files = Object.values(filesMap);
+  onSortEnd: function({oldIndex, newIndex}) {
+    this.setState({
+      files: arrayMove(this.state.files, oldIndex, newIndex),
+    });
+  },
+
+	render: function() {
+    const files = this.state.files || this.props.files;
+
+    const docFiles = files.filter((file) => {
+      return (file.type === 'text/markdown' || file.type === 'ppub');
+    });
 
 		return (
 			<div className={'pt-card pt-elevation-0'}>
-				<SortableList files={files} />
+				<SortableList useDragHandle={true} files={docFiles} onSortEnd={this.onSortEnd} toggleItem={this.toggleItem} />
 			</div>
 		);
 	}
