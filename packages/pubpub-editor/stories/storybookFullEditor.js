@@ -34,8 +34,24 @@ export const StoryBookFullEditor = React.createClass({
 			content: (this.props.initialContent) ? this.props.initialContent : undefined,
 			exportLoading: undefined,
 			exportError: undefined,
-			exportUrl: undefined
-		};
+			exportUrl: undefined,
+			pdftexTemplates: {},
+		}
+	},
+	componentWillMount: function() {
+		const reqURL = 'https://pubpub-converter-dev.herokuapp.com/templates';
+
+		if (Object.keys(this.state.pdftexTemplates).length === 0 && this.state.pdftexTemplates.constructor === Object) {
+
+
+			request
+			.get(reqURL)
+			.end((err, res) => {
+				this.setState({
+					pdftexTemplates: res.body
+				});
+			});
+		}
 	},
 
 	setMarkdown: function() {
@@ -98,6 +114,8 @@ export const StoryBookFullEditor = React.createClass({
 	onChange: function(newContent) {
 		this.setState({ content: newContent });
 	},
+
+
 
 	handleFileUpload: function(file, callback) {
 		// Do the uploading - then callback
@@ -217,14 +235,21 @@ export const StoryBookFullEditor = React.createClass({
 
 			globalCategories: ['pubs', 'users'],
 		};
-
-		let popoverContent = (
+		const pdftexTemplates = this.state.pdftexTemplates;
+		console.log(pdftexTemplates)
+		const popoverContent = (
 			<div>
 				<h5>Popover title</h5>
-					<div className={`pt-button`} onClick={this.setExport.bind(this, 'mit')}>MIT</div>
-					<br/>
-					<div className={`pt-button`} onClick={this.setExport.bind(this)}>Default</div>
-					<br/>
+				{ Object.keys(pdftexTemplates).map((key) => {
+
+						return (
+							<div>
+							<div className={`pt-button pt-popover-dismiss`} onClick={this.setExport.bind(this, key)}>{pdftexTemplates[key].displayName}</div>
+							<br/>
+						</div>
+						);
+					})
+				}
 
 			</div>
 		);
@@ -235,14 +260,14 @@ export const StoryBookFullEditor = React.createClass({
 						<div className={`pt-button${this.state.mode === 'markdown' ? ' pt-active' : ''}`} onClick={this.setMarkdown}>Markdown</div>
 						<div className={`pt-button${this.state.mode === 'rich' ? ' pt-active' : ''}`} onClick={this.setRich}>Rich</div>
 						<div className={`pt-button${this.state.mode === 'preview' ? ' pt-active' : ''}`} onClick={this.setPreview}>Preview</div>
-							<Popover
-								 content={popoverContent}
-								 interactionKind={PopoverInteractionKind.CLICK}
-								 popoverClassName="pt-popover-content-sizing"
-								 position={Position.BOTTOM}
-						 >
-						 	<div className={`pt-button${this.state.mode === 'export' ? 'pt-active' : ''}`}> Export </div>
-						 </Popover>
+						<Popover
+							content={popoverContent}
+							interactionKind={PopoverInteractionKind.CLICK}
+							popoverClassName="pt-popover-content-sizing"
+							position={Position.BOTTOM_RIGHT}
+							>
+							<div className={`pt-button${this.state.mode === 'export' ? ' pt-active' : ''}`}>Export </div>
+						</Popover>
 					</div>
 				</div>
 				<div style={{ padding: '1em 4em', minHeight: '400px' }}>
