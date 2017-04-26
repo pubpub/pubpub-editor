@@ -53,6 +53,7 @@
     "prosemirror-schema-table": "^0.19.0",
     "prosemirror-state": "^0.19.1",
     "prosemirror-view": "^0.19.1",
+    "react-dom": "^15.5.4",
     "react-dropzone": "^3.7.3",
     "react-resizable-box": "^1.8.1",
     "request": "2.79.0",
