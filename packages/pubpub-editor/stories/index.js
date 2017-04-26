@@ -9,6 +9,8 @@ import React from 'react';
 import RichEditor from './storybookRichEditor';
 import { storiesOf } from '@kadira/storybook';
 import Converter from './storybookConverter';
+import ImportConverter from './storybookImportConverter';
+
 
 storiesOf('Rich Editor', module)
 .add('basic ', () => (
@@ -70,10 +72,10 @@ storiesOf('Debugging', module)
 
 storiesOf('Converter', module)
 .add('Convert to PDF ', () => (
-	<Converter import={false} />
+	<Converter />
 ))
 .add('Import to PubPub ', () => (
-	<Converter import={true} />
+	<ImportConverter  />
 ))
 // .add('Convert to Ppub', () => (
 // 	<Converter mode={'rich'} initialContent={LongLegacyBug} />
