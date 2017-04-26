@@ -1,7 +1,7 @@
 import { markdownToJSON } from '../markdown';
 
 // Need to parse embeds & mentions
-renderNodes = (node, filesMap) => {
+const renderNodes = (node, filesMap) => {
   if (node.type === 'embed') {
     if (node.attrs.filename && filesMap[node.attrs.filename]) {
       node.attrs.url = filesMap[node.attrs.filename]
@@ -15,7 +15,7 @@ renderNodes = (node, filesMap) => {
     if (node.attrs.filename && filesMap[node.attrs.filename]) {
       node.attrs.url = filesMap[node.attrs.filename]
     } else {
-      node.attrs.url = "NOTFOUND";
+      node.attrs.url = "NOTFfOUND";
     }
   }
   */
@@ -27,9 +27,9 @@ renderNodes = (node, filesMap) => {
   }
 }
 
-markdownToExport = ( files, filesMap, referencesList ) => {
+const markdownToExport = ( files, filesMap, referencesList ) => {
 
-  const totalMarkdown = '';
+  let totalMarkdown = '';
 
   for (const file of files) {
     totalMarkdown += file;

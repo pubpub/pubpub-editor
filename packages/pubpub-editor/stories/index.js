@@ -3,14 +3,14 @@ import { LongLegacyBug, MentionContentBug } from './bugdata';
 
 import APIEditor from './storybookAPI';
 import CodeEditor from './storybookCodeEditor';
+import Converter from './storybookConverter';
+import ExportMenu from './storybookExportMenu';
 import FullEditor from './storybookFullEditor';
+import ImportConverter from './storybookImportConverter';
 import MarkdownEditor from './storybookMarkdownEditor';
 import React from 'react';
 import RichEditor from './storybookRichEditor';
 import { storiesOf } from '@kadira/storybook';
-import Converter from './storybookConverter';
-import ImportConverter from './storybookImportConverter';
-
 
 storiesOf('Rich Editor', module)
 .add('basic ', () => (
@@ -57,6 +57,12 @@ storiesOf('Full Editor', module)
 ))
 .add('API Search', () => (
 	<APIEditor />
+))
+;
+
+storiesOf('Subcomponents', module)
+.add('Export Menu', () => (
+	<ExportMenu/>
 ))
 ;
 
