@@ -1,6 +1,5 @@
 import { EditorState } from 'prosemirror-state';
 import { markdownParser } from './markdownParser';
-import { schema } from '../prosemirror-setup/schema';
 
 const markdownToJSON = (markdown, citationsList) => {
   const contents = markdownParser.parse(markdown, citationsList);
