@@ -23,7 +23,7 @@ function ppubToPandoc(ppub, options) {
 	var bibFile = (options && options.bibFile) ? options.bibFile : Math.random().toString(36).substring(7)  + '.bib';
 	var refItemNumber = 1;
 	var listDepthStack = []; // A stack for keeping track of which node on a list we are on
-	var metadata = (typeof options !== 'undefined' && options.metadata) ? options.metadata : {};
+	var metadata = (typeof options !== 'undefined' && options.metadata)? options.metadata : {};
 
 	function isLeafNode(node) {
 		if (node.t === 'Str' || node.t === 'Space' || node.t === 'Cite') {
@@ -94,6 +94,7 @@ function ppubToPandoc(ppub, options) {
 						if (!text) {
 							text = node.marks[i].attrs.text ? node.marks[i].attrs.text : '';
 						}
+
 						newerNode.c = [['', [], []], [], [text, node.marks[i].attrs.title || '']];
 						newerNodes.push(newerNode);
 						markCount++;
@@ -216,9 +217,11 @@ function ppubToPandoc(ppub, options) {
 			case 'citations':
 			// Create a header node that goes above that says 'References'
 
-			if (bibData.length !== 1) {
-				var aboveNode = { t: 'Header', c: [1, ['references', ['unnumbered'], []], [{ t:'Str', 'c':'References' }]]};
-				blocks.push(aboveNode);
+			if (node.content.length > 0) {
+				if (bibData.length !== 0) {
+					var aboveNode = { t: 'Header', c: [1, ['references', ['unnumbered'], []], [{ t:'Str', 'c':'References' }]]};
+					blocks.push(aboveNode);
+				}
 			}
 			// insert this node at the root
 			newNode.t = 'DoNotAddThisNode';

@@ -95,6 +95,7 @@ function ppubToPandoc(ppub, options) {
 							if (!text) {
 								text = node.marks[i].attrs.text ? node.marks[i].attrs.text : '';
 							}
+
 							newerNode.c = [['', [], []], [], [text, node.marks[i].attrs.title || '']];
 							newerNodes.push(newerNode);
 							markCount++;
@@ -204,9 +205,11 @@ function ppubToPandoc(ppub, options) {
 				var alignment = node.attrs.align; // is either left, right or full
 				// alignment is not fully supported in pandoc quite yet
 				var caption = node.attrs.caption;
+
 				if (!caption) {
 					caption = node.content && node.content[0] && node.content[0].content[0] ? node.content[0].content[0].text : '';
 				}
+
 				newNode.c[1] = caption ? createTextNodes(caption) : [];
 				newNode.c[2] = [node.attrs.url || node.attrs.filename || node.attrs.data.content.url, node.attrs.figureName || ''];
 				break;
@@ -216,8 +219,8 @@ function ppubToPandoc(ppub, options) {
 				if (bibData.length !== 1) {
 					var aboveNode = { t: 'Header', c: [1, ['references', ['unnumbered'], []], [{ t: 'Str', 'c': 'References' }]] };
 					blocks.push(aboveNode);
-				} // insert this node at the root
-
+				}
+				// insert this node at the root
 				newNode.t = 'DoNotAddThisNode';
 
 				break;
@@ -234,7 +237,7 @@ function ppubToPandoc(ppub, options) {
 					},
 					citationPrefix: [],
 					citationId: citationId,
-					citationHash: 1 // Idk what this is
+					citationHash: 0 // Idk what this is
 				}], []];
 
 				break;
@@ -471,18 +474,34 @@ function ppubToPandoc(ppub, options) {
 				}
 			}
 
+			if (metadata['institute']) {
+
+				pandocJSON.meta.institute = {
+					t: 'MetaList',
+					c: []
+				};
+
+				for (var i = 0; i < metadata.institute.length; i++) {
+					var institute = {
+						t: 'MetaInlines',
+						c: createTextNodes(metadata.institute[i])
+					};
+					pandocJSON.meta.institute.c.push(institute);
+				}
+			}
 			if (metadata['past-degrees']) {
+
 				pandocJSON.meta.pubprevdegrees = {
 					t: 'MetaList',
 					c: []
 				};
 
 				for (var i = 0; i < metadata['past-degrees'].length; i++) {
-					var prevdegrees = {
+					var pubprevdegree = {
 						t: 'MetaInlines',
 						c: createTextNodes(metadata['past-degrees'][i])
 					};
-					pandocJSON.meta.pubprevdegrees.c.push(prevdegrees);
+					pandocJSON.meta.pubprevdegrees.c.push(pubprevdegree);
 				}
 			}
 
@@ -505,36 +524,7 @@ function ppubToPandoc(ppub, options) {
 					c: createTextNodes(metadata['degree'])
 				};
 			}
-			if (metadata['institute']) {
 
-				pandocJSON.meta.institute = {
-					t: 'MetaList',
-					c: []
-				};
-
-				for (var i = 0; i < metadata.institute.length; i++) {
-					var institute = {
-						t: 'MetaInlines',
-						c: createTextNodes(metadata.institute[i])
-					};
-					pandocJSON.meta.institute.c.push(institute);
-				}
-			}
-			if (metadata['previous-degrees']) {
-
-				pandocJSON.meta.pubprevdegrees = {
-					t: 'MetaList',
-					c: []
-				};
-
-				for (var i = 0; i < metadata['previous-degrees'].length; i++) {
-					var pubprevdegree = {
-						t: 'MetaInlines',
-						c: createTextNodes(metadata['previous-degrees'][i])
-					};
-					pandocJSON.meta.pubprevdegrees.c.push(pubprevdegree);
-				}
-			}
 			if (metadata['date']) {
 				pandocJSON.meta.pubdate = {
 					t: 'MetaInlines',
@@ -602,25 +592,22 @@ function ppubToPandoc(ppub, options) {
 				};
 			}
 
-			if (metadata['pub-readers']) {
-
-				for (var i = 0; i < metadata['pub-readers'].length; i++) {
-
+			if (metadata['thesis-reader-names']) {
+				for (var i = 0; i < metadata['thesis-reader-names'].length; i++) {
 					pandocJSON.meta["pubreaders-" + i + "-name"] = {
 						t: 'MetaInlines',
-						c: createTextNodes(metadata['pub-readers'][i].name)
+						c: createTextNodes(metadata['thesis-reader-names'][i])
 					};
 					pandocJSON.meta["pubreaders-" + i + "-title"] = {
 						t: 'MetaInlines',
-						c: createTextNodes(metadata['pub-readers'][i].title)
+						c: createTextNodes(metadata['thesis-reader-titles'][i])
 					};
 					pandocJSON.meta["pubreaders-" + i + "-affiliation"] = {
 						t: 'MetaInlines',
-						c: createTextNodes(metadata['pub-readers'][i].affiliation)
+						c: createTextNodes(metadata['thesis-reader-affiliations'][i])
 					};
 				}
 			}
-
 			console.log(JSON.stringify(pandocJSON));
 			return pandocJSON;
 		}).catch(function (error) {
