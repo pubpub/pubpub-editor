@@ -61,7 +61,7 @@
     "simplemde": "^1.11.2",
     "slugify": "^1.1.0",
     "striptags": "^3.0.1",
-    "superagent": "^3.0.0",
+    "superagent": "^3.5.2",
     "to-markdown": "^3.0.4",
     "xss": "^0.3.3"
   },

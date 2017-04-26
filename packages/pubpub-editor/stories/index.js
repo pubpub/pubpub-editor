@@ -8,6 +8,7 @@ import MarkdownEditor from './storybookMarkdownEditor';
 import React from 'react';
 import RichEditor from './storybookRichEditor';
 import { storiesOf } from '@kadira/storybook';
+import Converter from './storybookConverter';
 
 storiesOf('Rich Editor', module)
 .add('basic ', () => (
@@ -64,4 +65,17 @@ storiesOf('Debugging', module)
 .add('long legacy ', () => (
 	<FullEditor mode={'rich'} initialContent={LongLegacyBug} />
 ))
+;
+
+
+storiesOf('Converter', module)
+.add('Convert to PDF ', () => (
+	<Converter import={false} />
+))
+.add('Import to PubPub ', () => (
+	<Converter import={true} />
+))
+// .add('Convert to Ppub', () => (
+// 	<Converter mode={'rich'} initialContent={LongLegacyBug} />
+// ))
 ;
