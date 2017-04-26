@@ -140,17 +140,21 @@ export const StoryBookImportConverter = React.createClass({
 
 		reader.onloadend = (evt) => {
 			console.log('Passing this: ' + evt.target.result);
+			// const array = new Int8Array(evt.target.result);
+
 			request
 			.post(convertUrl)
 			.send({
 				inputType: inputFile.name.split('.').pop(),
-				outputType: outputType,
+				outputType: outputType +'',
 				// inputUrl: file.url,
+				// inputContent: new Blob([evt.target.result], { type: 'application/pdf' }),
 				inputContent: evt.target.result,
 				metadata: metadata,
 				// options: { template: selectedTemplate }
 			})
-			.set('Accept', 'application/json')
+			// .set('Accept', 'application/json')
+			// .set('Content-Type', 'application/json')
 			.end((err, res) => {
 				if (err || !res.ok) {
 					alert('Oh no! error', err);
@@ -163,7 +167,6 @@ export const StoryBookImportConverter = React.createClass({
 				}
 			});
 		};
-
 
 		reader.readAsBinaryString(inputFile);
 
