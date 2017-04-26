@@ -9,6 +9,7 @@ import RenderDocument from '../src/RenderDocument/RenderDocument';
 
 import {csltoBibtex} from '../src/references/csltobibtex';
 import { s3Upload } from './utils/uploadFile';
+import { Menu, MenuItem, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 
 import request from 'superagent';
 
@@ -82,7 +83,7 @@ export const StoryBookFullEditor = React.createClass({
 		});
 	},
 
-	setExport: function() {
+	setExport: function(template) {
 		this.setState({
 			mode: 'export',
 			exportLoading: true,
@@ -90,7 +91,7 @@ export const StoryBookFullEditor = React.createClass({
 		});
 
 		// Do request stuff
-		this.convert();
+		this.convert(template);
 	},
 
 
@@ -115,7 +116,7 @@ export const StoryBookFullEditor = React.createClass({
 			callback(newCitationObject);
 		}
 	},
-	convert: function(json) {
+	convert: function(template) {
 		const convertUrl = 'https://pubpub-converter-dev.herokuapp.com';
 		const outputType = 'pdf';
 		const inputContent = markdownToJSON(this.state.content || '', localReferences);
@@ -153,7 +154,7 @@ export const StoryBookFullEditor = React.createClass({
 			// inputUrl: file.url,
 			inputContent: inputContent,
 			metadata: metadata,
-			options: { template: 'mit' }
+			options: { template: template }
 		})
 		.set('Accept', 'application/json')
 		.end((err, res) => {
@@ -216,6 +217,17 @@ export const StoryBookFullEditor = React.createClass({
 
 			globalCategories: ['pubs', 'users'],
 		};
+
+		let popoverContent = (
+			<div>
+				<h5>Popover title</h5>
+					<div className={`pt-button`} onClick={this.setExport.bind(this, 'mit')}>MIT</div>
+					<br/>
+					<div className={`pt-button`} onClick={this.setExport.bind(this)}>Default</div>
+					<br/>
+
+			</div>
+		);
 		return (
 			<div className={'pt-card pt-elevation-3'} style={{ padding: '0em', margin: '0em auto 2em', maxWidth: '850px' }}>
 				<div style={{ backgroundColor: '#ebf1f5', padding: '0.5em', textAlign: 'right', borderBottom: '1px solid rgba(16, 22, 26, 0.15)' }}>
@@ -223,8 +235,14 @@ export const StoryBookFullEditor = React.createClass({
 						<div className={`pt-button${this.state.mode === 'markdown' ? ' pt-active' : ''}`} onClick={this.setMarkdown}>Markdown</div>
 						<div className={`pt-button${this.state.mode === 'rich' ? ' pt-active' : ''}`} onClick={this.setRich}>Rich</div>
 						<div className={`pt-button${this.state.mode === 'preview' ? ' pt-active' : ''}`} onClick={this.setPreview}>Preview</div>
-						<div className={`pt-button${this.state.mode === 'export' ? ' pt-active' : ''}`} onClick={this.setExport}>Export</div>
-
+							<Popover
+								 content={popoverContent}
+								 interactionKind={PopoverInteractionKind.CLICK}
+								 popoverClassName="pt-popover-content-sizing"
+								 position={Position.BOTTOM}
+						 >
+						 	<div className={`pt-button${this.state.mode === 'export' ? 'pt-active' : ''}`}> Export </div>
+						 </Popover>
 					</div>
 				</div>
 				<div style={{ padding: '1em 4em', minHeight: '400px' }}>
