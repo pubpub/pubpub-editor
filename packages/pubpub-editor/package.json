@@ -1,6 +1,6 @@
 {
   "name": "@pubpub/editor",
-  "version": "2.0.50",
+  "version": "2.0.51",
   "description": "A variety of editors (WSIWYG, Markdown, Code, etc.) geared towards Academic Publishing. Used in the PubPub platform.",
   "main": "./dist/index.js",
   "scripts": {
@@ -66,10 +66,10 @@
     "xss": "^0.3.3"
   },
   "peerDependencies": {
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
     "@blueprintjs/core": "^1.12.0",
-    "react-addons-css-transition-group": "^15.4.2"
+    "react": "^15.4.2",
+    "react-addons-css-transition-group": "^15.4.2",
+    "react-dom": "^15.4.2"
   },
   "devDependencies": {
     "@blueprintjs/core": "^1.12.0",
