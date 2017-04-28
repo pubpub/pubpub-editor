@@ -12,7 +12,6 @@ var csltoBibtex = require('@pubpub/editor/dist/references/csltobibtex').csltoBib
 *
 */
 function ppubToPandoc(ppub, options) {
-	console.log(`supp`)
 
 	var currentPpubNodeParents = []; // stack for keeping track of the last node : )
 	var currentPandocNodeParents = []; // stack for keeping track of the last output node
