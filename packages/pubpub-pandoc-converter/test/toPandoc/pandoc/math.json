@@ -1,0 +1,50 @@
+{
+	"blocks": [
+		{
+			"t": "Para",
+			"c": [
+				{
+					"t": "Code",
+					"c": [
+						[
+							"",
+							[],
+							[]
+						],
+						"Hello a codeblock"
+					]
+				}
+			]
+		},
+		{
+			"t": "Para",
+			"c": [
+				{
+					"t": "Math",
+					"c": [
+						{
+							"t": "InlineMath"
+						},
+						"1+1=2"
+					]
+				},
+				{
+					"t": "Math",
+					"c": [
+						{
+							"t": "DisplayMath"
+						},
+						"Hello block math \n"
+					]
+				}
+			]
+		}
+	],
+	"pandoc-api-version": [
+		1,
+		17,
+		0,
+		4
+	],
+	"meta": {}
+}

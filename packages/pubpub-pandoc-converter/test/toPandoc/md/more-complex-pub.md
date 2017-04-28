@@ -7,5 +7,3 @@ Some paragraph text . More paragraph text.
 > A Quotation about stuff that is important. `Code in the quotation`
 >
 > *Italics.*
-
-# References {#references .unnumbered}

@@ -15,7 +15,7 @@ function ppubToPandoc(ppub, options) {
 
 	var currentPpubNodeParents = []; // stack for keeping track of the last node : )
 	var currentPandocNodeParents = []; // stack for keeping track of the last output node
-	var blocks = []; // blocks (pandoc AST) is eventually set to this array.
+	var blocks = [];
 	var pandocJSON = {};
 	var inTable = false;
 	var bibData = [];
@@ -54,7 +54,6 @@ function ppubToPandoc(ppub, options) {
 	// Create a node
 	// If node is a root node, push it to blocks array
 	function scan(node) {
-		// green(`\nBlocks:\t${JSON.stringify(blocks)}\nParentNodes:\t${JSON.stringify(currentPpubNodeParents)}\nOutputParentNodes:\t${JSON.stringify(currentPandocNodeParents)}\n`)
 		var newNode = { t: undefined, c: [] };
 		var newerNodes = []; // Used primarily for strong, emphasis, link, code text
 		var markCount = 0; // Used to count strong, emphasis, link, code text, the reason being that you can have newer nodes that aren't marks
@@ -129,7 +128,11 @@ function ppubToPandoc(ppub, options) {
 				} else {
 					// This is the proper way to handle Para -- one to one with ppub paragraph
 					// Because otherwise have issues with Para : [text, text]
-					newNode.t = 'Para';
+					if (node.content) {
+						newNode.t = 'Para';
+					} else {
+						newNode.t = 'DoNotAddThisNode';
+					}
 				}
 
 				break;
@@ -252,13 +255,13 @@ function ppubToPandoc(ppub, options) {
 				newNode.t = 'Math';
 				newNode.c = [{
 					t: 'DisplayMath'
-				}, node.content[0].text];
+				}, node.attrs.content];
 				break;
 			case 'equation':
 				newNode.t = 'Math';
 				newNode.c = [{
 					t: 'InlineMath'
-				}, node.content[0].text];
+				}, node.attrs.content];
 
 				break;
 			case 'code_block':
@@ -274,11 +277,17 @@ function ppubToPandoc(ppub, options) {
 		// Wrap all images in a para block, because Pandoc seems to do this,
 		// at least in does it in files where there is just an image. It'll break if you don't
 		if (newNode.t === 'Image') {
-			var para = {};
-			para.t = 'Para';
-			para.c = [];
-			newerNodes.push(para);
-			markCount++;
+			var parent = currentPandocNodeParents[currentPandocNodeParents.length - 1];
+			if (parent) {
+				console.log('theres a parent and its a ' + parent.t);
+			}
+			if (parent && parent.t !== 'Para' || !parent) {
+				var para = {};
+				para.t = 'Para';
+				para.c = [];
+				newerNodes.push(para);
+				markCount++;
+			}
 		}
 
 		// If there are any node to add before the target node, like mark nodes,

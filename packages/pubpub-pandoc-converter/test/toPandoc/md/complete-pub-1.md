@@ -11,4 +11,3 @@ The alligator @28675934 is scary.
 -   It is like dinosaur.
 -   It is only known animal to breed with the robot
 
-# References {#references .unnumbered}

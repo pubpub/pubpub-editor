@@ -78,17 +78,13 @@
 								},
 								"citationPrefix": [],
 								"citationId": "73599909",
-								"citationHash": 1
+								"citationHash": 0
 							}
 						],
 						[]
 					]
 				}
 			]
-		},
-		{
-			"t": "Para",
-			"c": []
 		},
 		{
 			"t": "Header",
@@ -140,7 +136,7 @@
 								},
 								"citationPrefix": [],
 								"citationId": "28675934",
-								"citationHash": 1
+								"citationHash": 0
 							}
 						],
 						[]
@@ -323,25 +319,6 @@
 								"c": "robot"
 							}
 						]
-					}
-				]
-			]
-		},
-		{
-			"t": "Header",
-			"c": [
-				1,
-				[
-					"references",
-					[
-						"unnumbered"
-					],
-					[]
-				],
-				[
-					{
-						"t": "Str",
-						"c": "References"
 					}
 				]
 			]

@@ -1,3 +1,1 @@
 ~subscript~
-
-# References {#references .unnumbered}

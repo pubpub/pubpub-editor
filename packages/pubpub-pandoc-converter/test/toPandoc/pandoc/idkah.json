@@ -1,0 +1,1 @@
+{"blocks":[{"t":"Para","c":[{"t":"Math","c":[{"t":"InlineMath"},"1+4*8"]},{"t":"Image","c":[["",[],[["width","200"],["height","200"]]],[{"t":"Str","c":"a"},{"t":"SoftBreak"},{"t":"Str","c":"caption"}],["https://assets.pubpub.org/wkqopzxk/5851486428116139.gif",""]]},{"t":"Math","c":[{"t":"DisplayMath"},"1+4*8\n"]}]}],"pandoc-api-version":[1,17,0,5],"meta":{}}

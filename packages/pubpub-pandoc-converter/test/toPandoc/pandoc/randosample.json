@@ -4,6 +4,15 @@
 			"t": "Para",
 			"c": [
 				{
+					"t": "Math",
+					"c": [
+						{
+							"t": "InlineMath"
+						},
+						"1+4*8"
+					]
+				},
+				{
 					"t": "Image",
 					"c": [
 						[
@@ -12,36 +21,15 @@
 							[
 								[
 									"width",
-									"50%"
+									"200"
 								],
 								[
 									"height",
-									"50%"
+									"200"
 								]
 							]
 						],
 						[
-							{
-								"t": "Str",
-								"c": "Hi"
-							},
-							{
-								"t": "Space"
-							},
-							{
-								"t": "Str",
-								"c": "this"
-							},
-							{
-								"t": "Space"
-							},
-							{
-								"t": "Str",
-								"c": "is"
-							},
-							{
-								"t": "Space"
-							},
 							{
 								"t": "Str",
 								"c": "a"
@@ -55,9 +43,18 @@
 							}
 						],
 						[
-							"https://assets.pubpub.org/ozevzqjn/1484174143170.jpg",
+							"https://assets.pubpub.org/wkqopzxk/5851486428116139.gif",
 							""
 						]
+					]
+				},
+				{
+					"t": "Math",
+					"c": [
+						{
+							"t": "DisplayMath"
+						},
+						"1+4*8\n"
 					]
 				}
 			]

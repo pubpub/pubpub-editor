@@ -78,17 +78,13 @@
 								},
 								"citationPrefix": [],
 								"citationId": "73599909",
-								"citationHash": 1
+								"citationHash": 0
 							}
 						],
 						[]
 					]
 				}
 			]
-		},
-		{
-			"t": "Para",
-			"c": []
 		},
 		{
 			"t": "Header",
@@ -140,7 +136,7 @@
 								},
 								"citationPrefix": [],
 								"citationId": "28675934",
-								"citationHash": 1
+								"citationHash": 0
 							}
 						],
 						[]
@@ -326,25 +322,6 @@
 					}
 				]
 			]
-		},
-		{
-			"t": "Header",
-			"c": [
-				1,
-				[
-					"references",
-					[
-						"unnumbered"
-					],
-					[]
-				],
-				[
-					{
-						"t": "Str",
-						"c": "References"
-					}
-				]
-			]
 		}
 	],
 	"pandoc-api-version": [
@@ -370,6 +347,365 @@
 						{
 							"t": "Str",
 							"c": "Rich"
+						}
+					]
+				}
+			]
+		},
+		"institute": {
+			"t": "MetaList",
+			"c": [
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "M"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "a"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "s"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "s"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "a"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "c"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "h"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "u"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "s"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "s"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "e"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "t"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "s"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": ""
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": ""
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "I"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "n"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "s"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "t"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "i"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "t"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "u"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "t"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "e"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": ""
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": ""
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "o"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "f"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": ""
+						},
+						{
+							"t": "Space"
+						},
+						{
+							"t": "Str",
+							"c": ""
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "T"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "e"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "c"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "h"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "n"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "o"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "l"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "o"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "g"
+						}
+					]
+				},
+				{
+					"t": "MetaInlines",
+					"c": [
+						{
+							"t": "Str",
+							"c": "y"
 						}
 					]
 				}
@@ -560,36 +896,6 @@
 				{
 					"t": "Str",
 					"c": "Sciences"
-				}
-			]
-		},
-		"institute": {
-			"t": "MetaInlines",
-			"c": [
-				{
-					"t": "Str",
-					"c": "Massachussets"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Institute"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "of"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Technology"
 				}
 			]
 		},
@@ -4810,310 +5116,6 @@
 				{
 					"t": "Str",
 					"c": "Planning"
-				}
-			]
-		},
-		"pubreaders-0-name": {
-			"t": "MetaInlines",
-			"c": [
-				{
-					"t": "Str",
-					"c": "Patricia"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Maes"
-				}
-			]
-		},
-		"pubreaders-0-title": {
-			"t": "MetaInlines",
-			"c": [
-				{
-					"t": "Str",
-					"c": "Professor"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "of"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Media"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Technology"
-				}
-			]
-		},
-		"pubreaders-0-affiliation": {
-			"t": "MetaInlines",
-			"c": [
-				{
-					"t": "Str",
-					"c": "Program"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "in"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Media"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Arts"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "and"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Sciences"
-				}
-			]
-		},
-		"pubreaders-1-name": {
-			"t": "MetaInlines",
-			"c": [
-				{
-					"t": "Str",
-					"c": "Goerge"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Sweg"
-				}
-			]
-		},
-		"pubreaders-1-title": {
-			"t": "MetaInlines",
-			"c": [
-				{
-					"t": "Str",
-					"c": "Professor"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "of"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Fun"
-				}
-			]
-		},
-		"pubreaders-1-affiliation": {
-			"t": "MetaInlines",
-			"c": [
-				{
-					"t": "Str",
-					"c": "Media"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Arts"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "and"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Sciences"
-				}
-			]
-		},
-		"pubreaders-2-name": {
-			"t": "MetaInlines",
-			"c": [
-				{
-					"t": "Str",
-					"c": "Johnaothon"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Lolsworthy"
-				}
-			]
-		},
-		"pubreaders-2-title": {
-			"t": "MetaInlines",
-			"c": [
-				{
-					"t": "Str",
-					"c": "Professor"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "of"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Terror"
-				}
-			]
-		},
-		"pubreaders-2-affiliation": {
-			"t": "MetaInlines",
-			"c": [
-				{
-					"t": "Str",
-					"c": "Program"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "of"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Letters"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "and"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Predation"
-				}
-			]
-		},
-		"pubreaders-3-name": {
-			"t": "MetaInlines",
-			"c": [
-				{
-					"t": "Str",
-					"c": "V."
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Michael"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Bove,"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Jr"
-				}
-			]
-		},
-		"pubreaders-3-title": {
-			"t": "MetaInlines",
-			"c": [
-				{
-					"t": "Str",
-					"c": "Principal"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Research"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Scientist"
-				}
-			]
-		},
-		"pubreaders-3-affiliation": {
-			"t": "MetaInlines",
-			"c": [
-				{
-					"t": "Str",
-					"c": "Media"
-				},
-				{
-					"t": "Space"
-				},
-				{
-					"t": "Str",
-					"c": "Lab"
 				}
 			]
 		}

@@ -13,5 +13,3 @@ Nested Ordered Lists
 3.  again
 
 (:
-
-# References {#references .unnumbered}

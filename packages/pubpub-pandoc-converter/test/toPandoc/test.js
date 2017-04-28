@@ -374,5 +374,55 @@ describe('Convert docJSON to PandocAST', function() {
 			})
 			.then(done, done);
 		});
+		it('math', (done) => {
+			const testName = 'math';
+			const pandocFile = `${__dirname}/pandoc/${testName}.json`;
+			const markdownFile = `${__dirname}/md/${testName}.md`;
+			convert(require(`./${testName}.json`), {bibFile: `test/toPandoc/bib/${testName}.bib` })
+			.then((result) => {
+				return write(pandocFile, JSON.stringify(result, null, '\t'));
+			})
+			.then(function() {
+				return execPromise(`pandoc -f JSON ${pandocFile} --filter=pandoc-citeproc -t markdown-simple_tables+pipe_tables --atx-headers -o ${markdownFile}`);
+			})
+			.then(function(result) {
+				expect(result).to.exist;
+			})
+			.then(done, done);
+		});
+		it('math', (done) => {
+			const testName = 'math2';
+			const pandocFile = `${__dirname}/pandoc/${testName}.json`;
+			const markdownFile = `${__dirname}/md/${testName}.md`;
+			convert(require(`./${testName}.json`), {bibFile: `test/toPandoc/bib/${testName}.bib` })
+			.then((result) => {
+				return write(pandocFile, JSON.stringify(result, null, '\t'));
+			})
+			.then(function() {
+				return execPromise(`pandoc -f JSON ${pandocFile} --filter=pandoc-citeproc -t markdown-simple_tables+pipe_tables --atx-headers -o ${markdownFile}`);
+			})
+			.then(function(result) {
+				expect(result).to.exist;
+			})
+			.then(done, done);
+		});
+		it('randosample', (done) => {
+			const testName = 'randosample';
+			const pandocFile = `${__dirname}/pandoc/${testName}.json`;
+			const markdownFile = `${__dirname}/md/${testName}.md`;
+			convert(require(`./${testName}.json`), {bibFile: `test/toPandoc/bib/${testName}.bib` })
+			.then((result) => {
+				console.log(`yepperino`)
+				console.log(JSON.stringify(result))
+				return write(pandocFile, JSON.stringify(result, null, '\t'));
+			})
+			.then(function() {
+				return execPromise(`pandoc -f JSON ${pandocFile} --filter=pandoc-citeproc -t markdown-simple_tables+pipe_tables --atx-headers -o ${markdownFile}`);
+			})
+			.then(function(result) {
+				expect(result).to.exist;
+			})
+			.then(done, done);
+		});
 	});
 });

@@ -18,14 +18,6 @@
 		},
 		{
 			"t": "Para",
-			"c": []
-		},
-		{
-			"t": "Para",
-			"c": []
-		},
-		{
-			"t": "Para",
 			"c": [
 				{
 					"t": "Str",
@@ -38,25 +30,6 @@
 					"t": "Str",
 					"c": "text"
 				}
-			]
-		},
-		{
-			"t": "Header",
-			"c": [
-				1,
-				[
-					"references",
-					[
-						"unnumbered"
-					],
-					[]
-				],
-				[
-					{
-						"t": "Str",
-						"c": "References"
-					}
-				]
 			]
 		}
 	],
