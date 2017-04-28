@@ -264,7 +264,7 @@ function ppubToPandoc(ppub, options) {
 				{
 					t: 'DisplayMath'
 				},
-				node.content[0].text
+				node.attrs.content
 			];
 			break;
 			case 'equation':
@@ -273,7 +273,7 @@ function ppubToPandoc(ppub, options) {
 				{
 					t: 'InlineMath'
 				},
-				node.content[0].text
+				node.attrs.content
 			];
 
 			break;

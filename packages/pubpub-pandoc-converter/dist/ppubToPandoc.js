@@ -248,7 +248,13 @@ function ppubToPandoc(ppub, options) {
 				var data = node.attrs.data;
 				bibData.push(data);
 				break;
-			case 'latex':
+			case 'block_equation':
+				newNode.t = 'Math';
+				newNode.c = [{
+					t: 'DisplayMath'
+				}, node.content[0].text];
+				break;
+			case 'equation':
 				newNode.t = 'Math';
 				newNode.c = [{
 					t: 'InlineMath'
@@ -309,7 +315,7 @@ function ppubToPandoc(ppub, options) {
 
 		scanFragment(node);
 
-		if (node.type === 'paragraph' || node.type === 'heading' || node.type === 'horizontal_rule' || node.type === 'blockquote' || node.type === 'bullet_list' || node.type === 'ordered_list' || node.type === 'list_item' || node.type === 'table' || node.type === 'table_row' || node.type === 'table_cell' || node.type === 'block_embed' || node.type === 'text' || node.type === 'embed' || node.type === 'latex' || node.type === 'reference' || node.type === 'citation' || node.type === 'citations') {
+		if (node.type === 'paragraph' || node.type === 'heading' || node.type === 'horizontal_rule' || node.type === 'blockquote' || node.type === 'bullet_list' || node.type === 'ordered_list' || node.type === 'list_item' || node.type === 'table' || node.type === 'table_row' || node.type === 'table_cell' || node.type === 'block_embed' || node.type === 'text' || node.type === 'embed' || node.type === 'equation' || node.type === 'reference' || node.type === 'citation' || node.type === 'citations' || node.type === 'block_equation') {
 			currentPpubNodeParents.pop();
 		}
 		if (newNode.t === 'Para' || newNode.t === 'Plain' || newNode.t === 'Header' || newNode.t === 'Code' || newNode.t === 'HorizontalRule' || newNode.t === 'BlockQuote' || newNode.t === 'BulletList' || newNode.t === 'OrderedList' || newNode.t === 'Table' || newNode.t === 'Image' || newNode.t === 'Note' || newNode.t === 'Link' || newNode.t === 'Superscript' || newNode.t === 'Subscript' || newNode.t === 'Strikeout') {
