@@ -258,7 +258,16 @@ function ppubToPandoc(ppub, options) {
 			var data = node.attrs.data;
 			bibData.push(data);
 			break;
-			case 'latex':
+			case 'block_equation':
+			newNode.t = 'Math';
+			newNode.c = [
+				{
+					t: 'DisplayMath'
+				},
+				node.content[0].text
+			];
+			break;
+			case 'equation':
 			newNode.t = 'Math';
 			newNode.c = [
 				{
@@ -328,9 +337,9 @@ function ppubToPandoc(ppub, options) {
 		|| node.type === 'list_item' || node.type === 'table'
 		|| node.type === 'table_row' || node.type === 'table_cell'
 		|| node.type === 'block_embed' || node.type === 'text'
-		|| node.type === 'embed' || node.type === 'latex'
+		|| node.type === 'embed' || node.type === 'equation'
 		|| node.type === 'reference' || node.type === 'citation'
-		|| node.type === 'citations') {
+		|| node.type === 'citations' || node.type === 'block_equation') {
 			currentPpubNodeParents.pop();
 		}
 		if (newNode.t === 'Para' || newNode.t === 'Plain'
