@@ -54,10 +54,9 @@ var renderNodes = function renderNodes(node, filesMap) {
   }
 };
 
-var markdownToExport = function markdownToExport(files, filesMap, referencesList) {
-
-  var totalMarkdown = '';
-
+var generateFileMap = function generateFileMap(localFiles) {
+  var files = localFiles || [];
+  var fileMap = {};
   var _iteratorNormalCompletion2 = true;
   var _didIteratorError2 = false;
   var _iteratorError2 = undefined;
@@ -66,8 +65,7 @@ var markdownToExport = function markdownToExport(files, filesMap, referencesList
     for (var _iterator2 = files[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
       var file = _step2.value;
 
-      totalMarkdown += file;
-      totalMarkdown += "\n{{pagebreak}\n";
+      fileMap[file.name] = file.url;
     }
   } catch (err) {
     _didIteratorError2 = true;
@@ -84,8 +82,43 @@ var markdownToExport = function markdownToExport(files, filesMap, referencesList
     }
   }
 
+  return fileMap;
+};
+
+var markdownToExport = function markdownToExport(files, localFiles, referencesList) {
+
+  var totalMarkdown = '';
+
+  var fileMap = generateFileMap(localFiles);
+
+  var _iteratorNormalCompletion3 = true;
+  var _didIteratorError3 = false;
+  var _iteratorError3 = undefined;
+
+  try {
+    for (var _iterator3 = files[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+      var file = _step3.value;
+
+      totalMarkdown += file;
+      totalMarkdown += "\n{{pagebreak}\n";
+    }
+  } catch (err) {
+    _didIteratorError3 = true;
+    _iteratorError3 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion3 && _iterator3.return) {
+        _iterator3.return();
+      }
+    } finally {
+      if (_didIteratorError3) {
+        throw _iteratorError3;
+      }
+    }
+  }
+
   var totalJSON = (0, _markdown.markdownToJSON)(totalMarkdown, referencesList);
-  renderNodes(totalJSON);
+  renderNodes(totalJSON, fileMap);
   return totalJSON;
 };
 

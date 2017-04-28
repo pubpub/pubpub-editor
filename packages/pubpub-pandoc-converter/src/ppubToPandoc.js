@@ -3,7 +3,7 @@
  */
 
 var write = require('fs-writefile-promise');
-var csltoBibtex = require('@pubpub/prose/dist/references/csltobibtex').csltoBibtex;
+var csltoBibtex = require('@pubpub/editor/dist/references/csltobibtex').csltoBibtex;
 
 /*
 * @options { bibFile }

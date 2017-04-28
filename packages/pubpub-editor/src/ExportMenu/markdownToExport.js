@@ -27,9 +27,20 @@ const renderNodes = (node, filesMap) => {
   }
 }
 
-const markdownToExport = ( files, filesMap, referencesList ) => {
+const generateFileMap = (localFiles) => {
+	const files = localFiles || [];
+	const fileMap = {};
+	for (const file of files) {
+		fileMap[file.name] = file.url;
+	}
+	return fileMap;
+}
+
+const markdownToExport = ( files, localFiles, referencesList ) => {
 
   let totalMarkdown = '';
+
+	const fileMap = generateFileMap(localFiles);
 
   for (const file of files) {
     totalMarkdown += file;
@@ -37,7 +48,7 @@ const markdownToExport = ( files, filesMap, referencesList ) => {
   }
 
   const totalJSON = markdownToJSON(totalMarkdown, referencesList);
-  renderNodes(totalJSON);
+  renderNodes(totalJSON, fileMap);
   return totalJSON;
 
 }

@@ -5,13 +5,14 @@
  */
 
 var write = require('fs-writefile-promise');
-var csltoBibtex = require('@pubpub/prose/dist/references/csltobibtex').csltoBibtex;
+var csltoBibtex = require('@pubpub/editor/dist/references/csltobibtex').csltoBibtex;
 
 /*
 * @options { bibFile }
 *
 */
 function ppubToPandoc(ppub, options) {
+	console.log(`supp`)
 
 	var currentPpubNodeParents = []; // stack for keeping track of the last node : )
 	var currentPandocNodeParents = []; // stack for keeping track of the last output node
@@ -312,7 +313,7 @@ function ppubToPandoc(ppub, options) {
 		if (node.type === 'paragraph' || node.type === 'heading' || node.type === 'horizontal_rule' || node.type === 'blockquote' || node.type === 'bullet_list' || node.type === 'ordered_list' || node.type === 'list_item' || node.type === 'table' || node.type === 'table_row' || node.type === 'table_cell' || node.type === 'block_embed' || node.type === 'text' || node.type === 'embed' || node.type === 'latex' || node.type === 'reference' || node.type === 'citation' || node.type === 'citations') {
 			currentPpubNodeParents.pop();
 		}
-		if (newNode.t === 'Para' || newNode.t === 'Plain' || newNode.t === 'Header' || newNode.t === 'Code' || newNode.t === 'HorizontalRule' || newNode.t === 'BlockQuote' || newNode.t === 'BulletList' || newNode.t === 'OrderedList' || newNode.t === 'Table' || newNode.t === 'Image' || newNode.t === 'Note' || newNode.t === 'Link' || newNode.t === 'Superscript' || newNode.t === 'Subscript') {
+		if (newNode.t === 'Para' || newNode.t === 'Plain' || newNode.t === 'Header' || newNode.t === 'Code' || newNode.t === 'HorizontalRule' || newNode.t === 'BlockQuote' || newNode.t === 'BulletList' || newNode.t === 'OrderedList' || newNode.t === 'Table' || newNode.t === 'Image' || newNode.t === 'Note' || newNode.t === 'Link' || newNode.t === 'Superscript') {
 			// Link is for the case UL->[Link, Str]
 			currentPandocNodeParents.pop();
 		} else if (inTable) {
