@@ -339,7 +339,7 @@ function ppubToPandoc(ppub, options) {
 		|| newNode.t === 'BulletList' || newNode.t === 'OrderedList'
 		|| newNode.t === 'Table' || newNode.t === 'Image'
 		|| newNode.t === 'Note' || newNode.t === 'Link'
-		|| newNode.t === 'Superscript') {
+		|| newNode.t === 'Superscript' || newNode.t === 'Subscript') {
 			// Link is for the case UL->[Link, Str]
 			currentPandocNodeParents.pop();
 		} else if (inTable) {
