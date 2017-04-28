@@ -295,7 +295,7 @@ function ppubToPandoc(ppub, options) {
 		}
 
 		if (newNode.t === 'Strikeout' || newNode.t === 'Subscript' || newNode.t === 'Superscript') {
-			// Strikeout is handled differently than other text nodes
+
 			newNode.c = createTextNodes(node.text);
 			addNode(newNode);
 		} else if (node.type === 'text') {  // should this be or plain? o:
@@ -339,7 +339,8 @@ function ppubToPandoc(ppub, options) {
 		|| newNode.t === 'BulletList' || newNode.t === 'OrderedList'
 		|| newNode.t === 'Table' || newNode.t === 'Image'
 		|| newNode.t === 'Note' || newNode.t === 'Link'
-		|| newNode.t === 'Superscript' || newNode.t === 'Subscript') {
+		|| newNode.t === 'Superscript' || newNode.t === 'Subscript'
+		|| newNode.t === 'Strikeout') {
 			// Link is for the case UL->[Link, Str]
 			currentPandocNodeParents.pop();
 		} else if (inTable) {
@@ -397,7 +398,6 @@ function ppubToPandoc(ppub, options) {
 			break;
 			case 'Link':
 			case 'Code':
-			case 'Strikeout':
 			parent.c[1].push(newNode);
 			isLeafNode(newNode) ? undefined : currentPandocNodeParents.push(newNode);
 			break;
