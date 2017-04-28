@@ -137,7 +137,12 @@ export const StoryBookFullEditor = React.createClass({
 	convert: function(template) {
 		const convertUrl = 'https://pubpub-converter-dev.herokuapp.com';
 		const outputType = 'pdf';
-		const inputContent = markdownToJSON(this.state.content || '', localReferences);
+		let inputContent;
+		if (this.state.mode === 'markdown') {
+			inputContent = markdownToJSON(this.state.content || '', localReferences);
+		} else if (this.state.mode === 'rich') {
+			inputContent = this.state.content;
+		}
 		const metadata = {
 			title: 'Encoding Data into Physical Objects with Digitally Fabricated Textures',
 			authors: ['Travis Rich'],

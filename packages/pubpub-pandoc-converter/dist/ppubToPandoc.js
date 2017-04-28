@@ -216,7 +216,7 @@ function ppubToPandoc(ppub, options) {
 			case 'citations':
 				// Create a header node that goes above that says 'References'
 
-				if (node.content.length > 0) {
+				if (node.content && node.content.length > 0) {
 					if (bibData.length !== 0) {
 						var aboveNode = { t: 'Header', c: [1, ['references', ['unnumbered'], []], [{ t: 'Str', 'c': 'References' }]] };
 						blocks.push(aboveNode);
