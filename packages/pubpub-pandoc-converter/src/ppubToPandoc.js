@@ -292,7 +292,7 @@ function ppubToPandoc(ppub, options) {
 
 		// Wrap all images in a para block, because Pandoc seems to do this,
 		// at least in does it in files where there is just an image. It'll break if you don't
-		if (newNode.t === 'Image'){
+		if (newNode.t === 'Image' || newNode.t === 'Math'){
 			var parent = currentPandocNodeParents[currentPandocNodeParents.length - 1];
 
 			if ((parent && parent.t !== 'Para') || !parent) {
@@ -357,7 +357,7 @@ function ppubToPandoc(ppub, options) {
 		|| newNode.t === 'Table' || newNode.t === 'Image'
 		|| newNode.t === 'Note' || newNode.t === 'Link'
 		|| newNode.t === 'Superscript' || newNode.t === 'Subscript'
-		|| newNode.t === 'Strikeout') {
+		|| newNode.t === 'Strikeout' || newNode.t === 'Math') {
 			// Link is for the case UL->[Link, Str]
 			currentPandocNodeParents.pop();
 		} else if (inTable) {
