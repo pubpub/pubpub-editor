@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { jsonToMarkdown, markdownToJSON } from '../src/markdown';
 import { localDiscussions, localFiles, localHighlights, localPages, localPubs, localReferences, localUsers } from './sampledocs/autocompleteLocalData';
+import { markdownToExport } from '../src/ExportMenu';
 
 // import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
 // import RichEditor from '../src/editorComponents/RichEditor';
@@ -139,10 +140,12 @@ export const StoryBookFullEditor = React.createClass({
 		const outputType = 'pdf';
 		let inputContent;
 		if (this.state.mode === 'markdown') {
-			inputContent = markdownToJSON(this.state.content || '', localReferences);
+			inputContent = markdownToExport([this.state.content || ''], localFiles, localReferences);
 		} else if (this.state.mode === 'rich') {
 			inputContent = this.state.content;
+
 		}
+
 		const metadata = {
 			title: 'Encoding Data into Physical Objects with Digitally Fabricated Textures',
 			authors: ['Travis Rich'],
