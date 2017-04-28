@@ -4,8 +4,6 @@
  *
  */
 
-var colors = require('colors');
-
 function isInline(nodeType) {
 	return ['Str', 'Emph', 'Strong', 'Strikeout', 'Superscript', 'Subscript', 'Quoted', 'Cite', 'Code', 'Space', 'SoftBreak', 'LineBreak', 'Math', 'Link', 'Image', 'Note'].indexOf(nodeType) !== -1;
 }
@@ -50,7 +48,7 @@ function startTraversePandoc(pandoc) {
 		} else if (element.t === 'Str') {
 			lastContentItem.text = lastContentItem.text.concat(element.c);
 		} else {
-			console.log(colors.red('Unimplemented elem type!! ' + element.t));
+			console.log('Unimplemented elem type!! ' + element.t);
 		}
 	}
 
@@ -85,7 +83,7 @@ function startTraversePandoc(pandoc) {
 				newMark = 'strike';
 				break;
 			default:
-				console.log(colors.red('Mark of type ' + element.t + ' not found'));
+				console.log('Mark of type ' + element.t + ' not found');
 				break;
 		}
 
@@ -93,7 +91,7 @@ function startTraversePandoc(pandoc) {
 	}
 
 	function handleInline(elements) {
-		console.log(colors.blue('handleInline ' + JSON.stringify(elements)));
+		console.log('handleInline ' + JSON.stringify(elements));
 		for (var i = 0; i < elements.length; i++) {
 			switch (elements[i].t) {
 				case 'Space':
@@ -168,17 +166,17 @@ function startTraversePandoc(pandoc) {
 						break;
 				}
 
-				console.log(colors.cyan('Reached block node ' + JSON.stringify(elements[i])));
+				console.log('Reached block node ' + JSON.stringify(elements[i]));
 			} else if (isInline(elements[i].t)) {
-				console.log(colors.yellow('Reached leaf node ' + JSON.stringify(elements[i])));
+				console.log('Reached leaf node ' + JSON.stringify(elements[i]));
 				// handleInline(elements[i]);
 			} else {
-				console.log(colors.red('Unknown ' + JSON.stringify(elements[i])));
+				console.log('Unknown ' + JSON.stringify(elements[i]));
 			}
 		}
 		console.log('\n\n\n');
-		console.log(colors.yellow(JSON.stringify(ppubNodeParents)));
-		console.log(colors.cyan(JSON.stringify(ppubNodeParents[0], null, '\t')));
+		console.log(JSON.stringify(ppubNodeParents));
+		console.log(JSON.stringify(ppubNodeParents[0], null, '\t'));
 		console.log('\n');
 
 		finalPpub = ppubNodeParents[0];
