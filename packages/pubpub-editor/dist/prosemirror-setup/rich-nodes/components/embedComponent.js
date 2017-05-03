@@ -39,7 +39,6 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 		updateAttrs: _react.PropTypes.func
 	},
 	getInitialState: function getInitialState() {
-		this.DOC_WIDTH = 650;
 		return {
 			selected: false
 		};
@@ -110,6 +109,8 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 
 		var popoverContent = _react2.default.createElement(_embedMenu2.default, { createCaption: this.props.createCaption, removeCaption: this.props.removeCaption, embedAttrs: this.props, updateParams: this.updateAttrs });
 
+		var maxImageWidth = document.querySelector(".pub-body").clientWidth;
+
 		return _react2.default.createElement(
 			'div',
 			{ draggable: 'false', ref: 'embedroot', className: 'pub-embed ' + this.props.className, onClick: this.forceSelection },
@@ -136,11 +137,18 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 							{
 								width: '100%',
 								height: 'auto',
-								maxWidth: this.DOC_WIDTH,
+								maxWidth: maxImageWidth,
 								customStyle: styles.outline({ false: false }),
 								onResizeStop: function onResizeStop(direction, styleSize, clientSize, delta) {
-									var ratio = (clientSize.width / _this.DOC_WIDTH * 100).toFixed(1);
+									// const ratio = ((clientSize.width / this.DOC_WIDTH ) * 100).toFixed(1);
+									// const ratio = ((clientSize.width / this.DOC_WIDTH ) * 100);
+									// this.updateAttrs({size: ratio + '%' });
+									// get width and scale?
+
+									var docWidth = document.querySelector(".pub-body").clientWidth;
+									var ratio = (clientSize.width / docWidth * 100).toFixed(1);
 									_this.updateAttrs({ size: ratio + '%' });
+									// this.updateAttrs({size: clientSize.width + 'px' });
 								} },
 							_react2.default.createElement(_renderFiles.RenderFile, { draggable: 'false', style: styles.image({ selected: selected }), file: file })
 						) : _react2.default.createElement(
@@ -202,6 +210,7 @@ styles = {
 		    selected = _ref3.selected;
 
 		var style = {
+			maxWidth: '100%',
 			width: !!size ? size : 'auto',
 			display: 'table',
 			outline: selected ? '3px solid #BBBDC0' : '3px solid transparent',

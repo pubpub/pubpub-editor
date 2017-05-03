@@ -16,7 +16,6 @@ export const EmbedComponent = React.createClass({
     updateAttrs: PropTypes.func,
 	},
 	getInitialState: function() {
-		this.DOC_WIDTH = 650;
 		return {
 			selected: false,
 		};
@@ -82,6 +81,8 @@ export const EmbedComponent = React.createClass({
 
 		const popoverContent = (<EmbedMenu createCaption={this.props.createCaption} removeCaption={this.props.removeCaption} embedAttrs={this.props} updateParams={this.updateAttrs}/>);
 
+		const maxImageWidth = document.querySelector(".pub-body").clientWidth;
+
 		return (
 			<div draggable="false" ref="embedroot" className={'pub-embed ' + this.props.className} onClick={this.forceSelection}>
 				<figure style={styles.figure({size, align, false})}>
@@ -101,11 +102,18 @@ export const EmbedComponent = React.createClass({
 					<Resizable
 						width={'100%'}
 						height={'auto'}
-						maxWidth={this.DOC_WIDTH}
+						maxWidth={maxImageWidth}
 						customStyle={styles.outline({false})}
 						onResizeStop={(direction, styleSize, clientSize, delta) => {
-							const ratio = ((clientSize.width / this.DOC_WIDTH ) * 100).toFixed(1);
+							// const ratio = ((clientSize.width / this.DOC_WIDTH ) * 100).toFixed(1);
+							// const ratio = ((clientSize.width / this.DOC_WIDTH ) * 100);
+							// this.updateAttrs({size: ratio + '%' });
+							// get width and scale?
+
+							const docWidth = document.querySelector(".pub-body").clientWidth;
+							const ratio = ((clientSize.width / docWidth ) * 100).toFixed(1);
 							this.updateAttrs({size: ratio + '%' });
+							// this.updateAttrs({size: clientSize.width + 'px' });
 						}}>
 						<RenderFile draggable="false" style={styles.image({selected})} file={file}/>
 						</Resizable>
@@ -156,6 +164,7 @@ styles = {
 	},
 	figure: function({ size, align, selected }) {
 		const style = {
+			maxWidth: '100%',
 			width: (!!size) ? size : 'auto',
 			display: 'table',
 			outline: (selected) ? '3px solid #BBBDC0' : '3px solid transparent',
