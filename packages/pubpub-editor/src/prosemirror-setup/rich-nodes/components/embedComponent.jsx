@@ -84,7 +84,7 @@ export const EmbedComponent = React.createClass({
 		const maxImageWidth = document.querySelector(".pub-body").clientWidth;
 
 		return (
-			<div draggable="false" ref="embedroot" className={'pub-embed ' + this.props.className} onClick={this.forceSelection}>
+			<div draggable="false" ref="embedroot" className={'pub-embed ' + (this.props.className) ? this.props.className : null } onClick={this.forceSelection}>
 				<figure style={styles.figure({size, align, false})}>
 				<div style={{width: size, position: 'relative', display: 'table-row'}}>
 				<Popover content={popoverContent}

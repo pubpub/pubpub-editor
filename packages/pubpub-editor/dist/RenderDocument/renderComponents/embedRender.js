@@ -50,7 +50,7 @@ var EmbedRender = exports.EmbedRender = _react2.default.createClass({
 
 		return _react2.default.createElement(
 			'div',
-			{ ref: 'embedroot', className: 'pub-embed ' + this.props.className },
+			{ ref: 'embedroot', className: 'pub-embed ' + this.props.className ? this.props.className : null },
 			_react2.default.createElement(
 				'figure',
 				{ style: styles.figure({ size: size, align: align, false: false }) },
@@ -90,7 +90,9 @@ styles = {
 			display: 'table',
 			outline: selected ? '3px solid #BBBDC0' : '3px solid transparent',
 			transition: 'outline-color 0.15s ease-in',
-			paddingTop: '10px'
+			paddingTop: '10px',
+			marginRight: align === 'left' ? '20px' : null,
+			marginLeft: align === 'right' ? '20px' : null
 		};
 		if (align === 'left') {
 			style.float = 'left';

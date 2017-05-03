@@ -113,7 +113,7 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 
 		return _react2.default.createElement(
 			'div',
-			{ draggable: 'false', ref: 'embedroot', className: 'pub-embed ' + this.props.className, onClick: this.forceSelection },
+			{ draggable: 'false', ref: 'embedroot', className: 'pub-embed ' + this.props.className ? this.props.className : null, onClick: this.forceSelection },
 			_react2.default.createElement(
 				'figure',
 				{ style: styles.figure({ size: size, align: align, false: false }) },

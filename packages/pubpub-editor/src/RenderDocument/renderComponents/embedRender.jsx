@@ -31,7 +31,7 @@ export const EmbedRender = React.createClass({
 		const captionText = (captionNode) ? captionNode.text : '';
 
 		return (
-			<div ref="embedroot" className={'pub-embed ' + this.props.className}>
+			<div ref="embedroot" className={'pub-embed ' + (this.props.className) ? this.props.className : null }>
 				<figure style={styles.figure({size, align, false})}>
   				<div style={{width: size, position: 'relative', display: 'table-row'}}>
 						<RenderFile file={file} />
@@ -61,6 +61,8 @@ styles = {
 			outline: (selected) ? '3px solid #BBBDC0' : '3px solid transparent',
 			transition: 'outline-color 0.15s ease-in',
 			paddingTop: '10px',
+			marginRight: (align === 'left') ? '20px' : null,
+			marginLeft: (align === 'right') ? '20px' : null,
 		};
 		if (align === 'left') {
 			style.float = 'left';
