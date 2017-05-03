@@ -162,11 +162,9 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 
 		var isPopOverOpen = closePopOver ? false : undefined;
 
-		console.log('RENDERING FOR DISPLAY');
-
 		return _react2.default.createElement(
 			'span',
-			{ className: 'pub-embed-latex' + (selected ? ' selected' : ''), onClick: this.forceSelection },
+			{ onClick: this.forceSelection },
 			_react2.default.createElement(_radium.Style, { rules: _katexCss2.default }),
 			_react2.default.createElement(
 				_core.Popover,
@@ -180,6 +178,7 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 					useSmartPositioning: false },
 				_react2.default.createElement('span', {
 					ref: 'latexElem',
+					className: 'pub-embed-latex' + (selected ? ' selected' : ''),
 					dangerouslySetInnerHTML: { __html: displayHTML } })
 			)
 		);

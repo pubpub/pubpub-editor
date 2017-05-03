@@ -34,7 +34,7 @@ var MentionComponent = exports.MentionComponent = _react2.default.createClass({
 
     return _react2.default.createElement(
       "a",
-      { className: "mention", href: url },
+      { target: "_blank", className: "mention", href: url },
       text
     );
   }

@@ -117,10 +117,8 @@ export const LatexEditor = React.createClass({
 
 		const isPopOverOpen = (closePopOver) ? false : undefined;
 
-		console.log('RENDERING FOR DISPLAY');
-
 		return (
-			<span className={('pub-embed-latex' + ((selected) ? ' selected' : ''))} onClick={this.forceSelection}>
+			<span onClick={this.forceSelection}>
 				<Style rules={katexStyles} />
 				<Popover
 					content={popoverContent}
@@ -133,6 +131,7 @@ export const LatexEditor = React.createClass({
 
 					<span
 						ref={'latexElem'}
+						className={('pub-embed-latex' + ((selected) ? ' selected' : ''))}
 	          dangerouslySetInnerHTML={{__html: displayHTML}}/>
 				</Popover>
 			</span>
