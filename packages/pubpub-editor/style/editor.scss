@@ -75,11 +75,6 @@ li.ProseMirror-selectednode:after {
   outline: 2px solid #808284;
 }
 
-/*
-TESTING CSS
-*/
-
-
 .pub-reference {
   border: 1px solid transparent;
   cursor: pointer;
@@ -167,23 +162,23 @@ Styling citations
 Selection hovers
 */
 
-.pub-body .mention::selection {
+.mention::selection {
   background: none !important;
 }
 
-.pub-body .mention::selection {
+.mention::selection {
   background: none !important;
 }
 
-.pub-body .mentionComponent::selection {
+.mentionComponent::selection {
   background: none !important;
 }
 
-.pub-body .pub-embed img::selection {
+.pub-embed img::selection {
     background-color: transparent !important;
 }
 
-.pub-body .pub-embed-latex *::selection {
+.pub-embed-latex *::selection {
     background-color: transparent !important;
 }
 

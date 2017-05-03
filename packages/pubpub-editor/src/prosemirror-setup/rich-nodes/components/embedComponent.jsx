@@ -170,6 +170,8 @@ styles = {
 			outline: (selected) ? '3px solid #BBBDC0' : '3px solid transparent',
 			transition: 'outline-color 0.15s ease-in',
 			paddingTop: '10px',
+			marginRight: (align === 'left') ? '20px' : null,
+			marginLeft: (align === 'right') ? '20px' : null,
 		};
 		if (align === 'left') {
 			style.float = 'left';
