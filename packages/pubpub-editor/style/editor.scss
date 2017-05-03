@@ -118,7 +118,7 @@ li.ProseMirror-selectednode:after {
     box-shadow: 0 0 0 0 rgba(41, 55, 66, 0), 0 0 0 0 rgba(41, 55, 66, 0), inset 0 0 0 1px rgba(16, 22, 26, 0.15), inset 0 1px 1px rgba(16, 22, 26, 0.2);
 }
 
-.pub-latex{
+.pub-embed-latex{
   padding: 0.3em 5px 0em;
   font-size: 1.1em;
   text-align: center;
@@ -127,12 +127,11 @@ li.ProseMirror-selectednode:after {
   height: 1em;
 }
 
-
-.pub-latex.pub-latex-block{
+.pub-embed-latex.pub-latex-block{
   height: auto;
 }
 
-.pub-latex:hover{
+.pub-embed-latex:hover{
   box-shadow: 0 0 0 0 rgba(41, 55, 66, 0), 0 0 0 0 rgba(41, 55, 66, 0), inset 0 0 0 1px rgba(16, 22, 26, 0.15), inset 0 1px 1px rgba(16, 22, 26, 0.2);
 }
 

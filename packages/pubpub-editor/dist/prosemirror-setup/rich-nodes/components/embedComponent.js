@@ -124,7 +124,7 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 						_core.Popover,
 						{ content: popoverContent,
 							interactionKind: _core.PopoverInteractionKind.CLICK,
-							popoverClassName: 'pt-popover-content-sizing pt-minimal',
+							popoverClassName: 'pt-popover-content-sizing pt-minimal pt-dark',
 							position: _core.Position.BOTTOM,
 							autoFocus: false,
 							popoverWillOpen: function popoverWillOpen(evt) {

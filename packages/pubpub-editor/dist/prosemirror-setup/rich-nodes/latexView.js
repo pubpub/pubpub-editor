@@ -130,7 +130,6 @@ var LatexView = function (_ReactView) {
         // console.log('Stopped ', evt.type);
         return true;
       }
-      console.log('Stop and play ', evt.type);
       return false;
     }
   }]);

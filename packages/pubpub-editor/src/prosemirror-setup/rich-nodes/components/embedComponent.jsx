@@ -89,7 +89,7 @@ export const EmbedComponent = React.createClass({
 				<div style={{width: size, position: 'relative', display: 'table-row'}}>
 				<Popover content={popoverContent}
 								 interactionKind={PopoverInteractionKind.CLICK}
-								 popoverClassName="pt-popover-content-sizing pt-minimal"
+								 popoverClassName="pt-popover-content-sizing pt-minimal pt-dark"
 								 position={Position.BOTTOM}
 								 autoFocus={false}
 								 popoverWillOpen={(evt) => {

@@ -87,6 +87,7 @@ export const LatexEditor = React.createClass({
 	},
 
 	setSelected: function(selected) {
+		console.log('selected!!', selected);
 		this.setState({ selected });
 	},
 
@@ -116,21 +117,22 @@ export const LatexEditor = React.createClass({
 
 		const isPopOverOpen = (closePopOver) ? false : undefined;
 
+		console.log('RENDERING FOR DISPLAY');
+
 		return (
-			<span onClick={this.forceSelection}>
+			<span className={('pub-embed-latex' + ((selected) ? ' selected' : ''))} onClick={this.forceSelection}>
 				<Style rules={katexStyles} />
 				<Popover
 					content={popoverContent}
 					isOpen={isPopOverOpen}
 					interactionKind={PopoverInteractionKind.CLICK}
 					className={'blockPopover'}
-					popoverClassName={'pt-minimal'}
+					popoverClassName={'pt-minimal pt-dark'}
 					position={Position.BOTTOM}
 					useSmartPositioning={false}>
 
 					<span
 						ref={'latexElem'}
-						className={'pub-embed-latex'}
 	          dangerouslySetInnerHTML={{__html: displayHTML}}/>
 				</Popover>
 			</span>
