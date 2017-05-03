@@ -56,7 +56,7 @@ var ReferenceComponent = exports.ReferenceComponent = _react2.default.createClas
 		}
 
 		var referenceClass = (0, _classnames2.default)({
-			'reference': true,
+			'pub-reference': true,
 			'selected': this.state.selected
 		});
 

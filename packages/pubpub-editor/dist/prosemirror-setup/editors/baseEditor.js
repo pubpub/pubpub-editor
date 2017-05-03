@@ -6,8 +6,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _richNodes = require('../rich-nodes');
 
-var _menubar = require('../../menubar');
-
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -187,8 +185,6 @@ var BaseEditor = function () {
 					}
 				}
 			}, props));
-
-			this.menuComponent = _reactDom2.default.render(_react2.default.createElement(_menubar.BaseMenu, { createFile: createFile, menu: menu.fullMenu, view: this.view }), reactMenu);
 		}
 	}, {
 		key: 'reconfigure',

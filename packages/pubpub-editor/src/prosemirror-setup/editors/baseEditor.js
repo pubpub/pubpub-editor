@@ -1,6 +1,5 @@
 import { CitationsView, EmbedView, HtmlView, IframeView, LatexView, MentionView, ReferenceView } from '../rich-nodes';
 
-import { BaseMenu } from '../../menubar';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {getPlugin} from '../plugins';
@@ -77,7 +76,6 @@ class BaseEditor {
 			...props
 		});
 
-		this.menuComponent = ReactDOM.render(<BaseMenu createFile={createFile} menu={menu.fullMenu} view={this.view} />, reactMenu);
 	}
 
 	reconfigure(plugins, config) {
@@ -117,7 +115,7 @@ class BaseEditor {
 		if (!this.view || !this.view.state) {
 			return;
 		}
-		
+
 		const newState = this.view.state.apply(transaction);
 		this.view.updateState(newState);
 		if (transaction.docChanged) {

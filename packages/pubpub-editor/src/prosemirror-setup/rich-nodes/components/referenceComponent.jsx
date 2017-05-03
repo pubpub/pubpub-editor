@@ -42,7 +42,7 @@ export const ReferenceComponent = React.createClass({
 		}
 
 		const referenceClass = classNames({
-      'reference': true,
+      'pub-reference': true,
       'selected': this.state.selected,
     });
 

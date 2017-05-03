@@ -4,10 +4,6 @@ import {CSLtoString} from '../references/csltostring';
 import fuzzysearch from 'fuzzysearch';
 import request from 'request-promise';
 
-require('../../style/autosuggest.scss');
-
-
-
 let styles;
 
 export const Autocomplete = React.createClass({
