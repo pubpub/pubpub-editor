@@ -164,7 +164,6 @@ styles = {
 	},
 	figure: function({ size, align, selected }) {
 		const style = {
-			maxWidth: '100%',
 			width: (!!size) ? size : 'auto',
 			display: 'table',
 			outline: (selected) ? '3px solid #BBBDC0' : '3px solid transparent',

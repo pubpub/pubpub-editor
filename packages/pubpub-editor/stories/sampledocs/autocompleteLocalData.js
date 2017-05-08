@@ -67,6 +67,29 @@ export const localFiles = [
 		}
 	},
 	{
+		id: 510,
+		type: "image/gif",
+		name: "A space in a title.gif",
+		url: "https://assets.pubpub.org/wkqopzxk/5851486428116139.gif",
+		content: null,
+		hash: "4cfd14a765f93c203a802d054d1998baa0c5300e",
+		originalDate: null,
+		createdAt: "2016-02-24T02:09:24.760Z",
+		updatedAt: "2017-02-07T00:44:21.661Z",
+		pubId: 369,
+		sources: [ ],
+		destinations: [ ],
+		attributions: [ ],
+		VersionFile: {
+			createdAt: "2016-02-24T02:09:24.760Z",
+			updatedAt: "2017-02-07T00:47:45.798Z",
+			fileId: 510,
+			versionId: 219
+		}
+	},
+
+
+	{
 		id: 586,
 		type: "image/jpeg",
 	name: "mies_thomas_hawk.jpg",

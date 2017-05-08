@@ -209,7 +209,7 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 					content: popoverContent,
 					defaultIsOpen: true,
 					interactionKind: _core.PopoverInteractionKind.CLICK,
-					popoverClassName: 'pt-minimal',
+					popoverClassName: 'pt-minimal pt-dark',
 					position: _core.Position.BOTTOM,
 					autoFocus: false,
 					enforceFocus: false,

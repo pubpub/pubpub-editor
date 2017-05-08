@@ -51,7 +51,6 @@ var RenderFile = exports.RenderFile = _react2.default.createClass({
 		    style = _props.style;
 
 		var file = this.props.file || {};
-		console.log('RENDEIRNG', file);
 
 		switch (file.type) {
 			case 'text/markdown':

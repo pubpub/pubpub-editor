@@ -13,6 +13,10 @@ var _markdownItCitations = require('./markdown-it-citations');
 
 var _markdownItCitations2 = _interopRequireDefault(_markdownItCitations);
 
+var _markdownItEmbed = require('./markdown-it-embed');
+
+var _markdownItEmbed2 = _interopRequireDefault(_markdownItEmbed);
+
 var _markdownItHighlight = require('./markdown-it-highlight');
 
 var _markdownItHighlight2 = _interopRequireDefault(_markdownItHighlight);
@@ -24,6 +28,10 @@ var _markdownIt2 = _interopRequireDefault(_markdownIt);
 var _markdownItKatex = require('markdown-it-katex');
 
 var _markdownItKatex2 = _interopRequireDefault(_markdownItKatex);
+
+var _markdownItModifyLinks = require('./markdown-it-modify-links');
+
+var _markdownItModifyLinks2 = _interopRequireDefault(_markdownItModifyLinks);
 
 var _markdownItReference = require('./markdown-it-reference');
 
@@ -48,6 +56,7 @@ var markdownitInstance = exports.markdownitInstance = (0, _markdownIt2.default)(
 .use(_markdownItKatex2.default) // Latex math
 .use(_markdownItReference2.default) // Reference parser
 .use(_markdownItAttrs2.default) // Reference parser
-.use(_markdownItHighlight2.default); // Pub Highlight parser
+.use(_markdownItHighlight2.default).use(_markdownItModifyLinks2.default).use(_markdownItEmbed2.default); // Pub Highlight parser
+
 
 exports.default = markdownitInstance;
