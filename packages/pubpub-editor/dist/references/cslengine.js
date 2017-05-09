@@ -120,9 +120,11 @@ var CitationEngine = function () {
 
     this.getShortForm = function (citationID) {
 
-      if (!_this.items[citationID]) {
-        return null;
+      /*
+      if (!this.items[citationID]) {
+        return "[N/A]";
       }
+      */
 
       try {
 
@@ -136,7 +138,7 @@ var CitationEngine = function () {
           }
         };
 
-        var citation = _this.items[citationID];
+        var citation = _this.items[citationID] || _this.getEmptyRef(citationID);
         var cluster = _this.citeproc.appendCitationCluster(citation_object, true);
 
         if (cluster && cluster.length > 0) {
@@ -202,7 +204,10 @@ var CitationEngine = function () {
 
     this.sys = {
       retrieveItem: function retrieveItem(itemID) {
-        return _this.items[itemID];
+        if (_this.items[itemID]) {
+          return _this.items[itemID];
+        }
+        return _this.getEmptyRef(itemID);
       },
       retrieveLocale: function retrieveLocale(locale) {
         var result = _csldata.locales[locale];
@@ -216,11 +221,18 @@ var CitationEngine = function () {
   }
 
   _createClass(CitationEngine, [{
+    key: 'getEmptyRef',
+    value: function getEmptyRef(itemID) {
+      return {
+        id: itemID,
+        title: 'Reference ' + itemID + ' not found.'
+      };
+    }
+  }, {
     key: 'getSingleBibliography',
     value: function getSingleBibliography(itemID) {
       if (!this.items[itemID]) {
-        console.log('Could not find in dict');
-        return null;
+        return "Not Found";
       }
       // console.log(this.citeproc);
       // this.citeproc.updateItems(this.itemIDs, true);
@@ -233,6 +245,7 @@ var CitationEngine = function () {
       var result = this.citeproc.makeBibliography(query);
 
       if (result && result.length >= 1 && result[1].length > 0) {
+        console.log('Returning', result[1][0]);
         return result[1][0];
       }
       return null;

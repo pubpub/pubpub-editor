@@ -15,7 +15,10 @@ class CitationEngine {
 
     this.sys = {
       retrieveItem: (itemID) => {
-        return this.items[itemID];
+        if (this.items[itemID]) {
+          return this.items[itemID];
+        }
+        return this.getEmptyRef(itemID);
       },
       retrieveLocale: (locale) => {
         const result =  locales[locale];
@@ -28,6 +31,13 @@ class CitationEngine {
     this.getShortForm = this.getShortForm.bind(this);
     this.getSingleBibliography = this.getSingleBibliography.bind(this);
 
+  }
+
+  getEmptyRef(itemID) {
+    return {
+      id: itemID,
+      title: `Reference ${itemID} not found.`,
+    };
   }
 
   renderBibliography = (references, referenceOrder) => {
@@ -96,9 +106,11 @@ class CitationEngine {
 
   getShortForm = (citationID) => {
 
+    /*
     if (!this.items[citationID]) {
-      return null;
+      return "[N/A]";
     }
+    */
 
     try {
 
@@ -116,7 +128,7 @@ class CitationEngine {
       };
 
 
-      const citation = this.items[citationID];
+      const citation = this.items[citationID] || this.getEmptyRef(citationID);
       const cluster = this.citeproc.appendCitationCluster(citation_object, true);
 
       if (cluster && cluster.length > 0) {
@@ -148,8 +160,7 @@ class CitationEngine {
 
   getSingleBibliography(itemID) {
     if (!this.items[itemID]) {
-      console.log('Could not find in dict');
-      return null;
+      return "Not Found";
     }
     // console.log(this.citeproc);
     // this.citeproc.updateItems(this.itemIDs, true);
@@ -164,6 +175,7 @@ class CitationEngine {
     const result = this.citeproc.makeBibliography(query);
 
     if (result && result.length >= 1 && result[1].length > 0) {
+      console.log('Returning', result[1][0]);
       return result[1][0];
     }
     return null;

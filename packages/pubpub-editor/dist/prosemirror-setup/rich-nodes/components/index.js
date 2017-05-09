@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.HtmlComponent = exports.IframeComponent = exports.CitationsComponent = exports.ReferenceComponent = exports.MentionComponent = exports.EmbedComponent = exports.LatexComponent = undefined;
+exports.FootnoteComponent = exports.HtmlComponent = exports.IframeComponent = exports.CitationsComponent = exports.ReferenceComponent = exports.MentionComponent = exports.EmbedComponent = exports.LatexComponent = undefined;
 
 var _latexComponent = require('./latexComponent');
 
@@ -33,6 +33,10 @@ var _htmlComponent = require('./htmlComponent');
 
 var _htmlComponent2 = _interopRequireDefault(_htmlComponent);
 
+var _footnoteComponent = require('./footnoteComponent');
+
+var _footnoteComponent2 = _interopRequireDefault(_footnoteComponent);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.LatexComponent = _latexComponent2.default;
@@ -42,3 +46,4 @@ exports.ReferenceComponent = _referenceComponent2.default;
 exports.CitationsComponent = _citationsComponent2.default;
 exports.IframeComponent = _iframeComponent2.default;
 exports.HtmlComponent = _htmlComponent2.default;
+exports.FootnoteComponent = _footnoteComponent2.default;

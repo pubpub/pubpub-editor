@@ -150,8 +150,12 @@ var nodes = {
 	},
 
 	footnote: {
-		content: 'inline<_>*',
-		group: 'block',
+		atom: true,
+		inline: true,
+		attrs: {
+			content: { default: '' }
+		},
+		group: 'inline',
 		parseDOM: [{ tag: 'aside' }],
 		toDOM: function toDOM() {
 			return ['aside'];
