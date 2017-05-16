@@ -4,6 +4,7 @@ import { LongLegacyBug, MentionContentBug } from './bugdata';
 import APIEditor from './storybookAPI';
 import CodeEditor from './storybookCodeEditor';
 import Converter from './storybookConverter';
+import DisplayEditor from './storybookDisplayEditor';
 import ExportMenu from './storybookExportMenu';
 import FullEditor from './storybookFullEditor';
 import ImportConverter from './storybookImportConverter';
@@ -12,25 +13,14 @@ import React from 'react';
 import RichEditor from './storybookRichEditor';
 import { storiesOf } from '@kadira/storybook';
 
-storiesOf('Rich Editor', module)
-.add('basic ', () => (
-	<RichEditor />
-))
-.add('single reference', () => (
-	<RichEditor initialState={SingleReference} />
-))
-.add('single mention', () => (
-	<RichEditor initialState={SingleMention} />
-));
-
 storiesOf('Code Editor', module)
 .add('basic ', () => (
 	<CodeEditor />
 ));
 
-storiesOf('Markdown Editor', module)
+storiesOf('Display Editor', module)
 .add('basic ', () => (
-	<MarkdownEditor />
+	<DisplayEditor />
 ));
 
 storiesOf('Full Editor', module)

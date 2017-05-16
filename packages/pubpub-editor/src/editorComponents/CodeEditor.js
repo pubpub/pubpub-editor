@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+
 import CodeMirror from 'codemirror';
 
 require('../../style/code.scss');
@@ -22,14 +23,14 @@ export const CodeEditor = React.createClass({
 			if (this.props.onChange) {
 				this.codeMirror.on('change', (cm)=> {
 					this.props.onChange(cm.doc.getValue());
-				});	
+				});
 			}
 		}
 	},
 
 	componentWillReceiveProps(nextProps) {
 		if (this.props.initialContent !== nextProps.initialContent) {
-			this.codeMirror.value(nextProps.initialContent);
+			this.codeMirror.getDoc().setValue(nextProps.initialContent);
 		}
 	},
 
