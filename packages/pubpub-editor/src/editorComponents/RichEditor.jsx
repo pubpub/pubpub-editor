@@ -191,6 +191,7 @@ export const RichEditor = React.createClass({
 					<InsertMenu
 						ref={(input) => { this.insertMenu = input; }}
 						editor={this.editor}
+						allReferences={this.props.localReferences}
 						handleFileUpload={this.props.handleFileUpload}
 						handleReferenceAdd={this.props.handleReferenceAdd} />
 
