@@ -46,7 +46,7 @@ var CodeEditor = exports.CodeEditor = _react2.default.createClass({
 	},
 	componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
 		if (this.props.initialContent !== nextProps.initialContent) {
-			this.codeMirror.value(nextProps.initialContent);
+			this.codeMirror.getDoc().setValue(nextProps.initialContent);
 		}
 	},
 	render: function render() {
