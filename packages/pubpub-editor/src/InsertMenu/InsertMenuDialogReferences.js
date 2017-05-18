@@ -45,6 +45,7 @@ export const InsertMenuDialogReferences = React.createClass({
 				},
 			},
 			savable: false,
+			error: null
 		};
 	},
 
@@ -109,6 +110,9 @@ export const InsertMenuDialogReferences = React.createClass({
 			// const randomCitationId = (!cslJSON.id || isNaN(cslJSON.id)) ? Math.round(Math.random()*100000000) : cslJSON.id;
 			// 	cslJSON.id = String(randomCitationId);
 			this.props.onReferenceAdd(cslJSON[0]);
+		} else {
+			console.log('IMPRPOPER BIBTEX');
+			this.setState({ error: true });
 		}
 
 	},
@@ -177,9 +181,17 @@ export const InsertMenuDialogReferences = React.createClass({
 
 
 					<TabPanel>
-						<div className="pt-callout">
-							Paste in BiBTeX data and we will automatically create a reference.
-						</div>
+						{(!this.state.error) ?
+							<div className="pt-callout">
+								Paste in BiBTeX data and we will automatically create a reference.
+							</div>
+							:
+							<div className="pt-callout pt-intent-danger">
+								There is an error with the BiBTeX you enter, please fix it and try again!
+							</div>
+						}
+
+
 
 						<textarea className="pt-input pt-fill" dir="auto" ref={(input) => { this.bibtexText = input; }} />
 
