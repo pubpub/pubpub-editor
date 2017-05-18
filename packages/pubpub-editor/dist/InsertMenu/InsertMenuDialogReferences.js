@@ -114,10 +114,8 @@ var InsertMenuDialogReferences = exports.InsertMenuDialogReferences = _react2.de
 		var cslJSON = (0, _bibtextocsl2.default)(bibTexString);
 
 		if (cslJSON && cslJSON.length > 0 && Object.keys(cslJSON[0]).length > 0) {
-
 			// const randomCitationId = (!cslJSON.id || isNaN(cslJSON.id)) ? Math.round(Math.random()*100000000) : cslJSON.id;
 			// 	cslJSON.id = String(randomCitationId);
-			console.log(cslJSON[0]);
 			this.props.onReferenceAdd(cslJSON[0]);
 		}
 	},

@@ -34,7 +34,8 @@ var InsertMenu = exports.InsertMenu = _react2.default.createClass({
 		editor: _react.PropTypes.object,
 		top: _react.PropTypes.number,
 		handleFileUpload: _react.PropTypes.func,
-		handleReferenceAdd: _react.PropTypes.func
+		handleReferenceAdd: _react.PropTypes.func,
+		allReferences: _react.PropTypes.array
 	},
 
 	getInitialState: function getInitialState() {
@@ -98,12 +99,29 @@ var InsertMenu = exports.InsertMenu = _react2.default.createClass({
 		// Need to update or create bibtex file
 		// Need to make sure that updated file is sent to editor props
 		// Need to call inserReference function
+
+		var existingReference = this.props.allReferences.find(function (reference) {
+			if (reference.id === item.id) {
+				return true;
+			}
+			return false;
+		});
+
+		if (existingReference) {
+			this.state.callback(item);
+			this.setState({
+				openDialog: undefined,
+				callback: undefined
+			});
+			return;
+		}
+
 		this.props.handleReferenceAdd(item, function (itemToAdd) {
-			_this2.state.callback(itemToAdd);
 			_this2.setState({
 				openDialog: undefined,
 				callback: undefined
 			});
+			_this2.state.callback(itemToAdd);
 		});
 	},
 

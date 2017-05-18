@@ -246,6 +246,7 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 					_this2.insertMenu = input;
 				},
 				editor: this.editor,
+				allReferences: this.props.localReferences,
 				handleFileUpload: this.props.handleFileUpload,
 				handleReferenceAdd: this.props.handleReferenceAdd }),
 			_react2.default.createElement(_TableMenu2.default, {

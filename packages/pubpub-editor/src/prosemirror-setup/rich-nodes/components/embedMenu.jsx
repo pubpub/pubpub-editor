@@ -28,12 +28,15 @@ export const EmbedEditor = React.createClass({
 
 	render: function() {
 
+		const { align } = this.props;
+
 		return (
 			<div>
 				<div className="pt-button-group minimal">
-				  <Button iconName="align-left" onClick={this.setEmbedAttribute.bind(this, 'align', 'left')} ></Button>
-					<Button iconName="align-center" onClick={this.setEmbedAttribute.bind(this, 'align', 'full')} ></Button>
-					<Button iconName="align-right" onClick={this.setEmbedAttribute.bind(this, 'align', 'right')} ></Button>
+				  <Button className={(align === 'left') ? 'pt-active' : ''} iconName="align-left" onClick={this.setEmbedAttribute.bind(this, 'align', 'left')} ></Button>
+					<Button className={(align === 'right') ? 'pt-active' : ''} iconName="align-right" onClick={this.setEmbedAttribute.bind(this, 'align', 'right')} ></Button>
+					<Button className={(align === 'full') ? 'pt-active' : ''}  iconName="align-center" onClick={this.setEmbedAttribute.bind(this, 'align', 'full')} ></Button>
+					<Button className={(align === 'max') ? 'pt-active' : ''} iconName="vertical-distribution" onClick={this.setEmbedAttribute.bind(this, 'align', 'max')} ></Button>
 				</div>
 				<br/>
 

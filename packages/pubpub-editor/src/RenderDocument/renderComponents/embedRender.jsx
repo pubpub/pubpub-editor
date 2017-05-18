@@ -8,7 +8,7 @@ let styles = {};
 export const EmbedRender = React.createClass({
 	propTypes: {
 		url: PropTypes.string,
-		align: PropTypes.oneOf(['inline', 'full', 'left', 'right', 'inline-word']),
+		align: PropTypes.oneOf(['inline', 'full', 'left', 'right', 'inline-word', 'max']),
 		size: PropTypes.string,
 	},
 	getInitialState: function() {
@@ -33,8 +33,8 @@ export const EmbedRender = React.createClass({
 		return (
 			<div ref="embedroot" className={'pub-embed ' + (this.props.className) ? this.props.className : null }>
 				<figure style={styles.figure({size, align, false})}>
-  				<div style={{width: size, position: 'relative', display: 'table-row'}}>
-						<RenderFile file={file} />
+  				<div style={styles.row({size, align})}>
+						<RenderFile file={file} style={styles.image}  />
           </div>
           <figcaption style={styles.caption({size, align})}>
             <div style={styles.captionInput} ref="captioninsert">
@@ -48,11 +48,21 @@ export const EmbedRender = React.createClass({
 });
 
 styles = {
+	row: function ({ size, align }) {
+		return {
+			width: (align !== 'max') ? size : '100%',
+			position: 'relative',
+			display: 'table-row'
+		};
+	},
 	captionInput: {
 		width: '100%',
 		border: 'none',
 		fontSize: '1em',
 		minHeight: '1em',
+	},
+	image: {
+		width: '100%',
 	},
 	figure: function({size, align, selected}) {
 		const style = {
@@ -64,7 +74,10 @@ styles = {
 			marginRight: (align === 'left') ? '20px' : null,
 			marginLeft: (align === 'right') ? '20px' : null,
 		};
-		if (align === 'left') {
+		if (align === 'max') {
+			style.width = 'calc(100% + 30px)';
+			style.margin = '0 0 0 -15px';
+		} else if (align === 'left') {
 			style.float = 'left';
 		} else if (align === 'right') {
 			style.float = 'right';

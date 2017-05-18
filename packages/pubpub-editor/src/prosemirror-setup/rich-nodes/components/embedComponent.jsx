@@ -11,7 +11,7 @@ let styles = {};
 export const EmbedComponent = React.createClass({
 	propTypes: {
 		url: PropTypes.string,
-		align: PropTypes.oneOf(['inline', 'full', 'left', 'right', 'inline-word']),
+		align: PropTypes.oneOf(['inline', 'full', 'left', 'right', 'inline-word', 'max']),
 		size: PropTypes.string,
     updateAttrs: PropTypes.func,
 	},
@@ -79,14 +79,14 @@ export const EmbedComponent = React.createClass({
 		const data = this.props.data || {};
 		const file = {url, name: filename, type: URLToType(url)}
 
-		const popoverContent = (<EmbedMenu createCaption={this.props.createCaption} removeCaption={this.props.removeCaption} embedAttrs={this.props} updateParams={this.updateAttrs}/>);
+		const popoverContent = (<EmbedMenu align={align} createCaption={this.props.createCaption} removeCaption={this.props.removeCaption} embedAttrs={this.props} updateParams={this.updateAttrs}/>);
 
 		const maxImageWidth = document.querySelector(".pub-body").clientWidth;
 
 		return (
-			<div draggable="false" ref="embedroot" className={'pub-embed ' + (this.props.className) ? this.props.className : null } onClick={this.forceSelection}>
+			<div draggable="false" ref="embedroot" className="pub-embed" onClick={this.forceSelection}>
 				<figure style={styles.figure({size, align, false})}>
-				<div style={{width: size, position: 'relative', display: 'table-row'}}>
+				<div style={styles.row({size, align})}>
 				<Popover content={popoverContent}
 								 interactionKind={PopoverInteractionKind.CLICK}
 								 popoverClassName="pt-popover-content-sizing pt-minimal pt-dark"
@@ -99,11 +99,14 @@ export const EmbedComponent = React.createClass({
 								 useSmartPositioning={false}>
 
 				{ (!!url) ?
+					(align !== 'max') ?
 					<Resizable
 						width={'100%'}
 						height={'auto'}
 						maxWidth={maxImageWidth}
 						customStyle={styles.outline({false})}
+						enable={false}
+						minWidth={(align === 'max') ? '100%' : undefined}
 						onResizeStop={(direction, styleSize, clientSize, delta) => {
 							// const ratio = ((clientSize.width / this.DOC_WIDTH ) * 100).toFixed(1);
 							// const ratio = ((clientSize.width / this.DOC_WIDTH ) * 100);
@@ -117,6 +120,8 @@ export const EmbedComponent = React.createClass({
 						}}>
 						<RenderFile draggable="false" style={styles.image({selected})} file={file}/>
 						</Resizable>
+						:
+						<RenderFile draggable="false" style={styles.image({selected})} file={file}/>
 					:
 					<div className="pt-callout pt-intent-danger">
 					  <h5>Could not find file: {filename}</h5>
@@ -147,6 +152,13 @@ export const EmbedComponent = React.createClass({
 });
 
 styles = {
+	row: function ({ size, align }) {
+		return {
+			width: (align !== 'max') ? size : '100%',
+			position: 'relative',
+			display: 'table-row'
+		 };
+	},
 	image: function({ selected }) {
 		return {
 			width: '100%',
@@ -172,7 +184,10 @@ styles = {
 			marginRight: (align === 'left') ? '20px' : null,
 			marginLeft: (align === 'right') ? '20px' : null,
 		};
-		if (align === 'left') {
+		if (align === 'max') {
+			style.width = 'calc(100% + 30px)';
+			style.margin = '0 0 0 -15px';
+		} else if (align === 'left') {
 			style.float = 'left';
 		} else if (align === 'right') {
 			style.float = 'right';
