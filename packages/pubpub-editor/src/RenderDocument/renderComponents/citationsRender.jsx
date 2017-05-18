@@ -18,7 +18,7 @@ export const CitationsRender = React.createClass({
 					<div>
 		        <h3>Citations: </h3>
 						{renderedBib.map((bibItem, index) => {
-							return <div key={index} dangerouslySetInnerHTML={{__html:bibItem.text}}></div>
+							return <div key={index} style={{paddingBottom: 10}} dangerouslySetInnerHTML={{__html:bibItem.text}}></div>
 						})}
 					</div>
 					:
