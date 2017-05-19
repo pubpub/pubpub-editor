@@ -1,6 +1,7 @@
-import { wrapInList } from 'prosemirror-schema-list';
 import { joinUp, lift, selectParentNode, setBlockType, toggleMark, wrapIn } from 'prosemirror-commands';
+
 import { schema } from '../prosemirror-setup';
+import { wrapInList } from 'prosemirror-schema-list';
 
 function getMenuItems(editor) {
 
@@ -17,9 +18,9 @@ function getMenuItems(editor) {
 		return state.doc.rangeHasMark(from, to, type);
 	}
 
-	function applyToggleMark(mark) {
+	function applyToggleMark(mark, attrs) {
 		// Toggle the mark on and off. Marks are things like bold, italic, etc
-		const toggleFunction = toggleMark(mark);
+		const toggleFunction = toggleMark(mark, attrs);
 		toggleFunction(editor.view.state, editor.view.dispatch);
 	}
 	/* -------------- */
@@ -92,37 +93,37 @@ function getMenuItems(editor) {
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 2 }),
 			isActive: blockTypeIsActive(schema.nodes.heading, { level: 2 }),
 		},
-		{ 
+		{
 			icon: 'icon-bold',
 			text: 'B',
 			run: applyToggleMark.bind(this, schema.marks.strong),
 			isActive: markIsActive(schema.marks.strong),
 		},
-		{ 
+		{
 			icon: 'icon-italic',
 			text: 'I',
 			run: applyToggleMark.bind(this, schema.marks.em),
 			isActive: markIsActive(schema.marks.em),
 		},
-		{ 
+		{
 			icon: 'icon-code',
 			text: '</>',
 			run: applyToggleMark.bind(this, schema.marks.code),
 			isActive: markIsActive(schema.marks.code),
 		},
-		{ 
+		{
 			icon: 'icon-subscript',
 			text: 'Sub',
 			run: applyToggleMark.bind(this, schema.marks.sub),
 			isActive: markIsActive(schema.marks.sub),
 		},
-		{ 
+		{
 			icon: 'icon-superscript',
 			text: 'Sup',
 			run: applyToggleMark.bind(this, schema.marks.sup),
 			isActive: markIsActive(schema.marks.sup),
 		},
-		{ 
+		{
 			icon: 'icon-strike',
 			text: '-',
 			run: applyToggleMark.bind(this, schema.marks.strike),

@@ -41,6 +41,8 @@ var EmbedEditor = exports.EmbedEditor = _react2.default.createClass({
 	},
 
 	render: function render() {
+		var align = this.props.align;
+
 
 		return _react2.default.createElement(
 			'div',
@@ -48,9 +50,10 @@ var EmbedEditor = exports.EmbedEditor = _react2.default.createClass({
 			_react2.default.createElement(
 				'div',
 				{ className: 'pt-button-group minimal' },
-				_react2.default.createElement(_core.Button, { iconName: 'align-left', onClick: this.setEmbedAttribute.bind(this, 'align', 'left') }),
-				_react2.default.createElement(_core.Button, { iconName: 'align-center', onClick: this.setEmbedAttribute.bind(this, 'align', 'full') }),
-				_react2.default.createElement(_core.Button, { iconName: 'align-right', onClick: this.setEmbedAttribute.bind(this, 'align', 'right') })
+				_react2.default.createElement(_core.Button, { className: align === 'left' ? 'pt-active' : '', iconName: 'align-left', onClick: this.setEmbedAttribute.bind(this, 'align', 'left') }),
+				_react2.default.createElement(_core.Button, { className: align === 'right' ? 'pt-active' : '', iconName: 'align-right', onClick: this.setEmbedAttribute.bind(this, 'align', 'right') }),
+				_react2.default.createElement(_core.Button, { className: align === 'full' ? 'pt-active' : '', iconName: 'align-center', onClick: this.setEmbedAttribute.bind(this, 'align', 'full') }),
+				_react2.default.createElement(_core.Button, { className: align === 'max' ? 'pt-active' : '', iconName: 'vertical-distribution', onClick: this.setEmbedAttribute.bind(this, 'align', 'max') })
 			),
 			_react2.default.createElement('br', null),
 			_react2.default.createElement(

@@ -20,7 +20,7 @@ var EmbedRender = exports.EmbedRender = _react2.default.createClass({
 
 	propTypes: {
 		url: _react.PropTypes.string,
-		align: _react.PropTypes.oneOf(['inline', 'full', 'left', 'right', 'inline-word']),
+		align: _react.PropTypes.oneOf(['inline', 'full', 'left', 'right', 'inline-word', 'max']),
 		size: _react.PropTypes.string
 	},
 	getInitialState: function getInitialState() {
@@ -56,8 +56,8 @@ var EmbedRender = exports.EmbedRender = _react2.default.createClass({
 				{ style: styles.figure({ size: size, align: align, false: false }) },
 				_react2.default.createElement(
 					'div',
-					{ style: { width: size, position: 'relative', display: 'table-row' } },
-					_react2.default.createElement(_renderFiles.RenderFile, { file: file })
+					{ style: styles.row({ size: size, align: align }) },
+					_react2.default.createElement(_renderFiles.RenderFile, { file: file, style: styles.image })
 				),
 				_react2.default.createElement(
 					'figcaption',
@@ -74,16 +74,29 @@ var EmbedRender = exports.EmbedRender = _react2.default.createClass({
 });
 
 styles = {
+	row: function row(_ref) {
+		var size = _ref.size,
+		    align = _ref.align;
+
+		return {
+			width: align !== 'max' ? size : '100%',
+			position: 'relative',
+			display: 'table-row'
+		};
+	},
 	captionInput: {
 		width: '100%',
 		border: 'none',
 		fontSize: '1em',
 		minHeight: '1em'
 	},
-	figure: function figure(_ref) {
-		var size = _ref.size,
-		    align = _ref.align,
-		    selected = _ref.selected;
+	image: {
+		width: '100%'
+	},
+	figure: function figure(_ref2) {
+		var size = _ref2.size,
+		    align = _ref2.align,
+		    selected = _ref2.selected;
 
 		var style = {
 			width: size,
@@ -94,7 +107,10 @@ styles = {
 			marginRight: align === 'left' ? '20px' : null,
 			marginLeft: align === 'right' ? '20px' : null
 		};
-		if (align === 'left') {
+		if (align === 'max') {
+			style.width = 'calc(100% + 30px)';
+			style.margin = '0 0 0 -15px';
+		} else if (align === 'left') {
 			style.float = 'left';
 		} else if (align === 'right') {
 			style.float = 'right';
@@ -103,9 +119,9 @@ styles = {
 		}
 		return style;
 	},
-	caption: function caption(_ref2) {
-		var size = _ref2.size,
-		    align = _ref2.align;
+	caption: function caption(_ref3) {
+		var size = _ref3.size,
+		    align = _ref3.align;
 
 		var style = {
 			width: size,

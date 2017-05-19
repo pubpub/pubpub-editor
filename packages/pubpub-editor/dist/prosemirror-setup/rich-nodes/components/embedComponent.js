@@ -34,7 +34,7 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 
 	propTypes: {
 		url: _react.PropTypes.string,
-		align: _react.PropTypes.oneOf(['inline', 'full', 'left', 'right', 'inline-word']),
+		align: _react.PropTypes.oneOf(['inline', 'full', 'left', 'right', 'inline-word', 'max']),
 		size: _react.PropTypes.string,
 		updateAttrs: _react.PropTypes.func
 	},
@@ -107,19 +107,19 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 		var data = this.props.data || {};
 		var file = { url: url, name: filename, type: (0, _renderFiles.URLToType)(url) };
 
-		var popoverContent = _react2.default.createElement(_embedMenu2.default, { createCaption: this.props.createCaption, removeCaption: this.props.removeCaption, embedAttrs: this.props, updateParams: this.updateAttrs });
+		var popoverContent = _react2.default.createElement(_embedMenu2.default, { align: align, createCaption: this.props.createCaption, removeCaption: this.props.removeCaption, embedAttrs: this.props, updateParams: this.updateAttrs });
 
 		var maxImageWidth = document.querySelector(".pub-body").clientWidth;
 
 		return _react2.default.createElement(
 			'div',
-			{ draggable: 'false', ref: 'embedroot', className: 'pub-embed ' + this.props.className ? this.props.className : null, onClick: this.forceSelection },
+			{ draggable: 'false', ref: 'embedroot', className: 'pub-embed', onClick: this.forceSelection },
 			_react2.default.createElement(
 				'figure',
 				{ style: styles.figure({ size: size, align: align, false: false }) },
 				_react2.default.createElement(
 					'div',
-					{ style: { width: size, position: 'relative', display: 'table-row' } },
+					{ style: styles.row({ size: size, align: align }) },
 					_react2.default.createElement(
 						_core.Popover,
 						{ content: popoverContent,
@@ -132,13 +132,15 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 								_this.refs.embedroot.focus();
 							},
 							useSmartPositioning: false },
-						!!url ? _react2.default.createElement(
+						!!url ? align !== 'max' ? _react2.default.createElement(
 							_reactResizableBox2.default,
 							{
 								width: '100%',
 								height: 'auto',
 								maxWidth: maxImageWidth,
 								customStyle: styles.outline({ false: false }),
+								enable: false,
+								minWidth: align === 'max' ? '100%' : undefined,
 								onResizeStop: function onResizeStop(direction, styleSize, clientSize, delta) {
 									// const ratio = ((clientSize.width / this.DOC_WIDTH ) * 100).toFixed(1);
 									// const ratio = ((clientSize.width / this.DOC_WIDTH ) * 100);
@@ -151,7 +153,7 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 									// this.updateAttrs({size: clientSize.width + 'px' });
 								} },
 							_react2.default.createElement(_renderFiles.RenderFile, { draggable: 'false', style: styles.image({ selected: selected }), file: file })
-						) : _react2.default.createElement(
+						) : _react2.default.createElement(_renderFiles.RenderFile, { draggable: 'false', style: styles.image({ selected: selected }), file: file }) : _react2.default.createElement(
 							'div',
 							{ className: 'pt-callout pt-intent-danger' },
 							_react2.default.createElement(
@@ -185,8 +187,18 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 });
 
 styles = {
-	image: function image(_ref) {
-		var selected = _ref.selected;
+	row: function row(_ref) {
+		var size = _ref.size,
+		    align = _ref.align;
+
+		return {
+			width: align !== 'max' ? size : '100%',
+			position: 'relative',
+			display: 'table-row'
+		};
+	},
+	image: function image(_ref2) {
+		var selected = _ref2.selected;
 
 		return {
 			width: '100%',
@@ -194,8 +206,8 @@ styles = {
 			transition: 'outline-color 0.15s ease-in'
 		};
 	},
-	outline: function outline(_ref2) {
-		var selected = _ref2.selected;
+	outline: function outline(_ref3) {
+		var selected = _ref3.selected;
 
 		return {
 			outline: selected ? '3px solid #BBBDC0' : '3px solid transparent',
@@ -204,10 +216,10 @@ styles = {
 
 		};
 	},
-	figure: function figure(_ref3) {
-		var size = _ref3.size,
-		    align = _ref3.align,
-		    selected = _ref3.selected;
+	figure: function figure(_ref4) {
+		var size = _ref4.size,
+		    align = _ref4.align,
+		    selected = _ref4.selected;
 
 		var style = {
 			width: !!size ? size : 'auto',
@@ -218,7 +230,10 @@ styles = {
 			marginRight: align === 'left' ? '20px' : null,
 			marginLeft: align === 'right' ? '20px' : null
 		};
-		if (align === 'left') {
+		if (align === 'max') {
+			style.width = 'calc(100% + 30px)';
+			style.margin = '0 0 0 -15px';
+		} else if (align === 'left') {
 			style.float = 'left';
 		} else if (align === 'right') {
 			style.float = 'right';
@@ -227,9 +242,9 @@ styles = {
 		}
 		return style;
 	},
-	caption: function caption(_ref4) {
-		var size = _ref4.size,
-		    align = _ref4.align;
+	caption: function caption(_ref5) {
+		var size = _ref5.size,
+		    align = _ref5.align;
 
 		var style = {
 			lineHeight: '30px',

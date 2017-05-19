@@ -61,7 +61,8 @@ var InsertMenuDialogReferences = exports.InsertMenuDialogReferences = _react2.de
 				url: '',
 				metadata: {}
 			},
-			savable: false
+			savable: false,
+			error: null
 		};
 	},
 
@@ -117,6 +118,9 @@ var InsertMenuDialogReferences = exports.InsertMenuDialogReferences = _react2.de
 			// const randomCitationId = (!cslJSON.id || isNaN(cslJSON.id)) ? Math.round(Math.random()*100000000) : cslJSON.id;
 			// 	cslJSON.id = String(randomCitationId);
 			this.props.onReferenceAdd(cslJSON[0]);
+		} else {
+			console.log('IMPRPOPER BIBTEX');
+			this.setState({ error: true });
 		}
 	},
 	changedTab: function changedTab(selectedTabIndex, prevSelectedTabIndex) {
@@ -207,10 +211,14 @@ var InsertMenuDialogReferences = exports.InsertMenuDialogReferences = _react2.de
 					_react2.default.createElement(
 						_core.TabPanel,
 						null,
-						_react2.default.createElement(
+						!this.state.error ? _react2.default.createElement(
 							'div',
 							{ className: 'pt-callout' },
 							'Paste in BiBTeX data and we will automatically create a reference.'
+						) : _react2.default.createElement(
+							'div',
+							{ className: 'pt-callout pt-intent-danger' },
+							'There is an error with the BiBTeX you enter, please fix it and try again!'
 						),
 						_react2.default.createElement('textarea', { className: 'pt-input pt-fill', dir: 'auto', ref: function ref(input) {
 								_this.bibtexText = input;

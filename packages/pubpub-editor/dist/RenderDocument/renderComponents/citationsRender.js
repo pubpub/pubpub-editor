@@ -38,7 +38,7 @@ var CitationsRender = exports.CitationsRender = _react2.default.createClass({
 					'Citations: '
 				),
 				renderedBib.map(function (bibItem, index) {
-					return _react2.default.createElement('div', { key: index, dangerouslySetInnerHTML: { __html: bibItem.text } });
+					return _react2.default.createElement('div', { key: index, style: { paddingBottom: 10 }, dangerouslySetInnerHTML: { __html: bibItem.text } });
 				})
 			) : null
 		);

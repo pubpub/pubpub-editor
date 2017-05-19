@@ -245,7 +245,6 @@ var CitationEngine = function () {
       var result = this.citeproc.makeBibliography(query);
 
       if (result && result.length >= 1 && result[1].length > 0) {
-        console.log('Returning', result[1][0]);
         return result[1][0];
       }
       return null;
