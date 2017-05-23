@@ -2,7 +2,6 @@ import { locales, sampleData, styles } from './csldata';
 
 import { CSL } from  './citeproc';
 import parseBibTeX from './bibtextocsl';
-import striptags from 'striptags';
 
 class CitationEngine {
 
@@ -196,7 +195,6 @@ class CitationEngine {
         const bib = bibArray.map((bibEntry, index) => {
           if (bibEntry) {
             return {text: bibEntry, id: entries[index]};
-            // return {text: striptags(bibEntry), id: entries[index]};
           }
           return null;
         });
