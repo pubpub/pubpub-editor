@@ -4,11 +4,11 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 
-var _prosemirrorSchemaList = require('prosemirror-schema-list');
-
 var _prosemirrorCommands = require('prosemirror-commands');
 
 var _prosemirrorSetup = require('../prosemirror-setup');
+
+var _prosemirrorSchemaList = require('prosemirror-schema-list');
 
 function getMenuItems(editor) {
 
@@ -30,9 +30,9 @@ function getMenuItems(editor) {
 		return state.doc.rangeHasMark(from, to, type);
 	}
 
-	function applyToggleMark(mark) {
+	function applyToggleMark(mark, attrs) {
 		// Toggle the mark on and off. Marks are things like bold, italic, etc
-		var toggleFunction = (0, _prosemirrorCommands.toggleMark)(mark);
+		var toggleFunction = (0, _prosemirrorCommands.toggleMark)(mark, attrs);
 		toggleFunction(editor.view.state, editor.view.dispatch);
 	}
 	/* -------------- */

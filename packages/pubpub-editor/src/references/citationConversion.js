@@ -20,7 +20,7 @@ const	generateBibTexString = (jsonInfo) => {
 		@article{${id},
 			${jsonKeys.map(function(key) {
 				if (jsonInfo[key]) {
-					return `${key}={${jsonInfo[key]}}`;
+					return `${key}="${jsonInfo[key]}"`;
 				}
 				return null;
 			})

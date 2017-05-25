@@ -14,10 +14,6 @@ var _bibtextocsl = require('./bibtextocsl');
 
 var _bibtextocsl2 = _interopRequireDefault(_bibtextocsl);
 
-var _striptags = require('striptags');
-
-var _striptags2 = _interopRequireDefault(_striptags);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -185,7 +181,6 @@ var CitationEngine = function () {
           var bib = bibArray.map(function (bibEntry, index) {
             if (bibEntry) {
               return { text: bibEntry, id: entries[index] };
-              // return {text: striptags(bibEntry), id: entries[index]};
             }
             return null;
           });

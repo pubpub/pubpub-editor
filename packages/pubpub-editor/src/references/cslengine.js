@@ -1,7 +1,6 @@
 import { locales, sampleData, styles } from './csldata';
 
 import { CSL } from  './citeproc';
-import parseBibTeX from './bibtextocsl';
 
 class CitationEngine {
 

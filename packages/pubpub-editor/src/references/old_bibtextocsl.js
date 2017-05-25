@@ -256,6 +256,7 @@ var parseBibTeX = function ( str ) {
       while ( whitespace.test( curs ) )
         curs = stack[ ++index ]
 
+
       if ( curs === '{' )
         curs = stack[ ++index ]
       else
@@ -480,7 +481,8 @@ var parseBibTeXProp = function ( prop, value ) {
     // Pubate
     case 'date':
       rProp = 'issued'
-      rValue = parseDate( value )
+      // rValue = parseDate( value )
+      rValue = value
       break;
 
     case 'year' :
@@ -520,7 +522,7 @@ var parseBibTeXProp = function ( prop, value ) {
       break;
 
     default:
-      console.debug( '[set]', 'Unknown property:', prop )
+      console.log( '[set]', 'Unknown property:', prop )
       rProp = rValue = undefined
       break;
   }
@@ -547,6 +549,8 @@ var parseBibTeXJSON = function ( data ) {
 
     entry.type = parseBibTeXType( entry.type )
     entry.id   = entry.label
+    // entry.id   = slugify(enety.title + entry.year);
+
 
     delete entry.label
     delete entry.properties

@@ -37,7 +37,11 @@ const createReference = (node, context) => {
 
   if (!context.debug) {
     const CSLJSON = convertJSONtoCSL(data.content);
-    citationData = (CSLJSON && CSLJSON.length > 0) ?  CSLJSON[0] : null;
+    citationData = (CSLJSON && CSLJSON[0]) ?  CSLJSON[0] : null;
+    if (!citationData) {
+      console.log('failed citation!');
+      // console.log(data.content);
+    }
   } else {
     citationData = data.content;
   }

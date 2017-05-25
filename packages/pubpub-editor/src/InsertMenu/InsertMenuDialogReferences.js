@@ -106,7 +106,7 @@ export const InsertMenuDialogReferences = React.createClass({
 
 		const cslJSON = parseBibTeX(bibTexString);
 
-		if (cslJSON && cslJSON.length > 0 && Object.keys(cslJSON[0]).length > 0) {
+		if (cslJSON && cslJSON[0]) {
 			// const randomCitationId = (!cslJSON.id || isNaN(cslJSON.id)) ? Math.round(Math.random()*100000000) : cslJSON.id;
 			// 	cslJSON.id = String(randomCitationId);
 			this.props.onReferenceAdd(cslJSON[0]);
