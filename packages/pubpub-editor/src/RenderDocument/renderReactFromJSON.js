@@ -11,11 +11,14 @@ CSL engine API endpoint...
 
 
 const findInlineCitationData = (doc) => {
-	const citationNodes = findNodesWithIndex(doc, 'citation') || [];
-	const citationData = citationNodes.map((node) => {
-		return (node.node.attrs) ? node.node.attrs.data : null;
-	});
-	return citationData;
+	if (doc.content[1] && doc.content[1].type === 'citations') {
+		const citationNodes = doc.content[1].content;
+		const citationData = citationNodes.map((node) => {
+			return (node.attrs) ? node.attrs.data : null;
+		});
+		return citationData;
+	}
+	return [];
 }
 
 
