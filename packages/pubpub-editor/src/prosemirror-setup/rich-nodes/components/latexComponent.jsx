@@ -6,8 +6,6 @@ import ReactDOM from 'react-dom';
 import katex from 'katex';
 import katexStyles from './katex.css.js';
 
-// import {safeGetInToJS} from 'utils/safeParse';
-
 const ERROR_MSG_HTML = "<div class='pub-latex-error'>Error rendering equation</div>";
 
 export const LatexEditor = React.createClass({

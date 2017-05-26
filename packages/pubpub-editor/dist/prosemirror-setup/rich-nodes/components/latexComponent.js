@@ -117,7 +117,6 @@ var LatexEditor = exports.LatexEditor = _react2.default.createClass({
 	},
 
 	setSelected: function setSelected(selected) {
-		console.log('selected!!', selected);
 		this.setState({ selected: selected });
 	},
 

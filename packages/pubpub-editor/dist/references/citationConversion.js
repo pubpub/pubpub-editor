@@ -27,7 +27,7 @@ var generateBibTexString = function generateBibTexString(jsonInfo) {
 	var id = (0, _slugify2.default)(jsonInfo['title'] + jsonInfo['year']);
 	return '\n\t\t@article{' + id + ',\n\t\t\t' + jsonKeys.map(function (key) {
 		if (jsonInfo[key]) {
-			return key + '={' + jsonInfo[key] + '}';
+			return key + '="' + jsonInfo[key] + '"';
 		}
 		return null;
 	}).filter(function (value) {

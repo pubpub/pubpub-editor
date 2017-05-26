@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@pubpub/render-files": "^2.0.64",
+    "biblatex-csl-converter": "^0.21.7",
     "classnames": "^2.2.5",
     "diff": "^3.2.0",
     "fuzzysearch": "^1.0.3",
