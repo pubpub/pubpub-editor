@@ -15,6 +15,8 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _docOperations = require('../utils/doc-operations');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /*
@@ -22,10 +24,20 @@ CSL engine API endpoint...
 - serialize each reference decorations?
 */
 
+var findInlineCitationData = function findInlineCitationData(doc) {
+	var citationNodes = (0, _docOperations.findNodesWithIndex)(doc, 'citation') || [];
+	var citationData = citationNodes.map(function (node) {
+		return node.node.attrs ? node.node.attrs.data : null;
+	});
+	return citationData;
+};
+
 var renderReactFromJSON = exports.renderReactFromJSON = function renderReactFromJSON(doc, fileMap, allReferences, slug) {
 
 	var engine = new _references.CitationEngine();
-	engine.setBibliography(allReferences);
+	var inlineCitations = findInlineCitationData(doc);
+	var finalReferences = allReferences.concat(inlineCitations);
+	engine.setBibliography(finalReferences);
 
 	var docAttrs = doc.attrs && doc.attrs.meta ? doc.attrs.meta : null;
 
@@ -151,11 +163,15 @@ var renderSubLoop = function renderSubLoop(item, meta) {
 								previous
 							);
 						case 'link':
-							return _react2.default.createElement(
-								'a',
-								{ href: current.attrs.href, title: current.attrs.title, key: index, target: '_top' },
-								previous
-							);
+							console.log(current);
+							if (current.attrs) {
+								return _react2.default.createElement(
+									'a',
+									{ href: current.attrs.href, title: current.attrs.title, key: index, target: '_top' },
+									previous
+								);
+							}
+							return previous;
 						default:
 							return previous;
 					}
