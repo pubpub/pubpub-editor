@@ -29,8 +29,6 @@ var _katexCss2 = _interopRequireDefault(_katexCss);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import {safeGetInToJS} from 'utils/safeParse';
-
 var ERROR_MSG_HTML = "<div class='pub-latex-error'>Error rendering equation</div>";
 
 var LatexEditor = exports.LatexEditor = _react2.default.createClass({

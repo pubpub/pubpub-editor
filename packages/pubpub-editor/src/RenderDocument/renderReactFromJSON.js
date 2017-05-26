@@ -2,6 +2,7 @@ import { CitationsRender, EmbedRender, HtmlRender, IframeRender, LatexRender, Me
 
 import { CitationEngine } from '../references';
 import React from 'react';
+import { findNodesWithIndex } from '../utils/doc-operations';
 
 /*
 CSL engine API endpoint...
@@ -9,10 +10,21 @@ CSL engine API endpoint...
 */
 
 
+const findInlineCitationData = (doc) => {
+	const citationNodes = findNodesWithIndex(doc, 'citation') || [];
+	const citationData = citationNodes.map((node) => {
+		return (node.node.attrs) ? node.node.attrs.data : null;
+	});
+	return citationData;
+}
+
+
 export const renderReactFromJSON = function(doc, fileMap, allReferences, slug) {
 
 	const engine = new CitationEngine();
-	engine.setBibliography(allReferences);
+	const inlineCitations = findInlineCitationData(doc);
+	const finalReferences = allReferences.concat(inlineCitations);
+	engine.setBibliography(finalReferences);
 
 	const docAttrs = (doc.attrs && doc.attrs.meta) ? doc.attrs.meta : null;
 
@@ -80,7 +92,11 @@ const renderSubLoop = function(item, meta) {
 				case 'strike':
 					return <s key={index}>{previous}</s>;
 				case 'link':
-					return <a href={current.attrs.href} title={current.attrs.title} key={index} target={'_top'}>{previous}</a>;
+					console.log(current);
+					if (current.attrs) {
+						return <a href={current.attrs.href} title={current.attrs.title} key={index} target={'_top'}>{previous}</a>;
+					}
+					return previous;
 				default:
 					return previous;
 				}
