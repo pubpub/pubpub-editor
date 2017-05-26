@@ -1,5 +1,5 @@
 import { HtmlDoc, PDFrendering, ReferenceOrdering, SampleMarkdown, SingleMention, SingleReference, TableMarkdown } from './sampledocs';
-import { LongLegacyBug, MentionContentBug } from './bugdata';
+import { LongLegacyBug, MentionContentBug, ReferenceNotShowingBug } from './bugdata';
 
 import APIEditor from './storybookAPI';
 import CodeEditor from './storybookCodeEditor';
@@ -56,12 +56,17 @@ storiesOf('Subcomponents', module)
 ))
 ;
 
+console.log('REFERNECE BUG', ReferenceNotShowingBug);
+
 storiesOf('Debugging', module)
 .add('mention content ', () => (
 	<FullEditor mode={'markdown'} initialContent={MentionContentBug} />
 ))
 .add('long legacy ', () => (
 	<FullEditor mode={'rich'} initialContent={LongLegacyBug} />
+))
+.add('reference debugging ', () => (
+	<FullEditor mode={'rich'} initialContent={ReferenceNotShowingBug} />
 ))
 ;
 

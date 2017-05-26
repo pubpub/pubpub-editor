@@ -1,22 +1,22 @@
+import { Menu, MenuItem, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 import React, { PropTypes } from 'react';
 import { jsonToMarkdown, markdownToJSON } from '../src/markdown';
 import { localDiscussions, localFiles, localHighlights, localPages, localPubs, localReferences, localUsers } from './sampledocs/autocompleteLocalData';
-import { markdownToExport } from '../src/ExportMenu';
 
 // import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
 // import RichEditor from '../src/editorComponents/RichEditor';
 import FullEditor from '../src/editorComponents/FullEditor';
 import RenderDocument from '../src/RenderDocument/RenderDocument';
-
 import {csltoBibtex} from '../src/references/csltobibtex';
-import { s3Upload } from './utils/uploadFile';
-import { Menu, MenuItem, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
-
+import { markdownToExport } from '../src/ExportMenu';
 import request from 'superagent';
+import { s3Upload } from './utils/uploadFile';
 
 // requires style attributes that would normally be up to the wrapping library to require
 require('@blueprintjs/core/dist/blueprint.css');
 require('./utils/pubBody.scss');
+
+console.log('Got references!', localReferences);
 
 // require('../style/base.scss');
 // require('../style/markdown.scss');

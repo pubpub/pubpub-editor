@@ -15,8 +15,8 @@ const parseBibTeX = function(bibString) {
       console.log(parser.errors)
       return null;
     }
-    let exporter = new CSLExporter(bibDB)
-    return exporter.output;
+    let exporter = new CSLExporter(bibDB);
+    return Object.values(exporter.output);
 }
 
 export default parseBibTeX;

@@ -87,7 +87,6 @@ export const LatexEditor = React.createClass({
 	},
 
 	setSelected: function(selected) {
-		console.log('selected!!', selected);
 		this.setState({ selected });
 	},
 

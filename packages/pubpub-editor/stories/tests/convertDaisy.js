@@ -4,4 +4,4 @@ import { migrateJSON } from '../../src/migrate/migratev3';
 const converted = migrateJSON(daisyDoc);
 
 console.log('got converted!');
-console.log(converted);
+console.log(JSON.stringify(converted.docJSON));
