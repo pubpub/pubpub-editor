@@ -25,11 +25,14 @@ CSL engine API endpoint...
 */
 
 var findInlineCitationData = function findInlineCitationData(doc) {
-	var citationNodes = (0, _docOperations.findNodesWithIndex)(doc, 'citation') || [];
-	var citationData = citationNodes.map(function (node) {
-		return node.node.attrs ? node.node.attrs.data : null;
-	});
-	return citationData;
+	if (doc.content[1] && doc.content[1].type === 'citations') {
+		var citationNodes = doc.content[1].content;
+		var citationData = citationNodes.map(function (node) {
+			return node.attrs ? node.attrs.data : null;
+		});
+		return citationData;
+	}
+	return [];
 };
 
 var renderReactFromJSON = exports.renderReactFromJSON = function renderReactFromJSON(doc, fileMap, allReferences, slug) {
