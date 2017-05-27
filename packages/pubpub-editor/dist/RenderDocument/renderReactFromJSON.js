@@ -28,7 +28,7 @@ var findInlineCitationData = function findInlineCitationData(doc) {
 	if (doc.content[1] && doc.content[1].type === 'citations') {
 		var citationNodes = doc.content[1].content;
 		var citationData = citationNodes.map(function (node) {
-			return node.attrs ? node.attrs.data : null;
+			return node.attrs && node.attrs.data && node.attrs.data.id ? node.attrs.data : null;
 		});
 		return citationData;
 	}

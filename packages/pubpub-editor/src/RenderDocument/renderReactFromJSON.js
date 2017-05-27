@@ -15,6 +15,8 @@ const findInlineCitationData = (doc) => {
 		const citationNodes = doc.content[1].content;
 		const citationData = citationNodes.map((node) => {
 			return (node.attrs && node.attrs.data && node.attrs.data.id) ? node.attrs.data : null;
+		}).filter((citationNode) => {
+			return (!!citationNode);
 		});
 		return citationData;
 	}
