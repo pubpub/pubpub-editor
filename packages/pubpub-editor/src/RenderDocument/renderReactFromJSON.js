@@ -13,6 +13,9 @@ CSL engine API endpoint...
 const findInlineCitationData = (doc) => {
 	if (doc.content[1] && doc.content[1].type === 'citations') {
 		const citationNodes = doc.content[1].content;
+		if (!citationNodes || citationNodes.length === 0) {
+			return [];
+		}
 		const citationData = citationNodes.map((node) => {
 			return (node.attrs && node.attrs.data && node.attrs.data.id) ? node.attrs.data : null;
 		}).filter((citationNode) => {
