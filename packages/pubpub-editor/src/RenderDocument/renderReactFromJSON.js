@@ -75,7 +75,7 @@ const renderSubLoop = function(item, meta) {
 			// console.log((node.content));
 			return <div className={'p-block'} key={index}>{renderSubLoop(node.content, meta)}</div>;
 		case 'page_break':
-			return <div className={'pagebreak'} key={index}>pagebreak</div>;
+			return <div className={'pagebreak'} key={index}></div>;
 		case 'image':
 			return <img {...node.attrs} key={index}/>;
 		case 'hard_break':
