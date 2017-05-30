@@ -118,11 +118,7 @@ var renderSubLoop = function renderSubLoop(item, meta) {
 					renderSubLoop(node.content, meta)
 				);
 			case 'page_break':
-				return _react2.default.createElement(
-					'div',
-					{ className: 'pagebreak', key: index },
-					'pagebreak'
-				);
+				return _react2.default.createElement('div', { className: 'pagebreak', key: index });
 			case 'image':
 				return _react2.default.createElement('img', _extends({}, node.attrs, { key: index }));
 			case 'hard_break':
