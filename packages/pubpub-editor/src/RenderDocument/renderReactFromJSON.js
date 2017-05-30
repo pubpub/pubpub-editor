@@ -1,4 +1,4 @@
-import { CitationsRender, EmbedRender, HtmlRender, IframeRender, LatexRender, MentionRender, ReferenceRender } from './renderComponents';
+import { CitationsRender, EmbedRender, FootnoteRender, HtmlRender, IframeRender, LatexRender, MentionRender, ReferenceRender } from './renderComponents';
 
 import { CitationEngine } from '../references';
 import React from 'react';
@@ -167,6 +167,10 @@ const renderSubLoop = function(item, meta) {
 			}
 
 			return <ReferenceRender citationID={citationID} engine={meta.engine} key={index} label={label} {...node.attrs} />
+
+		case 'footnote':
+			const { content } = node.attrs;
+			return <FootnoteRender content={content} label={[1]} />
 		case 'citations':
 			let bib;
 

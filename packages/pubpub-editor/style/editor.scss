@@ -95,6 +95,19 @@ li.ProseMirror-selectednode:after {
   border-style: solid;
 }
 
+.pub-footnote {
+  vertical-align: super;
+  font-size: smaller;
+  cursor: pointer;
+}
+
+.pub-footnote:hover, .pub-footnote.selected {
+  background-color: #f7fafb;
+  border-color: rgba(16, 22, 26, 0.1) rgba(16, 22, 26, 0.1) rgba(16, 22, 26, 0.17) rgba(16, 22, 26, 0.1);
+  padding: 0px 3px;
+  border-width: 1px;
+  border-style: solid;
+}
 
 .ProseMirror-selectednode {
     outline: none !important;
@@ -164,7 +177,6 @@ li.ProseMirror-selectednode:after {
   font-size: 0.9em;
   font-style: italic;
 }
-
 
 /*
 Styling citations

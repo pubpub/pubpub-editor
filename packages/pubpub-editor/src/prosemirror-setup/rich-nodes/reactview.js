@@ -44,6 +44,14 @@ class ReactView {
     }
   }
 
+  updateAttrs( nodeAttrs) {
+    const start = this.getPos();
+    // const nodeType = schema.nodes.embed;
+    const oldNodeAttrs = this.node.attrs;
+    const transaction = this.view.state.tr.setNodeType(start, null,  {...oldNodeAttrs, ...nodeAttrs});
+    this.view.dispatch(transaction);
+  }
+
   // Needs to be override by child classes
   renderElement(domChild) {
     return null;
@@ -69,6 +77,14 @@ class ReactView {
     const end = start + this.node.nodeSize;
 
     const transaction = this.view.state.tr.replaceWith(start, end, newNode);
+    this.view.dispatch(transaction);
+  }
+
+  forceSelection() {
+    const pos = this.getPos();
+    const sel = NodeSelection.create(this.view.state.doc, pos);
+    const transaction = this.view.state.tr.setSelection(sel);
+    // this.reactElement.focusAndSelect();
     this.view.dispatch(transaction);
   }
 

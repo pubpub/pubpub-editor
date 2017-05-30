@@ -1,6 +1,7 @@
 import attrs from 'markdown-it-attrs';
 import citations from './markdown-it-citations';
 import embed from './markdown-it-embed';
+import footnote from 'markdown-it-footnote';
 import highlight from './markdown-it-highlight';
 import markdownit from 'markdown-it';
 import mk from 'markdown-it-katex';
@@ -20,6 +21,7 @@ export const markdownitInstance = markdownit({
 .use(reference) // Reference parser
 .use(attrs) // Reference parser
 .use(highlight)
+.use(footnote)
 .use(modifyLinks)
 .use(embed); // Pub Highlight parser
 

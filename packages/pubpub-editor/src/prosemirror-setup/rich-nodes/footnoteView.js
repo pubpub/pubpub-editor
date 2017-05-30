@@ -15,10 +15,8 @@ class EmbedView extends ReactView {
   }
 
   bindFunctions() {
-    this.updateCaption = this.updateCaption.bind(this);
-    this.createCaption = this.createCaption.bind(this);
-    this.removeCaption = this.removeCaption.bind(this);
     this.forceSelection = this.forceSelection.bind(this);
+    this.updateContent = this.updateContent.bind(this);
 
     super.bindFunctions();
   }
@@ -29,7 +27,7 @@ class EmbedView extends ReactView {
     const nodeAttrs = node.attrs;
 
     const footnoteElement =  ReactDOM.render(<FootnoteComponent
-      updateAttrs={this.valueChanged}
+      updateContent={this.updateContent}
       setSelection={this.setSelection}
       forceSelection={this.forceSelection}
       {...nodeAttrs}
@@ -40,43 +38,9 @@ class EmbedView extends ReactView {
 
   }
 
-	valueChanged(nodeAttrs) {
-    const start = this.getPos();
-    const nodeType = schema.nodes.embed;
-    const oldNodeAttrs = this.node.attrs;
-		const transaction = this.view.state.tr.setNodeType(start, nodeType,  {...oldNodeAttrs, ...nodeAttrs});
-		this.view.dispatch(transaction);
+	updateContent(content) {
+    super.updateAttrs({content});
 	}
-
-
-  /*
-  setSelection(anchor, head) {
-    console.log(anchor, head);NodeSelection
-    this.reactElement.setSelected(true);
-    // this.reactElement.focusAndSelect();
-  }
-  */
-
-  /*
-
-  setSelection() {
-    console.log('SETTING SELECTION!');
-    const pos = this.getPos();
-    const sel = NodeSelection.create(this.view.state.doc, pos);
-    const transaction = this.view.state.tr.setSelection(sel);
-    this.reactElement.setSelected(true);
-    this.view.dispatch(transaction);
-  }
-
-  */
-
-  forceSelection() {
-    const pos = this.getPos();
-    const sel = NodeSelection.create(this.view.state.doc, pos);
-    const transaction = this.view.state.tr.setSelection(sel);
-    // this.reactElement.focusAndSelect();
-    this.view.dispatch(transaction);
-  }
 
   stopEvent(evt) {
     if (evt.type === "keypress" || evt.type === "input" || evt.type === "keydown" || evt.type === "keyup" || evt.type === "paste" || evt.type === "mousedown") {
@@ -86,7 +50,8 @@ class EmbedView extends ReactView {
   }
 
   selectNode() {
-    this.reactElement.focusAndSelect();
+    this.reactElement.setSelected(true);
+    // this.reactElement.focusAndSelect();
   }
 
   deselectNode() {

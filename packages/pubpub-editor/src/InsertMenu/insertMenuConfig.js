@@ -35,6 +35,12 @@ function insertReference(view, citationData) {
 	return view.dispatch(transaction);
 }
 
+function insertFootnote(view) {
+	const footnoteNode = schema.nodes.footnote.create({ content: '' });
+	const transaction = view.state.tr.replaceSelectionWith(footnoteNode);
+	return view.dispatch(transaction);
+}
+
 /* -------------- */
 /* Embed */
 /* -------------- */
@@ -98,6 +104,11 @@ function getMenuItems(editor, openDialog) {
 			icon: 'pt-icon-h1',
 			text: 'Insert Horizontal Line',
 			run: insertHorizontalRule.bind(null, editor.view),
+		},
+		{
+			icon: 'pt-icon-h1',
+			text: 'Insert Footnote',
+			run: insertFootnote.bind(null, editor.view),
 		},
 		{
 			icon: 'pt-icon-h1',

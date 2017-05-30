@@ -5,3 +5,4 @@ export ReferenceRender from './referenceRender';
 export IframeRender from './iframeRender';
 export MentionRender from './mentionRender';
 export HtmlRender from './htmlRender';
+export FootnoteRender from './footnoteRender';
