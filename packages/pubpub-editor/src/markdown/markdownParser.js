@@ -32,8 +32,13 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 
 		image: {node: 'embed'},
 		highlight: {node: 'highlight', attrs: tok => { return {highlightID: tok.attrGet('highlightID') }; }},
-		footnote: {node: 'footnote'},
-
+		footnote_ref: {node: 'footnote', attrs: tok => {
+			console.log('got token1', tok);
+			return {
+				label: tok.attrGet('label'),
+				content: tok.attrGet('content'),
+		 	};
+		}},
 		embed: {node: 'embed'},
 		emoji: {node: 'emoji', attrs: tok => ({
 			content: tok.content,
@@ -193,6 +198,18 @@ const addMention = function(state, tok) {
 	state.openNode(markdownSchema.nodeType('mention'), attrs);
 };
 
+/*
+const addFootnote = function(state, tok) {
+	let type, url;
+	const footnoteId = tok.meta.id;
+	console.log(state);
+	const tokens = state.env.footnotes.list[footnoteId];
+	console.log('tokens!!!', tokens);
+	state.addNode(markdownSchema.nodeType('footnote'), { content: 'a' });
+};
+
+markdownParser.tokenHandlers.footnote_ref = addFootnote;
+*/
 markdownParser.tokenHandlers.image = addEmbed;
 markdownParser.tokenHandlers.reference = addReference;
 markdownParser.tokenHandlers.citations = addCitations;

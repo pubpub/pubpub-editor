@@ -1,4 +1,4 @@
-import { HtmlDoc, PDFrendering, ReferenceOrdering, SampleMarkdown, SingleMention, SingleReference, TableMarkdown } from './sampledocs';
+import { Footnotes, HtmlDoc, PDFrendering, ReferenceOrdering, SampleMarkdown, SingleMention, SingleReference, TableMarkdown } from './sampledocs';
 import { LongLegacyBug, MentionContentBug, ReferenceNotShowingBug } from './bugdata';
 
 import APIEditor from './storybookAPI';
@@ -45,6 +45,9 @@ storiesOf('Full Editor', module)
 .add('PDF rendering', () => (
 	<FullEditor mode={'markdown'} initialContent={PDFrendering} />
 ))
+.add('Footnotes', () => (
+	<FullEditor mode={'markdown'} initialContent={Footnotes} />
+))
 .add('API Search', () => (
 	<APIEditor />
 ))
@@ -55,8 +58,6 @@ storiesOf('Subcomponents', module)
 	<ExportMenu/>
 ))
 ;
-
-console.log('REFERNECE BUG', ReferenceNotShowingBug);
 
 storiesOf('Debugging', module)
 .add('mention content ', () => (

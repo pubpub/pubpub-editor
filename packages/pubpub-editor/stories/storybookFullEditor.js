@@ -7,7 +7,7 @@ import { localDiscussions, localFiles, localHighlights, localPages, localPubs, l
 // import RichEditor from '../src/editorComponents/RichEditor';
 import FullEditor from '../src/editorComponents/FullEditor';
 import RenderDocument from '../src/RenderDocument/RenderDocument';
-import {csltoBibtex} from '../src/references/csltobibtex';
+import { csltoBibtex } from '../src/references/csltobibtex';
 import { markdownToExport } from '../src/ExportMenu';
 import request from 'superagent';
 import { s3Upload } from './utils/uploadFile';
@@ -240,7 +240,6 @@ export const StoryBookFullEditor = React.createClass({
 			globalCategories: ['pubs', 'users'],
 		};
 		const pdftexTemplates = this.state.pdftexTemplates;
-		console.log(pdftexTemplates)
 		const popoverContent = (
 			<div>
 				<h5>Popover title</h5>
