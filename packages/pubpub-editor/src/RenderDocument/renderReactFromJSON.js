@@ -169,8 +169,7 @@ const renderSubLoop = function(item, meta) {
 			return <ReferenceRender citationID={citationID} engine={meta.engine} key={index} label={label} {...node.attrs} />
 
 		case 'footnote':
-			const { content } = node.attrs;
-			return <FootnoteRender content={content} label={[1]} />
+			return <FootnoteRender content={node.attrs.content} label={node.attrs.label} />
 		case 'citations':
 			let bib;
 

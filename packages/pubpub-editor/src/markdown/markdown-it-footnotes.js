@@ -26,14 +26,14 @@ function footnote_inline(state, silent) {
   if (!silent) {
     if (!state.env.footnotes) { state.env.footnotes = {}; }
     if (!state.env.footnotes.list) { state.env.footnotes.list = []; }
-    footnoteId = state.env.footnotes.list.length;
+    footnoteId = state.env.footnotes.list.length + 1;
 
     var content = state.src.slice(labelStart, labelEnd);
     token      = state.push('footnote_ref', '', 0);
     token.meta = { id: footnoteId };
     token.attrs = [];
     token.attrs.push(['content', content]);
-    token.attrs.push(['content', content]);
+    token.attrs.push(['label', footnoteId ]);
     state.env.footnotes.list.push(token);
   }
 

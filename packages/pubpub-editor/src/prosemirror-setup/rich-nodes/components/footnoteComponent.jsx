@@ -36,7 +36,7 @@ export const FootnoteComponent = React.createClass({
 
   render() {
 
-		const { content } = this.props;
+		const { content, label } = this.props;
 		const { selected } = this.state;
 
 		const footnoteClass = classNames({
@@ -65,7 +65,7 @@ export const FootnoteComponent = React.createClass({
 						 position={Position.BOTTOM}
 						 autoFocus={false}
 						 useSmartPositioning={false}>
-        	{(this.state.label) ? this.state.label : "1"}
+        	{(label) ? label : "1"}
 				</Popover>
       </span>
     );
