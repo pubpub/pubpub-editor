@@ -75,6 +75,7 @@ styles = {
 			};
 		}
 		return {
+			transition: 'left 0.25s, top 0.1s',
 			width: `${width}px`,
 			position: 'absolute',
 			height: '30px',
