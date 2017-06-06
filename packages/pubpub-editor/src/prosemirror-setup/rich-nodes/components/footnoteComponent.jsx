@@ -9,7 +9,7 @@ export const FootnoteComponent = React.createClass({
 		updateContent: PropTypes.func,
 	},
 	getInitialState: function() {
-    return {selected: false};
+    return {selected: false, isOpen: false};
 	},
 	getDefaultProps: function() {
 		return {
@@ -33,22 +33,27 @@ export const FootnoteComponent = React.createClass({
 		this.props.updateContent(value);
 	},
 
+	togglePopover: function() {
+		this.setState({isOpen: !this.state.isOpen});
+	},
+
   render() {
 
 		const { content } = this.props;
-		const { selected, label } = this.state;
+		const { selected, label, isOpen } = this.state;
 
 		const footnoteClass = classNames({
 			'pub-footnote': true,
-      'selected': this.state.selected,
+      'selected': selected || isOpen,
     });
 
 
 		const popoverContent = (<div className="pub-footnote-popover" style={{minWidth: 250}}>
 			<div>
 				<span
-					className="pt-icon-standard pt-icon-small-cross"
-					style={{position: 'absolute', right: '0px', top: '0px'}}></span>
+					onClick={this.togglePopover}
+					className="pt-icon-standard pt-icon-small-cross pt-tag-remove"
+					style={{position: 'absolute', right: '5px', top: '5px'}}></span>
 
 				<div style={{marginBottom: 5, fontSize: '0.9em', marginLeft: -4}}>Footnote:</div>
 				<EditableText
@@ -64,12 +69,14 @@ export const FootnoteComponent = React.createClass({
     return (
       <span className={footnoteClass} onClick={this.preventClick}>
 				<Popover content={popoverContent}
+						 isModal={true}
+						 isOpen={isOpen}
 						 interactionKind={PopoverInteractionKind.CLICK}
-						 popoverClassName="pt-popover-content-sizing pt-minimal"
+						 popoverClassName="pt-popover-content-sizing pt-dark pt-minimal popover-down"
 						 position={Position.BOTTOM}
 						 autoFocus={false}
 						 useSmartPositioning={false}>
-        	<span>{label}</span>
+        	<span onClick={this.togglePopover}>{label}</span>
 				</Popover>
       </span>
     );

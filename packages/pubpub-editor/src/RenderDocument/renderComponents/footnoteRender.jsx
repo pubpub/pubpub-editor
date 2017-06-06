@@ -44,7 +44,7 @@ export const FootnoteRender = React.createClass({
 						 position={Position.BOTTOM}
 						 autoFocus={false}
 						 useSmartPositioning={false}>
-        	<div>{(label) ? label : "1"}</div>
+        	<div>{label}</div>
 				</Popover>
       </span>
     );

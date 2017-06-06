@@ -38,7 +38,7 @@ export const renderReactFromJSON = function(doc, fileMap, allReferences, slug) {
 
 	const citationsInDoc = [];
 
-	const meta = {fileMap, allReferences, engine, docAttrs, citationsInDoc, slug};
+	const meta = {fileMap, allReferences, engine, docAttrs, citationsInDoc, slug, footnoteCount: 0};
 
 
 	const content = renderSubLoop(doc.content, meta);
@@ -169,7 +169,8 @@ const renderSubLoop = function(item, meta) {
 			return <ReferenceRender citationID={citationID} engine={meta.engine} key={index} label={label} {...node.attrs} />
 
 		case 'footnote':
-			return <FootnoteRender content={node.attrs.content} label={node.attrs.label} />
+			meta.footnoteCount = meta.footnoteCount + 1;
+			return <FootnoteRender content={node.attrs.content} label={meta.footnoteCount} />
 		case 'citations':
 			let bib;
 

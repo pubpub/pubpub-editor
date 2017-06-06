@@ -20,7 +20,6 @@ class FootnoteView extends ReactView {
     if (!decorations) {
       return;
     }
-    console.log(this.reactElement);
     for (const decoration of decorations) {
       if (decoration.type.spec && decoration.type.spec.label) {
         this.reactElement.updateLabel(decoration.type.spec.label);

@@ -22,8 +22,6 @@ const createDecorations = (doc, set) => {
 		return deco;
 	});
 
-	console.log('made decorations!', nodes, decos);
-
 	const newSet = DecorationSet.create(doc, decos);
 	return newSet;
 }
@@ -31,7 +29,6 @@ const createDecorations = (doc, set) => {
 const footnotesPlugin = new Plugin({
 	state: {
 		init(config, instance) {
-			console.log('initializing footnotes!');
 			const set = createDecorations(instance.doc, DecorationSet.empty);
 			return {
 				decos: set,
@@ -45,12 +42,10 @@ const footnotesPlugin = new Plugin({
 				return {decos: newSet, engine: state.engine};
 			}
 			*/
-
 			let set = state.decos;
 
 			if (transaction.mapping || transaction.getMeta('history$')) {
 				const blueSet = createDecorations(editorState.doc, state.decos);
-				console.log(blueSet);
 				return { decos: blueSet };
 			}
 
