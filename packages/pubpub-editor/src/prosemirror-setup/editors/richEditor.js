@@ -1,4 +1,4 @@
-import { CitationsPlugin, MentionsPlugin, RelativeFilesPlugin, SelectPlugin } from '../plugins';
+import { CitationsPlugin, FootnotesPlugin, MentionsPlugin, RelativeFilesPlugin, SelectPlugin } from '../plugins';
 
 import { BaseEditor } from './baseEditor';
 import { schema } from '../schema';
@@ -10,7 +10,7 @@ class RichEditor extends BaseEditor {
     const {pubpubSetup} = require('../setup');
     const {markdownParser} = require("../../markdown");
 
-    const plugins = pubpubSetup({ schema }).concat(CitationsPlugin).concat(SelectPlugin).concat(RelativeFilesPlugin).concat(MentionsPlugin);
+    const plugins = pubpubSetup({ schema }).concat(CitationsPlugin).concat(SelectPlugin).concat(RelativeFilesPlugin).concat(MentionsPlugin).concat(FootnotesPlugin);
     let docJSON;
     if (text) {
       docJSON = markdownParser.parse(text).toJSON();

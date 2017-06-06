@@ -72,7 +72,7 @@ class BaseEditor {
 				citations: (node, view, getPos) => new CitationsView(node, view, getPos, { block: false }),
 				iframe: (node, view, getPos) => new IframeView(node, view, getPos, {}),
 				html_block: (node, view, getPos) => new HtmlView(node, view, getPos, {}),
-				footnote: (node, view, getPos) => new FootnoteView(node, view, getPos, {}),
+				footnote: (node, view, getPos, decorations) => new FootnoteView(node, view, getPos, { decorations, block: false }),
 			},
 			...props
 		});

@@ -17,7 +17,6 @@ export const FootnoteComponent = React.createClass({
 	},
 
 	setSelected: function(selected) {
-		console.log('set selected!', selected);
 		this.setState({selected});
 	},
 
@@ -36,16 +35,21 @@ export const FootnoteComponent = React.createClass({
 
   render() {
 
-		const { content, label } = this.props;
-		const { selected } = this.state;
+		const { content } = this.props;
+		const { selected, label } = this.state;
 
 		const footnoteClass = classNames({
 			'pub-footnote': true,
       'selected': this.state.selected,
     });
 
+
 		const popoverContent = (<div className="pub-footnote-popover" style={{minWidth: 250}}>
 			<div>
+				<span
+					className="pt-icon-standard pt-icon-small-cross"
+					style={{position: 'absolute', right: '0px', top: '0px'}}></span>
+
 				<div style={{marginBottom: 5, fontSize: '0.9em', marginLeft: -4}}>Footnote:</div>
 				<EditableText
 					defaultValue={content}
@@ -65,7 +69,7 @@ export const FootnoteComponent = React.createClass({
 						 position={Position.BOTTOM}
 						 autoFocus={false}
 						 useSmartPositioning={false}>
-        	{(label) ? label : "1"}
+        	<span>{label}</span>
 				</Popover>
       </span>
     );
