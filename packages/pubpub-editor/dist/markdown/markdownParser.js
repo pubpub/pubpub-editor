@@ -55,7 +55,6 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 			return { highlightID: tok.attrGet('highlightID') };
 		} },
 	footnote_ref: { node: 'footnote', attrs: function attrs(tok) {
-			console.log('got token1', tok);
 			return {
 				label: tok.attrGet('label'),
 				content: tok.attrGet('content')

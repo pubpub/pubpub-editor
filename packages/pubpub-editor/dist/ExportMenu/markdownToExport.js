@@ -85,39 +85,10 @@ var generateFileMap = function generateFileMap(localFiles) {
   return fileMap;
 };
 
-var markdownToExport = function markdownToExport(files, localFiles, referencesList) {
-
-  var totalMarkdown = '';
+var markdownToExport = function markdownToExport(content, localFiles, referencesList) {
 
   var fileMap = generateFileMap(localFiles);
-
-  var _iteratorNormalCompletion3 = true;
-  var _didIteratorError3 = false;
-  var _iteratorError3 = undefined;
-
-  try {
-    for (var _iterator3 = files[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-      var file = _step3.value;
-
-      totalMarkdown += file;
-      totalMarkdown += "\n{{pagebreak}\n";
-    }
-  } catch (err) {
-    _didIteratorError3 = true;
-    _iteratorError3 = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion3 && _iterator3.return) {
-        _iterator3.return();
-      }
-    } finally {
-      if (_didIteratorError3) {
-        throw _iteratorError3;
-      }
-    }
-  }
-
-  var totalJSON = (0, _markdown.markdownToJSON)(totalMarkdown, referencesList);
+  var totalJSON = (0, _markdown.markdownToJSON)(content, referencesList);
   renderNodes(totalJSON, fileMap);
   return totalJSON;
 };
