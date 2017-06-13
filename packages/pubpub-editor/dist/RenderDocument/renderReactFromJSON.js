@@ -51,7 +51,7 @@ var renderReactFromJSON = exports.renderReactFromJSON = function renderReactFrom
 
 	var citationsInDoc = [];
 
-	var meta = { fileMap: fileMap, allReferences: allReferences, engine: engine, docAttrs: docAttrs, citationsInDoc: citationsInDoc, slug: slug };
+	var meta = { fileMap: fileMap, allReferences: allReferences, engine: engine, docAttrs: docAttrs, citationsInDoc: citationsInDoc, slug: slug, footnoteCount: 0 };
 
 	var content = renderSubLoop(doc.content, meta);
 	return _react2.default.createElement(
@@ -270,6 +270,10 @@ var renderSubLoop = function renderSubLoop(item, meta) {
 				}
 
 				return _react2.default.createElement(_renderComponents.ReferenceRender, _extends({ citationID: citationID, engine: meta.engine, key: index, label: label }, node.attrs));
+
+			case 'footnote':
+				meta.footnoteCount = meta.footnoteCount + 1;
+				return _react2.default.createElement(_renderComponents.FootnoteRender, { content: node.attrs.content, label: meta.footnoteCount });
 			case 'citations':
 				var bib = void 0;
 

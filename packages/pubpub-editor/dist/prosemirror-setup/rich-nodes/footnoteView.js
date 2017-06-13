@@ -42,24 +42,60 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var EmbedView = function (_ReactView) {
-  _inherits(EmbedView, _ReactView);
+var FootnoteView = function (_ReactView) {
+  _inherits(FootnoteView, _ReactView);
 
-  function EmbedView(node, view, getPos, options) {
-    _classCallCheck(this, EmbedView);
+  function FootnoteView(node, view, getPos, options) {
+    _classCallCheck(this, FootnoteView);
 
-    return _possibleConstructorReturn(this, (EmbedView.__proto__ || Object.getPrototypeOf(EmbedView)).call(this, node, view, getPos, options));
+    var _this = _possibleConstructorReturn(this, (FootnoteView.__proto__ || Object.getPrototypeOf(FootnoteView)).call(this, node, view, getPos, options));
+
+    var decorations = options.decorations;
+    _this.renderDecorations(decorations);
+    return _this;
   }
 
-  _createClass(EmbedView, [{
+  _createClass(FootnoteView, [{
+    key: 'renderDecorations',
+    value: function renderDecorations(decorations) {
+      if (!decorations) {
+        return;
+      }
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = decorations[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var decoration = _step.value;
+
+          if (decoration.type.spec && decoration.type.spec.label) {
+            this.reactElement.updateLabel(decoration.type.spec.label);
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+    }
+  }, {
     key: 'bindFunctions',
     value: function bindFunctions() {
-      this.updateCaption = this.updateCaption.bind(this);
-      this.createCaption = this.createCaption.bind(this);
-      this.removeCaption = this.removeCaption.bind(this);
       this.forceSelection = this.forceSelection.bind(this);
+      this.updateContent = this.updateContent.bind(this);
+      this.renderDecorations = this.renderDecorations.bind(this);
 
-      _get(EmbedView.prototype.__proto__ || Object.getPrototypeOf(EmbedView.prototype), 'bindFunctions', this).call(this);
+      _get(FootnoteView.prototype.__proto__ || Object.getPrototypeOf(FootnoteView.prototype), 'bindFunctions', this).call(this);
     }
   }, {
     key: 'renderElement',
@@ -69,7 +105,7 @@ var EmbedView = function (_ReactView) {
       var nodeAttrs = node.attrs;
 
       var footnoteElement = _reactDom2.default.render(_react2.default.createElement(_components.FootnoteComponent, _extends({
-        updateAttrs: this.valueChanged,
+        updateContent: this.updateContent,
         setSelection: this.setSelection,
         forceSelection: this.forceSelection
       }, nodeAttrs)), domChild);
@@ -78,42 +114,18 @@ var EmbedView = function (_ReactView) {
       return footnoteElement;
     }
   }, {
-    key: 'valueChanged',
-    value: function valueChanged(nodeAttrs) {
-      var start = this.getPos();
-      var nodeType = _schema.schema.nodes.embed;
-      var oldNodeAttrs = this.node.attrs;
-      var transaction = this.view.state.tr.setNodeType(start, nodeType, _extends({}, oldNodeAttrs, nodeAttrs));
-      this.view.dispatch(transaction);
+    key: 'updateContent',
+    value: function updateContent(content) {
+      _get(FootnoteView.prototype.__proto__ || Object.getPrototypeOf(FootnoteView.prototype), 'updateAttrs', this).call(this, { content: content });
     }
-
-    /*
-    setSelection(anchor, head) {
-      console.log(anchor, head);NodeSelection
-      this.reactElement.setSelected(true);
-      // this.reactElement.focusAndSelect();
-    }
-    */
-
-    /*
-     setSelection() {
-      console.log('SETTING SELECTION!');
-      const pos = this.getPos();
-      const sel = NodeSelection.create(this.view.state.doc, pos);
-      const transaction = this.view.state.tr.setSelection(sel);
-      this.reactElement.setSelected(true);
-      this.view.dispatch(transaction);
-    }
-     */
-
   }, {
-    key: 'forceSelection',
-    value: function forceSelection() {
-      var pos = this.getPos();
-      var sel = _prosemirrorState.NodeSelection.create(this.view.state.doc, pos);
-      var transaction = this.view.state.tr.setSelection(sel);
-      // this.reactElement.focusAndSelect();
-      this.view.dispatch(transaction);
+    key: 'update',
+    value: function update(node, decorations) {
+      if (!_get(FootnoteView.prototype.__proto__ || Object.getPrototypeOf(FootnoteView.prototype), 'update', this).call(this, node, decorations)) {
+        return false;
+      }
+      this.renderDecorations(decorations);
+      return true;
     }
   }, {
     key: 'stopEvent',
@@ -126,7 +138,8 @@ var EmbedView = function (_ReactView) {
   }, {
     key: 'selectNode',
     value: function selectNode() {
-      this.reactElement.focusAndSelect();
+      this.reactElement.setSelected(true);
+      // this.reactElement.focusAndSelect();
     }
   }, {
     key: 'deselectNode',
@@ -135,7 +148,7 @@ var EmbedView = function (_ReactView) {
     }
   }]);
 
-  return EmbedView;
+  return FootnoteView;
 }(_reactview2.default);
 
-exports.default = EmbedView;
+exports.default = FootnoteView;

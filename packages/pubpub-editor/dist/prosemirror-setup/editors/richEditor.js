@@ -41,7 +41,7 @@ var RichEditor = function (_BaseEditor) {
     var _require2 = require("../../markdown"),
         markdownParser = _require2.markdownParser;
 
-    var plugins = pubpubSetup({ schema: _schema.schema }).concat(_plugins.CitationsPlugin).concat(_plugins.SelectPlugin).concat(_plugins.RelativeFilesPlugin).concat(_plugins.MentionsPlugin);
+    var plugins = pubpubSetup({ schema: _schema.schema }).concat(_plugins.CitationsPlugin).concat(_plugins.SelectPlugin).concat(_plugins.RelativeFilesPlugin).concat(_plugins.MentionsPlugin).concat(_plugins.FootnotesPlugin);
     var docJSON = void 0;
     if (text) {
       docJSON = markdownParser.parse(text).toJSON();

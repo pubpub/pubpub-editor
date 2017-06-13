@@ -3,6 +3,7 @@ import React, { PropTypes } from 'react';
 import { jsonToMarkdown, markdownToJSON } from '../src/markdown';
 import { localDiscussions, localFiles, localHighlights, localPages, localPubs, localReferences, localUsers } from './sampledocs/autocompleteLocalData';
 
+import ExportButton from '../src/ExportMenu/ExportButton';
 // import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
 // import RichEditor from '../src/editorComponents/RichEditor';
 import FullEditor from '../src/editorComponents/FullEditor';
@@ -275,7 +276,13 @@ export const StoryBookFullEditor = React.createClass({
 				</div>
 				<div style={{ padding: '1em 4em', minHeight: '400px' }}>
 				{(this.state.mode === 'preview') &&
-					<RenderDocument json={this.state.content} allFiles={localFiles} allReferences={localReferences} />
+					<div>
+						<ExportButton
+							content={jsonToMarkdown(this.state.content)} allFiles={localFiles} allReferences={localReferences}
+							converterURL={"https://pubpub-converter-dev.herokuapp.com"}
+							 />
+						<RenderDocument json={this.state.content} allFiles={localFiles} allReferences={localReferences} />
+					</div>
 				}
 				{(this.state.mode === 'rich' || this.state.mode === 'markdown') &&
 					<FullEditor {...editorProps} mode={this.state.mode} />

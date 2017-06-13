@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.HtmlRender = exports.MentionRender = exports.IframeRender = exports.ReferenceRender = exports.LatexRender = exports.EmbedRender = exports.CitationsRender = undefined;
+exports.FootnoteRender = exports.HtmlRender = exports.MentionRender = exports.IframeRender = exports.ReferenceRender = exports.LatexRender = exports.EmbedRender = exports.CitationsRender = undefined;
 
 var _citationsRender = require('./citationsRender');
 
@@ -33,6 +33,10 @@ var _htmlRender = require('./htmlRender');
 
 var _htmlRender2 = _interopRequireDefault(_htmlRender);
 
+var _footnoteRender = require('./footnoteRender');
+
+var _footnoteRender2 = _interopRequireDefault(_footnoteRender);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.CitationsRender = _citationsRender2.default;
@@ -42,3 +46,4 @@ exports.ReferenceRender = _referenceRender2.default;
 exports.IframeRender = _iframeRender2.default;
 exports.MentionRender = _mentionRender2.default;
 exports.HtmlRender = _htmlRender2.default;
+exports.FootnoteRender = _footnoteRender2.default;

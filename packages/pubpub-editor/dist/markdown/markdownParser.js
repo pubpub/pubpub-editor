@@ -54,8 +54,13 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 	highlight: { node: 'highlight', attrs: function attrs(tok) {
 			return { highlightID: tok.attrGet('highlightID') };
 		} },
-	footnote: { node: 'footnote' },
-
+	footnote_ref: { node: 'footnote', attrs: function attrs(tok) {
+			console.log('got token1', tok);
+			return {
+				label: tok.attrGet('label'),
+				content: tok.attrGet('content')
+			};
+		} },
 	embed: { node: 'embed' },
 	emoji: { node: 'emoji', attrs: function attrs(tok) {
 			return {
@@ -236,6 +241,18 @@ var addMention = function addMention(state, tok) {
 	state.openNode(markdownSchema.nodeType('mention'), attrs);
 };
 
+/*
+const addFootnote = function(state, tok) {
+	let type, url;
+	const footnoteId = tok.meta.id;
+	console.log(state);
+	const tokens = state.env.footnotes.list[footnoteId];
+	console.log('tokens!!!', tokens);
+	state.addNode(markdownSchema.nodeType('footnote'), { content: 'a' });
+};
+
+markdownParser.tokenHandlers.footnote_ref = addFootnote;
+*/
 markdownParser.tokenHandlers.image = addEmbed;
 markdownParser.tokenHandlers.reference = addReference;
 markdownParser.tokenHandlers.citations = addCitations;

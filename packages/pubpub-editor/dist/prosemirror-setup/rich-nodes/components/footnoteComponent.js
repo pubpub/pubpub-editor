@@ -21,28 +21,22 @@ var FootnoteComponent = exports.FootnoteComponent = _react2.default.createClass(
 	displayName: 'FootnoteComponent',
 
 	propTypes: {
-		label: _react.PropTypes.string,
-		content: _react.PropTypes.string
+		content: _react.PropTypes.string,
+		updateContent: _react.PropTypes.func
 	},
 	getInitialState: function getInitialState() {
-		return {};
+		return { selected: false, isOpen: false };
 	},
 	getDefaultProps: function getDefaultProps() {
 		return {};
 	},
-
-	// what happens if you click or hover a reference?\
-	//  could: emit an action that hovers the info
-	//  could: pass in info stored in a citation database
-	//  could: use node decorations to put info on them without storing it permanently
-	//      -> Ideal
-
 
 	setSelected: function setSelected(selected) {
 		this.setState({ selected: selected });
 	},
 
 	preventClick: function preventClick(evt) {
+		this.props.forceSelection();
 		evt.preventDefault();
 	},
 
@@ -50,35 +44,70 @@ var FootnoteComponent = exports.FootnoteComponent = _react2.default.createClass(
 		this.setState({ label: label });
 	},
 
+	onConfirm: function onConfirm(value) {
+		this.props.updateContent(value);
+	},
+
+	togglePopover: function togglePopover() {
+		this.setState({ isOpen: !this.state.isOpen });
+	},
+
 	render: function render() {
+		var content = this.props.content;
+		var _state = this.state,
+		    selected = _state.selected,
+		    label = _state.label,
+		    isOpen = _state.isOpen;
 
-		if (!this.state.label) {
-			return null;
-		}
 
-		var referenceClass = (0, _classnames2.default)({
-			'pub-reference': true,
-			'selected': this.state.selected
+		var footnoteClass = (0, _classnames2.default)({
+			'pub-footnote': true,
+			'selected': selected || isOpen
 		});
 
 		var popoverContent = _react2.default.createElement(
 			'div',
-			{ className: 'pub-reference-popover' },
-			_react2.default.createElement('span', { dangerouslySetInnerHTML: { __html: this.props.getCitationString() } })
+			{ className: 'pub-footnote-popover', style: { minWidth: 250 } },
+			_react2.default.createElement(
+				'div',
+				null,
+				_react2.default.createElement('span', {
+					onClick: this.togglePopover,
+					className: 'pt-icon-standard pt-icon-small-cross pt-tag-remove',
+					style: { position: 'absolute', right: '5px', top: '5px' } }),
+				_react2.default.createElement(
+					'div',
+					{ style: { marginBottom: 5, fontSize: '0.9em', marginLeft: -4 } },
+					'Footnote:'
+				),
+				_react2.default.createElement(_core.EditableText, {
+					defaultValue: content,
+					multiline: true,
+					minLines: 3, maxLines: 12,
+					isEditing: true,
+					onConfirm: this.onConfirm
+				})
+			)
 		);
 
 		return _react2.default.createElement(
 			'span',
-			{ className: referenceClass, onClick: this.preventClick },
+			{ className: footnoteClass, onClick: this.preventClick },
 			_react2.default.createElement(
 				_core.Popover,
 				{ content: popoverContent,
+					isModal: true,
+					isOpen: isOpen,
 					interactionKind: _core.PopoverInteractionKind.CLICK,
-					popoverClassName: 'pt-popover-content-sizing pt-minimal',
+					popoverClassName: 'pt-popover-content-sizing pt-dark pt-minimal popover-down',
 					position: _core.Position.BOTTOM,
 					autoFocus: false,
 					useSmartPositioning: false },
-				this.state.label ? this.state.label : "[]"
+				_react2.default.createElement(
+					'span',
+					{ onClick: this.togglePopover },
+					label
+				)
 			)
 		);
 	}

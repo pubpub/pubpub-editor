@@ -182,6 +182,9 @@ var BaseEditor = function () {
 					},
 					html_block: function html_block(node, view, getPos) {
 						return new _richNodes.HtmlView(node, view, getPos, {});
+					},
+					footnote: function footnote(node, view, getPos, decorations) {
+						return new _richNodes.FootnoteView(node, view, getPos, { decorations: decorations, block: false });
 					}
 				}
 			}, props));

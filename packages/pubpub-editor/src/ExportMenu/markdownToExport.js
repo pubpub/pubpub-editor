@@ -36,18 +36,10 @@ const generateFileMap = (localFiles) => {
 	return fileMap;
 }
 
-const markdownToExport = ( files, localFiles, referencesList ) => {
-
-  let totalMarkdown = '';
+const markdownToExport = ( content, localFiles, referencesList ) => {
 
 	const fileMap = generateFileMap(localFiles);
-
-  for (const file of files) {
-    totalMarkdown += file;
-    totalMarkdown += "\n{{pagebreak}\n";
-  }
-
-  const totalJSON = markdownToJSON(totalMarkdown, referencesList);
+  const totalJSON = markdownToJSON(content, referencesList);
   renderNodes(totalJSON, fileMap);
   return totalJSON;
 

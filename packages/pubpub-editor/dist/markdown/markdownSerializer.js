@@ -121,6 +121,8 @@ var markdownSerializer = exports.markdownSerializer = new _prosemirrorMarkdown.M
 	state.write('[' + node.textContent + '](' + node.attrs.url + ')');
 }), _defineProperty(_ref, 'reference', function reference(state, node) {
 	state.write('[@' + node.attrs.citationID + ']');
+}), _defineProperty(_ref, 'footnote', function reference(state, node) {
+	state.write('^[' + node.attrs.content + ']');
 }), _defineProperty(_ref, 'highlight', function reference(state, node) {
 	state.write('[@highlight/' + node.attrs.highlightID + ']');
 }), _defineProperty(_ref, 'citation', function citation(state, node) {

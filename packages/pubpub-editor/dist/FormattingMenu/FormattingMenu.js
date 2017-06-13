@@ -70,7 +70,7 @@ var FormattingMenu = exports.FormattingMenu = _react2.default.createClass({
 
 		return _react2.default.createElement(
 			'div',
-			{ className: 'pt-card pt-elevation-0 pt-dark', style: styles.container(this.props.top, this.props.left, 400) },
+			{ className: 'pt-card pt-elevation-0 pt-dark popover-up', style: styles.container(this.props.top, this.props.left, 400) },
 			menuItems.map(function (item, index) {
 				// return <button key={`menuItem-${index}`} className={'pt-button pt-minimal'} style={item.isActive ? { ...styles.button, ...styles.active } : styles.button} onClick={item.run}>{item.text}</button>;
 				// return <button key={`menuItem-${index}`} className={`pt-button pt-minimal ${item.icon}`} style={item.isActive ? { ...styles.button, ...styles.active } : styles.button} onClick={item.run} />;
@@ -102,6 +102,7 @@ styles = {
 			};
 		}
 		return {
+			transition: 'left 0.25s, top 0.1s',
 			width: width + 'px',
 			position: 'absolute',
 			height: '30px',
