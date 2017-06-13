@@ -1,0 +1,47 @@
+{
+   "type":"doc",
+   "attrs":{
+      "meta":{
+
+      }
+   },
+   "content":[
+      {
+         "type":"article",
+         "content":[
+            {
+               "type":"paragraph",
+               "content":[
+                  {
+                     "type":"text",
+                     "text":"this is a footnote! "
+                  },
+                  {
+                     "type":"footnote",
+                     "attrs":{
+                        "content":"1"
+                     }
+                  },
+                  {
+                     "type":"text",
+                     "text":" and another "
+                  },
+                  {
+                     "type":"footnote",
+                     "attrs":{
+                        "content":"yess"
+                     }
+                  },
+                  {
+                     "type":"text",
+                     "text":". Great!\nThis is the end of it."
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "type":"citations"
+      }
+   ]
+}

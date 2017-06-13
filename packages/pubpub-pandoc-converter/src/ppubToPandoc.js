@@ -256,6 +256,21 @@ function ppubToPandoc(ppub, options) {
 			];
 
 			break;
+
+			case 'footnote':
+
+			var footnoteContent = node.attrs.content;
+
+			newNode.t = 'Note';
+			newNode.c =[
+				{
+					t: 'Plain',
+					c: [{ t: 'Str', c: footnoteContent }]
+				}
+			];
+
+			break;
+
 			case 'citation':
 			newNode.t = 'DoNotAddThisNode';
 			var data = node.attrs.data;
@@ -347,7 +362,7 @@ function ppubToPandoc(ppub, options) {
 		|| node.type === 'block_embed' || node.type === 'text'
 		|| node.type === 'embed' || node.type === 'equation'
 		|| node.type === 'reference' || node.type === 'citation'
-		|| node.type === 'citations' || node.type === 'block_equation') {
+		|| node.type === 'citations' || node.type === 'block_equation' || node.type === 'footnote') {
 			currentPpubNodeParents.pop();
 		}
 		if (newNode.t === 'Para' || newNode.t === 'Plain'

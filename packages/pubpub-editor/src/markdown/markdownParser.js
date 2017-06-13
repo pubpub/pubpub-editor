@@ -33,7 +33,6 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 		image: {node: 'embed'},
 		highlight: {node: 'highlight', attrs: tok => { return {highlightID: tok.attrGet('highlightID') }; }},
 		footnote_ref: {node: 'footnote', attrs: tok => {
-			console.log('got token1', tok);
 			return {
 				label: tok.attrGet('label'),
 				content: tok.attrGet('content'),

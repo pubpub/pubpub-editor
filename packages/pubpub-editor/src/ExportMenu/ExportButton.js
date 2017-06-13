@@ -87,6 +87,7 @@ export const ExportButton = React.createClass({
 		const metadata = { title, authors };
 
 		// console.log(`made ${JSON.stringify(inputContent)} \n\n which was \n\n${this.state.content}`)
+    console.log(JSON.stringify(inputContent));
 
     const template = this.state.pdftexTemplates['default'];
 
