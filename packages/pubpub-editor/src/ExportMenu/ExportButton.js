@@ -48,7 +48,6 @@ export const ExportButton = React.createClass({
 		request
 		.get(pollUrl)
 		.end((err, res) => {
-			console.log(err, res);
 
 			if (!err && res && res.statusCode === 200) {
 
@@ -85,17 +84,11 @@ export const ExportButton = React.createClass({
 		const outputType = 'pdf';
 		const inputContent = markdownToExport(content, allFiles, allReferences);
 
-		const metadata = {
-			title: 'Encoding Data into Physical Objects with Digitally Fabricated Textures',
-			authors: ['Travis Rich'],
-			// date: '05/09/1991',
-		};
+		const metadata = { title, authors };
 
 		// console.log(`made ${JSON.stringify(inputContent)} \n\n which was \n\n${this.state.content}`)
-    console.log('sent request');
 
     const template = this.state.pdftexTemplates['default'];
-    console.log(template);
 
 		request
 		.post(convertUrl)
@@ -109,7 +102,6 @@ export const ExportButton = React.createClass({
 		})
 		.set('Accept', 'application/json')
 		.end((err, res) => {
-      console.log('got response!', res);
 			if (err || !res.ok) {
 				alert('Oh no! error', err);
 			} else {
@@ -120,8 +112,6 @@ export const ExportButton = React.createClass({
 				});
 			}
 		});
-    console.log('got request');
-
 	},
 
 	render: function() {

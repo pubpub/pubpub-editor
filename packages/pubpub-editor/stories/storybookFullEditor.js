@@ -278,6 +278,8 @@ export const StoryBookFullEditor = React.createClass({
 				{(this.state.mode === 'preview') &&
 					<div>
 						<ExportButton
+							title="Your pub"
+							authors={['Thariq Shihipar', 'Travis Rich']}
 							content={jsonToMarkdown(this.state.content)} allFiles={localFiles} allReferences={localReferences}
 							converterURL={"https://pubpub-converter-dev.herokuapp.com"}
 							 />
