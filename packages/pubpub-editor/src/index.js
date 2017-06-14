@@ -12,3 +12,4 @@ export { markdownToJSON } from './markdown/markdownToJson';
 
 export bibtexToCSL from './references/bibtextocsl';
 export { csltoBibtex } from './references/csltobibtex';
+export ExportButton from './ExportMenu/ExportButton';
