@@ -138,12 +138,15 @@ var ExportButton = exports.ExportButton = _react2.default.createClass({
 	},
 
 	render: function render() {
+		var _props2 = this.props,
+		    className = _props2.className,
+		    style = _props2.style;
 		var exportLoading = this.state.exportLoading;
 
 
 		return _react2.default.createElement(
 			_core.Button,
-			{ loading: exportLoading, onClick: this.convert },
+			{ className: className, style: style, loading: exportLoading, onClick: this.convert },
 			'Export'
 		);
 	}
