@@ -117,10 +117,11 @@ export const ExportButton = React.createClass({
 
 	render: function() {
 
+		const { className, style } = this.props;
     const { exportLoading } = this.state;
 
 		return (
-			<Button loading={exportLoading} onClick={this.convert}>
+			<Button className={className} style={style} loading={exportLoading} onClick={this.convert}>
         Export
 			</Button>
 		);
