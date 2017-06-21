@@ -51,6 +51,9 @@ storiesOf('Full Editor', module)
 .add('API Search', () => (
 	<APIEditor />
 ))
+.add('Collaborative Editor ', () => (
+	<FullEditor collaborative={true} />
+))
 ;
 
 storiesOf('Subcomponents', module)

@@ -1,0 +1,1282 @@
+{
+  "type": "doc",
+  "content": [
+    {
+      "type": "article",
+      "content": [
+        {
+          "content": [
+            {
+              "text": "Power wheelchair navigation may be more difficult for those who have a fine motor or cognitive disability. Some people are not able to use a powered wheelchair on their own and must depend on a caregiver. The design proposed here uses a prototyping platform to demonstrate a computer vision algorithm for identifying sidewalks and determining if the user is on path. The set-up uses color conversion and morphological methods to manipulate live video. The cost for the system is under $100 and uses entirely open-source technology.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": "All files associated with this project can be found here: https://osf.io/c35xg/ ",
+              "type": "text"
+            },
+            {
+              "type": "reference",
+              "attrs": {
+                "citationID": "57b77b5ec38ce03900f60cb3",
+                "referenceID": 8086677
+              }
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "type": "horizontal_rule"
+        },
+        {
+          "content": [
+            {
+              "text": "Introduction",
+              "type": "text"
+            }
+          ],
+          "attrs": {
+            "level": 1
+          },
+          "type": "heading"
+        },
+        {
+          "content": [
+            {
+              "text": "Powered wheelchairs can be a great and necessary improvement on somebody’s life and independence. Moving about without worry that something may go wrong is an important aspect of independence, and for some, requires a caregiver's assistance. Unfortunately, caregivers are generally only available at scheduled times and can be cost prohibitive for many potential users. If the user was able to go about their errands or activities without needing the assistance of a caregiver, they could enjoy greater freedom. This research aims to develop a simple camera-based system that can help navigate the user through unfamiliar public areas.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": "Previous Work",
+              "type": "text"
+            }
+          ],
+          "attrs": {
+            "level": 2
+          },
+          "type": "heading"
+        },
+        {
+          "content": [
+            {
+              "text": "There have been a myriad of ideas like the design presented here, but of the professionals and users surveyed, none have been implemented in commercial wheelchair set-ups. It was noted that often the cost is not covered by insurance and novel technologies seldom found in the marketplace and thus are limited in use. A survey has indicated that 40% of patients using power wheelchairs found it \"difficult or impossible\" to steer and up to half of patients would find it beneficial to have an added navigation system ",
+              "type": "text"
+            },
+            {
+              "type": "reference",
+              "attrs": {
+                "citationID": "57b772060cf2d8716f43da7e",
+                "referenceID": 5563505
+              }
+            },
+            {
+              "text": ". This demonstrates the demand for such a system. The research also indicates that people with spinal cord injuries or other cognitive disabilities may take as long as two years to learn how to steer a power wheelchair effectively. Those with fine motor skill difficulties may find themselves navigating very slowly in order to safely travel through unknown territory. With the addition of steering assistance, these individuals would be able to confidently carry out their routines with less impact on their day. Horn has summarized designs of “smart wheelchairs” to date. Technologies such as infrared, sonar, laser, radar, and physical sensors are combined to help the wheelchair gain awareness of its surroundings ",
+              "type": "text"
+            },
+            {
+              "type": "reference",
+              "attrs": {
+                "citationID": "57b772060cf2d8716f43da7f",
+                "referenceID": 6860941
+              }
+            },
+            {
+              "text": ". These systems are often expensive and must be coupled with a laptop or large computer. In addition, each sensor has limits and downfalls such as sample rate, coverage volume, or general effectiveness. Of course, with the integration of all of these technologies, a robust navigational system could be produced. However, the more components in a system, the more complex and expensive it becomes, making it harder to use. This is especially true if such designs are installed aftermarket.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": "The paths that an average wheelchair user will navigate are likely to be consistent in terms of appearance and thus a possible vision-based control strategy such as is found in lane keeping systems used in modern cars may be employed. In general, these systems use normal cameras and processors that analyze lane markings ",
+              "type": "text"
+            },
+            {
+              "type": "reference",
+              "attrs": {
+                "citationID": "57b772060cf2d8716f43da80",
+                "referenceID": 3950120
+              }
+            },
+            {
+              "text": ". These systems are frequently limited to highway use because of consistent lane markings and unlikely path blockages. The output of these systems rarely control the car for the user, this would introduce a control system that may have false readings and steer the car off course. Rather, they have passive alerts and haptic feedback. The design discussed in this paper will employ a similar strategy, only limiting the user from steering off course. This minimizes the effect of any error in the system while allowing for direct intervention in the future if appropriate.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": "Colorspace and Morphology",
+              "type": "text"
+            }
+          ],
+          "attrs": {
+            "level": 2
+          },
+          "type": "heading"
+        },
+        {
+          "content": [
+            {
+              "text": "Computer vision is the backbone of this design. It relies on the translation of the physical world to arrays of values. These values represent the color of a pixel on a screen. These pixels come together to form shapes that can be modified using morphological transformations.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": "Images are typically stored in three dimensional arrays. The index of the first two dimensions are the coordinates of the pixel in the image and the third dimension is which channel of the colorspace the pixel describes.\n",
+              "type": "text"
+            },
+            {
+              "text": "RGB color space is often used because it translates easily to digital screens and is popular to define colors in graphic design. However, RGB is not exceptional for finding difference in color because the hues are not perceptually related. Meaning, the value of a color in RGB may not be close to another similar color ",
+              "type": "text"
+            },
+            {
+              "type": "reference",
+              "attrs": {
+                "citationID": "57b7b715a900233300273aa2",
+                "referenceID": 2224123
+              }
+            },
+            {
+              "text": ".",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "75%",
+            "align": "full",
+            "filename": "3 d colors.bmp",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470169791864_3dcolors.bmp"
+          },
+          "content": [
+            {
+              "type": "caption",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Fig. 1 This visualization of an image array has dimensions (5,5,3). Each layer holds the value of its associated color, in this case: red, green, or blue."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "text": "Lab color space was developed to fix this. It uses three channels as well: \"lightness\", \"a\", and \"b\". Like its name suggests, lightness describes how bright the color is from 0 to 100, where 0 is black and 100 is white. The \"a\" channel shows a range of color from -128 to 127, where negative values are green and positive are red. The \"b\" channel is similar except negative values are blue and positive values are yellow. These values can be expressed in a 3 dimensional space, as shown in Fig. 2. In this case, colors can be considered \"similar\" if they have a small Euclidean distance ",
+              "type": "text"
+            },
+            {
+              "type": "reference",
+              "attrs": {
+                "citationID": "57b7b715a900233300273aa2",
+                "referenceID": 1986072
+              }
+            },
+            {
+              "text": ". This idea will be used in this design to determine which pixels of the image are the same color and identify them as a sidewalk. ",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "75%",
+            "align": "full",
+            "filename": "CIE_Lab.png",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470171411897_CIE_Lab.png"
+          },
+          "content": [
+            {
+              "type": "caption",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Fig. 2 The Lab color space visualized in three dimensions."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "text": "In the field of image processing, morphology is important when altering general shapes in an overall picture. Two important functions are \"erosion\" and \"dilation\". They decrease or increase the size of the border of the image, respectively ",
+              "type": "text"
+            },
+            {
+              "type": "reference",
+              "attrs": {
+                "citationID": "57b772060cf2d8716f43da83",
+                "referenceID": 8510187
+              }
+            },
+            {
+              "text": ". When used in conjunction, they are valuable for removing noise or filling in holes of binary images. Applying erosion then dilation \"opens\" an image, while applying the opposite \"closes\" the image. Figure 3 shows the result of opening and closing and how they are effective in both instances. ",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "75%",
+            "align": "full",
+            "filename": "openingclosing.bmp",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470175320423_openingclosing.bmp"
+          },
+          "content": [
+            {
+              "type": "caption",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Fig. 3 Opening and Closing functions were applied to the top images, respectively."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "text": "System Configuration",
+              "type": "text"
+            }
+          ],
+          "attrs": {
+            "level": 1
+          },
+          "type": "heading"
+        },
+        {
+          "content": [
+            {
+              "text": "The Raspberry Pi 3 (RPi) was chosen as the processing unit for this design because the system needed to be small and portable, yet powerful enough to manipulate images in real time ",
+              "type": "text"
+            },
+            {
+              "type": "reference",
+              "attrs": {
+                "citationID": "57b772060cf2d8716f43da84",
+                "referenceID": 6841172
+              }
+            },
+            {
+              "text": ". The board, including the case is 6x9x2.5cm. It runs from a 1.2GHz 64-bit quad-core ARMv8 CPU. Other relevant features include 1GB of RAM, GPIO pins and a camera interface. The camera is an RPi designed 8MP sensor that interfaces directly with the board, so the processor can handle the frames directly ",
+              "type": "text"
+            },
+            {
+              "type": "reference",
+              "attrs": {
+                "citationID": "57b772060cf2d8716f43da85",
+                "referenceID": 6709807
+              }
+            },
+            {
+              "text": ". The camera sensor fits snugly inside the case, so no additional space is used (see the small hole in Fig. 4). For this wheelchair, the case is mounted with a 3d printed bracket(A2) to a rail attached to the side of the power base (Fig. 4). The RPi runs the most current Raspbian operating system \"Jessie\", which permits both a terminal and GUI. The whole system is powered by a 7.8Ah, 2.5A battery bank. The battery bank can be upgraded with any off the shelf cell phone charger.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "100%",
+            "align": "full",
+            "filename": "20160804_101358.jpg",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470373153066_20160804_101358.jpg"
+          },
+          "content": [
+            {
+              "type": "caption",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Fig. 4 The full configuration (clockwise starting upper left): battery bank, mount, Raspberry Pi 3 and camera, LED array."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "text": "Python was chosen as the coding language because it was pre-compiled on the Raspbian system and supported the OpenCV library ",
+              "type": "text"
+            },
+            {
+              "type": "reference",
+              "attrs": {
+                "citationID": "57b7b83dc38ce03900f60cb9",
+                "referenceID": 5315277
+              }
+            },
+            {
+              "text": ". OpenCV provides many computer vision functions that were optimized to work with the chosen camera and manipulations that were desired.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": "In order to demonstrate the concept, an LED array was constructed in a horseshoe pattern (Fig. 5). When in transit the LED in the direction of the intended path will light. There is also a tactile button that controls a menu and turns the system off.  This is mounted to the arm of the wheelchair with velcro tape. The array is connected to the RPi with jumper cables to their designated GPIO pins.\n",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "100%",
+            "align": "full",
+            "filename": "breadboard.jpg",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470286802792_breadboard.jpg"
+          },
+          "content": [
+            {
+              "type": "caption",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Fig. 5 Breadboard schematic of LED array."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "text": "Methods",
+              "type": "text"
+            }
+          ],
+          "attrs": {
+            "level": 1
+          },
+          "type": "heading"
+        },
+        {
+          "content": [
+            {
+              "text": "The full code and updated versions can be found on ",
+              "type": "text"
+            },
+            {
+              "text": "GitHub",
+              "marks": [
+                {
+                  "title": "",
+                  "href": "https://github.com/jdekarske/Path-Oriented-Electric-Wheelchair-Steering-Assistance",
+                  "_": "link"
+                }
+              ],
+              "type": "text"
+            },
+            {
+              "text": ". The script is organized into functions operated under a menu that is displayed via LED array.\nFirst, the necessary packages need to imported.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": "import RPi.GPIO as GPIO\t#used to access GPIO pins\nimport time\t\t#functions that construct a timer\nimport io\t\t#used to set up stream from raspi camera\nimport numpy as np\t#optimized array functions\nimport cv2\t\t#OpenCV computer vision functions\nimport picamera\t\t#retrieves stream from camera.\nimport logging\t\t#allows logging of various errors and info\n",
+              "type": "text"
+            }
+          ],
+          "type": "code_block"
+        },
+        {
+          "content": [
+            {
+              "text": "To finish initialization, the GPIO pins are set up. These use the board numbering system, which counts the pin number based on physical position (Fig. 5).",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": "GPIO.setmode(GPIO.BOARD) ## Use board pin numbering\nbutton   = 3\nred_r    = 35\nyellow_r2= 33\nyellow_r = 31\ngreen_r  = 29\ngreen    = 23\ngreen_l  = 21\nyellow_l = 19\nyellow_l2= 15\nred_l    = 13\nchannels = [red_r, yellow_r2, yellow_r,\n            green_r, green, green_l,\n            yellow_l, yellow_l2, red_l]\nGPIO.setup(channels, GPIO.OUT)\nGPIO.setup(button, GPIO.IN)\n",
+              "type": "text"
+            }
+          ],
+          "type": "code_block"
+        },
+        {
+          "content": [
+            {
+              "text": "Next, The LEDs flash in a pattern to indicate the system is ready, then the script enters the menu loop. The loop has an option to start the navigation, start the navigation with recording, or a calibration method. Calibration runs through the navigation process, but collects the centroid position then exits. This is to compensate for off-center mounting on the wheelchair.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": "def menu():\n    center = 320 #the center of the screen if the resolution is VGA, the default\n    global menuv #menuvariable: controlled by the button\n    global buttonhold\n    buttonhold = 0\n    while(True):\n        while(menuv == 0):\n            if(buttonhold): #start\n                buttonhold = 0\n                logging.info('running...')\n                ledflash(.1)\n                main(center,0)\n            blink(red_r)\n        while(menuv == 1): #start, with recording\n            if(buttonhold):\n                buttonhold = 0\n                logging.info('running (recorded)...')\n                ledflash(.1)\n                main(center,1)\n            blink(yellow_r2)\n        while(menuv == 2): #calibrate center\n            if(buttonhold):\n                center = 0\n                while(center == 0):\n                    buttonhold = 0\n                    center = calibrate()\n            blink(yellow_r)\n        while(menuv == 3): #exit the script\n            blink(green_r)\n            if(buttonhold):\n                logging.info('exiting...')\n                ledflash(.01)\n                ledflash(.01)\n                menuv = 10\n        if(buttonhold):\n            break\n        else:\n            menuv = 0\n",
+              "type": "text"
+            }
+          ],
+          "type": "code_block"
+        },
+        {
+          "content": [
+            {
+              "text": "When the main method is entered, it starts by defining constants and then setting up video recording.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": "    #video recording set up\n    fourcc = cv2.VideoWriter_fourcc(*'XVID')\n    filename = '/home/pi/REU/Path-Oriented-Electric-Wheelchair-Steering-Assistance/Output/' + time.strftime('%Y%m%d_%H%M%S') + '.avi'\n    out = cv2.VideoWriter(filename,fourcc, 6.0, (640,480))\n",
+              "type": "text"
+            }
+          ],
+          "type": "code_block"
+        },
+        {
+          "content": [
+            {
+              "text": "The script then enters a loop, capturing a still every iteration and converts them to an array ",
+              "type": "text"
+            },
+            {
+              "type": "reference",
+              "attrs": {
+                "citationID": "57b7b83dc38ce03900f60cb9",
+                "referenceID": 5188345
+              }
+            },
+            {
+              "text": ".",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": " buttonpress = 0\n    stream = io.BytesIO()\n    with picamera.PiCamera(resolution=resolution) as camera:\n        #camera.start_preview() #enable to see camera on screen, doesn't work with CLI\n        while(buttonpress == 0):\n            camera.capture(stream, format='jpeg')\n            e1 = cv2.getTickCount() #timer begins to record frames/second\n\n            # Construct a numpy array from the stream\n            data = np.fromstring(stream.getvalue(), dtype=np.uint8)\n\n            # \"Decode\" the image from the array\n            image = cv2.imdecode(data, 1)\n            stream = io.BytesIO()\n",
+              "type": "text"
+            }
+          ],
+          "type": "code_block"
+        },
+        {
+          "content": [
+            {
+              "text": "To manipulate the image according to human perception it needs to be converted to Lab format.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": "lab = cv2.cvtColor(image, cv2.COLOR_BGR2Lab)\n",
+              "type": "text"
+            }
+          ],
+          "type": "code_block"
+        },
+        {
+          "content": [
+            {
+              "text": "The area in front of the wheelchair is sampled. Then the rest of the image is filtered depending on how far the color values are away from the mean of the sample. The range was determined beforehand in the \"mode\" variable, according to manual tests (see Appendix A3). Then using an opening operation, the smaller pieces are removed from the image.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": "            rows, columns, c = lab.shape\n            middleroi = lab[(int(rows*.8)):rows , (int(columns*.33)):(int(columns*.66))]\n\n            #establish range of acceptable colors\n            mean = cv2.mean(middleroi)\n            lowermean = np.array([mean[0]-mode[0],mean[1]-mode[1],mean[2]-mode[2]])\n            uppermean = np.array([mean[0]+mode[0],mean[1]+mode[1],mean[2]+mode[2]])\n\n            #check which part of image is in range, then filter out smaller pieces\n            mask = cv2.inRange(lab, lowermean, uppermean)\n            res = cv2.bitwise_and(image,image, mask= mask)\n            emask1 = cv2.erode(mask,None, iterations=8)\n            emask = cv2.dilate(emask1,None, iterations=12)\n",
+              "type": "text"
+            }
+          ],
+          "type": "code_block"
+        },
+        {
+          "content": [
+            {
+              "text": "The largest of the remaining shapes is found and the centroid is calculated. The ",
+              "type": "text"
+            },
+            {
+              "text": "ledarray()",
+              "marks": [
+                {
+                  "_": "em"
+                }
+              ],
+              "type": "text"
+            },
+            {
+              "text": " function blinks the corresponding LED with the horizontal position of the centroid (Fig. 6).",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": "            areas = [] #clears the previous areas array\n            _, contours, hierarchy = cv2.findContours(emask.copy(),cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)\n            for i, c in enumerate(contours): #find the area of each shape\n                area = cv2.contourArea(c)\n                areas.append(area)\n            biggest = np.argmax(areas)\n\n            # compute the center of the contour\n            M = cv2.moments(contours[biggest][:])\n            cX = int(M[\"m10\"] / M[\"m00\"])\n            cY = int(M[\"m01\"] / M[\"m00\"])\n            ledarray(cX,cY,center)\n\n",
+              "type": "text"
+            }
+          ],
+          "type": "code_block"
+        },
+        {
+          "content": [
+            {
+              "text": "\nThe loop concludes by calculating the average framerate over 10 seconds. If the option was chosen the frame is written to the video file.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "100%",
+            "align": "full",
+            "filename": "ranges.png",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470330061942_ranges.png"
+          },
+          "content": [
+            {
+              "type": "caption",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Fig. 6 Depending on what region the centroid falls in, it will light the corresponding LED."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "text": "            e2 = cv2.getTickCount()\n            looptime = (e2 - e1)/ cv2.getTickFrequency()\n            totaltime += looptime\n            count += 1\n            if count > 10: \n                fps = count/totaltime\n                count = 0\n                totaltime = 0\n                totalfps.append(fps)\n                logging.info('fps: %s',fps)\n#record video\n            if(record == 1):\n                out.write(eroded)\n",
+              "type": "text"
+            }
+          ],
+          "type": "code_block"
+        },
+        {
+          "content": [
+            {
+              "text": "Finally, the objects are closed so that they initialize smoothly the next run.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": "GPIO.output(channels,False)\nout.release()\nGPIO.cleanup()\ncv2.destroyAllWindows()",
+              "type": "text"
+            }
+          ],
+          "type": "code_block"
+        },
+        {
+          "content": [
+            {
+              "text": "An example image showing a typical sidewalk with surrounding features is shown in Fig. 7. After applying the previously described image manipulation script, the result is shown in Fig. 8. Here it can be seen that the majority of the features excluding the sidewalk have been removed from the image. The sidewalk is identified as the largest remaining feature and it’s centroid location is identified.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": "\n",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "100%",
+            "align": "full",
+            "filename": "sw4",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470350820769_sw4"
+          },
+          "content": [
+            {
+              "type": "caption",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Fig. 7 Before applying image manipulation script."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "100%",
+            "align": "full",
+            "filename": "2016-08-04-173815_1824x984_scrot.png",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470350953614_2016-08-04-173815_1824x984_scrot.png"
+          },
+          "content": [
+            {
+              "type": "caption",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Fig 8. After applying image manipulation script."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "text": "Discussion",
+              "type": "text"
+            }
+          ],
+          "attrs": {
+            "level": 1
+          },
+          "type": "heading"
+        },
+        {
+          "content": [
+            {
+              "text": "The device would be deemed successful if it was able to navigate around the block with only user intervention following LED output. In addition, the device should be able to record at a suitable framerate to address reliability. A test of the image processing is shown in Fig. 9.",
+              "type": "text"
+            },
+            {
+              "text": "\nThe areas without the mask were considered when analyzing the sidewalk area. The pink circle shows the centroid of the sidewalk shape. The x coordinate of this point determines which LED to light up signaling which way the wheelchair needed to turn. Some parts of the video have large shadowed areas that clutters the available data. However, this is only for a short time and will be fixed in subsequent versions.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "100%",
+            "align": "full",
+            "filename": "20160802_233251_1_.gif",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470276146833_20160802_233251_1_.gif"
+          },
+          "content": [
+            {
+              "type": "caption",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Fig. 9 Navigation of the wheelchair on the sidewalks surrounding campus buildings at the University of Wisconsin-Stout."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "text": "In the second test (Fig. 10), the wheelchair was repeatedly driven towards the edge of the sidewalk. This was done to ensure the LEDs lit with enough reaction time. The closer the wheelchair was to the edge of the sidewalk, the further the LEDs should light from the center. This result is seen in the video of Fig. 11 which was recorded simultaneously with the clip from Fig. 10.\n",
+              "type": "text"
+            },
+            {
+              "text": "\n",
+              "type": "text"
+            },
+            {
+              "text": "\nThe device reported more than 6 frames per second on average. Moving at a wheelchair speed of 1.3 meters/second, that allows 4.4 frames/meter.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "100%",
+            "align": "full",
+            "filename": "20160802_233715_1_.gif",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470276866914_20160802_233715_1_.gif"
+          },
+          "content": [
+            {
+              "type": "caption",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Fig. 10 As the wheelchair traveled closer to the edge, the circle moved further right, indicating the desired path."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "100%",
+            "align": "full",
+            "filename": "20160803_101409[1].mp4",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470277200548_20160803_101409[1].mp4"
+          },
+          "content": [
+            {
+              "type": "caption",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Fig. 11 The LED array reacts to the wheelchair approaching the edge of the sidewalk."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "text": "Conclusion",
+              "type": "text"
+            }
+          ],
+          "attrs": {
+            "level": 1
+          },
+          "type": "heading"
+        },
+        {
+          "content": [
+            {
+              "text": "This navigation system represents a tool that can be integrated into a wheelchair to improve steering capabilities. By taking the output from the RPi and diverting it to a control system rather than the LED array, it can ensure the user stays on track. Implementing passive control, where the wheelchair limits undesirable paths, can give the user the freedom to choose which route to take. It is important that the user has primary control of the route, because a false positive could lead to a dangerous situation such as driving over curbs, into traffic, or other undesirable locations.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": "There are some drawbacks to this vision algorithm, however. It will not work at night or over inconsistent terrain. The current prototyping platform is not very robust in terms of user friendliness and performance. For commercial viability, future versions will require better user interface with more dedicated hardware. A boost to the capacity of the hardware would enable the user to travel faster while maintaining a high framerate. In addition, the system could be more inconspicuous when mounted onto the chair, as the protruding rail extends the width of the chair and could hinder movement through door frames and other small spaces (Fig. 12). In the future, other features such as object detection and route planning could turn a simple technology into an autonomous navigation system. With optimization of the hardware and software, this design can help those who need it, get to where they need to go.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [],
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "70%",
+            "align": "full",
+            "filename": "20160804_103832.jpg",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470373086489_20160804_103832.jpg"
+          },
+          "content": [
+            {
+              "type": "caption",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "Fig. 12 The final design attached to the wheelchair."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "content": [
+            {
+              "text": "Acknowledgements",
+              "type": "text"
+            }
+          ],
+          "attrs": {
+            "level": 1
+          },
+          "type": "heading"
+        },
+        {
+          "content": [
+            {
+              "text": "This work was completed as part of the Interdisciplinary Research Experiences in Robotics for Assistive Technology REU funded through NSF Award # CNS-1560219.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "content": [
+            {
+              "text": "Appendix",
+              "type": "text"
+            }
+          ],
+          "attrs": {
+            "level": 1
+          },
+          "type": "heading"
+        },
+        {
+          "content": [
+            {
+              "text": "A1 Bill of Materials",
+              "type": "text"
+            }
+          ],
+          "attrs": {
+            "level": 2
+          },
+          "type": "heading"
+        },
+        {
+          "content": [],
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "70%",
+            "align": "full",
+            "filename": "Screen Shot 2016-08-18 at 10.32.04 AM.png",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1471530766441_ScreenShot2016-08-18at10.32.04AM.png"
+          },
+          "content": []
+        },
+        {
+          "content": [
+            {
+              "text": "A2 Bracket Design",
+              "type": "text"
+            }
+          ],
+          "attrs": {
+            "level": 2
+          },
+          "type": "heading"
+        },
+        {
+          "content": [
+            {
+              "text": "Multiple views of the bracket for attaching the RPi to this specific wheelchair. A solidworks file can be found in the ",
+              "type": "text"
+            },
+            {
+              "text": "GitHub repository",
+              "marks": [
+                {
+                  "title": "",
+                  "href": "https://github.com/jdekarske/Path-Oriented-Electric-Wheelchair-Steering-Assistance",
+                  "_": "link"
+                }
+              ],
+              "type": "text"
+            },
+            {
+              "text": ".\n",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "100%",
+            "align": "full",
+            "filename": "20160804_100909.jpg",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470371386254_20160804_100909.jpg"
+          },
+          "content": []
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "100%",
+            "align": "full",
+            "filename": "20160804_100933.jpg",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470371407391_20160804_100933.jpg"
+          },
+          "content": []
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "100%",
+            "align": "full",
+            "filename": "20160804_100925.jpg",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470371796273_20160804_100925.jpg"
+          },
+          "content": []
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "70%",
+            "align": "full",
+            "filename": "20160804_100931.jpg",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470371798723_20160804_100931.jpg"
+          },
+          "content": []
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "100%",
+            "align": "full",
+            "filename": "20160804_100933.jpg",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470371800876_20160804_100933.jpg"
+          },
+          "content": []
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "100%",
+            "align": "full",
+            "filename": "20160804_103814.jpg",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470371820519_20160804_103814.jpg"
+          },
+          "content": []
+        },
+        {
+          "content": [
+            {
+              "text": "A3 Mode Testing",
+              "type": "text"
+            }
+          ],
+          "attrs": {
+            "level": 2
+          },
+          "type": "heading"
+        },
+        {
+          "content": [
+            {
+              "text": "I hypothesized that the standard deviation of the sample part or the image (region of interest (ROI)) would correlate to the parameter bounds specified to control the masking of the sidewalk. There is little correlation with outliers and only slightly better without (r2~=.42, .22, .37). To justify this, I decided the values in the L, a, and b columns subjectively. I adjusted the settings until I felt that the sidewalk was as small as possible while being one shape, without regions missing. Since this was a subjective process, removing outliers seems okay in a sense. In addition, there was a wide range of acceptable values that made the sidewalk clear, therefore, the outliers may fall into the range anyway. Additional testing may be done to pinpoint an acceptable range. Although an acceptable function couldn't be found, static ranges can be used since the data is relatively consistent.",
+              "type": "text"
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "type": "embed",
+          "attrs": {
+            "size": "100%",
+            "align": "full",
+            "filename": "correlation graph.jpg",
+            "url": "https://s3.amazonaws.com/pubpub-upload/path-oriented-powered-wheelchair-navigation-assistance/1470879889780_correlationgraph.jpg"
+          },
+          "content": [
+            {
+              "type": "caption",
+              "content": [
+                {
+                  "type": "text",
+                  "text": "This graph shows the spread of data on the L, a, and b channels for a collection of various sidewalk images (n=29). The horizontal axis shows the range value adjusted to the best of my ability and the vertical axis shows the standard deviation of the ROI."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "citations",
+      "content": [
+        {
+          "type": "citation",
+          "attrs": {
+            "citationID": "57b77b5ec38ce03900f60cb3",
+            "data": {
+              "type": "article-journal",
+              "author": [
+                {
+                  "given": "Jason,",
+                  "family": "Dekarske"
+                },
+                {
+                  "given": "Devin R",
+                  "family": "Berg"
+                }
+              ],
+              "title": "Path Oriented Electric Wheelchair Steering Assistance",
+              "publisher": "Open Science Framework",
+              "id": "57b77b5ec38ce03900f60cb3"
+            }
+          }
+        },
+        {
+          "type": "citation",
+          "attrs": {
+            "citationID": "57b772060cf2d8716f43da7e",
+            "data": {
+              "type": "article-journal",
+              "page": "353-60",
+              "year": "2000",
+              "volume": "37",
+              "issue": "3",
+              "title": "Adequacy of power wheelchair control interfaces for persons with severe disabilities: a clinical survey",
+              "container-title": "Journal of Rehabilitation Research and Devolopment",
+              "author": [
+                {
+                  "given": "Skaar SB",
+                  "family": "Langbein WE"
+                }
+              ],
+              "id": "57b772060cf2d8716f43da7e"
+            }
+          }
+        },
+        {
+          "type": "citation",
+          "attrs": {
+            "citationID": "57b772060cf2d8716f43da7f",
+            "data": {
+              "type": "article-journal",
+              "page": "1-6",
+              "year": "2012",
+              "title": "Smart wheelchairs: Past and current trends",
+              "author": [
+                {
+                  "given": "O.",
+                  "family": "Horn"
+                }
+              ],
+              "id": "57b772060cf2d8716f43da7f"
+            }
+          }
+        },
+        {
+          "type": "citation",
+          "attrs": {
+            "citationID": "57b772060cf2d8716f43da80",
+            "data": {
+              "type": "article-journal",
+              "page": "197-201",
+              "year": "2008",
+              "volume": "1",
+              "title": "A Lane Departure Warning System Based on Machine Vision",
+              "author": [
+                {
+                  "given": "B.",
+                  "family": "Yu"
+                },
+                {
+                  "given": "W.",
+                  "family": "Zhang"
+                },
+                {
+                  "given": "Y.",
+                  "family": "Cai"
+                }
+              ],
+              "id": "57b772060cf2d8716f43da80"
+            }
+          }
+        },
+        {
+          "type": "citation",
+          "attrs": {
+            "citationID": "57b7b715a900233300273aa2",
+            "data": {
+              "type": "article-journal",
+              "year": "2015",
+              "title": "The Known Colors Palette Tool - Final Revision - Hopefully",
+              "author": [
+                {
+                  "given": "gggustafson"
+                }
+              ],
+              "id": "57b7b715a900233300273aa2"
+            }
+          }
+        },
+        {
+          "type": "citation",
+          "attrs": {
+            "citationID": "57b7b715a900233300273aa2",
+            "data": {
+              "type": "article-journal",
+              "year": "2015",
+              "title": "The Known Colors Palette Tool - Final Revision - Hopefully",
+              "author": [
+                {
+                  "given": "gggustafson"
+                }
+              ],
+              "id": "57b7b715a900233300273aa2"
+            }
+          }
+        },
+        {
+          "type": "citation",
+          "attrs": {
+            "citationID": "57b772060cf2d8716f43da83",
+            "data": {
+              "type": "article-journal",
+              "year": "2014",
+              "title": "Morphological Transformations",
+              "id": "57b772060cf2d8716f43da83"
+            }
+          }
+        },
+        {
+          "type": "citation",
+          "attrs": {
+            "citationID": "57b772060cf2d8716f43da84",
+            "data": {
+              "type": "article-journal",
+              "year": "2016",
+              "title": "Raspberry Pi",
+              "id": "57b772060cf2d8716f43da84"
+            }
+          }
+        },
+        {
+          "type": "citation",
+          "attrs": {
+            "citationID": "57b772060cf2d8716f43da85",
+            "data": {
+              "type": "article-journal",
+              "title": "Raspberry Pi Camera Board V2",
+              "id": "57b772060cf2d8716f43da85"
+            }
+          }
+        },
+        {
+          "type": "citation",
+          "attrs": {
+            "citationID": "57b7b83dc38ce03900f60cb9",
+            "data": {
+              "type": "article-journal",
+              "year": "2016",
+              "title": "OpenCV",
+              "id": "57b7b83dc38ce03900f60cb9"
+            }
+          }
+        },
+        {
+          "type": "citation",
+          "attrs": {
+            "citationID": "57b7b83dc38ce03900f60cb9",
+            "data": {
+              "type": "article-journal",
+              "year": "2016",
+              "title": "OpenCV",
+              "id": "57b7b83dc38ce03900f60cb9"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "attrs": {
+    "meta": {
+      "bib": [
+        {
+          "text": "  \n    [1]Dekarske, J. and Berg, D.R. Path Oriented Electric Wheelchair Steering Assistance.\n  \n",
+          "id": "57b77b5ec38ce03900f60cb3"
+        },
+        {
+          "text": "  \n    [2]gggustafson The Known Colors Palette Tool - Final Revision - Hopefully.\n  \n",
+          "id": "57b7b715a900233300273aa2"
+        },
+        {
+          "text": "  \n    [3]Horn, O. Smart wheelchairs: Past and current trends. 1–6.\n  \n",
+          "id": "57b772060cf2d8716f43da7f"
+        },
+        {
+          "text": "  \n    [4]Langbein WE, S.S. Adequacy of power wheelchair control interfaces for persons with severe disabilities: a clinical survey. Journal of Rehabilitation Research and Devolopment. 37, 3, 353–60.\n  \n",
+          "id": "57b772060cf2d8716f43da7e"
+        },
+        {
+          "text": "  \n    [5]Yu, B. et al. A Lane Departure Warning System Based on Machine Vision. 1, 197–201.\n  \n",
+          "id": "57b772060cf2d8716f43da80"
+        },
+        {
+          "text": "  \n    [6]Morphological Transformations.\n  \n",
+          "id": "57b772060cf2d8716f43da83"
+        },
+        {
+          "text": "  \n    [7]OpenCV.\n  \n",
+          "id": "57b7b83dc38ce03900f60cb9"
+        },
+        {
+          "text": "  \n    [8]Raspberry Pi.\n  \n",
+          "id": "57b772060cf2d8716f43da84"
+        },
+        {
+          "text": "  \n    [9]Raspberry Pi Camera Board V2.\n  \n",
+          "id": "57b772060cf2d8716f43da85"
+        }
+      ],
+      "inlineBib": {
+        "57b77b5ec38ce03900f60cb3": "[1]",
+        "57b772060cf2d8716f43da7e": "[2]",
+        "57b772060cf2d8716f43da7f": "[3]",
+        "57b772060cf2d8716f43da80": "[4]",
+        "57b7b715a900233300273aa2": "[2]",
+        "57b772060cf2d8716f43da83": "[6]",
+        "57b772060cf2d8716f43da84": "[7]",
+        "57b772060cf2d8716f43da85": "[8]",
+        "57b7b83dc38ce03900f60cb9": "[7]"
+      }
+    }
+  }
+}

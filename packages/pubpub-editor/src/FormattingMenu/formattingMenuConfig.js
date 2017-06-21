@@ -30,6 +30,7 @@ function getMenuItems(editor) {
 	/* Blocks */
 	/* -------------- */
 	function blockTypeIsActive(type, attrs) {
+
 		const $from = editor.view.state.selection.$from;
 
 		let wrapperDepth;

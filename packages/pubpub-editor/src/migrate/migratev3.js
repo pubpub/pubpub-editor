@@ -1,5 +1,7 @@
 import {createEmbed, createEquation, createHighlight, createIframe, createReference, generateCitations} from './createNodes';
 
+import { csltoBibtex } from '../references/csltobibtex';
+
 const NodeCreation = {
   image: createEmbed,
   embed: createEmbed,
@@ -90,3 +92,15 @@ exports.migrateJSON = (doc, debug = false) => {
 
   return { docJSON: newDoc, fileMap: context.fileMap };
 };
+
+
+exports.extractBibFromJSON = (doc) => {
+
+  const citations = doc.content[1];
+  const citationData = citations.content.map((citationNode) => {
+    return citationNode.attrs.data;
+  });
+  const bibtexData = csltoBibtex(citationData);
+  console.log(bibtexData);
+
+}

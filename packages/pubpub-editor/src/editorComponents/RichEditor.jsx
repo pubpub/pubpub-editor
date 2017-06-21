@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 
 import Autocomplete from '../Autocomplete/Autocomplete';
+import { FirebaseEditor } from '../prosemirror-setup/editors/firebaseEditor';
 import FormattingMenu from '../FormattingMenu/FormattingMenu';
 import InsertMenu from '../InsertMenu/InsertMenu';
 import { RichEditor as ProseEditor } from '../prosemirror-setup';
@@ -108,7 +109,9 @@ export const RichEditor = React.createClass({
 		const contents = this.props.initialContent;
 		migrateMarks(contents);
 
-		this.editor = new ProseEditor({
+		const EditorClass = (this.props.collaborative) ? FirebaseEditor : ProseEditor;
+
+		this.editor = new EditorClass({
 			place: place,
 			contents: contents,
 			config: {

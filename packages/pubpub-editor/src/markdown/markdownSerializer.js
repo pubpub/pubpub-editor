@@ -1,6 +1,7 @@
 import { MarkdownSerializer } from 'prosemirror-markdown';
 import { generateBibTexString } from '../references/citationConversion';
 
+// serialize to markdown and keep stack?
 export const markdownSerializer = new MarkdownSerializer({
 	blockquote(state, node) {
 		state.wrapBlock('> ', null, node, () => state.renderContent(node));

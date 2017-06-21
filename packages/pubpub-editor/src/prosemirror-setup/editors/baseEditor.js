@@ -77,6 +77,8 @@ class BaseEditor {
 			...props
 		});
 
+		return this.view;
+
 	}
 
 	reconfigure(plugins, config) {
