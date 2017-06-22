@@ -1,8 +1,9 @@
 import { CitationsPlugin, FootnotesPlugin, MentionsPlugin, RelativeFilesPlugin, SelectPlugin } from '../plugins';
 
 import { BaseEditor } from './baseEditor';
-import { FirebaseEditor } from './prosemirror-firebase';
+import FirebasePlugin from '../plugins/firebasePlugin';
 import firebase from 'firebase';
+import {getPlugin} from '../plugins';
 import { schema } from '../schema';
 
 const { collab } = require('prosemirror-collab');
@@ -12,8 +13,18 @@ class FirebaseCollabEditor extends BaseEditor {
 
   constructor({place, text, config, contents, props, components: { suggestComponent } = {}, handlers: { createFile, onChange, captureError, updateMentions } = {} }) {
     super();
+
     const {pubpubSetup} = require('../setup');
     const {markdownParser} = require("../../markdown");
+    const collabEditing = require('prosemirror-collab').collab;
+
+    const clientID = Math.round(Math.random() * 100000);
+
+    const plugins = pubpubSetup({ schema })
+    .concat(CitationsPlugin).concat(SelectPlugin).concat(RelativeFilesPlugin)
+    .concat(MentionsPlugin).concat(FootnotesPlugin)
+    .concat(FirebasePlugin({selfClientID: clientID}))
+    .concat(collab({clientID: clientID}));
 
     let docJSON;
     if (text) {
@@ -21,44 +32,8 @@ class FirebaseCollabEditor extends BaseEditor {
     } else {
       docJSON = contents;
     }
-    const collabEditing = require('prosemirror-collab').collab;
-    const firebaseConfig = {
-      apiKey: "AIzaSyBpE1sz_-JqtcIm2P4bw4aoMEzwGITfk0U",
-      authDomain: "pubpub-rich.firebaseapp.com",
-      databaseURL: "https://pubpub-rich.firebaseio.com",
-      projectId: "pubpub-rich",
-      storageBucket: "pubpub-rich.appspot.com",
-      messagingSenderId: "543714905893"
-    };
-    const firebaseApp = firebase.initializeApp(firebaseConfig);
-    const db = firebase.database(firebaseApp);
-    const editingRef = firebase.database().ref("testEditor");
+    this.create({place, contents: docJSON, config, props, plugins, components: { suggestComponent }, handlers: { createFile, onChange, captureError, updateMentions }});
 
-    const clientID = editingRef.push().key;
-    const plugins = pubpubSetup({ schema }).concat(CitationsPlugin).concat(SelectPlugin).concat(RelativeFilesPlugin).concat(MentionsPlugin).concat(FootnotesPlugin).concat(collab({clientID: clientID}));;
-
-    // how to set decorations so this works?
-    let view = this.create({place, contents: docJSON, config, props, plugins, components: { suggestComponent }, handlers: { createFile, onChange, captureError, updateMentions }});
-
-    const fireView = ({ newDoc, updateCollab, selections }) => {
-      this.updateCollab = updateCollab;
-      this.selections = selections;
-      console.log('got new doc!', newDoc);
-      if (newDoc) {
-        this.setDoc(newDoc);
-      }
-
-      return view;
-    };
-
-    new FirebaseEditor({
-      firebaseRef: editingRef,
-      stateConfig: {
-          schema,
-      },
-      view: fireView,
-      clientID
-    });
 
   }
 
@@ -77,9 +52,10 @@ class FirebaseCollabEditor extends BaseEditor {
 			this.view.props.onCursor();
 		}
 
-    this.updateCollab(transaction, newState);
-    console.log('updating collab!', this.selections);
-
+    let firebasePlugin;
+		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
+			return firebasePlugin.props.updateCollab(transaction, newState);
+		}
 	}
 
 }
