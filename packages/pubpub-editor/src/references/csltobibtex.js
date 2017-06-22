@@ -241,6 +241,10 @@ var getBibTeXJSON = function ( src ) {
     && src.issued[ 0 ][ 'date-parts' ].length === 3
                                          ) props.year      = src.issued[ 0 ][ 'date-parts' ][ 0 ].toString()
 
+  if ( src.hasOwnProperty( 'issued')
+   && src.issued['date-parts']
+   && src.issued[ 'date-parts' ][0].length >= 1) props.year = src.issued[ 'date-parts' ][ 0 ].toString()
+
   res.properties = props
 
   return res
