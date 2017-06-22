@@ -112,10 +112,11 @@ var ExportButton = exports.ExportButton = _react2.default.createClass({
 
 		var metadata = { title: title, authors: authors };
 
-		// console.log(`made ${JSON.stringify(inputContent)} \n\n which was \n\n${this.state.content}`)
-		console.log(JSON.stringify(inputContent));
-
 		var template = this.state.pdftexTemplates['default'];
+
+		this.setState({
+			exportLoading: true
+		});
 
 		_superagent2.default.post(convertUrl).send({
 			inputType: 'ppub',
@@ -130,9 +131,6 @@ var ExportButton = exports.ExportButton = _react2.default.createClass({
 			} else {
 				var pollUrl = res.body.pollUrl;
 				window.setTimeout(_this3.pollURL.bind(_this3, pollUrl), 2000);
-				_this3.setState({
-					exportLoading: true
-				});
 			}
 		});
 	},
