@@ -73,12 +73,16 @@ const FirebasePlugin = ({ selfClientID }) => {
 
         fetchedState = true;
 
-        const { EditorState } = require('prosemirror-state');
-    		const newState = EditorState.create({
-    			doc: newDoc,
-    			plugins: view.state.plugins,
-    		});
-    		view.updateState(newState);
+
+        if (newDoc) {
+          const { EditorState } = require('prosemirror-state');
+      		const newState = EditorState.create({
+      			doc: newDoc,
+      			plugins: view.state.plugins,
+      		});
+      		view.updateState(newState);
+        }
+
 
         return changesRef.startAt(null, String(latestKey + 1)).once('value').then(
           function (snapshot) {
@@ -126,14 +130,20 @@ const FirebasePlugin = ({ selfClientID }) => {
               'child_added',
               function (snapshot) {
                 latestKey = Number(snapshot.key)
-                const { s: compressedStepsJSON, c: clientID } = snapshot.val()
+                const { s: compressedStepsJSON, c: clientID, m: meta } = snapshot.val()
                 const steps = (
                   clientID === selfClientID ?
                     selfChanges[latestKey]
                   :
                     compressedStepsJSON.map(compressedStepJSONToStep) )
                 const stepClientIDs = new Array(steps.length).fill(clientID)
-                editor.dispatch(receiveTransaction(editor.state, steps, stepClientIDs))
+                const trans = receiveTransaction(editor.state, steps, stepClientIDs);
+                if (meta) {
+                  for (let metaKey in meta) {
+                    trans.setMeta(metaKey, meta[metaKey]);
+                  }
+                }
+                editor.dispatch(trans);
                 delete selfChanges[latestKey]
               } )
 
@@ -177,15 +187,29 @@ const FirebasePlugin = ({ selfClientID }) => {
 
   	props: {
 
-      updateCollab({ docChanged, mapping }, newState) {
+      updateCollab({ docChanged, mapping, meta }, newState) {
         if (docChanged) {
           for (let clientID in selections) {
             selections[clientID] = selections[clientID].map(newState.doc, mapping)
           }
         }
+        if (meta.pointer) {
+          delete(meta.pointer);
+        }
+        if (meta["collab$"]) {
+          return;
+          delete(meta["collab$"])
+        }
+        if (meta.rebase) {
+          delete(meta.rebase)
+        }
+        if (meta.addToHistory) {
+          delete(meta.addToHistory)
+        }
         const sendable = sendableSteps(newState)
         if (sendable) {
           const { steps, clientID } = sendable
+          console.log('gota meta', meta);
           changesRef.child(latestKey + 1).transaction(
             function (existingBatchedSteps) {
               if (!existingBatchedSteps) {
@@ -195,6 +219,7 @@ const FirebasePlugin = ({ selfClientID }) => {
                     function (step) {
                       return compressStepJSON(step.toJSON()) } ),
                   c: clientID,
+                  m: meta,
                   t: TIMESTAMP,
                 }
               }
