@@ -37,10 +37,12 @@ class FirebaseCollabEditor extends BaseEditor {
     const clientID = editingRef.push().key;
     const plugins = pubpubSetup({ schema }).concat(CitationsPlugin).concat(SelectPlugin).concat(RelativeFilesPlugin).concat(MentionsPlugin).concat(FootnotesPlugin).concat(collab({clientID: clientID}));;
 
+    // how to set decorations so this works?
     let view = this.create({place, contents: docJSON, config, props, plugins, components: { suggestComponent }, handlers: { createFile, onChange, captureError, updateMentions }});
 
-    const fireView = ({ stateConfig, updateCollab, newDoc }) => {
+    const fireView = ({ newDoc, updateCollab, selections }) => {
       this.updateCollab = updateCollab;
+      this.selections = selections;
       console.log('got new doc!', newDoc);
       if (newDoc) {
         this.setDoc(newDoc);
@@ -65,7 +67,6 @@ class FirebaseCollabEditor extends BaseEditor {
 			return;
 		}
 
-    console.log('updating', transaction.mapping);
 		const newState = this.view.state.apply(transaction);
 		this.view.updateState(newState);
 		if (transaction.docChanged) {
@@ -77,7 +78,7 @@ class FirebaseCollabEditor extends BaseEditor {
 		}
 
     this.updateCollab(transaction, newState);
-    console.log('updating collab!');
+    console.log('updating collab!', this.selections);
 
 	}
 

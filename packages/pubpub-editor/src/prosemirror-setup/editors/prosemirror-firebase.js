@@ -35,9 +35,7 @@ export class FirebaseEditor {
               selections[clientID] = selections[clientID].map(newState.doc, mapping)
             }
           }
-
           const sendable = sendableSteps(newState)
-          console.log('Got sendable steps', sendable);
           if (sendable) {
             const { steps, clientID } = sendable
             changesRef.child(latestKey + 1).transaction(
