@@ -29,6 +29,7 @@
     "@pubpub/render-files": "^2.0.64",
     "biblatex-csl-converter": "^0.21.7",
     "classnames": "^2.2.5",
+    "color-hash": "^1.0.3",
     "diff": "^3.2.0",
     "firebase": "^4.1.2",
     "fuzzysearch": "^1.0.3",

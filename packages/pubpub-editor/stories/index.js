@@ -1,9 +1,10 @@
-import { Footnotes, HtmlDoc, PDFrendering, ReferenceOrdering, SampleMarkdown, SingleMention, SingleReference, TableMarkdown } from './sampledocs';
+import { DiffDocs, Footnotes, HtmlDoc, PDFrendering, ReferenceOrdering, SampleMarkdown, SingleMention, SingleReference, TableMarkdown } from './sampledocs';
 import { LongLegacyBug, MentionContentBug, ReferenceNotShowingBug } from './bugdata';
 
 import APIEditor from './storybookAPI';
 import CodeEditor from './storybookCodeEditor';
 import Converter from './storybookConverter';
+import DiffEditor from './storybookDiffEditor';
 import DisplayEditor from './storybookDisplayEditor';
 import ExportMenu from './storybookExportMenu';
 import FullEditor from './storybookFullEditor';
@@ -53,6 +54,9 @@ storiesOf('Full Editor', module)
 ))
 .add('Collaborative Editor ', () => (
 	<FullEditor collaborative={true} />
+))
+.add('Diff Editor ', () => (
+	<DiffEditor text1={DiffDocs[0]} text2={DiffDocs[1]} />
 ))
 ;
 

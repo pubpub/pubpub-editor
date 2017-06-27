@@ -1,5 +1,6 @@
 import attrs from 'markdown-it-attrs';
 import citations from './markdown-it-citations';
+import diff from './markdown-it-diff';
 import embed from './markdown-it-embed';
 import footnote from './markdown-it-footnotes';
 import highlight from './markdown-it-highlight';
@@ -23,9 +24,7 @@ export const markdownitInstance = markdownit({
 .use(highlight) // Pub Highlight parser
 .use(modifyLinks)
 .use(embed)
+.use(diff)
 .use(footnote);
-
-console.log(markdownitInstance);
-console.log(footnote);
 
 export default markdownitInstance;

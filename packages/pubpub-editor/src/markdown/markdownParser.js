@@ -24,6 +24,9 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 			return {content: tok.content};
 		}},
 
+		diff: {node: 'diff', attrs: tok => { return {type: tok.attrGet('type')}; }},
+
+
 
 		hr: {node: 'horizontal_rule'},
 		pagebreak: {node: 'page_break'},

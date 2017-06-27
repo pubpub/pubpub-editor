@@ -53,6 +53,17 @@ const nodes = {
 		inline: true,
 	},
 
+	diff: {
+		atom: true,
+		group: 'inline',
+		content: 'inline<_>*',
+		attrs: {
+			type: { default: '' },
+		},
+		inline: true,
+	},
+
+
 	block_equation: {
 		atom: true,
 		group: 'block',

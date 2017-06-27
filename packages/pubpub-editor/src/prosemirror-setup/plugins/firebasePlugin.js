@@ -33,6 +33,8 @@ function stringToColor(string, alpha = 1) {
 }
 
 
+// how to
+
 
 const FirebasePlugin = ({ selfClientID }) => {
 
@@ -51,6 +53,7 @@ const FirebasePlugin = ({ selfClientID }) => {
   let selection = undefined;
   let fetchedState = false;
   let latestKey;
+  let selectionMarkers = {};
 
   const loadDocumentAndListen = (view) => {
 
@@ -163,7 +166,7 @@ const FirebasePlugin = ({ selfClientID }) => {
   return new Plugin({
   	state: {
   		init(config, instance) {
-        console.log('init plugin!')
+
   			return { };
   		},
   		apply(transaction, state, prevEditorState, editorState) {
@@ -172,7 +175,6 @@ const FirebasePlugin = ({ selfClientID }) => {
   	},
 
     view: function(editorView) {
-      console.log('init view!');
   		this.editorView = editorView;
   		loadDocumentAndListen(editorView);
   		return {
@@ -193,6 +195,8 @@ const FirebasePlugin = ({ selfClientID }) => {
             selections[clientID] = selections[clientID].map(newState.doc, mapping)
           }
         }
+
+        // return after meta pointer?
         if (meta.pointer) {
           delete(meta.pointer);
         }
@@ -209,7 +213,6 @@ const FirebasePlugin = ({ selfClientID }) => {
         const sendable = sendableSteps(newState)
         if (sendable) {
           const { steps, clientID } = sendable
-          console.log('gota meta', meta);
           changesRef.child(latestKey + 1).transaction(
             function (existingBatchedSteps) {
               if (!existingBatchedSteps) {
@@ -246,8 +249,13 @@ const FirebasePlugin = ({ selfClientID }) => {
   		decorations(state) {
         return DecorationSet.create(state.doc, Object.entries(selections).map(
           function ([ clientID, { from, to } ]) {
+             console.log(clientID, selfClientID);
+              if (clientID === selfClientID) {
+                return null;
+              }
               if (from === to) {
                   let elem = document.createElement('span')
+                  elem.className = "collab-cursor";
                   elem.style.borderLeft = `1px solid ${stringToColor(clientID)}`
                   return Decoration.widget(from, elem)
               } else {

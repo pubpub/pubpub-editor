@@ -6,6 +6,10 @@ import {schema as pubSchema} from '../schema';
 // show added in green and removed in reduce
 // hovering on one, highlights both changeset
 // clicking on one, accepts changes into the document
+// just insert diff points and then infer the differences in the document?
+
+
+// use state.write in markdown serializer to build a diff map?
 
 class DiffEditor extends AbstractEditor {
 

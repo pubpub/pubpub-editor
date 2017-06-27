@@ -38,7 +38,7 @@ export const renderReactFromJSON = function(doc, fileMap, allReferences, slug) {
 
 	const citationsInDoc = [];
 
-	const meta = {fileMap, allReferences, engine, docAttrs, citationsInDoc, slug, footnoteCount: 0};
+	const meta = {fileMap, allReferences, engine, docAttrs, citationsInDoc, slug, footnoteCount: 0, diffType: null};
 
 
 	const content = renderSubLoop(doc.content, meta);
@@ -73,7 +73,7 @@ const renderSubLoop = function(item, meta) {
 			return <pre key={index}><code>{renderSubLoop(node.content, meta)}</code></pre>;
 		case 'paragraph':
 			// console.log((node.content));
-			return <div className={'p-block'} key={index}>{renderSubLoop(node.content, meta)}</div>;
+			return <div style={style} className={'p-block'} key={index}>{renderSubLoop(node.content, meta)}</div>;
 		case 'page_break':
 			return <div className={'pagebreak'} key={index}></div>;
 		case 'image':
@@ -84,6 +84,13 @@ const renderSubLoop = function(item, meta) {
 			return node.attrs.content;
 		case 'text':
 			const marks = node.marks || [];
+			const style = {};
+			if (meta.diffType === 'plus') {
+				style.backgroundColor = 'green';
+			} else if (meta.diffType === 'minus') {
+				style.backgroundColor = 'red';
+			}
+
 			return marks.reduce((previous, current)=>{
 				switch (current.type) {
 				case 'strong':
@@ -108,7 +115,7 @@ const renderSubLoop = function(item, meta) {
 				default:
 					return previous;
 				}
-			}, node.text);
+			}, <span style={style}>{node.text}</span>);
 
 		case 'table':
 			return <table key={index}><tbody>{renderSubLoop(node.content, meta)}</tbody></table>;
@@ -167,6 +174,15 @@ const renderSubLoop = function(item, meta) {
 			}
 
 			return <ReferenceRender citationID={citationID} engine={meta.engine} key={index} label={label} {...node.attrs} />
+
+		case 'diff':
+			if (meta.diffType) {
+				meta.diffType = null;
+			} else {
+				console.log('setting diffType!', meta.diffType);
+				meta.diffType = node.attrs.type;
+			}
+			return <span></span>;
 
 		case 'footnote':
 			meta.footnoteCount = meta.footnoteCount + 1;

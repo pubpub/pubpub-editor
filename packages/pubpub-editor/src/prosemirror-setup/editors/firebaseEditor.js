@@ -18,7 +18,7 @@ class FirebaseCollabEditor extends BaseEditor {
     const {markdownParser} = require("../../markdown");
     const collabEditing = require('prosemirror-collab').collab;
 
-    const clientID = Math.round(Math.random() * 100000);
+    const clientID = String(Math.round(Math.random() * 100000));
 
     const plugins = pubpubSetup({ schema })
     .concat(CitationsPlugin).concat(SelectPlugin).concat(RelativeFilesPlugin)
