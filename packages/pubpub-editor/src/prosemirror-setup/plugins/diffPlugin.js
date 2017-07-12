@@ -1,5 +1,22 @@
 import {Plugin} from 'prosemirror-state';
 
+/// ideally backed my markdown for comparisons??
+
+// base off markown and then use mark changes to show them??
+// ---> this is a good idea I think. Allows changes to be applied by applying markdown diffs.
+
+// how to serialize to markdown something that has diffs?
+// where is the state of the two editors being stored?
+
+// should patches happen on track changes or on diffs?
+
+
+// flow:
+// - a change wraps itself in a 'diff' block which can be serialized
+// - deletions are cancelled transforms
+// - all diff blocks hold some sort of identifier, clicking accept does the change in markdown
+// - do not need to store two possible editors. Can just diff between them as a normal state
+
 const diffPlugin = new Plugin({
   state: {
     init(config, instance) {

@@ -13,12 +13,11 @@ require("../style/base.scss");
 export const StoryBookDiffEditor = React.createClass({
 
 	getInitialState: function() {
-		return {
-			text1: '',
-			text2: '',
-			initialText1: markdownToJSON(this.props.text1),
-			initialText2: markdownToJSON(this.props.text2),
-		};
+		const { text1, text2 } = this.props;
+		const initialText1 = markdownToJSON(text1);
+		const initialText2 = markdownToJSON(text2);
+
+		return { text1, text2, initialText1, initialText2 };
 	},
 
 	onChange1: function() {
@@ -32,6 +31,11 @@ export const StoryBookDiffEditor = React.createClass({
 
 	render: function() {
     const { text1, text2, initialText1, initialText2 } = this.state;
+
+		if (!text1 || !text2) {
+			return null;
+		}
+
     const diffText = diffMarkdown(text1, text2);
 		const jsonDoc = markdownToJSON(diffText);
 
@@ -42,7 +46,7 @@ export const StoryBookDiffEditor = React.createClass({
 		return (
 			<div style={{display: 'flex'}}>
 				<div style={itemStyle}>
-					<RichEditor ref="editor1" initialContent={initialText1} onChange={this.onChange1}  />
+					<RichEditor trackChanges={true} ref="editor1" initialContent={initialText1} onChange={this.onChange1}  />
 				</div>
 				<div style={itemStyle}>
 					<RichEditor ref="editor2" initialContent={initialText2} onChange={this.onChange2} />

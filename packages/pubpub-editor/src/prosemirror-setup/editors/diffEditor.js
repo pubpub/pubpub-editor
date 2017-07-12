@@ -4,9 +4,10 @@ import murmurhash from 'murmurhash';
 import {schema as pubSchema} from '../schema';
 
 // show added in green and removed in reduce
-// hovering on one, highlights both changeset
+// hovering on one, highlights both changed
 // clicking on one, accepts changes into the document
-// just insert diff points and then infer the differences in the document?
+
+
 
 
 // use state.write in markdown serializer to build a diff map?
@@ -73,7 +74,9 @@ class DiffEditor extends AbstractEditor {
             diffMap[diffStr.length + j + 1 ] = nodeIndex + j;
           }
 					nodeIndex += child.nodeSize - 1;
-				} else if (child.type.name === 'block_embed') {
+				}
+        // can we generalize this to any block?
+        else if (child.type.name === 'block_embed') {
           const attrsStr = JSON.stringify(child.attrs);
           // diffText = 'embed' + attrsStr + ' ';
           const attrHash = murmurhash.v3(attrsStr);

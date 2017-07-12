@@ -179,7 +179,6 @@ const renderSubLoop = function(item, meta) {
 			if (meta.diffType) {
 				meta.diffType = null;
 			} else {
-				console.log('setting diffType!', meta.diffType);
 				meta.diffType = node.attrs.type;
 			}
 			return <span></span>;

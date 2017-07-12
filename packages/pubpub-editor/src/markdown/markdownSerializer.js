@@ -125,6 +125,9 @@ export const markdownSerializer = new MarkdownSerializer({
 	aside: function aside(state) {
 		state.write('');
 	},
+	diff: function diff(state) {
+		state.write('');
+	},
 	article: function article(state, node) {
 		state.renderContent(node);
 	},

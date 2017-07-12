@@ -154,7 +154,6 @@ class BaseEditor {
 	toMarkdown = () => {
 		const { markdownSerializer } = require('../../markdown');
 		const doc = this.view.state.doc;
-		console.log('Doc', doc.attrs);
 		const markdown = markdownSerializer.serialize(this.view.state.doc, {meta: doc.attrs.meta} );
 		return markdown;
 	}

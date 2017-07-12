@@ -5,7 +5,7 @@ function diffPlusParser(state, silent) {
 	const start = state.pos;
 
 	// if (state.src.charAt(start) !== '[') { return false; }
-	if (start + 5 >= max) { return false; }
+	if (start + 5 > max) { return false; }
 	if (state.src.substring(start, start + 5) !== '-----') { return false; }
 	if (silent) { return false; } // don't run any pairs in validation mode
 
@@ -25,7 +25,7 @@ function diffNegParser(state, silent) {
 	const start = state.pos;
 
 	// if (state.src.charAt(start) !== '[') { return false; }
-	if (start + 5 >= max) { return false; }
+	if (start + 5 > max) { return false; }
 	if (state.src.substring(start, start + 5) !== '+++++') { return false; }
 	if (silent) { return false; } // don't run any pairs in validation mode
 

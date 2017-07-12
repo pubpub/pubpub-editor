@@ -117,6 +117,7 @@ export const RichEditor = React.createClass({
 			config: {
 				fileMap: fileMap,
 				referencesList: this.props.localFiles,
+				trackChanges: this.props.trackChanges,
 			},
 			props: {
 				fileMap: fileMap,

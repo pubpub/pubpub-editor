@@ -54,13 +54,13 @@ const nodes = {
 	},
 
 	diff: {
-		atom: true,
 		group: 'inline',
 		content: 'inline<_>*',
 		attrs: {
-			type: { default: '' },
+			type: { default: 'plus' },
 		},
 		inline: true,
+		toDOM(node) { return ['span', { class: `diff-marker ${(node.attrs.type === 'plus') ? 'added' : 'removed'}` }, 0]; }
 	},
 
 
