@@ -13,6 +13,10 @@ var _markdownItCitations = require('./markdown-it-citations');
 
 var _markdownItCitations2 = _interopRequireDefault(_markdownItCitations);
 
+var _markdownItDiff = require('./markdown-it-diff');
+
+var _markdownItDiff2 = _interopRequireDefault(_markdownItDiff);
+
 var _markdownItEmbed = require('./markdown-it-embed');
 
 var _markdownItEmbed2 = _interopRequireDefault(_markdownItEmbed);
@@ -61,9 +65,6 @@ var markdownitInstance = exports.markdownitInstance = (0, _markdownIt2.default)(
 .use(_markdownItReference2.default) // Reference parser
 .use(_markdownItAttrs2.default) // Reference parser
 .use(_markdownItHighlight2.default) // Pub Highlight parser
-.use(_markdownItModifyLinks2.default).use(_markdownItEmbed2.default).use(_markdownItFootnotes2.default);
-
-console.log(markdownitInstance);
-console.log(_markdownItFootnotes2.default);
+.use(_markdownItModifyLinks2.default).use(_markdownItEmbed2.default).use(_markdownItDiff2.default).use(_markdownItFootnotes2.default);
 
 exports.default = markdownitInstance;

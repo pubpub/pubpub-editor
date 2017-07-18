@@ -42,6 +42,11 @@ var RichEditor = function (_BaseEditor) {
         markdownParser = _require2.markdownParser;
 
     var plugins = pubpubSetup({ schema: _schema.schema }).concat(_plugins.CitationsPlugin).concat(_plugins.SelectPlugin).concat(_plugins.RelativeFilesPlugin).concat(_plugins.MentionsPlugin).concat(_plugins.FootnotesPlugin);
+
+    if (config.trackChanges) {
+      plugins = plugins.concat(_plugins.TrackPlugin);
+    }
+
     var docJSON = void 0;
     if (text) {
       docJSON = markdownParser.parse(text).toJSON();

@@ -53,7 +53,6 @@ var BaseEditor = function () {
 			    markdownSerializer = _require.markdownSerializer;
 
 			var doc = _this.view.state.doc;
-			console.log('Doc', doc.attrs);
 			var markdown = markdownSerializer.serialize(_this.view.state.doc, { meta: doc.attrs.meta });
 			return markdown;
 		};
@@ -188,6 +187,8 @@ var BaseEditor = function () {
 					}
 				}
 			}, props));
+
+			return this.view;
 		}
 	}, {
 		key: 'reconfigure',
@@ -210,6 +211,15 @@ var BaseEditor = function () {
 			var mentionsPlugin = void 0;
 			if (mentionsPlugin = (0, _plugins.getPlugin)('mentions', this.view.state)) {
 				return mentionsPlugin.props.getMentionPos(this.view);
+			}
+			return null;
+		}
+	}, {
+		key: 'playbackDoc',
+		value: function playbackDoc() {
+			var richPlugin = void 0;
+			if (richPlugin = (0, _plugins.getPlugin)('track', this.view.state)) {
+				richPlugin.props.resetView(this.view);
 			}
 			return null;
 		}

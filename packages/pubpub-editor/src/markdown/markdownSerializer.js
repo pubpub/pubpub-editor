@@ -196,5 +196,8 @@ export const markdownSerializer = new MarkdownSerializer({
 			return '](' + state.esc(mark.attrs.href) + (mark.attrs.title ? ' ' + state.quote(mark.attrs.title) : '') + ')';
 		}
 	},
-	code: {open: '`', close: '`'}
+	code: {open: '`', close: '`'},
+	diff_plus: {open: '+++', close: '+++'},
+	diff_minus: {open: '---', close: '---'}
+
 });

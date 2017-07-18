@@ -5,6 +5,7 @@ const keys = {
   relativefiles: new PluginKey('relativefiles'),
   mentions: new PluginKey('mentions'),
   firebase: new PluginKey('firebase'),
+  track: new PluginKey('track'),
 };
 
 exports.keys = keys;

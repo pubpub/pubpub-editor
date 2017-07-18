@@ -102,6 +102,14 @@ class BaseEditor {
 		return null;
 	}
 
+	playbackDoc() {
+		let richPlugin;
+		if (richPlugin = getPlugin('track', this.view.state)) {
+			richPlugin.props.resetView(this.view);
+		}
+		return null;
+	}
+
 	_onAction (transaction) {
 		/*
 		if (action.transform) {

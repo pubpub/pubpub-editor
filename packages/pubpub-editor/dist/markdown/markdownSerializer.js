@@ -13,6 +13,7 @@ var _citationConversion = require('../references/citationConversion');
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+// serialize to markdown and keep stack?
 var markdownSerializer = exports.markdownSerializer = new _prosemirrorMarkdown.MarkdownSerializer((_ref = {
 	blockquote: function blockquote(state, node) {
 		state.wrapBlock('> ', null, node, function () {
@@ -131,6 +132,8 @@ var markdownSerializer = exports.markdownSerializer = new _prosemirrorMarkdown.M
 	state.write('');
 }), _defineProperty(_ref, 'aside', function aside(state) {
 	state.write('');
+}), _defineProperty(_ref, 'diff', function diff(state) {
+	state.write('');
 }), _defineProperty(_ref, 'article', function article(state, node) {
 	state.renderContent(node);
 }), _defineProperty(_ref, 'hard_break', function hard_break(state) {
@@ -195,5 +198,8 @@ var markdownSerializer = exports.markdownSerializer = new _prosemirrorMarkdown.M
 			return '](' + state.esc(mark.attrs.href) + (mark.attrs.title ? ' ' + state.quote(mark.attrs.title) : '') + ')';
 		}
 	},
-	code: { open: '`', close: '`' }
+	code: { open: '`', close: '`' },
+	diff_plus: { open: '+++', close: '+++' },
+	diff_minus: { open: '---', close: '---' }
+
 });

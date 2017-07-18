@@ -5,7 +5,9 @@ var _prosemirrorState = require('prosemirror-state');
 var keys = {
   citations: new _prosemirrorState.PluginKey('citations'),
   relativefiles: new _prosemirrorState.PluginKey('relativefiles'),
-  mentions: new _prosemirrorState.PluginKey('mentions')
+  mentions: new _prosemirrorState.PluginKey('mentions'),
+  firebase: new _prosemirrorState.PluginKey('firebase'),
+  track: new _prosemirrorState.PluginKey('track')
 };
 
 exports.keys = keys;

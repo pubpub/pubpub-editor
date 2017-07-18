@@ -23,8 +23,11 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 // show added in green and removed in reduce
-// hovering on one, highlights both changeset
+// hovering on one, highlights both changed
 // clicking on one, accepts changes into the document
+
+
+// use state.write in markdown serializer to build a diff map?
 
 var DiffEditor = function (_AbstractEditor) {
   _inherits(DiffEditor, _AbstractEditor);
@@ -109,19 +112,21 @@ var DiffEditor = function (_AbstractEditor) {
               diffMap[diffStr.length + j + 1] = nodeIndex + j;
             }
             nodeIndex += child.nodeSize - 1;
-          } else if (child.type.name === 'block_embed') {
-            var attrsStr = JSON.stringify(child.attrs);
-            // diffText = 'embed' + attrsStr + ' ';
-            var attrHash = _murmurhash2.default.v3(attrsStr);
-            diffText = 'embed' + attrHash + ' ';
-            for (var j = 0; j < diffText.length - 1; j++) {
-              diffMap[diffStr.length + j] = { type: 'embed', index: nodeIndex };
-            }
-          } else {
-            diffText = child.type.name.charAt(0);
-            diffMap[diffStr.length] = nodeIndex;
-            // node attrs
           }
+          // can we generalize this to any block?
+          else if (child.type.name === 'block_embed') {
+              var attrsStr = JSON.stringify(child.attrs);
+              // diffText = 'embed' + attrsStr + ' ';
+              var attrHash = _murmurhash2.default.v3(attrsStr);
+              diffText = 'embed' + attrHash + ' ';
+              for (var j = 0; j < diffText.length - 1; j++) {
+                diffMap[diffStr.length + j] = { type: 'embed', index: nodeIndex };
+              }
+            } else {
+              diffText = child.type.name.charAt(0);
+              diffMap[diffStr.length] = nodeIndex;
+              // node attrs
+            }
           diffStr += diffText;
         } else {
           diffStr += " ";

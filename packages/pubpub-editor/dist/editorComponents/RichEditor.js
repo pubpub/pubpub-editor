@@ -13,6 +13,8 @@ var _Autocomplete = require('../Autocomplete/Autocomplete');
 
 var _Autocomplete2 = _interopRequireDefault(_Autocomplete);
 
+var _firebaseEditor = require('../prosemirror-setup/editors/firebaseEditor');
+
 var _FormattingMenu = require('../FormattingMenu/FormattingMenu');
 
 var _FormattingMenu2 = _interopRequireDefault(_FormattingMenu);
@@ -137,12 +139,15 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 		var contents = this.props.initialContent;
 		(0, _migrateDiffs.migrateMarks)(contents);
 
-		this.editor = new _prosemirrorSetup.RichEditor({
+		var EditorClass = this.props.collaborative ? _firebaseEditor.FirebaseEditor : _prosemirrorSetup.RichEditor;
+
+		this.editor = new EditorClass({
 			place: place,
 			contents: contents,
 			config: {
 				fileMap: fileMap,
-				referencesList: this.props.localFiles
+				referencesList: this.props.localFiles,
+				trackChanges: this.props.trackChanges
 			},
 			props: {
 				fileMap: fileMap,
@@ -220,6 +225,10 @@ var RichEditor = exports.RichEditor = _react2.default.createClass({
 		}
 
 		return fileMap;
+	},
+
+	playback: function playback() {
+		this.editor.playbackDoc();
 	},
 
 	render: function render() {

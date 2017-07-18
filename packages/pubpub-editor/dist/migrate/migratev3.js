@@ -2,6 +2,8 @@
 
 var _createNodes = require('./createNodes');
 
+var _csltobibtex = require('../references/csltobibtex');
+
 var NodeCreation = {
   image: _createNodes.createEmbed,
   embed: _createNodes.createEmbed,
@@ -94,4 +96,14 @@ exports.migrateJSON = function (doc) {
   };
 
   return { docJSON: newDoc, fileMap: context.fileMap };
+};
+
+exports.extractBibFromJSON = function (doc) {
+
+  var citations = doc.content[1];
+  var citationData = citations.content.map(function (citationNode) {
+    return citationNode.attrs.data;
+  });
+  var bibtexData = (0, _csltobibtex.csltoBibtex)(citationData);
+  console.log(bibtexData);
 };

@@ -61,6 +61,18 @@ var nodes = {
 		inline: true
 	},
 
+	diff: {
+		group: 'inline',
+		content: 'inline<_>*',
+		attrs: {
+			type: { default: 'plus' }
+		},
+		inline: true,
+		toDOM: function toDOM(node) {
+			return ['span', { class: 'diff-marker ' + (node.attrs.type === 'plus' ? 'added' : 'removed') }, 0];
+		}
+	},
+
 	block_equation: {
 		atom: true,
 		group: 'block',
@@ -286,6 +298,30 @@ var marks = {
 		toDOM: function toDOM() {
 			return ['strong'];
 		}
+	},
+
+	diff_plus: {
+		attrs: {
+			commit: { default: null }
+		},
+		parseDOM: [],
+		toDOM: function toDOM(node) {
+			return ['span', { class: 'diff-marker added' }, 0];
+		},
+
+		excludes: "diff_minus"
+	},
+
+	diff_minus: {
+		attrs: {
+			commit: { default: null }
+		},
+		parseDOM: [],
+		toDOM: function toDOM(node) {
+			return ['span', { class: 'diff-marker removed' }, 0];
+		},
+
+		excludes: "diff_plus"
 	},
 
 	link: {

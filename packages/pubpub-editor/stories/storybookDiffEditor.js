@@ -28,6 +28,9 @@ export const StoryBookDiffEditor = React.createClass({
 		const markdown = this.refs.editor2.getMarkdown();
 		this.setState({text2: markdown});
 	},
+	reset: function() {
+		this.refs.editor1.playback();
+	},
 
 	render: function() {
     const { text1, text2, initialText1, initialText2 } = this.state;
@@ -45,6 +48,7 @@ export const StoryBookDiffEditor = React.createClass({
 
 		return (
 			<div style={{display: 'flex'}}>
+				<div onClick={this.reset}>RESET</div>
 				<div style={itemStyle}>
 					<RichEditor trackChanges={true} ref="editor1" initialContent={initialText1} onChange={this.onChange1}  />
 				</div>

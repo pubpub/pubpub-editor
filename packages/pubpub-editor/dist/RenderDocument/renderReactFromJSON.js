@@ -51,7 +51,7 @@ var renderReactFromJSON = exports.renderReactFromJSON = function renderReactFrom
 
 	var citationsInDoc = [];
 
-	var meta = { fileMap: fileMap, allReferences: allReferences, engine: engine, docAttrs: docAttrs, citationsInDoc: citationsInDoc, slug: slug, footnoteCount: 0 };
+	var meta = { fileMap: fileMap, allReferences: allReferences, engine: engine, docAttrs: docAttrs, citationsInDoc: citationsInDoc, slug: slug, footnoteCount: 0, diffType: null };
 
 	var content = renderSubLoop(doc.content, meta);
 	return _react2.default.createElement(
@@ -114,7 +114,7 @@ var renderSubLoop = function renderSubLoop(item, meta) {
 				// console.log((node.content));
 				return _react2.default.createElement(
 					'div',
-					{ className: 'p-block', key: index },
+					{ style: style, className: 'p-block', key: index },
 					renderSubLoop(node.content, meta)
 				);
 			case 'page_break':
@@ -127,6 +127,13 @@ var renderSubLoop = function renderSubLoop(item, meta) {
 				return node.attrs.content;
 			case 'text':
 				var marks = node.marks || [];
+				var style = {};
+				if (meta.diffType === 'plus') {
+					style.backgroundColor = 'green';
+				} else if (meta.diffType === 'minus') {
+					style.backgroundColor = 'red';
+				}
+
 				return marks.reduce(function (previous, current) {
 					switch (current.type) {
 						case 'strong':
@@ -179,7 +186,11 @@ var renderSubLoop = function renderSubLoop(item, meta) {
 						default:
 							return previous;
 					}
-				}, node.text);
+				}, _react2.default.createElement(
+					'span',
+					{ style: style },
+					node.text
+				));
 
 			case 'table':
 				return _react2.default.createElement(
@@ -270,6 +281,14 @@ var renderSubLoop = function renderSubLoop(item, meta) {
 				}
 
 				return _react2.default.createElement(_renderComponents.ReferenceRender, _extends({ citationID: citationID, engine: meta.engine, key: index, label: label }, node.attrs));
+
+			case 'diff':
+				if (meta.diffType) {
+					meta.diffType = null;
+				} else {
+					meta.diffType = node.attrs.type;
+				}
+				return _react2.default.createElement('span', null);
 
 			case 'footnote':
 				meta.footnoteCount = meta.footnoteCount + 1;

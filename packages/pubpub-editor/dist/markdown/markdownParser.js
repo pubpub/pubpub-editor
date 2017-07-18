@@ -41,6 +41,10 @@ var markdownParser = exports.markdownParser = new _prosemirrorMarkdown.MarkdownP
 			return { content: tok.content };
 		} },
 
+	diff: { node: 'diff', attrs: function attrs(tok) {
+			return { type: tok.attrGet('type') };
+		} },
+
 	hr: { node: 'horizontal_rule' },
 	pagebreak: { node: 'page_break' },
 	math_inline: { node: 'equation', attrs: function attrs(tok) {

@@ -174,6 +174,10 @@ export const RichEditor = React.createClass({
 		return fileMap;
 	},
 
+	playback: function() {
+		this.editor.playbackDoc();
+	},
+
 	render: function() {
 
 		return (
