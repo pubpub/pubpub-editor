@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 
+import { Button } from "@blueprintjs/core";
 import ReactDOM from 'react-dom';
 import RenderDocument from '../src/RenderDocument/RenderDocument';
 import RichEditor from '../src/editorComponents/RichEditor';
@@ -32,6 +33,12 @@ export const StoryBookDiffEditor = React.createClass({
 		this.refs.editor1.playback();
 	},
 
+	rebase: function() {
+		const trackedSteps = this.refs.editor1.getTrackedSteps();
+		console.log('tracked', trackedSteps);
+		this.refs.editor2.rebaseSteps(trackedSteps);
+	},
+
 	render: function() {
     const { text1, text2, initialText1, initialText2 } = this.state;
 
@@ -47,16 +54,17 @@ export const StoryBookDiffEditor = React.createClass({
 		};
 
 		return (
-			<div style={{display: 'flex'}}>
-				<div onClick={this.reset}>RESET</div>
-				<div style={itemStyle}>
-					<RichEditor trackChanges={true} ref="editor1" initialContent={initialText1} onChange={this.onChange1}  />
-				</div>
-				<div style={itemStyle}>
-					<RichEditor ref="editor2" initialContent={initialText2} onChange={this.onChange2} />
-				</div>
-				<div style={itemStyle}>
-					<RenderDocument json={jsonDoc} allFiles={[]} allReferences={[]} />
+			<div>
+				<Button onClick={this.reset}>RESET</Button>
+				<Button onClick={this.rebase}>Rebase</Button>
+
+				<div style={{display: 'flex'}}>
+					<div style={itemStyle}>
+						<RichEditor trackChanges={true} ref="editor1" initialContent={initialText2} onChange={this.onChange1}  />
+					</div>
+					<div style={itemStyle}>
+						<RichEditor rebaseChanges={true} ref="editor2" initialContent={initialText2} onChange={this.onChange2} />
+					</div>
 				</div>
 			</div>
 		);

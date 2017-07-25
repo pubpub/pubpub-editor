@@ -37,27 +37,6 @@ class FirebaseCollabEditor extends BaseEditor {
 
   }
 
-  _onAction (transaction) {
-		if (!this.view || !this.view.state) {
-			return;
-		}
-
-		const newState = this.view.state.apply(transaction);
-		this.view.updateState(newState);
-		if (transaction.docChanged) {
-			if (this.view.props.onChange) {
-				this.view.props.onChange();
-			}
-		} else if (this.view.props.onCursor) {
-			this.view.props.onCursor();
-		}
-
-    let firebasePlugin;
-		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
-			return firebasePlugin.props.updateCollab(transaction, newState);
-		}
-	}
-
 }
 
 exports.FirebaseEditor = FirebaseCollabEditor;

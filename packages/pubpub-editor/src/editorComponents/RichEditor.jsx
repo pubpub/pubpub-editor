@@ -118,6 +118,7 @@ export const RichEditor = React.createClass({
 				fileMap: fileMap,
 				referencesList: this.props.localFiles,
 				trackChanges: this.props.trackChanges,
+				rebaseChanges: this.props.rebaseChanges,
 			},
 			props: {
 				fileMap: fileMap,
@@ -176,6 +177,14 @@ export const RichEditor = React.createClass({
 
 	playback: function() {
 		this.editor.playbackDoc();
+	},
+
+	getTrackedSteps: function() {
+		return this.editor.getTrackedSteps();
+	},
+
+	rebaseSteps: function(steps) {
+		this.editor.rebaseSteps(steps);
 	},
 
 	render: function() {

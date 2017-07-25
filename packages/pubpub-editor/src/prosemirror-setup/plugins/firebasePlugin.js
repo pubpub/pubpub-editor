@@ -36,6 +36,21 @@ function stringToColor(string, alpha = 1) {
 // how to
 
 
+const healDatabase = ({ changesRef, steps, editor, placeholderClientId }) => {
+  const stepsToDelete = [];
+  for (const step of steps) {
+    try {
+      editor.dispatch(receiveTransaction(editor.state, step.steps, [placeholderClientId]));
+    } catch (err) {
+      stepsToDelete.push(step.key);
+    }
+  }
+
+  for (const stepsToDelete of stepsToDelete) {
+    changesRef.child(stepsToDelete).remove();
+  }
+};
+
 const FirebasePlugin = ({ selfClientID }) => {
 
   console.log('creating firebase plugin!!', selfClientID);
@@ -55,10 +70,10 @@ const FirebasePlugin = ({ selfClientID }) => {
   let latestKey;
   let selectionMarkers = {};
 
+
+
   const loadDocumentAndListen = (view) => {
 
-    console.log('loading document!');
-    console.log(view);
     if (fetchedState) {
       return;
     }
@@ -92,7 +107,6 @@ const FirebasePlugin = ({ selfClientID }) => {
             // progress(2 / 2)
             // const view = this_.view = constructView({ newDoc, updateCollab, selections })
             const editor = view
-            console.log('got editor change!', view);
 
             const changes = snapshot.val()
             if (changes) {
@@ -100,13 +114,21 @@ const FirebasePlugin = ({ selfClientID }) => {
               const stepClientIDs = []
               const placeholderClientId = '_oldClient' + Math.random()
               const keys = Object.keys(changes)
+              const stepsWithKeys = [];
               latestKey = Math.max(...keys)
               for (let key of keys) {
-                const compressedStepsJSON = changes[key].s
-                steps.push(...compressedStepsJSON.map(compressedStepJSONToStep))
+                const compressedStepsJSON = changes[key].s;
+                const stepWithKey = {key, steps: compressedStepsJSON.map(compressedStepJSONToStep)};
+                steps.push(...compressedStepsJSON.map(compressedStepJSONToStep));
+                stepsWithKeys.push(stepWithKey);
                 stepClientIDs.push(...new Array(compressedStepsJSON.length).fill(placeholderClientId))
               }
-              editor.dispatch(receiveTransaction(editor.state, steps, stepClientIDs))
+              try {
+                editor.dispatch(receiveTransaction(editor.state, steps, stepClientIDs))
+              } catch (err) {
+                healDatabase({changesRef, editor, steps: stepsWithKeys, placeholderClientId});
+              }
+
             }
 
             function updateClientSelection(snapshot) {
@@ -202,7 +224,6 @@ const FirebasePlugin = ({ selfClientID }) => {
         }
         if (meta["collab$"]) {
           return;
-          delete(meta["collab$"])
         }
         if (meta.rebase) {
           delete(meta.rebase)

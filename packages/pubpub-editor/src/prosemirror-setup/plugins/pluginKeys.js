@@ -6,6 +6,7 @@ const keys = {
   mentions: new PluginKey('mentions'),
   firebase: new PluginKey('firebase'),
   track: new PluginKey('track'),
+  rebase: new PluginKey('rebase'),
 };
 
 exports.keys = keys;

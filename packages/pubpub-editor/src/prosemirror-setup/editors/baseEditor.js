@@ -103,9 +103,26 @@ class BaseEditor {
 	}
 
 	playbackDoc() {
-		let richPlugin;
-		if (richPlugin = getPlugin('track', this.view.state)) {
-			richPlugin.props.resetView(this.view);
+		let trackPlugin;
+		if (trackPlugin = getPlugin('track', this.view.state)) {
+			trackPlugin.props.resetView.bind(trackPlugin)(this.view);
+		}
+		return null;
+	}
+
+	getTrackedSteps() {
+		let trackPlugin;
+		if (trackPlugin = getPlugin('track', this.view.state)) {
+			const steps =  trackPlugin.props.getTrackedSteps.bind(trackPlugin)(this.view);
+			return steps;
+		}
+		return null;
+	}
+
+	rebaseSteps(steps) {
+		let rebasePlugin;
+		if (rebasePlugin = getPlugin('rebase', this.view.state)) {
+			return rebasePlugin.props.rebaseSteps.bind(rebasePlugin)(this.view, steps);
 		}
 		return null;
 	}
@@ -135,6 +152,11 @@ class BaseEditor {
 			}
 		} else if (this.view.props.onCursor) {
 			this.view.props.onCursor();
+		}
+
+		let firebasePlugin;
+		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
+			return firebasePlugin.props.updateCollab(transaction, newState);
 		}
 
 	}

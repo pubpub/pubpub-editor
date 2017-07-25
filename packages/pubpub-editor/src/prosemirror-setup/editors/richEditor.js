@@ -1,4 +1,4 @@
-import { CitationsPlugin, FootnotesPlugin, MentionsPlugin, RelativeFilesPlugin, SelectPlugin, TrackPlugin } from '../plugins';
+import { CitationsPlugin, FootnotesPlugin, MentionsPlugin, RebasePlugin, RelativeFilesPlugin, SelectPlugin, TrackPlugin } from '../plugins';
 
 import { BaseEditor } from './baseEditor';
 import { schema } from '../schema';
@@ -14,6 +14,10 @@ class RichEditor extends BaseEditor {
 
     if (config.trackChanges) {
       plugins = plugins.concat(TrackPlugin);
+    }
+
+    if (config.rebaseChanges) {
+      plugins = plugins.concat(RebasePlugin);
     }
 
     let docJSON;
