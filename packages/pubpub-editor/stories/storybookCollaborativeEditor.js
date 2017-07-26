@@ -6,7 +6,7 @@ import { localDiscussions, localFiles, localHighlights, localPages, localPubs, l
 import ExportButton from '../src/ExportMenu/ExportButton';
 // import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
 // import RichEditor from '../src/editorComponents/RichEditor';
-import FullEditor from '../src/editorComponents/FullEditor';
+import FullEditor from '../src/editorComponents/RichEditor';
 import RenderDocument from '../src/RenderDocument/RenderDocument';
 import { csltoBibtex } from '../src/references/csltobibtex';
 import { markdownToExport } from '../src/ExportMenu';
@@ -42,6 +42,10 @@ export const StoryBookCollaborativeEditor = React.createClass({
 		this.setState({ content: newContent });
 	},
 
+  componentDidMount: function() {
+    this.getForks();
+  },
+
 
 	handleFileUpload: function(file, callback) {
 		// Do the uploading - then callback
@@ -61,7 +65,13 @@ export const StoryBookCollaborativeEditor = React.createClass({
 	},
 
   fork: function() {
-    this.editor.fork('testfork'+Math.round(Math.random()*1000)));
+    this.editor.fork('testfork'+Math.round(Math.random()*1000));
+  },
+
+  getForks: function() {
+    this.editor.getForks().then((forks) => {
+      console.log('got forks!', forks);      
+    });
   },
 
 	render: function() {

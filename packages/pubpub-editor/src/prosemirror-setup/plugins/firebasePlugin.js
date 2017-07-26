@@ -60,8 +60,6 @@ const healDatabase = ({ changesRef, steps, editor, placeholderClientId }) => {
 
 const FirebasePlugin = ({ selfClientID, editorKey }) => {
 
-  console.log('got key!', editorKey);
-
   const collabEditing = require('prosemirror-collab').collab;
   const firebaseDb = firebase.database();
   const firebaseRef = firebaseDb.ref(editorKey);
@@ -78,6 +76,8 @@ const FirebasePlugin = ({ selfClientID, editorKey }) => {
   let latestKey;
   let selectionMarkers = {};
   let editorView;
+
+  let loadingPromise = Promise.defer();
 
   const loadDocumentAndListen = (view) => {
 
@@ -138,6 +138,8 @@ const FirebasePlugin = ({ selfClientID, editorKey }) => {
               }
 
             }
+
+            loadingPromise.resolve();
 
             function updateClientSelection(snapshot) {
               const clientID = snapshot.key
@@ -219,11 +221,11 @@ const FirebasePlugin = ({ selfClientID, editorKey }) => {
 
   	props: {
 
-      fork(forkID, callback) {
+      fork(forkID) {
         const editorRef = firebaseDb.child(editorKey);
         return new Promise((resolve, reject) => {
           editorRef.once('value', function(snapshot) {
-            firebaseDb.child(forkID).set(snapshot.val(), function(error) {
+            firebaseDb.ref(forkID).set(snapshot.val(), function(error) {
               if (!error) {
                 const { d } = compressStateJSON(editorView.state.toJSON());
                 const forkCheckPoint = { d, k: latestKey, t: TIMESTAMP };
@@ -238,11 +240,16 @@ const FirebasePlugin = ({ selfClientID, editorKey }) => {
 
       },
 
-      getForks(callback) {
-        const forksKey = firebaseDb.child(editorKey).key(forks);
-        editorRef.once('value', function(snapshot) {
-          callback(snapshot.val());
-        });
+      getForks() {
+        return loadingPromise.promise.then(() => {
+          console.log('loading promise loaded!');
+          const forksKey = firebaseDb.ref(editorKey).child("forks");
+          return new Promise((resolve, reject) => {
+            forksKey.once('value', function(snapshot) {
+              resolve(snapshot.val());
+            });
+          });
+        })
       },
 
       updateCollab({ docChanged, mapping, meta }, newState) {

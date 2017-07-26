@@ -130,7 +130,15 @@ class BaseEditor {
 	fork(forkID) {
 		let firebasePlugin;
 		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
-			return firebasePlugin.props.fork.bind(firebasePlugin)(this.view, forkID);
+			return firebasePlugin.props.fork.bind(firebasePlugin)(forkID);
+		}
+		return null;
+	}
+
+	getForks() {
+		let firebasePlugin;
+		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
+			return firebasePlugin.props.getForks.bind(firebasePlugin)();
 		}
 		return null;
 	}

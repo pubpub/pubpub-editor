@@ -200,6 +200,10 @@ export const RichEditor = React.createClass({
 		return this.editor.fork(forkID);
 	},
 
+	getForks: function() {
+		return this.editor.getForks();
+	},
+
 	render: function() {
 
 		return (
