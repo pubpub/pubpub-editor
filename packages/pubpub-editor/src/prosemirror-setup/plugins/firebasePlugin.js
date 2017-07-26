@@ -1,4 +1,5 @@
 import { Plugin } from 'prosemirror-state';
+import Promise from 'bluebird';
 import { Slice } from 'prosemirror-model';
 import firebase from 'firebase';
 import { insertPoint } from 'prosemirror-transform';
@@ -32,10 +33,16 @@ function stringToColor(string, alpha = 1) {
     return `hsla(${hue}, 100%, 50%, ${alpha})`
 }
 
+// Checkpoint a document every 100 steps
+const SAVE_EVERY_N_STEPS = 100;
 
-// how to
+
+// how to implement forking:
+// - create a new editor that forks & duplicates?
 
 
+// healDatabase - In case a step corrupts the document (happens surpsiginly often), apply each step individually to find errors
+// and then delete all of those steps
 const healDatabase = ({ changesRef, steps, editor, placeholderClientId }) => {
   const stepsToDelete = [];
   for (const step of steps) {
@@ -51,12 +58,13 @@ const healDatabase = ({ changesRef, steps, editor, placeholderClientId }) => {
   }
 };
 
-const FirebasePlugin = ({ selfClientID }) => {
+const FirebasePlugin = ({ selfClientID, editorKey }) => {
 
-  console.log('creating firebase plugin!!', selfClientID);
+  console.log('got key!', editorKey);
 
   const collabEditing = require('prosemirror-collab').collab;
-  const firebaseRef = firebase.database().ref("testEditor");
+  const firebaseDb = firebase.database();
+  const firebaseRef = firebaseDb.ref(editorKey);
 
   const checkpointRef  = firebaseRef.child('checkpoint');
   const changesRef = firebaseRef.child('changes');
@@ -69,10 +77,10 @@ const FirebasePlugin = ({ selfClientID }) => {
   let fetchedState = false;
   let latestKey;
   let selectionMarkers = {};
-
-
+  let editorView;
 
   const loadDocumentAndListen = (view) => {
+
 
     if (fetchedState) {
       return;
@@ -196,9 +204,9 @@ const FirebasePlugin = ({ selfClientID }) => {
   		}
   	},
 
-    view: function(editorView) {
-  		this.editorView = editorView;
-  		loadDocumentAndListen(editorView);
+    view: function(_editorView) {
+  		editorView = editorView;
+  		loadDocumentAndListen(_editorView);
   		return {
   			update: (newView, prevState) => {
   				this.editorView = newView;
@@ -210,6 +218,32 @@ const FirebasePlugin = ({ selfClientID }) => {
   	},
 
   	props: {
+
+      fork(forkID, callback) {
+        const editorRef = firebaseDb.child(editorKey);
+        return new Promise((resolve, reject) => {
+          editorRef.once('value', function(snapshot) {
+            firebaseDb.child(forkID).set(snapshot.val(), function(error) {
+              if (!error) {
+                const { d } = compressStateJSON(editorView.state.toJSON());
+                const forkCheckPoint = { d, k: latestKey, t: TIMESTAMP };
+                editorRef.key('forks').key(forkID).set(forkCheckPoint);
+                resolve(forkID);
+              } else {
+                reject(error);
+              }
+            });
+          });
+        });
+
+      },
+
+      getForks(callback) {
+        const forksKey = firebaseDb.child(editorKey).key(forks);
+        editorRef.once('value', function(snapshot) {
+          callback(snapshot.val());
+        });
+      },
 
       updateCollab({ docChanged, mapping, meta }, newState) {
         if (docChanged) {
@@ -251,7 +285,7 @@ const FirebasePlugin = ({ selfClientID }) => {
             function (error, committed, { key }) {
               if (error) {
                 console.error('updateCollab', error, sendable, key)
-              } else if (committed && key % 100 === 0 && key > 0) {
+              } else if (committed && key % SAVE_EVERY_N_STEPS === 0 && key > 0) {
                 const { d } = compressStateJSON(newState.toJSON())
                 checkpointRef.set({ d, k: key, t: TIMESTAMP })
               }

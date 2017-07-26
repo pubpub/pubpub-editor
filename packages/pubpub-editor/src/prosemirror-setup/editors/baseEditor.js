@@ -127,6 +127,14 @@ class BaseEditor {
 		return null;
 	}
 
+	fork(forkID) {
+		let firebasePlugin;
+		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
+			return firebasePlugin.props.fork.bind(firebasePlugin)(this.view, forkID);
+		}
+		return null;
+	}
+
 	_onAction (transaction) {
 		/*
 		if (action.transform) {

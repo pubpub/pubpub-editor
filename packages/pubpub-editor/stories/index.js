@@ -3,6 +3,7 @@ import { LongLegacyBug, MentionContentBug, ReferenceNotShowingBug } from './bugd
 
 import APIEditor from './storybookAPI';
 import CodeEditor from './storybookCodeEditor';
+import CollaborativeEditor from './storybookCollaborativeEditor';
 import Converter from './storybookConverter';
 import DiffEditor from './storybookDiffEditor';
 import DisplayEditor from './storybookDisplayEditor';
@@ -52,11 +53,14 @@ storiesOf('Full Editor', module)
 .add('API Search', () => (
 	<APIEditor />
 ))
-.add('Collaborative Editor ', () => (
-	<FullEditor collaborative={true} />
-))
 .add('Diff Editor ', () => (
 	<DiffEditor text1={DiffDocs[0]} text2={DiffDocs[1]} />
+))
+;
+
+storiesOf('Collaborative Editing', module)
+.add('Forking', () => (
+	<CollaborativeEditor editorKey="testEditor" collaborative={true} />
 ))
 ;
 

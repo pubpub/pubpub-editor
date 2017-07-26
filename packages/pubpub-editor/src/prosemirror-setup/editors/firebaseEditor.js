@@ -19,11 +19,12 @@ class FirebaseCollabEditor extends BaseEditor {
     const collabEditing = require('prosemirror-collab').collab;
 
     const clientID = String(Math.round(Math.random() * 100000));
+    const editorKey = config.editorKey;
 
     const plugins = pubpubSetup({ schema })
     .concat(CitationsPlugin).concat(SelectPlugin).concat(RelativeFilesPlugin)
     .concat(MentionsPlugin).concat(FootnotesPlugin)
-    .concat(FirebasePlugin({selfClientID: clientID}))
+    .concat(FirebasePlugin({selfClientID: clientID, editorKey}))
     .concat(collab({clientID: clientID}));
 
     let docJSON;

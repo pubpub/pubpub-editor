@@ -16,6 +16,8 @@ export const RichEditor = React.createClass({
 		onChange: PropTypes.func,
 		handleFileUpload: PropTypes.func,
 		handleReferenceAdd: PropTypes.func,
+		editorKey: PropTypes.string,
+		collaborative: PropTypes.bool,
 
 		localUsers: PropTypes.array,
 		localPubs: PropTypes.array,
@@ -43,6 +45,12 @@ export const RichEditor = React.createClass({
 
 	componentDidMount() {
 		this.createEditor(null);
+	},
+
+	componentWillUpdate(nextProps, nextState) {
+		if (nextProps.editorKey !== this.props.editorKey) {
+			this.createEditor(null);
+		}
 	},
 
 	onChange() {
@@ -99,7 +107,7 @@ export const RichEditor = React.createClass({
 
 	createEditor(docJSON) {
 		if (this.editor) {
-			this.editor1.remove();
+			this.editor.remove();
 		}
 
 		// const place = ReactDOM.findDOMNode(this.refs.container);
@@ -119,6 +127,7 @@ export const RichEditor = React.createClass({
 				referencesList: this.props.localFiles,
 				trackChanges: this.props.trackChanges,
 				rebaseChanges: this.props.rebaseChanges,
+				editorKey: (this.props.collaborative) ? this.props.editorKey : null,
 			},
 			props: {
 				fileMap: fileMap,
@@ -185,6 +194,10 @@ export const RichEditor = React.createClass({
 
 	rebaseSteps: function(steps) {
 		this.editor.rebaseSteps(steps);
+	},
+
+	fork: function(forkID) {
+		return this.editor.fork(forkID);
 	},
 
 	render: function() {
