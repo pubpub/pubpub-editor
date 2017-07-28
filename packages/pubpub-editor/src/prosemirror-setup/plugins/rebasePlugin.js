@@ -78,7 +78,6 @@ const rebasePlugin = new Plugin({
   props: {
     rebaseSteps: function(view, rebaseSteps) {
       const storedSteps = this.storedSteps;
-      console.log(rebaseSteps, storedSteps);
       // view.updateState(initialState);
       const docMapping = new Mapping();
 
@@ -92,6 +91,7 @@ const rebasePlugin = new Plugin({
         tr = tr.step(mappedStep);
       }
       tr.setMeta('backdelete', true);
+      tr.setMeta('rebase');
       view.dispatch(tr);
     },
 

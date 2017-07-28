@@ -1,32 +1,21 @@
+import { getPlugin, keys } from './pluginKeys';
+
 import { Plugin } from 'prosemirror-state';
 import Promise from 'bluebird';
 import { Slice } from 'prosemirror-model';
 import firebase from 'firebase';
 import { insertPoint } from 'prosemirror-transform';
-import { keys } from './pluginKeys';
 import { schema } from '../schema';
 
 const { Selection } = require('prosemirror-state')
 const { Node } = require('prosemirror-model')
-const { Step } = require('prosemirror-transform')
+const { Step, Mapping } = require('prosemirror-transform')
 const { collab, sendableSteps, receiveTransaction } = require('prosemirror-collab')
 const { compressStepsLossy, compressStateJSON, uncompressStateJSON, compressSelectionJSON, uncompressSelectionJSON, compressStepJSON, uncompressStepJSON } = require('prosemirror-compress')
 const TIMESTAMP = { '.sv': 'timestamp' }
 
 
 const { DecorationSet, Decoration } = require('prosemirror-view');
-
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBpE1sz_-JqtcIm2P4bw4aoMEzwGITfk0U",
-  authDomain: "pubpub-rich.firebaseapp.com",
-  databaseURL: "https://pubpub-rich.firebaseio.com",
-  projectId: "pubpub-rich",
-  storageBucket: "pubpub-rich.appspot.com",
-  messagingSenderId: "543714905893"
-};
-const firebaseApp = firebase.initializeApp(firebaseConfig);
-const db = firebase.database(firebaseApp);
 
 function stringToColor(string, alpha = 1) {
     let hue = string.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % 360
@@ -58,7 +47,106 @@ const healDatabase = ({ changesRef, steps, editor, placeholderClientId }) => {
   }
 };
 
-const FirebasePlugin = ({ selfClientID, editorKey }) => {
+
+const getSteps = ({view, changesRef, key}) => {
+
+  function compressedStepJSONToStep(compressedStepJSON) {
+    return Step.fromJSON(view.state.schema, uncompressStepJSON(compressedStepJSON)) }
+
+  return new Promise((resolve, reject) => {
+
+    changesRef.startAt(null, String(key + 1)).once('value').then(
+      function (snapshot) {
+        const changes = snapshot.val();
+        const steps = []
+        const keys = Object.keys(changes)
+        for (let key of keys) {
+          const compressedStepsJSON = changes[key].s;
+          steps.push(...compressedStepsJSON.map(compressedStepJSONToStep));
+        }
+        resolve(steps);
+    });
+
+  })
+}
+
+const getFirebaseValue = ({ref, child}) =>{
+  return new Promise((resolve, reject) => {
+    ref.child(child).once('value').then((snapshot) => {
+      resolve(snapshot.val());
+    })
+  });
+}
+
+const setFirebaseValue = ({ ref, child, data }) =>{
+  return new Promise((resolve, reject) => {
+    ref.child(child).set(data, function(error) {
+      if (!error) {
+        resolve();
+      } else {
+        reject();
+      }
+    });
+  });
+}
+
+const rebaseDocument = ({ view, doc, forkedSteps, newSteps, changesRef, clientID, latestKey,  selfChanges }) => {
+
+  function compressedStepJSONToStep(compressedStepJSON) {
+    return Step.fromJSON(view.state.schema, uncompressStepJSON(compressedStepJSON)) }
+
+  const docMapping = new Mapping();
+  for (const step of newSteps) {
+    docMapping.appendMap(step.getMap());
+  }
+
+  let tr = view.state.tr;
+  const mappedSteps = forkedSteps.map((step) => {
+    const mappedStep = step.map(docMapping);
+    tr = tr.step(mappedStep);
+    return mappedStep;
+  });
+
+  changesRef.child(latestKey + 1).transaction(
+    function (existingBatchedSteps) {
+      if (!existingBatchedSteps) {
+        selfChanges[latestKey + 1] = mappedSteps
+        return {
+          s: compressStepsLossy(mappedSteps).map(
+            function (step) {
+              return compressStepJSON(step.toJSON()) } ),
+          c: clientID, // need to store client id in rebase?
+          m: { rebasedTransaction: true },
+          t: TIMESTAMP,
+        }
+      }
+    },
+    function (error, committed, { key }) {
+      if (error) {
+        console.error('updateCollab', error, sendable, key)
+      } else if (committed && key % SAVE_EVERY_N_STEPS === 0 && key > 0) {
+        const { d } = compressStateJSON(newState.toJSON())
+        checkpointRef.set({ d, k: key, t: TIMESTAMP })
+      }
+    },
+    false );
+
+  tr.setMeta('backdelete', true);
+  tr.setMeta('rebase', true);
+  view.dispatch(tr);
+
+}
+
+let firebaseApp;
+
+const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig }) => {
+
+  console.log('firebaseconfig', firebaseConfig);
+
+  if (!firebaseApp) {
+    firebaseApp = firebase.initializeApp(firebaseConfig);
+  }
+  const db = firebase.database(firebaseApp);
 
   const collabEditing = require('prosemirror-collab').collab;
   const firebaseDb = firebase.database();
@@ -207,13 +295,14 @@ const FirebasePlugin = ({ selfClientID, editorKey }) => {
   	},
 
     view: function(_editorView) {
-  		editorView = editorView;
+  		editorView = _editorView;
   		loadDocumentAndListen(_editorView);
   		return {
   			update: (newView, prevState) => {
   				this.editorView = newView;
   			},
   			destroy: () => {
+          editorView = null;
   				this.editorView = null;
   			}
   		}
@@ -222,14 +311,20 @@ const FirebasePlugin = ({ selfClientID, editorKey }) => {
   	props: {
 
       fork(forkID) {
-        const editorRef = firebaseDb.child(editorKey);
+        const editorRef = firebaseDb.ref(editorKey);
         return new Promise((resolve, reject) => {
           editorRef.once('value', function(snapshot) {
-            firebaseDb.ref(forkID).set(snapshot.val(), function(error) {
+            const forkData = snapshot.val();
+            forkData.forkData = {
+              merged: false,
+              date: new Date(),
+              parent: editorKey,
+              forkedKey: latestKey,
+            };
+            forkData.forkDoc = compressStateJSON(editorView.state.toJSON());
+            firebaseDb.ref(forkID).set(forkData, function(error) {
               if (!error) {
-                const { d } = compressStateJSON(editorView.state.toJSON());
-                const forkCheckPoint = { d, k: latestKey, t: TIMESTAMP };
-                editorRef.key('forks').key(forkID).set(forkCheckPoint);
+                editorRef.child('forks').child(forkID).set(true);
                 resolve(forkID);
               } else {
                 reject(error);
@@ -240,16 +335,57 @@ const FirebasePlugin = ({ selfClientID, editorKey }) => {
 
       },
 
+      rebase(forkID) {
+        return loadingPromise.promise.then(() => {
+          return new Promise((resolve, reject) => {
+            const forkRef = firebaseDb.ref(forkID);
+            const forkedChangesRef = firebaseDb.ref(forkID).child("changes");
+            const editorChangesRef = firebaseDb.ref(editorKey).child("changes");
+            const forkedDocRef = firebaseDb.ref(editorKey).child("forks").child(forkID);
+
+            forkRef.child("forkData").once('value').then((snapshot) => {
+              const { merged, parent, forkedKey } = snapshot.val();
+
+              Promise.all([
+                getFirebaseValue({ref: forkRef, child: "forkDoc"}),
+                getSteps({view: editorView, changesRef: forkedChangesRef, key: forkedKey}),
+                getSteps({view: editorView, changesRef: editorChangesRef, key: forkedKey})
+              ])
+              .then(([forkDoc, forkedSteps, newSteps]) => {
+                return rebaseDocument({ view: editorView, doc: forkDoc, forkedSteps, newSteps, changesRef, clientID: 'ababa', latestKey, selfChanges });
+              })
+              .then(() => {
+                return setFirebaseValue({ref: forkRef, child: "forkData/merged", data: true});
+              })
+              .then(() => {
+                resolve();
+              });
+
+            });
+
+
+          });
+        });
+      },
+
       getForks() {
         return loadingPromise.promise.then(() => {
-          console.log('loading promise loaded!');
           const forksKey = firebaseDb.ref(editorKey).child("forks");
-          return new Promise((resolve, reject) => {
-            forksKey.once('value', function(snapshot) {
-              resolve(snapshot.val());
+          return getFirebaseValue({ref: firebaseDb.ref(editorKey), child: "forks"})
+            .then((forkList) => {
+              if (!forkList) {
+                return [];
+              }
+              const forkNames = Object.keys(forkList);
+              const getForkData = forkNames.map((forkName) => {
+                return getFirebaseValue({ ref: firebaseDb.ref(forkName), child: "forkData" }).then((forkData) => {
+                  forkData.name = forkName;
+                  return forkData;
+                });
+              });
+              return Promise.all(getForkData);
             });
-          });
-        })
+        });
       },
 
       updateCollab({ docChanged, mapping, meta }, newState) {
@@ -272,7 +408,10 @@ const FirebasePlugin = ({ selfClientID, editorKey }) => {
         if (meta.addToHistory) {
           delete(meta.addToHistory)
         }
-        const sendable = sendableSteps(newState)
+        const trackPlugin = getPlugin('track', editorView.state);
+
+        const sendable = (trackPlugin) ? trackPlugin.getSendableSteps() : sendableSteps(newState);
+        console.log(sendable);
         if (sendable) {
           const { steps, clientID } = sendable
           changesRef.child(latestKey + 1).transaction(
@@ -311,7 +450,6 @@ const FirebasePlugin = ({ selfClientID, editorKey }) => {
   		decorations(state) {
         return DecorationSet.create(state.doc, Object.entries(selections).map(
           function ([ clientID, { from, to } ]) {
-             console.log(clientID, selfClientID);
               if (clientID === selfClientID) {
                 return null;
               }

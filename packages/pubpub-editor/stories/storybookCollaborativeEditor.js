@@ -4,6 +4,7 @@ import { jsonToMarkdown, markdownToJSON } from '../src/markdown';
 import { localDiscussions, localFiles, localHighlights, localPages, localPubs, localReferences, localUsers } from './sampledocs/autocompleteLocalData';
 
 import ExportButton from '../src/ExportMenu/ExportButton';
+import FirebaseConfig from './firebase/firebaseConfig';
 // import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
 // import RichEditor from '../src/editorComponents/RichEditor';
 import FullEditor from '../src/editorComponents/RichEditor';
@@ -11,6 +12,7 @@ import RenderDocument from '../src/RenderDocument/RenderDocument';
 import { csltoBibtex } from '../src/references/csltobibtex';
 import { markdownToExport } from '../src/ExportMenu';
 import request from 'superagent';
+import resetFirebase from './firebase/reset';
 import { s3Upload } from './utils/uploadFile';
 
 // requires style attributes that would normally be up to the wrapping library to require
@@ -31,10 +33,9 @@ export const StoryBookCollaborativeEditor = React.createClass({
 			mode: (this.props.mode) ? this.props.mode : 'rich',
 			initialContent: (this.props.initialContent) ? this.props.initialContent : undefined,
 			content: (this.props.initialContent) ? this.props.initialContent : undefined,
-			exportLoading: undefined,
-			exportError: undefined,
-			exportUrl: undefined,
-			pdftexTemplates: {},
+      editorKey: this.props.editorKey,
+      forks: [],
+      inFork: false,
 		}
 	},
 
@@ -43,7 +44,9 @@ export const StoryBookCollaborativeEditor = React.createClass({
 	},
 
   componentDidMount: function() {
-    this.getForks();
+		if (this.props.allowForking) {
+			this.getForks();
+		}
   },
 
 
@@ -65,12 +68,27 @@ export const StoryBookCollaborativeEditor = React.createClass({
 	},
 
   fork: function() {
-    this.editor.fork('testfork'+Math.round(Math.random()*1000));
+    this.editor.fork('testfork'+Math.round(Math.random()*1000)).then((forkName) => {
+      this.getForks();
+    });
+  },
+
+  rebase: function(forkID) {
+    this.editor.rebase(forkID).then(() => {
+      console.log('finished rebase!');
+    });
+  },
+
+
+  joinFork: function(name) {
+    this.setState({editorKey: name, inFork: true});
   },
 
   getForks: function() {
     this.editor.getForks().then((forks) => {
-      console.log('got forks!', forks);      
+      if (forks) {
+        this.setState({ forks });
+      }
     });
   },
 
@@ -89,32 +107,45 @@ export const StoryBookCollaborativeEditor = React.createClass({
 			localPages: localPages,
 			globalCategories: ['pubs', 'users'],
 			collaborative: this.props.collaborative,
-      editorKey: this.props.editorKey,
+      editorKey: this.state.editorKey,
+      trackChanges: this.props.trackChanges,
+			firebaseConfig: FirebaseConfig,
 		};
-		const pdftexTemplates = this.state.pdftexTemplates;
-		const popoverContent = (
-			<div>
-				<h5>Popover title</h5>
-				{ Object.keys(pdftexTemplates).map((key) => {
 
-						return (
-							<div>
-							<div className={`pt-button pt-popover-dismiss`} onClick={this.setExport.bind(this, key)}>{pdftexTemplates[key].displayName}</div>
-							<br/>
-						</div>
-						);
-					})
-				}
-
-			</div>
-		);
 		return (
 			<div className={'pt-card pt-elevation-3'} style={{ padding: '0em', margin: '0em auto 2em', maxWidth: '850px' }}>
 				<div style={{ backgroundColor: '#ebf1f5', padding: '0.5em', textAlign: 'right', borderBottom: '1px solid rgba(16, 22, 26, 0.15)' }}>
-					<div className={'pt-button-group'}>
-            <div className={`pt-button${this.state.mode === 'markdown' ? ' pt-active' : ''}`} onClick={this.fork}>Fork</div>
-					</div>
+					{(this.props.allowForking) ?
+						<div className={'pt-button-group'}>
+	            {(!this.state.inFork) ?
+	              <div className={`pt-button`} onClick={this.fork}>Fork</div>
+	              :
+	              <div className={`pt-button`} onClick={this.rebase}>Rebase</div>
+	            }
+						</div>
+					: null}
+
+					<div className={`pt-button`} onClick={resetFirebase}>Reset</div>
+
 				</div>
+        {(!this.state.inFork) ?
+          <div>
+            {this.state.forks.map((fork) => {
+              return (
+								<div>
+									<span onClick={this.joinFork.bind(this, fork.name)}>{fork.name}</span>
+									{(!fork.merged) ?
+										<span onClick={this.rebase.bind(this, fork.name)}>Rebase</span>
+									:
+										<span>MERGED</span>
+									}
+								</div>);
+            })}
+          </div>
+          :
+          <div>Join {this.state.editorKey}</div>
+        }
+
 				<div style={{ padding: '1em 4em', minHeight: '400px' }}>
           <FullEditor ref={(editor) => { this.editor = editor; }} {...editorProps} mode="rich" />
 				</div>

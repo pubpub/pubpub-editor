@@ -57,11 +57,28 @@ const trackChangesPlugin = new Plugin({
   state: {
     init(config, instance) {
       this.storedSteps = [];
+      this.sendableSteps = [];
+
       this.stepOffsets = [];
       this.unconfirmedSteps = [];
       this.transactions = {};
       this.unconfirmedMap = new Mapping();
       initialState = instance;
+
+      this.storeStep = (step) => {
+        this.storedSteps.push(step);
+        this.sendableSteps.push(step);
+      };
+
+      this.getSendableSteps = () => {
+        const sendable = this.sendableSteps;
+        this.sendableSteps = [];
+        if (sendable.length > 0) {
+          return {steps: sendable, clientID: 'test-yo' };
+        }
+        return null;
+      };
+
       return {
         deco: DecorationSet.empty, commit: null
       };
@@ -82,7 +99,7 @@ const trackChangesPlugin = new Plugin({
       done.items.forEach(item => {
         if (item.step) {
           prevMap.forEach((_start, _end, rStart, rEnd) => {
-            if (start <= rEnd && end >= rStart) adjacent = true
+            if (start <= rEnd && end >= rStart) axdjacent = true
           })
           return false
         } else {
@@ -97,6 +114,7 @@ const trackChangesPlugin = new Plugin({
 
   // adjacency commits?
   // don't worry
+
 
   addStep: function(step) {
     const unconfirmedMap = this.unconfirmedMap;
@@ -147,7 +165,7 @@ const trackChangesPlugin = new Plugin({
         }
 
         mappedStep = mappedStep.offset(totalOffset * -1);
-        this.storedSteps.push(mappedStep);
+        this.storeStep(mappedStep);
       }
 
       if (!pos.parent || !pos.parent.nodeType || pos.parent.nodeType.name !== 'diff') {
@@ -161,6 +179,7 @@ const trackChangesPlugin = new Plugin({
 
           if (step instanceof AddMarkStep) {
             tr = tr.addMark(step.from, step.to, schema.mark('diff_plus', {}));
+            tr.setMeta("trackAddition", true);
             continue;
           }
 
@@ -190,7 +209,6 @@ const trackChangesPlugin = new Plugin({
               tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', {}));
               tr = tr.addMark(insertStart, insertEnd, schema.mark('diff_plus', {}));
 
-              // need to loop through and delete stuff
               /*
               let i;
               let lastRange = null;
@@ -202,13 +220,16 @@ const trackChangesPlugin = new Plugin({
               // tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', {}));
 
               tr.setMeta("backdelete", true);
+              tr.setMeta("trackAddition", true);
             } else {
               tr = tr.addMark(newStart, newEnd, schema.mark('diff_plus', {}));
+              tr.setMeta("trackAddition", true);
             }
 
 
           });
         }
+
 
         return tr;
       }
@@ -230,7 +251,6 @@ const trackChangesPlugin = new Plugin({
   key: keys.track,
   props: {
     resetView: function(view) {
-      console.log(this);
       view.updateState(initialState);
       let tr = view.state.tr;
       for (const step of this.storedSteps) {
@@ -259,12 +279,14 @@ const trackChangesPlugin = new Plugin({
         }
         const deleteStep = replaceStep(tr.doc, beforeSel.from, sel.from, Slice.empty);
         const newOffset = { index: beforeSel.from, size: 1 };
-        this.storedSteps.push(deleteStep);
+        this.storeStep(deleteStep);
         this.stepOffsets.push(newOffset);
 
         tr = tr.addMark(beforeSel.from, sel.from, schema.mark('diff_minus', {}));
         tr = tr.setSelection(beforeSel);
         tr.setMeta('backdelete', true);
+        tr.setMeta('trackAddition', true);
+
         view.dispatch(tr);
 
         return true;

@@ -47,8 +47,8 @@ export const RichEditor = React.createClass({
 		this.createEditor(null);
 	},
 
-	componentWillUpdate(nextProps, nextState) {
-		if (nextProps.editorKey !== this.props.editorKey) {
+	componentDidUpdate(prevProps, prevState) {
+		if (prevProps.editorKey !== this.props.editorKey) {
 			this.createEditor(null);
 		}
 	},
@@ -128,6 +128,7 @@ export const RichEditor = React.createClass({
 				trackChanges: this.props.trackChanges,
 				rebaseChanges: this.props.rebaseChanges,
 				editorKey: (this.props.collaborative) ? this.props.editorKey : null,
+				firebaseConfig: this.props.firebaseConfig,
 			},
 			props: {
 				fileMap: fileMap,
@@ -198,6 +199,10 @@ export const RichEditor = React.createClass({
 
 	fork: function(forkID) {
 		return this.editor.fork(forkID);
+	},
+
+	rebase: function(forkID) {
+		return this.editor.rebase(forkID);
 	},
 
 	getForks: function() {

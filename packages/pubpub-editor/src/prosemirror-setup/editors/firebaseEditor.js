@@ -1,4 +1,4 @@
-import { CitationsPlugin, FootnotesPlugin, MentionsPlugin, RelativeFilesPlugin, SelectPlugin } from '../plugins';
+import { CitationsPlugin, FootnotesPlugin, MentionsPlugin, RelativeFilesPlugin, SelectPlugin, TrackPlugin } from '../plugins';
 
 import { BaseEditor } from './baseEditor';
 import FirebasePlugin from '../plugins/firebasePlugin';
@@ -19,13 +19,18 @@ class FirebaseCollabEditor extends BaseEditor {
     const collabEditing = require('prosemirror-collab').collab;
 
     const clientID = String(Math.round(Math.random() * 100000));
-    const editorKey = config.editorKey;
+    const { editorKey, firebaseConfig } = config;
 
-    const plugins = pubpubSetup({ schema })
+    let plugins = pubpubSetup({ schema })
     .concat(CitationsPlugin).concat(SelectPlugin).concat(RelativeFilesPlugin)
     .concat(MentionsPlugin).concat(FootnotesPlugin)
-    .concat(FirebasePlugin({selfClientID: clientID, editorKey}))
+    .concat(FirebasePlugin({selfClientID: clientID, editorKey, firebaseConfig}))
     .concat(collab({clientID: clientID}));
+
+    if (config.trackChanges) {
+      plugins = plugins.concat(TrackPlugin);
+    }
+
 
     let docJSON;
     if (text) {

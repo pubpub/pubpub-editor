@@ -135,6 +135,15 @@ class BaseEditor {
 		return null;
 	}
 
+	rebase(forkID) {
+		let firebasePlugin;
+		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
+			return firebasePlugin.props.rebase.bind(firebasePlugin)(forkID);
+		}
+		return null;
+	}
+
+
 	getForks() {
 		let firebasePlugin;
 		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
@@ -144,18 +153,6 @@ class BaseEditor {
 	}
 
 	_onAction (transaction) {
-		/*
-		if (action.transform) {
-			for (const step of action.transform.steps) {
-				// console.log(step);
-				if (step.slice.content.content.length === 0) {
-					console.log('deleted!');
-				const newStep = step.invert(this.view.editor.state.doc);
-				action.transform.step(newStep);
-				}
-			}
-		}
-		*/
 		if (!this.view || !this.view.state) {
 			return;
 		}
@@ -170,9 +167,12 @@ class BaseEditor {
 			this.view.props.onCursor();
 		}
 
-		let firebasePlugin;
-		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
-			return firebasePlugin.props.updateCollab(transaction, newState);
+		// const trackPlugin = getPlugin('track', this.view.state);
+		const firebasePlugin = getPlugin('firebase', this.view.state);
+		if (firebasePlugin) {
+			if (!transaction.getMeta("trackAddition") && !transaction.getMeta("rebase") ) {
+				return firebasePlugin.props.updateCollab(transaction, newState);
+			}
 		}
 
 	}

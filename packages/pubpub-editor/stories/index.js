@@ -59,8 +59,11 @@ storiesOf('Full Editor', module)
 ;
 
 storiesOf('Collaborative Editing', module)
-.add('Forking', () => (
-	<CollaborativeEditor editorKey="testEditor" collaborative={true} />
+.add('Forking & Rebasing', () => (
+	<CollaborativeEditor editorKey="basicDoc" collaborative={true} allowForking={true} />
+))
+.add('Track Changes in Forks', () => (
+	<CollaborativeEditor editorKey="testfork159" collaborative={true} trackChanges={true} allowForking={false} />
 ))
 ;
 
