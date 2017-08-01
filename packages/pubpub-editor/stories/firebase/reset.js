@@ -8,7 +8,15 @@ const reset = () => {
   // const ref = db.ref('/');
 
   return db.ref().remove().then(() => {
-    return db.ref('basicDoc').set(basicDoc);
+    return db.ref('basicDoc').set(basicDoc).then(() => {
+      const forkedDoc = basicDoc;
+      forkedDoc.forkData = {
+        forkedKey: 231,
+        merged: false,
+        parent: "basicDoc",
+      };
+      return db.ref('basicDoc01').set(forkedDoc);
+    });
   });
 }
 

@@ -63,7 +63,7 @@ storiesOf('Collaborative Editing', module)
 	<CollaborativeEditor editorKey="basicDoc" collaborative={true} allowForking={true} />
 ))
 .add('Track Changes in Forks', () => (
-	<CollaborativeEditor editorKey="testfork159" collaborative={true} trackChanges={true} allowForking={false} />
+	<CollaborativeEditor editorKey="basicDoc01" collaborative={true} trackChanges={true} allowForking={false} />
 ))
 ;
 

@@ -17,27 +17,10 @@ const { Step, findWrapping, Mapping } = require('prosemirror-transform')
 */
 
 /*
-  - Start from original doc
-  - every deletion needs to be replayed?
-  - store an original state?\
-
-  - how to store these set of steps?
-  - how to store decorations?
-
-
-  - how to group steps as commits?
-
-
-
   if you only store deletions in a map, then inevitably it will be removeD?
-
   instead store deletions to remove after a certain map?
-
   e.g. store at POS 34, remove 4. at pos 40, remove 5
-
-  // could work!!!
-
-How to represent deleted items? Can't use widgets because of removal
+  How to represent deleted items? Can't use widgets because of removal
 */
 
 
@@ -74,7 +57,7 @@ const trackChangesPlugin = new Plugin({
         const sendable = this.sendableSteps;
         this.sendableSteps = [];
         if (sendable.length > 0) {
-          return {steps: sendable, clientID: 'test-yo' };
+          return sendable;
         }
         return null;
       };
@@ -141,14 +124,16 @@ const trackChangesPlugin = new Plugin({
 
   appendTransaction: function (transactions, oldState, newState) {
     const firstTransaction = transactions[0];
-    if (!firstTransaction) {
+    if (!firstTransaction || transactions.length > 1) {
       return;
     }
     let transaction = firstTransaction;
   //   debugger;
-    if (transaction.getMeta("backdelete") || transaction.getMeta('history$')) {
+    if (transaction.getMeta("trackAddition") || transaction.getMeta("backdelete")  || transaction.getMeta('collab$') || transaction.getMeta('history$')) {
       return;
     }
+
+    // debugger;
 
     if (transaction.mapping && transaction.mapping.maps.length > 0) {
       const sel = newState.selection;
@@ -180,6 +165,10 @@ const trackChangesPlugin = new Plugin({
           if (step instanceof AddMarkStep) {
             tr = tr.addMark(step.from, step.to, schema.mark('diff_plus', {}));
             tr.setMeta("trackAddition", true);
+            continue;
+          }
+
+          if (!step.slice) {
             continue;
           }
 
