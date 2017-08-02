@@ -93,6 +93,81 @@ const setFirebaseValue = ({ ref, child, data }) =>{
   });
 }
 
+const rebaseCommit = ({ commit, view, doc, allCommits, newSteps, changesRef, clientID, latestKey, selfChanges  }) => {
+
+  function compressedStepJSONToStep(compressedStepJSON) {
+    return Step.fromJSON(view.state.schema, uncompressStepJSON(compressedStepJSON)) }
+
+  const docMapping = new Mapping();
+  for (const step of newSteps) {
+    docMapping.appendMap(step.getMap());
+  }
+
+  let tr = view.state.tr;
+
+  const commitSteps = commit.steps;
+  const previousSteps = [];
+
+
+  for (const commit of allCommits) {
+    for (const steps of Object.values(commit.steps)) {
+      const compressedStepsJSON = steps.s;
+      previousSteps.push(...compressedStepsJSON.map(compressedStepJSONToStep));
+    }
+  }
+
+  for (const step of previousSteps) {
+    const invertMap = step.getMap().invert();
+    docMapping.appendMap(invertMap);
+  }
+
+
+  const allCommitSteps = [];
+  Object.values(commitSteps).map((commitStep) => {
+
+    const compressedStepsJSON = commitStep.s;
+    allCommitSteps.push(...compressedStepsJSON.map(compressedStepJSONToStep));
+  });
+
+  console.log('commit steps', allCommitSteps);
+
+  const mappedSteps = allCommitSteps.map((step) => {
+    const mappedStep = step.map(docMapping);
+    tr = tr.step(mappedStep);
+    return mappedStep;
+  });
+
+  changesRef.child(latestKey + 1).transaction(
+    function (existingBatchedSteps) {
+      if (!existingBatchedSteps) {
+        selfChanges[latestKey + 1] = mappedSteps
+        return {
+          s: compressStepsLossy(mappedSteps).map(
+            function (step) {
+              return compressStepJSON(step.toJSON()) } ),
+          c: clientID, // need to store client id in rebase?
+          m: { rebasedTransaction: true },
+          t: TIMESTAMP,
+        }
+      }
+    },
+    function (error, committed, { key }) {
+      if (error) {
+        console.error('updateCollab', error, sendable, key)
+      } else if (committed && key % SAVE_EVERY_N_STEPS === 0 && key > 0) {
+        const { d } = compressStateJSON(newState.toJSON())
+        checkpointRef.set({ d, k: key, t: TIMESTAMP })
+      }
+    },
+    false );
+
+  tr.setMeta('backdelete', true);
+  tr.setMeta('rebase', true);
+  view.dispatch(tr);
+
+}
+
+// use forkdoc as a starting point just to be absolutely sure?
 const rebaseDocument = ({ view, doc, forkedSteps, newSteps, changesRef, clientID, latestKey,  selfChanges }) => {
 
   function compressedStepJSONToStep(compressedStepJSON) {
@@ -315,6 +390,19 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
   			return { };
   		},
   		apply(transaction, state, prevEditorState, editorState) {
+
+        if (transaction.docChanged) {
+          for (let clientID in selections) {
+            selections[clientID] = selections[clientID].map(editorState.doc, transaction.mapping);
+          }
+        }
+
+        if (transaction.getMeta('pointer')) {
+          selection = editorState.selection;
+          selfSelectionRef.set(compressSelectionJSON(selection.toJSON()));
+        }
+
+
   			return { };
   		}
   	},
@@ -358,7 +446,6 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
             });
           });
         });
-
       },
 
 
@@ -397,15 +484,25 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
       },
 
       rebaseByCommit(forkID) {
-        const forkRef = firebaseDb.ref(forkID).child("commits");
-        return forkRef.on('value').then((commitVals) => {
-          const commits = commitVals.val();
-          if (!commits) {
-            return [];
-            return;
-          }
-        return Object.values(commits);
+        const forkRef = firebaseDb.ref(forkID);
+        const editorChangesRef = firebaseDb.ref(editorKey).child("changes");
+
+        return forkRef.child("forkData").once('value').then((snapshot) => {
+          const { merged, parent, forkedKey } = snapshot.val();
+
+          Promise.all([
+            getFirebaseValue({ref: forkRef, child: "commits"}),
+            getSteps({view: editorView, changesRef: editorChangesRef, key: forkedKey})
+          ])
+          .then(([commitVals, newSteps]) => {
+            const commits = Object.values(commitVals || {});
+            const singleCommit = commits[1];
+            const prevCommits = [commits[0]];
+            return rebaseCommit({ commit: singleCommit, allCommits: prevCommits, view: editorView, newSteps, changesRef, clientID: selfClientID, latestKey, selfChanges });
+          })
+
         });
+
       },
 
       rebase(forkID) {
@@ -425,7 +522,6 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
                 getSteps({view: editorView, changesRef: editorChangesRef, key: forkedKey})
               ])
               .then(([forkDoc, forkedSteps, newSteps]) => {
-                console.log(forkedSteps, newSteps);
                 return rebaseDocument({ view: editorView, doc: forkDoc, forkedSteps, newSteps, changesRef, clientID: selfClientID, latestKey, selfChanges });
               })
               .then(() => {
@@ -463,12 +559,6 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
       },
 
       updateCollab({ docChanged, mapping, meta }, newState) {
-        if (docChanged) {
-          for (let clientID in selections) {
-            selections[clientID] = selections[clientID].map(newState.doc, mapping)
-          }
-        }
-
         // return after meta pointer?
         if (meta.pointer) {
           delete(meta.pointer);
@@ -487,17 +577,16 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
         const sendable = sendableSteps(newState);
 
         const updateRebasedSteps = () => {
-          if (trackPlugin) {
-            const rebasedSteps = trackPlugin.getSendableSteps();
-            if (rebasedSteps) {
-              this.props.storeRebaseSteps(rebasedSteps);
-            }
+          const rebasedSteps = trackPlugin.getSendableSteps();
+          if (rebasedSteps) {
+            this.props.storeRebaseSteps(rebasedSteps);
           }
         }
 
-        window.setTimeout(updateRebasedSteps, 0);
-
-        console.log('Got sendable steps!', sendable);
+        // undo timeout?
+        if (trackPlugin) {
+          window.setTimeout(updateRebasedSteps, 0);
+        }
         if (sendable) {
           const { steps, clientID } = sendable
           changesRef.child(latestKey + 1).transaction(
@@ -525,11 +614,8 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
             false )
         }
 
-        const selectionChanged = !newState.selection.eq(selection)
-        if (selectionChanged) {
-          selection = newState.selection
-          selfSelectionRef.set(compressSelectionJSON(selection.toJSON()))
-        }
+        // each selection changes only on 'pointer' transactions?
+
       },
 
 

@@ -143,6 +143,14 @@ class BaseEditor {
 		return null;
 	}
 
+	rebaseByCommit(forkID) {
+		let firebasePlugin;
+		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
+			return firebasePlugin.props.rebaseByCommit.bind(firebasePlugin)(forkID);
+		}
+		return null;
+	}
+
 	commit(msg) {
 		let firebasePlugin;
 		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
@@ -178,7 +186,7 @@ class BaseEditor {
 		// const trackPlugin = getPlugin('track', this.view.state);
 		const firebasePlugin = getPlugin('firebase', this.view.state);
 		if (firebasePlugin) {
-			if (!transaction.getMeta("trackAddition") && !transaction.getMeta("rebase") ) {
+			if (!transaction.getMeta("rebase") ) {
 				return firebasePlugin.props.updateCollab(transaction, newState);
 			}
 		}

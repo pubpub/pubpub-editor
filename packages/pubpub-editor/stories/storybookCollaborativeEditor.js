@@ -102,6 +102,12 @@ export const StoryBookCollaborativeEditor = React.createClass({
   },
 
 
+  rebaseByCommit: function(forkID) {
+    this.editor.rebaseByCommit(forkID).then(() => {
+      console.log('finished rebase!');
+    });
+  },
+
 	joinParent: function(name) {
     this.setState({ editorKey: name, inFork: false, forkParent: null });
   },
@@ -178,7 +184,10 @@ export const StoryBookCollaborativeEditor = React.createClass({
 											<Button className="pt-minimal" minimal onClick={this.joinFork.bind(this, fork.name)} iconName="document" text={fork.name} />
 
 											{(!fork.merged) ?
-												<Button className="pt-minimal" minimal onClick={this.rebase.bind(this, fork.name)} iconName="git-pull" />
+												<span>
+													<Button className="pt-minimal" minimal onClick={this.rebase.bind(this, fork.name)} iconName="git-pull" />
+													<Button className="pt-minimal" minimal onClick={this.rebaseByCommit.bind(this, fork.name)} iconName="git-merge" />
+												</span>
 											:
 												<Button disabled className="pt-minimal" minimal  iconName="git-commit" />
 											}
@@ -202,7 +211,7 @@ export const StoryBookCollaborativeEditor = React.createClass({
 	        }
         </div>
 
-				<div style={{ padding: '1em 4em', minHeight: '400px' }}>
+				<div className={(!this.state.inFork) ? 'main-body' : 'fork-body'} style={{ padding: '1em 4em', minHeight: '400px' }}>
           <FullEditor ref={(editor) => { this.editor = editor; }} {...editorProps} mode="rich" />
 				</div>
 			</div>

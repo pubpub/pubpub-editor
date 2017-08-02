@@ -206,6 +206,10 @@ export const RichEditor = React.createClass({
 		return this.editor.rebase(forkID);
 	},
 
+	rebaseByCommit: function(forkID) {
+		return this.editor.rebaseByCommit(forkID);
+	},
+
 	getForks: function() {
 		return this.editor.getForks();
 	},
