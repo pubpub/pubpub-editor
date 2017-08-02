@@ -58,8 +58,11 @@ const getSteps = ({view, changesRef, key}) => {
     changesRef.startAt(null, String(key + 1)).once('value').then(
       function (snapshot) {
         const changes = snapshot.val();
-        const steps = []
-        const keys = Object.keys(changes)
+        if (!changes) {
+          resolve([]);
+        }
+        const steps = [];
+        const keys = Object.keys(changes);
         for (let key of keys) {
           const compressedStepsJSON = changes[key].s;
           steps.push(...compressedStepsJSON.map(compressedStepJSONToStep));
@@ -385,6 +388,7 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
             clientID: '',
             steps: snapshot.val().steps,
             commitID: snapshot.val().commitID,
+            merged: false,
           };
           return editorRef.child('commits').push().set(commit).then(() => {
             editorRef.child('currentCommit').set({commitID: Math.round(Math.random() * 100000)});
@@ -392,6 +396,17 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
         });
       },
 
+      rebaseByCommit(forkID) {
+        const forkRef = firebaseDb.ref(forkID).child("commits");
+        return forkRef.on('value').then((commitVals) => {
+          const commits = commitVals.val();
+          if (!commits) {
+            return [];
+            return;
+          }
+        return Object.values(commits);
+        });
+      },
 
       rebase(forkID) {
         return loadingPromise.promise.then(() => {
