@@ -128,12 +128,10 @@ const trackChangesPlugin = new Plugin({
       return;
     }
     let transaction = firstTransaction;
-  //   debugger;
+
     if (transaction.getMeta("trackAddition") || transaction.getMeta("backdelete")  || transaction.getMeta('collab$') || transaction.getMeta('history$')) {
       return;
     }
-
-    // debugger;
 
     if (transaction.mapping && transaction.mapping.maps.length > 0) {
       const sel = newState.selection;
@@ -163,7 +161,7 @@ const trackChangesPlugin = new Plugin({
           const map = step.getMap();
 
           if (step instanceof AddMarkStep) {
-            tr = tr.addMark(step.from, step.to, schema.mark('diff_plus', {}));
+            tr = tr.addMark(step.from, step.to, schema.mark('diff_plus', { commitID: this.commitID }));
             tr.setMeta("trackAddition", true);
             continue;
           }
@@ -195,8 +193,8 @@ const trackChangesPlugin = new Plugin({
               const insertStart = tr.mapping.map(newEnd, -1);
               const insertEnd = tr.mapping.map(newEnd, 1);
 
-              tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', {}));
-              tr = tr.addMark(insertStart, insertEnd, schema.mark('diff_plus', {}));
+              tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', { commitID: this.commitID }));
+              tr = tr.addMark(insertStart, insertEnd, schema.mark('diff_plus', { commitID: this.commitID }));
 
               /*
               let i;
@@ -211,7 +209,7 @@ const trackChangesPlugin = new Plugin({
               tr.setMeta("backdelete", true);
               tr.setMeta("trackAddition", true);
             } else {
-              tr = tr.addMark(newStart, newEnd, schema.mark('diff_plus', {}));
+              tr = tr.addMark(newStart, newEnd, schema.mark('diff_plus', { commitID: this.commitID }));
               tr.setMeta("trackAddition", true);
             }
 
@@ -239,6 +237,12 @@ const trackChangesPlugin = new Plugin({
   },
   key: keys.track,
   props: {
+    updateCommits: function(commits) {
+      this.commits = commits;
+    },
+    updateCommitID: function(commitID) {
+      this.commitID = commitID;
+    },
     resetView: function(view) {
       view.updateState(initialState);
       let tr = view.state.tr;

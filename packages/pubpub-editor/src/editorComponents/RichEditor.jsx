@@ -129,6 +129,7 @@ export const RichEditor = React.createClass({
 				rebaseChanges: this.props.rebaseChanges,
 				editorKey: (this.props.collaborative) ? this.props.editorKey : null,
 				firebaseConfig: this.props.firebaseConfig,
+				updateCommits: this.props.updateCommits,
 			},
 			props: {
 				fileMap: fileMap,
@@ -207,6 +208,10 @@ export const RichEditor = React.createClass({
 
 	getForks: function() {
 		return this.editor.getForks();
+	},
+
+	commit: function(msg) {
+		return this.editor.commit(msg);
 	},
 
 	render: function() {

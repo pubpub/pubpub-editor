@@ -1,4 +1,4 @@
-import { Menu, MenuItem, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
+import { Button, Menu, MenuItem, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 import React, { PropTypes } from 'react';
 import { jsonToMarkdown, markdownToJSON } from '../src/markdown';
 import { localDiscussions, localFiles, localHighlights, localPages, localPubs, localReferences, localUsers } from './sampledocs/autocompleteLocalData';
@@ -21,6 +21,27 @@ require('./utils/pubBody.scss');
 // require('../style/base.scss');
 // require('../style/markdown.scss');
 
+const CommitMsg = ({commit}) => {
+	const onEnter = () => {
+		console.log('turning on', commit.commitID);
+		const query = document.querySelector(`[data-commit="${commit.commitID}"]`);
+		if (query) {
+			query.classList.add("commitHover");
+		}
+	};
+	const onLeave = () => {
+		const query = document.querySelector(`[data-commit="${commit.commitID}"]`);
+		if (query) {
+		 query.classList.remove("commitHover");
+		}
+	};
+	return (
+		<div onMouseEnter={onEnter} onMouseLeave={onLeave}
+			style={{width: '100%', height: '30px', marginBottom: 10, padding: '5px 10px', display: 'block', backgroundColor: '#eee', cursor: 'pointer'}} >
+			{commit.description}
+		</div>);
+}
+
 export const StoryBookCollaborativeEditor = React.createClass({
 
 	propTypes: {
@@ -36,6 +57,8 @@ export const StoryBookCollaborativeEditor = React.createClass({
       editorKey: this.props.editorKey,
       forks: [],
       inFork: false,
+			forkParent: null,
+			commits: [],
 		}
 	},
 
@@ -48,7 +71,6 @@ export const StoryBookCollaborativeEditor = React.createClass({
 			this.getForks();
 		}
   },
-
 
 	handleFileUpload: function(file, callback) {
 		// Do the uploading - then callback
@@ -80,8 +102,12 @@ export const StoryBookCollaborativeEditor = React.createClass({
   },
 
 
+	joinParent: function(name) {
+    this.setState({ editorKey: name, inFork: false, forkParent: null });
+  },
+
   joinFork: function(name) {
-    this.setState({editorKey: name, inFork: true});
+    this.setState({ editorKey: name, inFork: true, forkParent: this.state.editorKey });
   },
 
   getForks: function() {
@@ -91,6 +117,18 @@ export const StoryBookCollaborativeEditor = React.createClass({
       }
     });
   },
+
+	commit: function() {
+		const commitMsg = this.commitArea.value;
+		this.editor.commit(commitMsg).then(() => {
+			console.log('finished commit!');
+		});
+	},
+
+	updateCommits: function(commits) {
+		console.log('got new commits!', commits);
+		this.setState({ commits: commits || [] });
+	},
 
 	render: function() {
 		const editorProps = {
@@ -108,47 +146,66 @@ export const StoryBookCollaborativeEditor = React.createClass({
 			globalCategories: ['pubs', 'users'],
 			collaborative: this.props.collaborative,
       editorKey: this.state.editorKey,
-      trackChanges: this.props.trackChanges,
+      trackChanges: this.props.trackChanges || this.state.inFork,
 			firebaseConfig: FirebaseConfig,
+			updateCommits: this.updateCommits,
 		};
 
 		return (
-			<div className={'pt-card pt-elevation-3'} style={{ padding: '0em', margin: '0em auto 2em', maxWidth: '850px' }}>
+			<div className={'pt-card pt-elevation-3'} style={{ padding: '0em', margin: '0em auto 2em', maxWidth: '950px' }}>
 				<div style={{ backgroundColor: '#ebf1f5', padding: '0.5em', textAlign: 'right', borderBottom: '1px solid rgba(16, 22, 26, 0.15)' }}>
-					{(this.props.allowForking) ?
-						<div className={'pt-button-group'}>
-	            {(!this.state.inFork) ?
-	              <div className={`pt-button`} onClick={this.fork}>Fork</div>
-	              :
-	              <div className={`pt-button`} onClick={this.rebase}>Rebase</div>
-	            }
-						</div>
-					: null}
 
-					<div className={`pt-button`} onClick={resetFirebase}>Reset</div>
+					<div className={`pt-button`} onClick={resetFirebase}>Reset Database</div>
 
 				</div>
-        {(!this.state.inFork) ?
-          <div>
-            {this.state.forks.map((fork) => {
-              return (
-								<div>
-									<span onClick={this.joinFork.bind(this, fork.name)}>{fork.name}</span>
-									{(!fork.merged) ?
-										<span onClick={this.rebase.bind(this, fork.name)}>Rebase</span>
-									:
-										<span>MERGED</span>
-									}
-								</div>);
-            })}
-          </div>
-          :
-          <div>Join {this.state.editorKey}</div>
-        }
+
+				<div style={{display: 'flex', flexDirection: 'row'}}>
+          <div style={{width: 200, padding: 10}}>
+
+						{(!this.state.inFork) ?
+
+							<div>
+								{(this.props.allowForking) ?
+									<h4>Forks
+										<Button minimal onClick={this.fork} iconName="fork" text="New Fork " />
+									</h4>
+								: null }
+
+
+		            {this.state.forks.map((fork) => {
+		              return (
+										<div>
+											<Button className="pt-minimal" minimal onClick={this.joinFork.bind(this, fork.name)} iconName="document" text={fork.name} />
+
+											{(!fork.merged) ?
+												<Button className="pt-minimal" minimal onClick={this.rebase.bind(this, fork.name)} iconName="git-pull" />
+											:
+												<Button disabled className="pt-minimal" minimal  iconName="git-commit" />
+											}
+										</div>);
+		            })}
+							</div>
+
+						: (
+							<div>
+								<Button onClick={this.joinParent.bind(this, this.state.forkParent)} iconName="circle-arrow-left" text={this.state.forkParent} />
+
+								<textarea ref={(textarea) => { this.commitArea = textarea; }}  className="pt-input" dir="auto"></textarea>
+								<Button onClick={this.commit} text="Commit" />
+
+								{this.state.commits.map((commit) => {
+									return (<CommitMsg commit={commit}/>);
+								})}
+
+							</div>
+							)
+	        }
+        </div>
 
 				<div style={{ padding: '1em 4em', minHeight: '400px' }}>
           <FullEditor ref={(editor) => { this.editor = editor; }} {...editorProps} mode="rich" />
 				</div>
+			</div>
 
 
 			</div>

@@ -143,6 +143,14 @@ class BaseEditor {
 		return null;
 	}
 
+	commit(msg) {
+		let firebasePlugin;
+		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
+			return firebasePlugin.props.commit.bind(firebasePlugin)(msg);
+		}
+		return null;
+	}
+
 
 	getForks() {
 		let firebasePlugin;

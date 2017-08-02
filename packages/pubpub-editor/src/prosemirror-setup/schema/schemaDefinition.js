@@ -275,19 +275,19 @@ const marks = {
 
 	diff_plus: {
 		attrs: {
-			commit: { default: null }
+			commitID: { default: null }
 		},
 		parseDOM: [],
-		toDOM(node) { return ['span', { class: `diff-marker added` }, 0]; },
+		toDOM(node) { return ['span', { class: `diff-marker added`, "data-commit": node.attrs.commitID }, 0]; },
 		excludes: "diff_minus"
 	},
 
 	diff_minus: {
 		attrs: {
-			commit: { default: null }
+			commitID: { default: null }
 		},
 		parseDOM: [],
-		toDOM(node) { return ['span', { class: `diff-marker removed` }, 0]; },
+		toDOM(node) { return ['span', { class: `diff-marker removed`, "data-commit": node.attrs.commitID }, 0]; },
 		excludes: "diff_plus"
 	},
 

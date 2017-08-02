@@ -24,7 +24,7 @@ class FirebaseCollabEditor extends BaseEditor {
     let plugins = pubpubSetup({ schema })
     .concat(CitationsPlugin).concat(SelectPlugin).concat(RelativeFilesPlugin)
     .concat(MentionsPlugin).concat(FootnotesPlugin)
-    .concat(FirebasePlugin({selfClientID: clientID, editorKey, firebaseConfig}))
+    .concat(FirebasePlugin({selfClientID: clientID, editorKey, firebaseConfig, updateCommits: config.updateCommits}))
     .concat(collab({clientID: clientID}));
 
     if (config.trackChanges) {

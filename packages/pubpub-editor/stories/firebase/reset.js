@@ -15,6 +15,9 @@ const reset = () => {
         merged: false,
         parent: "basicDoc",
       };
+      forkedDoc.currentCommit = {
+        commitID: 1
+      };
       return db.ref('basicDoc01').set(forkedDoc);
     });
   });

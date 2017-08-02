@@ -139,9 +139,7 @@ const rebaseDocument = ({ view, doc, forkedSteps, newSteps, changesRef, clientID
 
 let firebaseApp;
 
-const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig }) => {
-
-  console.log('firebaseconfig', firebaseConfig);
+const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits }) => {
 
   if (!firebaseApp) {
     firebaseApp = firebase.initializeApp(firebaseConfig);
@@ -155,6 +153,7 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig }) => {
   const checkpointRef  = firebaseRef.child('checkpoint');
   const changesRef = firebaseRef.child('changes');
   const selectionsRef = firebaseRef.child('selections');
+
   const selfSelectionRef = selectionsRef.child(selfClientID);
   selfSelectionRef.onDisconnect().remove();
   const selections = {};
@@ -173,6 +172,27 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig }) => {
     if (fetchedState) {
       return;
     }
+
+    const commitIDRef = firebaseRef.child('currentCommit/commitID');
+    const commitsRef = firebaseRef.child('commits');
+
+
+    commitsRef.on('value', function(commitVals) {
+      const commits = commitVals.val();
+      if (!commits) {
+        updateCommits([]);
+        return;
+      }
+      updateCommits(Object.values(commits));
+    });
+
+    commitIDRef.on('value', function(commitVal) {
+      const newCommitID = commitVal.val();
+      const trackPlugin = getPlugin('track', editorView.state);
+      if (trackPlugin) {
+        trackPlugin.props.updateCommitID.bind(trackPlugin)(newCommitID);
+      }
+    });
 
     checkpointRef.once('value').then(
       function (snapshot) {
@@ -317,6 +337,7 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig }) => {
         return new Promise((resolve, reject) => {
           editorRef.once('value', function(snapshot) {
             const forkData = snapshot.val();
+            forkData.currentCommit = { commitID: 1 };
             forkData.forkData = {
               merged: false,
               date: new Date(),
@@ -338,15 +359,8 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig }) => {
       },
 
 
-      storeCommit() {
-
-      },
-
       storeRebaseSteps(steps) {
         const editorRef = firebaseDb.ref(editorKey);
-
-        console.log('got steps!', steps, compressStepsLossy(steps));
-
         const storedSteps =  {
           s: compressStepsLossy(steps).map(
             function (step) {
@@ -355,9 +369,29 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig }) => {
           m: {},
           t: TIMESTAMP,
         };
-
         editorRef.child('rebaseSteps').push().set(storedSteps);
+        const lastCommit =  editorRef.child('currentCommit/steps').push().set(storedSteps);
       },
+
+      // how to associate data with steps? Keep an id
+
+      commit(description) {
+        const editorRef = firebaseDb.ref(editorKey);
+
+        return editorRef.child('currentCommit').once('value').then((snapshot) => {
+          const currentCommit = snapshot.val();
+          const commit = {
+            description,
+            clientID: '',
+            steps: snapshot.val().steps,
+            commitID: snapshot.val().commitID,
+          };
+          return editorRef.child('commits').push().set(commit).then(() => {
+            editorRef.child('currentCommit').set({commitID: Math.round(Math.random() * 100000)});
+          });
+        });
+      },
+
 
       rebase(forkID) {
         return loadingPromise.promise.then(() => {
@@ -370,8 +404,6 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig }) => {
             forkRef.child("forkData").once('value').then((snapshot) => {
               const { merged, parent, forkedKey } = snapshot.val();
 
-              console.log(merged, parent, forkedKey);
-
               Promise.all([
                 getFirebaseValue({ref: forkRef, child: "forkDoc"}),
                 getSteps({view: editorView, changesRef: forkedChangesRef, key: null}),
@@ -379,7 +411,7 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig }) => {
               ])
               .then(([forkDoc, forkedSteps, newSteps]) => {
                 console.log(forkedSteps, newSteps);
-                return rebaseDocument({ view: editorView, doc: forkDoc, forkedSteps, newSteps, changesRef, clientID: 'ababa', latestKey, selfChanges });
+                return rebaseDocument({ view: editorView, doc: forkDoc, forkedSteps, newSteps, changesRef, clientID: selfClientID, latestKey, selfChanges });
               })
               .then(() => {
                 return setFirebaseValue({ref: forkRef, child: "forkData/merged", data: true});
@@ -438,13 +470,19 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig }) => {
         const trackPlugin = getPlugin('track', editorView.state);
 
         const sendable = sendableSteps(newState);
-        if (trackPlugin) {
-          const rebasedSteps = trackPlugin.getSendableSteps();
-          if (rebasedSteps) {
-            this.props.storeRebaseSteps(rebasedSteps);
+
+        const updateRebasedSteps = () => {
+          if (trackPlugin) {
+            const rebasedSteps = trackPlugin.getSendableSteps();
+            if (rebasedSteps) {
+              this.props.storeRebaseSteps(rebasedSteps);
+            }
           }
         }
 
+        window.setTimeout(updateRebasedSteps, 0);
+
+        console.log('Got sendable steps!', sendable);
         if (sendable) {
           const { steps, clientID } = sendable
           changesRef.child(latestKey + 1).transaction(
