@@ -284,12 +284,3 @@ WIP Diff algorithms:
 		background-color: rgba(255,50,50,0.3);
 		text-decoration: line-through;
 }
-
-.main-body .diff-marker.added {
-	background-color: transparent !important;
-}
-
-.main-body .diff-marker.removed {
-		background-color: transparent !important;
-		text-decoration: initial !important;
-}

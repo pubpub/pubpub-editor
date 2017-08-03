@@ -1,15 +1,13 @@
 import { AddMarkStep, canJoin, insertPoint, joinPoint, replaceStep } from 'prosemirror-transform';
-import {Decoration, DecorationSet} from "prosemirror-view";
-import { Fragment, NodeRange, Slice } from 'prosemirror-model';
+import { Decoration, DecorationSet } from "prosemirror-view";
+import { Fragment, Node, NodeRange, Slice } from 'prosemirror-model';
 
 import { Plugin } from 'prosemirror-state';
 import { keys } from './pluginKeys';
 import { schema } from '../schema';
 
-const { Selection } = require('prosemirror-state')
-const { Node } = require('prosemirror-model')
-const { Step, findWrapping, Mapping } = require('prosemirror-transform')
-
+const { Selection } = require('prosemirror-state');
+const { Step, findWrapping, Mapping } = require('prosemirror-transform');
 
 /*
 - How to store in a firebase account?
@@ -166,15 +164,12 @@ const trackChangesPlugin = new Plugin({
             continue;
           }
 
+
           if (!step.slice) {
             continue;
           }
 
           const slice = step.slice.content;
-
-          if (slice.size === 0) {
-            continue;
-          }
 
           map.forEach((oldStart, oldEnd, newStart, newEnd) => {
 
@@ -184,17 +179,31 @@ const trackChangesPlugin = new Plugin({
               const slice = step.slice.content;
               const possibleInsert = tr.mapping.map(newEnd, 1);
 
-              const insertstep = replaceStep(tr.doc, possibleInsert, possibleInsert, step.slice);
-              const newOffset = { index: oldEnd, size: inverse.slice.size };
-              this.stepOffsets.push(newOffset);
 
-              tr = tr.step(insertstep);
+              if (step.slice.size > 0) {
+                const insertstep = replaceStep(oldState.doc, possibleInsert, possibleInsert, (step.slice.size > 0) ? step.slice : Slice.empty);
+                const newOffset = { index: oldEnd, size: inverse.slice.size };
+                this.stepOffsets.push(newOffset);
 
-              const insertStart = tr.mapping.map(newEnd, -1);
-              const insertEnd = tr.mapping.map(newEnd, 1);
+                try {
+                  tr = tr.step(insertstep);
+                } catch (err) {
+                  console.log('cannot do this!', insertstep, step);
+                  console.log(err);
+                }
+                const insertStart = tr.mapping.map(newEnd, -1);
+                const insertEnd = tr.mapping.map(newEnd, 1);
 
-              tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', { commitID: this.commitID }));
-              tr = tr.addMark(insertStart, insertEnd, schema.mark('diff_plus', { commitID: this.commitID }));
+                tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', { commitID: this.commitID }));
+                tr = tr.addMark(insertStart, insertEnd, schema.mark('diff_plus', { commitID: this.commitID }));
+
+              } else {
+                const insertStart = tr.mapping.map(newEnd, -1);
+                const insertEnd = tr.mapping.map(newEnd, 1);
+                tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', { commitID: this.commitID }));
+                // tr = tr.addMark(insertStart, insertEnd, schema.mark('diff_plus', { commitID: this.commitID }));
+              }
+
 
               /*
               let i;
