@@ -1,4 +1,4 @@
-import { AddMarkStep, canJoin, insertPoint, joinPoint, replaceStep } from 'prosemirror-transform';
+import { AddMarkStep, ReplaceAroundStep, canJoin, insertPoint, joinPoint, replaceStep } from 'prosemirror-transform';
 import { Decoration, DecorationSet } from "prosemirror-view";
 import { Fragment, Node, NodeRange, Slice } from 'prosemirror-model';
 
@@ -158,18 +158,18 @@ const trackChangesPlugin = new Plugin({
         for (const step of transaction.steps) {
           const map = step.getMap();
 
-          if (step instanceof AddMarkStep) {
+          if (step instanceof AddMarkStep || step instanceof ReplaceAroundStep) {
             tr = tr.addMark(step.from, step.to, schema.mark('diff_plus', { commitID: this.commitID }));
             tr.setMeta("trackAddition", true);
             continue;
           }
-
 
           if (!step.slice) {
             continue;
           }
 
           const slice = step.slice.content;
+
 
           map.forEach((oldStart, oldEnd, newStart, newEnd) => {
 
@@ -192,7 +192,6 @@ const trackChangesPlugin = new Plugin({
                 const oldNodeText = oldFragment.content[0].text;
                 if (oldNodeText.charAt(0).trim() == '' && replacedNodeText.length === 2 && replacedNodeText.charAt(0).trim() == '') {
                   isSpaceOperation = true;
-                  console.log('is space!!!');
                 }
               }
 
@@ -284,21 +283,24 @@ const trackChangesPlugin = new Plugin({
       return this.storedSteps;
     },
     handleKeyDown: function (view, event) {
-
       if (event.code === 'Backspace') {
-
         const sel = view.state.selection;
         const pos = sel.$from;
         let tr = view.state.tr;
-        const beforeSel = Selection.findFrom(view.state.doc.resolve(sel.from - 1),-1, true);
+        // what if they delete a region??
+        const beforeSel = Selection.findFrom(view.state.doc.resolve(sel.from - 1), -1, true);
         const marks = beforeSel.$from.marks();
         const hasDiff = marks.find((mark) => {
           return (mark.type.name === 'diff_plus');
         });
-        if (hasDiff) {
-          return false;
-        }
         const deleteStep = replaceStep(tr.doc, beforeSel.from, sel.from, Slice.empty);
+        if (hasDiff) {
+          // need to actually delete it but then avoid random deletions
+          tr.step(deleteStep);
+          tr.setMeta('backdelete', true);
+          view.dispatch(tr);
+          return true;
+        }
         const newOffset = { index: beforeSel.from, size: 1 };
         this.storeStep(deleteStep);
         this.stepOffsets.push(newOffset);
