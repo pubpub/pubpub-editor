@@ -180,6 +180,23 @@ const trackChangesPlugin = new Plugin({
               const possibleInsert = tr.mapping.map(newEnd, 1);
 
 
+              let isSpaceOperation = false;
+
+              const replacedFragment = step.slice.content;
+              const oldFragment = inverse.slice.content;
+              const fragmentIsText = function(fragment) {
+                return (fragment.content && fragment.content.length === 1 && fragment.content[0].isText === true);
+              }
+              if (fragmentIsText(replacedFragment) && fragmentIsText(oldFragment)) {
+                const replacedNodeText = replacedFragment.content[0].text;
+                const oldNodeText = oldFragment.content[0].text;
+                if (oldNodeText.charAt(0).trim() == '' && replacedNodeText.length === 2 && replacedNodeText.charAt(0).trim() == '') {
+                  isSpaceOperation = true;
+                  console.log('is space!!!');
+                }
+              }
+
+
               if (step.slice.size > 0) {
                 const insertstep = replaceStep(oldState.doc, possibleInsert, possibleInsert, (step.slice.size > 0) ? step.slice : Slice.empty);
                 const newOffset = { index: oldEnd, size: inverse.slice.size };
@@ -194,7 +211,9 @@ const trackChangesPlugin = new Plugin({
                 const insertStart = tr.mapping.map(newEnd, -1);
                 const insertEnd = tr.mapping.map(newEnd, 1);
 
-                tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', { commitID: this.commitID }));
+                if (!isSpaceOperation) {
+                  tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', { commitID: this.commitID }));
+                }
                 tr = tr.addMark(insertStart, insertEnd, schema.mark('diff_plus', { commitID: this.commitID }));
 
               } else {
