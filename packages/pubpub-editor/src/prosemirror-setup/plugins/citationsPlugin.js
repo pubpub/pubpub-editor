@@ -123,9 +123,7 @@ const citationsPlugin = new Plugin({
 		this.editorView = editorView;
 		const pluginState = getPluginState('citations', editorView.state);
 		const notFound = pluginState.engine.getMissingCitations(editorView.props.referencesList);
-		for (const notFoundCitation of notFound) {
-			editorView.props.createReference(notFoundCitation);
-		}
+		editorView.props.createReference(notFound);
 		return {
 			update: (newView, prevState) => {
 				this.editorView = newView;
