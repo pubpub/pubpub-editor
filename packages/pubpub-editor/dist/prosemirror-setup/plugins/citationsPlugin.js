@@ -143,31 +143,7 @@ var citationsPlugin = new _prosemirrorState.Plugin({
 		this.editorView = editorView;
 		var pluginState = (0, _plugins.getPluginState)('citations', editorView.state);
 		var notFound = pluginState.engine.getMissingCitations(editorView.props.referencesList);
-		var _iteratorNormalCompletion = true;
-		var _didIteratorError = false;
-		var _iteratorError = undefined;
-
-		try {
-			for (var _iterator = notFound[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-				var notFoundCitation = _step.value;
-
-				editorView.props.createReference(notFoundCitation);
-			}
-		} catch (err) {
-			_didIteratorError = true;
-			_iteratorError = err;
-		} finally {
-			try {
-				if (!_iteratorNormalCompletion && _iterator.return) {
-					_iterator.return();
-				}
-			} finally {
-				if (_didIteratorError) {
-					throw _iteratorError;
-				}
-			}
-		}
-
+		editorView.props.createReference(notFound);
 		return {
 			update: function update(newView, prevState) {
 				_this2.editorView = newView;

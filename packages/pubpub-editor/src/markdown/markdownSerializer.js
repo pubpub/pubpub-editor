@@ -77,7 +77,7 @@ export const markdownSerializer = new MarkdownSerializer({
 		let content;
     if (node.attrs.content) {
       content = node.attrs.content;
-    } else if (node && this.node.firstChild) {
+    } else if (node && node.firstChild) {
       content = node.firstChild.text;
     }
 
