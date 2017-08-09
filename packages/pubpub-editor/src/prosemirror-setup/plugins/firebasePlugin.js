@@ -62,7 +62,7 @@ const getSteps = ({view, changesRef, key}) => {
           resolve([]);
         }
         const steps = [];
-        const keys = Object.keys(changes);
+        const keys = Object.keys(changes || {});
         for (let key of keys) {
           const compressedStepsJSON = changes[key].s;
           steps.push(...compressedStepsJSON.map(compressedStepJSONToStep));
@@ -483,6 +483,7 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
         });
       },
 
+      // return a function that take an index and rebases on it??
       rebaseByCommit(forkID) {
         const forkRef = firebaseDb.ref(forkID);
         const editorChangesRef = firebaseDb.ref(editorKey).child("changes");
@@ -490,20 +491,24 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
         return forkRef.child("forkData").once('value').then((snapshot) => {
           const { merged, parent, forkedKey } = snapshot.val();
 
-          Promise.all([
-            getFirebaseValue({ref: forkRef, child: "commits"}),
-            getSteps({view: editorView, changesRef: editorChangesRef, key: forkedKey})
-          ])
-          .then(([commitVals, newSteps]) => {
+          return getFirebaseValue({ref: forkRef, child: "commits"})
+          .then((commitVals) => {
             const commits = Object.values(commitVals || {});
-            const singleCommit = commits[1];
-            const prevCommits = [commits[0]];
-            return rebaseCommit({ commit: singleCommit, allCommits: prevCommits, view: editorView, newSteps, changesRef, clientID: selfClientID, latestKey, selfChanges });
+
+            // needs to fetch new steps on every commit!
+            const rebaseCommitHandler = (index) =>{
+              const singleCommit = commits[index];
+              const prevCommits = commits.slice(0, index);
+              return getSteps({view: editorView, changesRef: editorChangesRef, key: forkedKey}).then((newSteps) => {
+                return rebaseCommit({ commit: singleCommit, allCommits: prevCommits, view: editorView, newSteps, changesRef, clientID: selfClientID, latestKey, selfChanges });
+              });
+            }
+
+            return { rebaseCommitHandler, commits };
           })
-
         });
-
       },
+
 
       rebase(forkID) {
         return loadingPromise.promise.then(() => {

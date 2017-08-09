@@ -42,6 +42,32 @@ const CommitMsg = ({commit}) => {
 		</div>);
 }
 
+
+const CommitRebase = ({commit, acceptCommit}) => {
+	/*
+	const onEnter = () => {
+		const query = document.querySelector(`[data-commit="${commit.commitID}"]`);
+		if (query) {
+			query.classList.add("commitHover");
+		}
+	};
+	const onLeave = () => {
+		const query = document.querySelector(`[data-commit="${commit.commitID}"]`);
+		if (query) {
+		 query.classList.remove("commitHover");
+		}
+	};
+	*/
+	return (
+		<div
+			style={{width: '100%', height: 'auto', marginBottom: 10, padding: '5px 10px', display: 'block', backgroundColor: '#eee', cursor: 'pointer'}} >
+			{commit.description}
+			<div style={{marginTop: 6}}><Button minimal onClick={acceptCommit} iconName="fork" text="Accept" /></div>
+		</div>);
+}
+
+
+
 export const StoryBookCollaborativeEditor = React.createClass({
 
 	propTypes: {
@@ -103,8 +129,8 @@ export const StoryBookCollaborativeEditor = React.createClass({
 
 
   rebaseByCommit: function(forkID) {
-    this.editor.rebaseByCommit(forkID).then(() => {
-      console.log('finished rebase!');
+    this.editor.rebaseByCommit(forkID).then(({ rebaseCommitHandler, commits }) => {
+			this.setState({ rebaseCommits: commits, rebaseCommitHandler, rebasingDoc: forkID });
     });
   },
 
@@ -132,7 +158,6 @@ export const StoryBookCollaborativeEditor = React.createClass({
 	},
 
 	updateCommits: function(commits) {
-		console.log('got new commits!', commits);
 		this.setState({ commits: commits || [] });
 	},
 
@@ -156,6 +181,8 @@ export const StoryBookCollaborativeEditor = React.createClass({
 			firebaseConfig: FirebaseConfig,
 			updateCommits: this.updateCommits,
 		};
+
+		const { rebaseCommits, rebaseCommitHandler, rebasingDoc } = this.state;
 
 		return (
 			<div className={'pt-card pt-elevation-3'} style={{ padding: '0em', margin: '0em auto 2em', maxWidth: '950px' }}>
@@ -190,6 +217,16 @@ export const StoryBookCollaborativeEditor = React.createClass({
 												</span>
 											:
 												<Button disabled className="pt-minimal" minimal  iconName="git-commit" />
+											}
+											{(fork.name === rebasingDoc)
+												?
+												(rebaseCommits.map((commit, index)=> {
+													const acceptCommit = () => {
+														return rebaseCommitHandler(index);
+													}
+													return (<CommitRebase commit={commit} acceptCommit={acceptCommit}/>);
+												}))
+												: null
 											}
 										</div>);
 		            })}

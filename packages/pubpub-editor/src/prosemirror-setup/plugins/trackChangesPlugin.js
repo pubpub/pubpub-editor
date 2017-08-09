@@ -201,6 +201,7 @@ const trackChangesPlugin = new Plugin({
                 const newOffset = { index: oldEnd, size: inverse.slice.size };
                 this.stepOffsets.push(newOffset);
 
+                /*
                 try {
                   tr = tr.step(insertstep);
                 } catch (err) {
@@ -209,8 +210,19 @@ const trackChangesPlugin = new Plugin({
                 }
                 const insertStart = tr.mapping.map(newEnd, -1);
                 const insertEnd = tr.mapping.map(newEnd, 1);
+                */
 
                 if (!isSpaceOperation) {
+
+                  try {
+                    tr = tr.step(insertstep);
+                  } catch (err) {
+                    console.log('cannot do this!', insertstep, step);
+                    console.log(err);
+                  }
+                  const insertStart = tr.mapping.map(newEnd, -1);
+                  const insertEnd = tr.mapping.map(newEnd, 1);
+
                   tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', { commitID: this.commitID }));
                 }
                 tr = tr.addMark(insertStart, insertEnd, schema.mark('diff_plus', { commitID: this.commitID }));
