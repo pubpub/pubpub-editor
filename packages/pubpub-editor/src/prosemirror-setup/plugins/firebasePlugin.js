@@ -129,7 +129,6 @@ const rebaseCommit = ({ commit, view, doc, allCommits, newSteps, changesRef, cli
     allCommitSteps.push(...compressedStepsJSON.map(compressedStepJSONToStep));
   });
 
-  console.log('commit steps', allCommitSteps);
 
   const mappedSteps = allCommitSteps.map((step) => {
     const mappedStep = step.map(docMapping);

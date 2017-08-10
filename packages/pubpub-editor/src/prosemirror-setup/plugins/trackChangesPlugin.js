@@ -47,6 +47,14 @@ const trackChangesPlugin = new Plugin({
       initialState = instance;
 
       this.storeStep = (step) => {
+        if (step.slice && step.slice.content) {
+          for (const stepContent of step.slice.content.content) {
+            const marks = stepContent.marks;
+            const diffPlusMark = schema.marks['diff_plus'];
+            const diffMinusMark = schema.marks['diff_minus'];
+            stepContent.marks = diffMinusMark.removeFromSet(diffPlusMark.removeFromSet(marks));
+          }
+        }
         this.storedSteps.push(step);
         this.sendableSteps.push(step);
       };
