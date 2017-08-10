@@ -183,11 +183,11 @@ const trackChangesPlugin = new Plugin({
 
             if (oldStart !== oldEnd) {
               const inverse = step.invert(oldState.doc);
-              tr = tr.step(inverse);
-              const slice = step.slice.content;
-              const possibleInsert = tr.mapping.map(newEnd, 1);
 
 
+              /*
+              This checks if it is a 'space operation' that prosemirror does, i.e. it will sometimes replace a space with a space and the character you just typed.
+              */
               let isSpaceOperation = false;
 
               const replacedFragment = step.slice.content;
@@ -195,6 +195,7 @@ const trackChangesPlugin = new Plugin({
               const fragmentIsText = function(fragment) {
                 return (fragment.content && fragment.content.length === 1 && fragment.content[0].isText === true);
               }
+
               if (fragmentIsText(replacedFragment) && fragmentIsText(oldFragment)) {
                 const replacedNodeText = replacedFragment.content[0].text;
                 const oldNodeText = oldFragment.content[0].text;
@@ -204,37 +205,30 @@ const trackChangesPlugin = new Plugin({
               }
 
 
+              if (isSpaceOperation) {
+                tr = tr.addMark(newStart, newEnd, schema.mark('diff_plus', { commitID: this.commitID }));
+                return;
+              }
+
+
+              tr = tr.step(inverse);
+              const slice = step.slice.content;
+              const possibleInsert = tr.mapping.map(newEnd, 1);
+
               if (step.slice.size > 0) {
                 const insertstep = replaceStep(oldState.doc, possibleInsert, possibleInsert, (step.slice.size > 0) ? step.slice : Slice.empty);
                 const newOffset = { index: oldEnd, size: inverse.slice.size };
                 this.stepOffsets.push(newOffset);
-
-                /*
                 try {
                   tr = tr.step(insertstep);
                 } catch (err) {
                   console.log('cannot do this!', insertstep, step);
                   console.log(err);
                 }
+                tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', { commitID: this.commitID }));
                 const insertStart = tr.mapping.map(newEnd, -1);
                 const insertEnd = tr.mapping.map(newEnd, 1);
-                */
-
-                if (!isSpaceOperation) {
-
-                  try {
-                    tr = tr.step(insertstep);
-                  } catch (err) {
-                    console.log('cannot do this!', insertstep, step);
-                    console.log(err);
-                  }
-                  const insertStart = tr.mapping.map(newEnd, -1);
-                  const insertEnd = tr.mapping.map(newEnd, 1);
-
-                  tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', { commitID: this.commitID }));
-                }
                 tr = tr.addMark(insertStart, insertEnd, schema.mark('diff_plus', { commitID: this.commitID }));
-
               } else {
                 const insertStart = tr.mapping.map(newEnd, -1);
                 const insertEnd = tr.mapping.map(newEnd, 1);

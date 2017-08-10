@@ -21,18 +21,33 @@ require('./utils/pubBody.scss');
 // require('../style/base.scss');
 // require('../style/markdown.scss');
 
-const CommitMsg = ({commit}) => {
+const CommitMsg = ({commit, onCommitHighlight, clearCommitHighlight}) => {
 	const onEnter = () => {
+		onCommitHighlight(commit.commitID);
+		return;
 		console.log('turning on', commit.commitID);
-		const query = document.querySelector(`[data-commit="${commit.commitID}"]`);
-		if (query) {
-			query.classList.add("commitHover");
+
+		const commitsToHighlight = document.querySelectorAll(`[data-commit="${commit.commitID}"]`);
+		if (commitsToHighlight) {
+			for (const commitHighlight of commitsToHighlight) {
+				console.log(commitHighlight);
+				if (commitHighlight.classList.contains("commitHover")) {
+					console.log('got a contains!!');
+				}
+				// commitHighlight.setAttribute("data-highlight", true);
+				//commitHighlight.classList.add("commitHover");
+			}
 		}
 	};
 	const onLeave = () => {
-		const query = document.querySelector(`[data-commit="${commit.commitID}"]`);
-		if (query) {
-		 query.classList.remove("commitHover");
+		clearCommitHighlight();
+		return;
+		console.log('turning off', commit.commitID);
+		const commitsToHighlight = document.querySelectorAll(`[data-commit="${commit.commitID}"]`);
+		if (commitsToHighlight) {
+			for (const commitHighlight of commitsToHighlight) {
+				commitHighlight.classList.remove("commitHover");
+			}
 		}
 	};
 	return (
@@ -85,6 +100,7 @@ export const StoryBookCollaborativeEditor = React.createClass({
       inFork: false,
 			forkParent: null,
 			commits: [],
+			highlightCommitID: null,
 		}
 	},
 
@@ -161,6 +177,14 @@ export const StoryBookCollaborativeEditor = React.createClass({
 		this.setState({ commits: commits || [] });
 	},
 
+	onCommitHighlight: function(commitID) {
+		this.setState({ highlightCommitID: commitID });
+	},
+
+	clearCommitHighlight: function(commitID) {
+		this.setState({ highlightCommitID: null });
+	},
+
 	render: function() {
 		const editorProps = {
 			initialContent: this.state.initialContent,
@@ -182,7 +206,14 @@ export const StoryBookCollaborativeEditor = React.createClass({
 			updateCommits: this.updateCommits,
 		};
 
-		const { rebaseCommits, rebaseCommitHandler, rebasingDoc } = this.state;
+		const { rebaseCommits, rebaseCommitHandler, rebasingDoc, highlightCommitID } = this.state;
+
+		console.log(highlightCommitID);
+		console.log(`
+			[data-commit="${highlightCommitID}"] {
+				background-color: red !important;
+			}
+		`);
 
 		return (
 			<div className={'pt-card pt-elevation-3'} style={{ padding: '0em', margin: '0em auto 2em', maxWidth: '950px' }}>
@@ -191,6 +222,15 @@ export const StoryBookCollaborativeEditor = React.createClass({
 					<div className={`pt-button`} onClick={resetFirebase}>Reset Database</div>
 
 				</div>
+
+				<style>
+
+					{highlightCommitID && `
+						[data-commit="${highlightCommitID}"] {
+							background-color: red !important;
+						}
+					`}
+				</style>
 
 				<div style={{display: 'flex', flexDirection: 'row'}}>
           <div style={{width: 200, padding: 10}}>
@@ -240,7 +280,7 @@ export const StoryBookCollaborativeEditor = React.createClass({
 								<Button onClick={this.commit} text="Commit" />
 
 								{this.state.commits.map((commit) => {
-									return (<CommitMsg commit={commit}/>);
+									return (<CommitMsg onCommitHighlight={this.onCommitHighlight} clearCommitHighlight={this.clearCommitHighlight} commit={commit}/>);
 								})}
 
 							</div>
