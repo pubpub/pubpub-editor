@@ -208,13 +208,6 @@ export const StoryBookCollaborativeEditor = React.createClass({
 
 		const { rebaseCommits, rebaseCommitHandler, rebasingDoc, highlightCommitID } = this.state;
 
-		console.log(highlightCommitID);
-		console.log(`
-			[data-commit="${highlightCommitID}"] {
-				background-color: red !important;
-			}
-		`);
-
 		return (
 			<div className={'pt-card pt-elevation-3'} style={{ padding: '0em', margin: '0em auto 2em', maxWidth: '950px' }}>
 				<div style={{ backgroundColor: '#ebf1f5', padding: '0.5em', textAlign: 'right', borderBottom: '1px solid rgba(16, 22, 26, 0.15)' }}>

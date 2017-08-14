@@ -25,9 +25,9 @@ class EmbedView extends ReactView {
 
   renderElement(domChild) {
     const node = this.node;
-    // updateParams={this.updateNodeParams} {...node.attrs}
     const nodeAttrs = node.attrs;
 
+    // if relative filenames are enabled, then use the relative file in the filemap if it exists
     if (nodeAttrs.filename) {
       const state = this.view.state;
       const relativeFilePlugin = getPlugin('relativefiles', state);
