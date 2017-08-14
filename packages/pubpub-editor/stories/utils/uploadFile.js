@@ -39,8 +39,8 @@ export function s3Upload(file, progressEvent, finishEvent, index) {
 
 	/*
 	const getPolicy = new XMLHttpRequest();
-	getPolicy.addEventListener('load', beginUpload);
-	getPolicy.open('GET', 'https://www.pubpub.org/api/uploadPolicy?contentType=' + file.type);
-	getPolicy.send();
+		getPolicy.addEventListener('load', beginUpload);
+		getPolicy.open('GET', 'https://www.pubpub.org/api/uploadPolicy?contentType=' + file.type);
+		getPolicy.send();
 	*/
 }

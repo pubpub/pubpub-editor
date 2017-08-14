@@ -4,12 +4,12 @@ import { jsonToMarkdown, markdownToJSON } from '../src/markdown';
 import { localDiscussions, localFiles, localHighlights, localPages, localPubs, localReferences, localUsers } from './sampledocs/autocompleteLocalData';
 
 import ExportButton from '../src/ExportMenu/ExportButton';
-import FirebaseConfig from './firebase/firebaseConfig';
 // import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
 // import RichEditor from '../src/editorComponents/RichEditor';
 import FullEditor from '../src/editorComponents/RichEditor';
 import RenderDocument from '../src/RenderDocument/RenderDocument';
 import { csltoBibtex } from '../src/references/csltobibtex';
+import { firebaseConfig } from './config/secrets';
 import { markdownToExport } from '../src/ExportMenu';
 import request from 'superagent';
 import resetFirebase from './firebase/reset';
@@ -144,6 +144,7 @@ export const StoryBookCollaborativeEditor = React.createClass({
   },
 
 
+	// get final doc
   rebaseByCommit: function(forkID) {
     this.editor.rebaseByCommit(forkID).then(({ rebaseCommitHandler, commits }) => {
 			this.setState({ rebaseCommits: commits, rebaseCommitHandler, rebasingDoc: forkID });
@@ -202,7 +203,7 @@ export const StoryBookCollaborativeEditor = React.createClass({
 			collaborative: this.props.collaborative,
       editorKey: this.state.editorKey,
       trackChanges: this.props.trackChanges || this.state.inFork,
-			firebaseConfig: FirebaseConfig,
+			firebaseConfig: firebaseConfig,
 			updateCommits: this.updateCommits,
 		};
 
@@ -217,7 +218,6 @@ export const StoryBookCollaborativeEditor = React.createClass({
 				</div>
 
 				<style>
-
 					{highlightCommitID && `
 						[data-commit="${highlightCommitID}"] {
 							background-color: red !important;

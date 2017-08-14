@@ -6,4 +6,4 @@ stats.json
 webpack-stats.json
 misc/*
 translations/messages
-stories/firebase/firebaseConfig
+stories/config/secrets.js

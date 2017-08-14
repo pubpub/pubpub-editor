@@ -1,6 +1,6 @@
 import basicDoc from './basicTestDoc1';
 import firebase from 'firebase';
-import firebaseConfig from './firebaseConfig';
+import { firebaseConfig } from '../config/secrets';
 
 const reset = () => {
   const firebaseApp = firebase.initializeApp(firebaseConfig, "reset");
