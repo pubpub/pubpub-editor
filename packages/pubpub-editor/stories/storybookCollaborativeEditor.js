@@ -193,7 +193,7 @@ export const StoryBookCollaborativeEditor = React.createClass({
 				</div>
 
 				<style>
-					{highlightCommitID && `
+					{highlightCommitID !== null && `
 						[data-commit="${highlightCommitID}"] {
 							background-color: red !important;
 						}
