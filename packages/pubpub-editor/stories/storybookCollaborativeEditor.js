@@ -14,6 +14,7 @@ import { markdownToExport } from '../src/ExportMenu';
 import request from 'superagent';
 import resetFirebase from './firebase/reset';
 import { s3Upload } from './utils/uploadFile';
+import update from 'react-addons-update';
 
 // requires style attributes that would normally be up to the wrapping library to require
 require('@blueprintjs/core/dist/blueprint.css');
@@ -47,7 +48,11 @@ const CommitRebase = ({ commit, acceptCommit,  onCommitHighlight, clearCommitHig
 		<div onMouseEnter={onEnter} onMouseLeave={onLeave}
 			style={{width: '100%', height: 'auto', marginBottom: 10, padding: '5px 10px', display: 'block', backgroundColor: '#eee', cursor: 'pointer'}} >
 			{commit.description}
-			<div style={{marginTop: 6}}><Button minimal onClick={acceptCommit} iconName="fork" text="Accept" /></div>
+			{(!commit.merged) ?
+				<div style={{marginTop: 6}}><Button minimal onClick={acceptCommit} iconName="fork" text="Accept" /></div>
+			:
+				<div style={{marginTop: 6}}>MERGED</div>
+			}
 		</div>);
 }
 
@@ -225,7 +230,12 @@ export const StoryBookCollaborativeEditor = React.createClass({
 												?
 												(rebaseCommits.map((commit, index)=> {
 													const acceptCommit = () => {
-														return rebaseCommitHandler(index);
+														return rebaseCommitHandler(index).then(() => {
+															const updateObj = {};
+															updateObj[index] = { merged: {$set: true} };
+															const newRebaseCommits = update(rebaseCommits, updateObj);
+															this.setState({rebaseCommits: newRebaseCommits});
+														});
 													}
 													return (<CommitRebase onCommitHighlight={this.onCommitHighlight} clearCommitHighlight={this.clearCommitHighlight} commit={commit} acceptCommit={acceptCommit}/>);
 												}))

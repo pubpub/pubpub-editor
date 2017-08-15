@@ -58,6 +58,7 @@
     "prosemirror-schema-table": "^0.22.0",
     "prosemirror-state": "^0.22.0",
     "prosemirror-view": "^0.22.0",
+    "react-addons-update": "^15.6.0",
     "react-dom": "^15.5.4",
     "react-dropzone": "^3.7.3",
     "react-resizable-box": "^1.8.1",

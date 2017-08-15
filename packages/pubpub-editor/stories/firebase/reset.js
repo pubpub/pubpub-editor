@@ -16,7 +16,7 @@ const reset = () => {
         parent: "basicDoc",
       };
       forkedDoc.currentCommit = {
-        commitID: 1
+        commitID: 0
       };
       return db.ref('basicDoc01').set(forkedDoc);
     });
