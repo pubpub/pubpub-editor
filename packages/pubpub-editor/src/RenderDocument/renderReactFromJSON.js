@@ -109,7 +109,6 @@ const renderSubLoop = function(item, meta) {
 				case 'diff_plus':
 					return <span data-commit={current.attrs.commitID} className="diff-marker added" >{previous}</span>;
 				case 'diff_minus':
-					console.log(current.attrs.commitID);
 					return <span data-commit={current.attrs.commitID} className="diff-marker removed" >{previous}</span>;
 				case 'link':
 					if (current.attrs) {

@@ -21,6 +21,10 @@ const { Step, findWrapping, Mapping } = require('prosemirror-transform');
   How to represent deleted items? Can't use widgets because of removal
 */
 
+/*
+NEED TO STORE OFFSETS IN FIREBASE!!!
+
+*/
 
 
 
@@ -139,10 +143,18 @@ const trackChangesPlugin = new Plugin({
       return;
     }
 
+    console.log(this.stepOffsets);
+
     if (transaction.mapping && transaction.mapping.maps.length > 0) {
       const sel = newState.selection;
       const pos = sel.$from;
 
+
+      /*
+        For each step in the transaction, adjust the positions of the steps
+        according to the step offsets stored. Step offsets store additions to the document
+        mainly deletions
+      */
       for (const step of transaction.steps) {
         let mappedStep = step;
         let totalOffset = 0;
@@ -233,10 +245,10 @@ const trackChangesPlugin = new Plugin({
                 const insertStart = tr.mapping.map(newEnd, -1);
                 const insertEnd = tr.mapping.map(newEnd, 1);
                 tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', { commitID: this.commitID }));
+                const newOffset = { index: oldEnd, size: inverse.slice.size };
+                this.stepOffsets.push(newOffset);
                 // tr = tr.addMark(insertStart, insertEnd, schema.mark('diff_plus', { commitID: this.commitID }));
               }
-
-
               /*
               let i;
               let lastRange = null;
@@ -315,6 +327,7 @@ const trackChangesPlugin = new Plugin({
           view.dispatch(tr);
           return true;
         }
+        // is this step size always 1??
         const newOffset = { index: beforeSel.from, size: 1 };
         this.storeStep(deleteStep);
         this.stepOffsets.push(newOffset);

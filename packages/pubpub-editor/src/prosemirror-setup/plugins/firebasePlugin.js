@@ -137,7 +137,6 @@ const rebaseCommit = ({ commit, view, doc, allCommits, newSteps, changesRef, cli
     allCommitSteps.push(...compressedStepsJSON.map(compressedStepJSONToStep));
   });
 
-
   const mappedSteps = allCommitSteps.map((step) => {
     const mappedStep = step.map(docMapping);
     tr = tr.step(mappedStep);
@@ -513,6 +512,8 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
             const rebaseCommitHandler = (index) => {
               const singleCommit = commits[index];
               const prevCommits = commits.slice(0, index);
+              console.log(prevCommits);
+              console.log(singleCommit);
               return getSteps({ view: editorView, changesRef: editorChangesRef, key: forkedKey }).then((newSteps) => {
                 rebaseCommit({ commit: singleCommit, allCommits: prevCommits, view: editorView, newSteps, changesRef, clientID: selfClientID, latestKey, selfChanges });
                 return setFirebaseValue({ ref: forkRef, child: `commits/${index}/merged`, data: true });
