@@ -319,7 +319,7 @@ const trackChangesPlugin = new Plugin({
         this.storeStep(deleteStep);
         this.stepOffsets.push(newOffset);
 
-        tr = tr.addMark(beforeSel.from, sel.from, schema.mark('diff_minus', {}));
+        tr = tr.addMark(beforeSel.from, sel.from, schema.mark('diff_minus', { commitID: this.commitID }));
         tr = tr.setSelection(beforeSel);
         tr.setMeta('backdelete', true);
         tr.setMeta('trackAddition', true);

@@ -21,34 +21,12 @@ require('./utils/pubBody.scss');
 // require('../style/base.scss');
 // require('../style/markdown.scss');
 
-const CommitMsg = ({commit, onCommitHighlight, clearCommitHighlight}) => {
+const CommitMsg = ({ commit, onCommitHighlight, clearCommitHighlight }) => {
 	const onEnter = () => {
 		onCommitHighlight(commit.commitID);
-		return;
-		console.log('turning on', commit.commitID);
-
-		const commitsToHighlight = document.querySelectorAll(`[data-commit="${commit.commitID}"]`);
-		if (commitsToHighlight) {
-			for (const commitHighlight of commitsToHighlight) {
-				console.log(commitHighlight);
-				if (commitHighlight.classList.contains("commitHover")) {
-					console.log('got a contains!!');
-				}
-				// commitHighlight.setAttribute("data-highlight", true);
-				//commitHighlight.classList.add("commitHover");
-			}
-		}
 	};
 	const onLeave = () => {
 		clearCommitHighlight();
-		return;
-		console.log('turning off', commit.commitID);
-		const commitsToHighlight = document.querySelectorAll(`[data-commit="${commit.commitID}"]`);
-		if (commitsToHighlight) {
-			for (const commitHighlight of commitsToHighlight) {
-				commitHighlight.classList.remove("commitHover");
-			}
-		}
 	};
 	return (
 		<div onMouseEnter={onEnter} onMouseLeave={onLeave}
@@ -58,23 +36,15 @@ const CommitMsg = ({commit, onCommitHighlight, clearCommitHighlight}) => {
 }
 
 
-const CommitRebase = ({commit, acceptCommit}) => {
-	/*
+const CommitRebase = ({ commit, acceptCommit,  onCommitHighlight, clearCommitHighlight }) => {
 	const onEnter = () => {
-		const query = document.querySelector(`[data-commit="${commit.commitID}"]`);
-		if (query) {
-			query.classList.add("commitHover");
-		}
+		onCommitHighlight(commit.commitID);
 	};
 	const onLeave = () => {
-		const query = document.querySelector(`[data-commit="${commit.commitID}"]`);
-		if (query) {
-		 query.classList.remove("commitHover");
-		}
+		clearCommitHighlight();
 	};
-	*/
 	return (
-		<div
+		<div onMouseEnter={onEnter} onMouseLeave={onLeave}
 			style={{width: '100%', height: 'auto', marginBottom: 10, padding: '5px 10px', display: 'block', backgroundColor: '#eee', cursor: 'pointer'}} >
 			{commit.description}
 			<div style={{marginTop: 6}}><Button minimal onClick={acceptCommit} iconName="fork" text="Accept" /></div>
@@ -146,8 +116,8 @@ export const StoryBookCollaborativeEditor = React.createClass({
 
 	// get final doc
   rebaseByCommit: function(forkID) {
-    this.editor.rebaseByCommit(forkID).then(({ rebaseCommitHandler, commits }) => {
-			this.setState({ rebaseCommits: commits, rebaseCommitHandler, rebasingDoc: forkID });
+    this.editor.rebaseByCommit(forkID).then(({ rebaseCommitHandler, commits, checkpointDoc }) => {
+			this.setState({ rebaseCommits: commits, rebaseCommitHandler, rebasingDoc: forkID, comparisonDoc: checkpointDoc });
     });
   },
 
@@ -207,7 +177,7 @@ export const StoryBookCollaborativeEditor = React.createClass({
 			updateCommits: this.updateCommits,
 		};
 
-		const { rebaseCommits, rebaseCommitHandler, rebasingDoc, highlightCommitID } = this.state;
+		const { rebaseCommits, rebaseCommitHandler, rebasingDoc, highlightCommitID, comparisonDoc } = this.state;
 
 		return (
 			<div className={'pt-card pt-elevation-3'} style={{ padding: '0em', margin: '0em auto 2em', maxWidth: '950px' }}>
@@ -257,7 +227,7 @@ export const StoryBookCollaborativeEditor = React.createClass({
 													const acceptCommit = () => {
 														return rebaseCommitHandler(index);
 													}
-													return (<CommitRebase commit={commit} acceptCommit={acceptCommit}/>);
+													return (<CommitRebase onCommitHighlight={this.onCommitHighlight} clearCommitHighlight={this.clearCommitHighlight} commit={commit} acceptCommit={acceptCommit}/>);
 												}))
 												: null
 											}
@@ -284,6 +254,10 @@ export const StoryBookCollaborativeEditor = React.createClass({
 				<div className={(!this.state.inFork) ? 'main-body' : 'fork-body'} style={{ padding: '1em 4em', minHeight: '400px' }}>
           <FullEditor ref={(editor) => { this.editor = editor; }} {...editorProps} mode="rich" />
 				</div>
+
+				{(comparisonDoc) ?
+					<RenderDocument allReferences={[]} allFiles={[]} json={comparisonDoc} />
+				: null }
 			</div>
 
 

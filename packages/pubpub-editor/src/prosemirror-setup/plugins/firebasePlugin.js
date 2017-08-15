@@ -14,6 +14,17 @@ const { collab, sendableSteps, receiveTransaction } = require('prosemirror-colla
 const { compressStepsLossy, compressStateJSON, uncompressStateJSON, compressSelectionJSON, uncompressSelectionJSON, compressStepJSON, uncompressStepJSON } = require('prosemirror-compress')
 const TIMESTAMP = { '.sv': 'timestamp' }
 
+/*
+
+  How to seperate helper functions from scope?
+  Ideally don't want to pass in editorview, state and refs every time.
+  could this be refactored into a class with functions?
+
+  Need one manager that takes a firebase ref
+
+*/
+
+
 
 const { DecorationSet, Decoration } = require('prosemirror-view');
 
@@ -25,9 +36,6 @@ function stringToColor(string, alpha = 1) {
 // Checkpoint a document every 100 steps
 const SAVE_EVERY_N_STEPS = 100;
 
-
-// how to implement forking:
-// - create a new editor that forks & duplicates?
 
 
 // healDatabase - In case a step corrupts the document (happens surpsiginly often), apply each step individually to find errors
@@ -411,11 +419,10 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
   		loadDocumentAndListen(_editorView);
   		return {
   			update: (newView, prevState) => {
-  				this.editorView = newView;
+  				editorView = newView;
   			},
   			destroy: () => {
           editorView = null;
-  				this.editorView = null;
   			}
   		}
   	},
@@ -458,12 +465,10 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
           m: {},
           t: TIMESTAMP,
         };
-        editorRef.child('rebaseSteps').push().set(storedSteps);
-        const lastCommit =  editorRef.child('currentCommit/steps').push().set(storedSteps);
+        editorRef.child('currentCommit/steps').push().set(storedSteps);
       },
 
-      // how to associate data with steps? Keep an id
-
+      // Take all steps in the current commit and move them
       commit(description) {
         const editorRef = firebaseDb.ref(editorKey);
 
@@ -475,9 +480,12 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
             steps: snapshot.val().steps,
             commitID: snapshot.val().commitID,
             merged: false,
+            commitKey: latestKey,
           };
           return editorRef.child('commits').push().set(commit).then(() => {
             editorRef.child('currentCommit').set({commitID: Math.round(Math.random() * 100000)});
+            const { d } = compressStateJSON(editorView.state.toJSON());
+            checkpointRef.set({ d, k: latestKey, t: TIMESTAMP });
           });
         });
       },
@@ -487,8 +495,13 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
         const forkRef = firebaseDb.ref(forkID);
         const editorChangesRef = firebaseDb.ref(editorKey).child("changes");
 
-        return forkRef.child("forkData").once('value').then((snapshot) => {
-          const { merged, parent, forkedKey } = snapshot.val();
+        return Promise.all([
+          getFirebaseValue({ref: forkRef, child: "forkData"}),
+          getFirebaseValue({ref: forkRef, child: "checkpoint"}),
+        ]).then(([forkData, checkpoint]) => {
+          const { merged, parent, forkedKey } = forkData;
+          const { d } = checkpoint;
+          const checkpointDoc = uncompressStateJSON({ d }).doc;
 
           return getFirebaseValue({ref: forkRef, child: "commits"})
           .then((commitVals) => {
@@ -503,7 +516,7 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
               });
             }
 
-            return { rebaseCommitHandler, commits };
+            return { rebaseCommitHandler, commits, checkpointDoc };
           })
         });
       },
