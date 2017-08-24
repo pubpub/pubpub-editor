@@ -44,7 +44,9 @@ const healDatabase = ({ changesRef, steps, editor, placeholderClientId }) => {
   const stepsToDelete = [];
   for (const step of steps) {
     try {
-      editor.dispatch(receiveTransaction(editor.state, step.steps, [placeholderClientId]));
+      const trans = receiveTransaction(editor.state, step.steps, [placeholderClientId]);
+      trans.setMeta('receiveDoc', true);
+      editor.dispatch(trans);
     } catch (err) {
       stepsToDelete.push(step.key);
     }
@@ -328,6 +330,7 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
                 trans.setMeta('receiveDoc', true);
                 editor.dispatch(trans);
               } catch (err) {
+                console.log('healing database!', err);
                 healDatabase({changesRef, editor, steps: stepsWithKeys, placeholderClientId});
               }
 
@@ -359,19 +362,20 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
               'child_added',
               function (snapshot) {
                 latestKey = Number(snapshot.key)
-                const { s: compressedStepsJSON, c: clientID, m: meta } = snapshot.val()
+                const { s: compressedStepsJSON, c: clientID, m: meta } = snapshot.val();
                 const steps = (
                   clientID === selfClientID ?
                     selfChanges[latestKey]
                   :
-                    compressedStepsJSON.map(compressedStepJSONToStep) )
-                const stepClientIDs = new Array(steps.length).fill(clientID)
+                    compressedStepsJSON.map(compressedStepJSONToStep) );
+                const stepClientIDs = new Array(steps.length).fill(clientID);
                 const trans = receiveTransaction(editor.state, steps, stepClientIDs);
                 if (meta) {
                   for (let metaKey in meta) {
                     trans.setMeta(metaKey, meta[metaKey]);
                   }
                 }
+                trans.setMeta('receiveDoc', true);
                 editor.dispatch(trans);
                 delete selfChanges[latestKey]
               } )
@@ -454,7 +458,7 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
       },
 
 
-      storeRebaseSteps(steps) {
+      storeRebaseSteps({steps, stepOffsets}) {
         const editorRef = firebaseDb.ref(editorKey);
         const storedSteps =  {
           s: compressStepsLossy(steps).map(
@@ -465,11 +469,24 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
           t: TIMESTAMP,
         };
         editorRef.child('currentCommit/steps').push().set(storedSteps);
+        if (stepOffsets) {
+          editorRef.child('stepOffsets').push().set(stepOffsets);
+        }
+
       },
 
-      // Take all steps in the current commit and move them
-      commit(description) {
+      // Take all steps in the current commit and move them into a good one
+      commit({ description, uuid, steps }) {
         const editorRef = firebaseDb.ref(editorKey);
+
+        const commitSteps =  {
+          s: compressStepsLossy(steps).map(
+            function (step) {
+              return compressStepJSON(step.toJSON()) } ),
+          c: selfClientID,
+          m: {},
+          t: TIMESTAMP,
+        };
 
         return editorRef.child('currentCommit').once('value').then((snapshot) => {
           const currentCommit = snapshot.val();
@@ -477,8 +494,8 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
           const commit = {
             description,
             clientID: '',
-            steps: currentCommit.steps,
-            commitID: commitID,
+            steps: commitSteps,
+            uuid: uuid,
             merged: false,
             commitKey: latestKey,
           };
@@ -598,9 +615,9 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
         const sendable = sendableSteps(newState);
 
         const updateRebasedSteps = () => {
-          const rebasedSteps = trackPlugin.getSendableSteps();
-          if (rebasedSteps) {
-            this.props.storeRebaseSteps(rebasedSteps);
+          const sendableTracks = trackPlugin.getSendableSteps();
+          if (sendableTracks) {
+            this.props.storeRebaseSteps(sendableTracks);
           }
         }
 

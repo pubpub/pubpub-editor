@@ -10,7 +10,7 @@ class RichEditor extends BaseEditor {
     const {pubpubSetup} = require('../setup');
     const {markdownParser} = require("../../markdown");
 
-    let plugins = pubpubSetup({ schema }).concat(CitationsPlugin).concat(SelectPlugin).concat(RelativeFilesPlugin).concat(MentionsPlugin).concat(FootnotesPlugin);
+    let plugins = pubpubSetup({ schema }).concat(CitationsPlugin).concat(SelectPlugin).concat(RelativeFilesPlugin).concat(MentionsPlugin);
 
     if (config.trackChanges) {
       plugins = plugins.concat(TrackPlugin);

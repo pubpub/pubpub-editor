@@ -1,13 +1,17 @@
-import { AddMarkStep, ReplaceAroundStep, canJoin, insertPoint, joinPoint, replaceStep } from 'prosemirror-transform';
+import { } from './commits';
+
+import { AddMarkStep, ReplaceAroundStep, ReplaceStep, canJoin, insertPoint, joinPoint, replaceStep } from 'prosemirror-transform';
 import { Decoration, DecorationSet } from "prosemirror-view";
 import { Fragment, Node, NodeRange, Slice } from 'prosemirror-model';
+import { getPlugin, keys } from './pluginKeys';
 
 import { Plugin } from 'prosemirror-state';
-import { keys } from './pluginKeys';
 import { schema } from '../schema';
 
 const { Selection } = require('prosemirror-state');
 const { Step, findWrapping, Mapping } = require('prosemirror-transform');
+
+
 
 /*
 - How to store in a firebase account?
@@ -27,8 +31,13 @@ NEED TO STORE OFFSETS IN FIREBASE!!!
 */
 
 
+/*
+Sketch of one channel merge:
+  - Gather all steps
+  -
 
-let initialState = null;
+*/
+
 
 // need to store an array of steps that recreate the original document
 // need to store mappings that remove additions
@@ -38,19 +47,46 @@ let initialState = null;
 // otherwise, keep grouping until it happens
 
 
+// keep a mapping of all steps/domains?
+function isAdjacentToLastStep(step, prevMap) {
+  if (!prevMap) return false
+  let firstMap = step.getMap(), adjacent = false
+  if (!firstMap) return true
+  firstMap.forEach((start, end) => {
+    prevMap.forEach((_start, _end, rStart, rEnd) => {
+      if (start <= rEnd && end >= rStart) adjacent = true
+    })
+    return false
+  })
+  return adjacent
+}
+
+
+// commitUUID
+// UUIDs enable easy tracking of commits
+/*
+Keeps track of local stages & commits?
+
+Keep track of collaborated commits to merge steps between?
+Needs to keep a true doc of all steps? To make sure that this doc is consistent and allow for inversions and stuff?
+*/
+
+
+// make a class with functions?
 const trackChangesPlugin = new Plugin({
   state: {
     init(config, instance) {
       this.storedSteps = [];
       this.sendableSteps = [];
-
       this.stepOffsets = [];
-      this.unconfirmedSteps = [];
+      this.sendableOffsets = [];
+
       this.transactions = {};
-      this.unconfirmedMap = new Mapping();
-      initialState = instance;
+
+      this.tracker = new AdjacentTracker(this);
 
       this.storeStep = (step) => {
+        this.tracker.add(step);
         if (step.slice && step.slice.content) {
           for (const stepContent of step.slice.content.content) {
             const marks = stepContent.marks;
@@ -63,11 +99,21 @@ const trackChangesPlugin = new Plugin({
         this.sendableSteps.push(step);
       };
 
+
+      this.storeOffset = (stepOffset) => {
+        this.stepOffsets.push(stepOffset);
+        this.sendableOffsets.push(stepOffset);
+      };
+
       this.getSendableSteps = () => {
-        const sendable = this.sendableSteps;
+        const steps = this.sendableSteps;
+        const offsets = this.sendableOffsets;
+
         this.sendableSteps = [];
-        if (sendable.length > 0) {
-          return sendable;
+        this.sendableOffsets = [];
+
+        if (steps.length > 0 || offsets.length > 0) {
+          return { steps, offsets };
         }
         return null;
       };
@@ -83,54 +129,7 @@ const trackChangesPlugin = new Plugin({
   },
 
 
-  /*
-  function isAdjacentToLastStep(transform, prevMap, done) {
-    if (!prevMap) return false
-    let firstMap = transform.mapping.maps[0], adjacent = false
-    if (!firstMap) return true
-    firstMap.forEach((start, end) => {
-      done.items.forEach(item => {
-        if (item.step) {
-          prevMap.forEach((_start, _end, rStart, rEnd) => {
-            if (start <= rEnd && end >= rStart) axdjacent = true
-          })
-          return false
-        } else {
-          start = item.map.invert().map(start, -1)
-          end = item.map.invert().map(end, 1)
-        }
-      }, done.items.length, 0)
-    })
-    return adjacent
-  }
-  */
 
-  // adjacency commits?
-  // don't worry
-
-
-  addStep: function(step) {
-    const unconfirmedMap = this.unconfirmedMap;
-    if (unconfirmedMap.maps.length === 0) {
-      unconfirmedMap.appendMap(step.getMap());
-    } else {
-      // how to check adjacency in a map?
-      let adjacent = false;
-      firstMap.forEach((start, end) => {
-        done.items.forEach(item => {
-          if (item.step) {
-            prevMap.forEach((_start, _end, rStart, rEnd) => {
-              if (start <= rEnd && end >= rStart) adjacent = true
-            })
-            return false
-          } else {
-            start = item.map.invert().map(start, -1)
-            end = item.map.invert().map(end, 1)
-          }
-        }, done.items.length, 0)
-      })
-    }
-  },
 
   appendTransaction: function (transactions, oldState, newState) {
     const firstTransaction = transactions[0];
@@ -139,11 +138,9 @@ const trackChangesPlugin = new Plugin({
     }
     let transaction = firstTransaction;
 
-    if (transaction.getMeta("trackAddition") || transaction.getMeta("backdelete")  || transaction.getMeta('collab$') || transaction.getMeta('history$')) {
+    if (transaction.getMeta("trackAddition") || transaction.getMeta("backdelete") || transaction.getMeta('history$') || transaction.getMeta('collab$')) {
       return;
     }
-
-    console.log(this.stepOffsets);
 
     if (transaction.mapping && transaction.mapping.maps.length > 0) {
       const sel = newState.selection;
@@ -261,15 +258,18 @@ const trackChangesPlugin = new Plugin({
 
               tr.setMeta("backdelete", true);
               tr.setMeta("trackAddition", true);
+            //  transaction.setMeta('appendedTransaction', true);
+
             } else {
               tr = tr.addMark(newStart, newEnd, schema.mark('diff_plus', { commitID: this.commitID }));
               tr.setMeta("trackAddition", true);
+            //  transaction.setMeta('appendedTransaction', true);
+
             }
 
 
           });
         }
-
 
         return tr;
       }
@@ -295,15 +295,6 @@ const trackChangesPlugin = new Plugin({
     },
     updateCommitID: function(commitID) {
       this.commitID = commitID;
-    },
-    resetView: function(view) {
-      view.updateState(initialState);
-      let tr = view.state.tr;
-      for (const step of this.storedSteps) {
-        tr = tr.step(step);
-      }
-      tr.setMeta('backdelete', true);
-      view.dispatch(tr);
     },
     getTrackedSteps: function() {
       return this.storedSteps;
@@ -336,6 +327,7 @@ const trackChangesPlugin = new Plugin({
         tr = tr.setSelection(beforeSel);
         tr.setMeta('backdelete', true);
         tr.setMeta('trackAddition', true);
+        //tr.setMeta('appendedTransaction', true);
 
         view.dispatch(tr);
 

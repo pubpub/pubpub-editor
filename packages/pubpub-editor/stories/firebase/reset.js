@@ -8,7 +8,9 @@ const reset = () => {
   // const ref = db.ref('/');
 
   return db.ref().remove().then(() => {
-    return db.ref('basicDoc').set(basicDoc).then(() => {
+    return db.ref().set(basicDoc);
+
+    /*.then(() => {
       const forkedDoc = basicDoc;
       forkedDoc.forkData = {
         forkedKey: 231,
@@ -20,6 +22,7 @@ const reset = () => {
       };
       return db.ref('basicDoc01').set(forkedDoc);
     });
+    */
   });
 }
 

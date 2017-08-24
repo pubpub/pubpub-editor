@@ -19,7 +19,6 @@ class BaseEditor {
 		const { buildMenuItems } = require('../menu-config');
 		const { EditorState } = require('prosemirror-state');
 		const { EditorView } = require('prosemirror-view');
-		// const collabEditing = require('prosemirror-collab').collab;
 
 		const menu = buildMenuItems(pubSchema);
 		// TO-DO: USE UNIQUE ID FOR USER AND VERSION NUMBER
