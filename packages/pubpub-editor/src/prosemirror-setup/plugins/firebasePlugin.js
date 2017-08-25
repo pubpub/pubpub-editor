@@ -476,7 +476,7 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
       },
 
       // Take all steps in the current commit and move them into a good one
-      commit({ description, uuid, steps }) {
+      commit({ description, uuid, steps, start, end }) {
         const editorRef = firebaseDb.ref(editorKey);
 
         const commitSteps =  {
@@ -498,6 +498,8 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
             uuid: uuid,
             merged: false,
             commitKey: latestKey,
+            start,
+            end
           };
           const newCommitID = commitID + 1;
           return editorRef.child(`commits/${commitID}`).set(commit).then(() => {

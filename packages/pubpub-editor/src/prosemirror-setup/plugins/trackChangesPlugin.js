@@ -1,10 +1,9 @@
-import { } from './commits';
-
 import { AddMarkStep, ReplaceAroundStep, ReplaceStep, canJoin, insertPoint, joinPoint, replaceStep } from 'prosemirror-transform';
 import { Decoration, DecorationSet } from "prosemirror-view";
 import { Fragment, Node, NodeRange, Slice } from 'prosemirror-model';
 import { getPlugin, keys } from './pluginKeys';
 
+import { CommitTracker } from './commits';
 import { Plugin } from 'prosemirror-state';
 import { schema } from '../schema';
 
@@ -83,7 +82,7 @@ const trackChangesPlugin = new Plugin({
 
       this.transactions = {};
 
-      this.tracker = new AdjacentTracker(this);
+      this.tracker = new CommitTracker(this);
 
       this.storeStep = (step) => {
         this.tracker.add(step);
@@ -176,7 +175,7 @@ const trackChangesPlugin = new Plugin({
           const map = step.getMap();
 
           if (step instanceof AddMarkStep || step instanceof ReplaceAroundStep) {
-            tr = tr.addMark(step.from, step.to, schema.mark('diff_plus', { commitID: this.commitID }));
+            tr = tr.addMark(step.from, step.to, schema.mark('diff_plus', { commitID: this.tracker.uuid }));
             tr.setMeta("trackAddition", true);
             continue;
           }
@@ -215,7 +214,7 @@ const trackChangesPlugin = new Plugin({
 
 
               if (isSpaceOperation) {
-                tr = tr.addMark(newStart, newEnd, schema.mark('diff_plus', { commitID: this.commitID }));
+                tr = tr.addMark(newStart, newEnd, schema.mark('diff_plus', { commitID: this.tracker.uuid  }));
                 return;
               }
 
@@ -234,14 +233,14 @@ const trackChangesPlugin = new Plugin({
                   console.log('cannot do this!', insertstep, step);
                   console.log(err);
                 }
-                tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', { commitID: this.commitID }));
+                tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', { commitID: this.tracker.uuid  }));
                 const insertStart = tr.mapping.map(newEnd, -1);
                 const insertEnd = tr.mapping.map(newEnd, 1);
-                tr = tr.addMark(insertStart, insertEnd, schema.mark('diff_plus', { commitID: this.commitID }));
+                tr = tr.addMark(insertStart, insertEnd, schema.mark('diff_plus', { commitID: this.tracker.uuid  }));
               } else {
                 const insertStart = tr.mapping.map(newEnd, -1);
                 const insertEnd = tr.mapping.map(newEnd, 1);
-                tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', { commitID: this.commitID }));
+                tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', { commitID: this.tracker.uuid  }));
                 const newOffset = { index: oldEnd, size: inverse.slice.size };
                 this.stepOffsets.push(newOffset);
                 // tr = tr.addMark(insertStart, insertEnd, schema.mark('diff_plus', { commitID: this.commitID }));
@@ -261,7 +260,7 @@ const trackChangesPlugin = new Plugin({
             //  transaction.setMeta('appendedTransaction', true);
 
             } else {
-              tr = tr.addMark(newStart, newEnd, schema.mark('diff_plus', { commitID: this.commitID }));
+              tr = tr.addMark(newStart, newEnd, schema.mark('diff_plus', { commitID: this.tracker.uuid  }));
               tr.setMeta("trackAddition", true);
             //  transaction.setMeta('appendedTransaction', true);
 
@@ -323,7 +322,7 @@ const trackChangesPlugin = new Plugin({
         this.storeStep(deleteStep);
         this.stepOffsets.push(newOffset);
 
-        tr = tr.addMark(beforeSel.from, sel.from, schema.mark('diff_minus', { commitID: this.commitID }));
+        tr = tr.addMark(beforeSel.from, sel.from, schema.mark('diff_minus', { commitID: this.tracker.uuid }));
         tr = tr.setSelection(beforeSel);
         tr.setMeta('backdelete', true);
         tr.setMeta('trackAddition', true);

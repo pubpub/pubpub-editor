@@ -24,7 +24,7 @@ require('./utils/pubBody.scss');
 
 const CommitMsg = ({ commit, onCommitHighlight, clearCommitHighlight }) => {
 	const onEnter = () => {
-		onCommitHighlight(commit.commitID);
+		onCommitHighlight(commit.uuid);
 	};
 	const onLeave = () => {
 		clearCommitHighlight();
@@ -39,7 +39,7 @@ const CommitMsg = ({ commit, onCommitHighlight, clearCommitHighlight }) => {
 
 const CommitRebase = ({ commit, acceptCommit,  onCommitHighlight, clearCommitHighlight }) => {
 	const onEnter = () => {
-		onCommitHighlight(commit.commitID);
+		onCommitHighlight(commit.uuid);
 	};
 	const onLeave = () => {
 		clearCommitHighlight();

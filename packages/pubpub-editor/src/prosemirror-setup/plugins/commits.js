@@ -79,6 +79,8 @@ class Commit {
 
   add(step) {
 
+    const stepMap = step.getMap();
+
     if(this.start === null) {
       stepMap.forEach((_start, _end, rStart, rEnd) => {
         this.start = rStart;
@@ -87,7 +89,6 @@ class Commit {
       return true;
     }
 
-    const stepMap = step.getMap();
     this.start = stepMap.map(this.start);
     this.end = stepMap.map(this.end);
 
@@ -121,13 +122,18 @@ class CommitTracker {
     this.commit = null;
   }
 
+  get uuid() {
+    return this.commit.uuid;
+  }
+
   reset = (step) => {
     const editorState = this.plugin.spec.editorView.state;
     const firebasePlugin = getPlugin('firebase', editorState);
-    if (commit) {
-      let mergedStep = mergeSteps(this.commit.steps);
-      const description = (mergedStep) ? describeStep(mergedStep) : 'test';
-      firebasePlugin.props.commit(description);
+    if (this.commit) {
+      const mergedStep = mergeSteps(this.commit.steps);
+      const description = (mergedStep) ? describeStep(mergedStep) : 'No Description';
+      const { steps, uuid, start, end } = this.commit;
+      firebasePlugin.props.commit({ description, steps, uuid, start, end });
     }
 
     this.commit = new Commit(step);
@@ -141,6 +147,7 @@ class CommitTracker {
     if (!adjacent) {
       this.reset(step);
     }
+    return adjacent;
   }
 }
 
