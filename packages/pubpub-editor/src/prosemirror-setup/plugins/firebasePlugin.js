@@ -133,8 +133,10 @@ const rebaseCommit = ({ commit, view, doc, allCommits, newSteps, changesRef, cli
 
 
   const allCommitSteps = [];
+  console.log('got commit steps', commitSteps);
   Object.values(commitSteps).map((commitStep) => {
 
+    console.log('Got commit step1', commitStep);
     const compressedStepsJSON = commitStep.s;
     allCommitSteps.push(...compressedStepsJSON.map(compressedStepJSONToStep));
   });
@@ -487,14 +489,13 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
           m: {},
           t: TIMESTAMP,
         };
-
         return editorRef.child('currentCommit').once('value').then((snapshot) => {
           const currentCommit = snapshot.val();
           const commitID = currentCommit.commitID;
           const commit = {
             description,
             clientID: '',
-            steps: commitSteps,
+            steps: [commitSteps],
             uuid: uuid,
             merged: false,
             commitKey: latestKey,

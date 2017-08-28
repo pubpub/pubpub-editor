@@ -26,6 +26,8 @@ const mergeSteps = (steps) => {
       mergedStep = mergedStep.merge(mergingStep);
     }
   }
+  console.log('merging steps', steps, mergedStep);
+
   return mergedStep;
 }
 
@@ -86,6 +88,7 @@ class Commit {
         this.start = rStart;
         this.end = rEnd;
       });
+      this.steps.push(step);
       return true;
     }
 
@@ -144,6 +147,8 @@ class CommitTracker {
       this.commit = new Commit();
     }
     const adjacent = this.commit.add(step);
+    console.log('storing step!', step, adjacent);
+
     if (!adjacent) {
       this.reset(step);
     }

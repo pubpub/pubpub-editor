@@ -312,6 +312,7 @@ const trackChangesPlugin = new Plugin({
         const deleteStep = replaceStep(tr.doc, beforeSel.from, sel.from, Slice.empty);
         if (hasDiff) {
           // need to actually delete it but then avoid random deletions
+          this.storeStep(deleteStep);
           tr.step(deleteStep);
           tr.setMeta('backdelete', true);
           view.dispatch(tr);
