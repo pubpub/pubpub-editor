@@ -7,7 +7,7 @@ import ExportButton from '../src/ExportMenu/ExportButton';
 // import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
 // import RichEditor from '../src/editorComponents/RichEditor';
 import FullEditor from '../src/editorComponents/RichEditor';
-import RenderDocument from '../src/RenderDocument/RenderDocument';
+import RenderDocumentRebase from '../src/RenderDocument/RenderDocumentRebase';
 import { csltoBibtex } from '../src/references/csltobibtex';
 import { firebaseConfig } from './config/secrets';
 import { markdownToExport } from '../src/ExportMenu';
@@ -47,6 +47,25 @@ const CommitRebase = ({ commit, acceptCommit,  onCommitHighlight, clearCommitHig
 	return (
 		<div onMouseEnter={onEnter} onMouseLeave={onLeave}
 			style={{width: '100%', height: 'auto', marginBottom: 10, padding: '5px 10px', display: 'block', backgroundColor: '#eee', cursor: 'pointer'}} >
+			{commit.description}
+			{(!commit.merged) ?
+				<div style={{marginTop: 6}}><Button minimal onClick={acceptCommit} iconName="fork" text="Accept" /></div>
+			:
+				<div style={{marginTop: 6}}>MERGED</div>
+			}
+		</div>);
+}
+
+const CommitHighlightRebase = ({ commit, acceptCommit }) => {
+	const onEnter = () => {
+		onCommitHighlight(commit.uuid);
+	};
+	const onLeave = () => {
+		clearCommitHighlight();
+	};
+	return (
+		<div onMouseEnter={onEnter} onMouseLeave={onLeave}
+			style={{width: '150px', height: 'auto', marginBottom: 10, padding: '5px 10px', display: 'block', backgroundColor: '#eee', cursor: 'pointer'}} >
 			{commit.description}
 			{(!commit.merged) ?
 				<div style={{marginTop: 6}}><Button minimal onClick={acceptCommit} iconName="fork" text="Accept" /></div>
@@ -161,6 +180,40 @@ export const StoryBookCollaborativeEditor = React.createClass({
 		this.setState({ highlightCommitID: null });
 	},
 
+	clickDoc: function(evt) {
+		console.log('clicked doc', evt.target);
+		const target = evt.target;
+		let parent = target;
+		let commitUUID = null;
+		while ((parent = parent.parentNode)) {
+			if (parent && parent.getAttribute('data-commit')) {
+				commitUUID = parent.getAttribute('data-commit');
+				break;
+			}
+		}
+
+		const boundingRect = this.rebaseContainer.getBoundingClientRect();
+
+		if (commitUUID) {
+			this.setState({ commitUUID, commitX: evt.clientX - boundingRect.left, commitY: evt.clientY - boundingRect.top });
+		}
+	},
+
+	acceptCommit: function(index) {
+
+		console.log('accepting commit with index ', index);
+
+		return this.state.rebaseCommitHandler(index).then(() => {
+			const { rebaseCommits } = this.state;
+			const updateObj = {};
+
+			updateObj[index] = { merged: {$set: true} };
+			const newRebaseCommits = update(rebaseCommits, updateObj);
+			this.setState({rebaseCommits: newRebaseCommits});
+		});
+
+	},
+
 	render: function() {
 		const editorProps = {
 			initialContent: this.state.initialContent,
@@ -182,7 +235,7 @@ export const StoryBookCollaborativeEditor = React.createClass({
 			updateCommits: this.updateCommits,
 		};
 
-		const { rebaseCommits, rebaseCommitHandler, rebasingDoc, highlightCommitID, comparisonDoc } = this.state;
+		const { rebaseCommits, rebaseCommitHandler, rebasingDoc, comparisonDoc, highlightCommitID } = this.state;
 
 		return (
 			<div className={'pt-card pt-elevation-3'} style={{ padding: '0em', margin: '0em auto 2em', maxWidth: '950px' }}>
@@ -226,21 +279,6 @@ export const StoryBookCollaborativeEditor = React.createClass({
 											:
 												<Button disabled className="pt-minimal" minimal  iconName="git-commit" />
 											}
-											{(fork.name === rebasingDoc)
-												?
-												(rebaseCommits.map((commit, index)=> {
-													const acceptCommit = () => {
-														return rebaseCommitHandler(index).then(() => {
-															const updateObj = {};
-															updateObj[index] = { merged: {$set: true} };
-															const newRebaseCommits = update(rebaseCommits, updateObj);
-															this.setState({rebaseCommits: newRebaseCommits});
-														});
-													}
-													return (<CommitRebase onCommitHighlight={this.onCommitHighlight} clearCommitHighlight={this.clearCommitHighlight} commit={commit} acceptCommit={acceptCommit}/>);
-												}))
-												: null
-											}
 										</div>);
 		            })}
 							</div>
@@ -266,8 +304,9 @@ export const StoryBookCollaborativeEditor = React.createClass({
 				</div>
 
 				{(comparisonDoc) ?
-					<RenderDocument allReferences={[]} allFiles={[]} json={comparisonDoc} />
+					<RenderDocumentRebase doc={comparisonDoc} commits={rebaseCommits} acceptCommit={this.acceptCommit} />
 				: null }
+
 			</div>
 
 
