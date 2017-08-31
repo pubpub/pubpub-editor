@@ -70,20 +70,27 @@ export const RenderDocumentRebase = React.createClass({
     const mergedCommits = commits.filter((commit) => (commit.merged));
 
 		return (
-				<div ref={(rebaseContainer) => { this.rebaseContainer = rebaseContainer; }} style={{ position: 'relative' }} onClick={this.clickDoc}>
+				<div className="rebaseDocument" ref={(rebaseContainer) => { this.rebaseContainer = rebaseContainer; }} style={{ position: 'relative' }} onClick={this.clickDoc}>
           <style>
   					{commitUUID !== null && `
-  						[data-commit="${commitUUID}"] {
+  						.rebaseDocument [data-commit="${commitUUID}"] {
   							background-color: red !important;
   						}
   					`}
             {mergedCommits.map((commit) => (
               `
-                [data-commit="${commit.uuid}"] {
+                .rebaseDocument [data-commit="${commit.uuid}"] {
     							background-color: green !important;
     						}
               `
             )).join(' ')}
+
+            {`
+  						.rebaseDocument [data-commit] {
+  							cursor: pointer;
+  						}
+  					`}
+
   				</style>
 
 					{(selectedCommit) ?

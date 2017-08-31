@@ -253,15 +253,17 @@ export const StoryBookCollaborativeEditor = React.createClass({
 					`}
 				</style>
 
-				<div style={{display: 'flex', flexDirection: 'row'}}>
-          <div style={{width: 200, padding: 10}}>
+				<div style={{display: 'flex', flexDirection: 'column'}}>
+          <div style={{height: 75, padding: 10}}>
 
 						{(!this.state.inFork) ?
 
-							<div>
+							<div style={{display: 'flex', flexDirection: 'row'}}>
 								{(this.props.allowForking) ?
 									<h4>Forks
-										<Button minimal onClick={this.fork} iconName="fork" text="New Fork " />
+										<div>
+										<Button className="pt-small" small minimal onClick={this.fork} iconName="fork" text="New Fork " />
+									</div>
 									</h4>
 								: null }
 
@@ -273,7 +275,6 @@ export const StoryBookCollaborativeEditor = React.createClass({
 
 											{(!fork.merged) ?
 												<span>
-													<Button className="pt-minimal" minimal onClick={this.rebase.bind(this, fork.name)} iconName="git-pull" />
 													<Button className="pt-minimal" minimal onClick={this.rebaseByCommit.bind(this, fork.name)} iconName="git-merge" />
 												</span>
 											:
@@ -283,29 +284,33 @@ export const StoryBookCollaborativeEditor = React.createClass({
 		            })}
 							</div>
 
-						: (
-							<div>
-								<Button onClick={this.joinParent.bind(this, this.state.forkParent)} iconName="circle-arrow-left" text={this.state.forkParent} />
-
-								<textarea ref={(textarea) => { this.commitArea = textarea; }}  className="pt-input" dir="auto"></textarea>
-								<Button onClick={this.commit} text="Commit" />
-
-								{this.state.commits.map((commit) => {
-									return (<CommitMsg onCommitHighlight={this.onCommitHighlight} clearCommitHighlight={this.clearCommitHighlight} commit={commit}/>);
-								})}
-
-							</div>
-							)
+						: null
 	        }
         </div>
 
-				<div className={(!this.state.inFork) ? 'main-body' : 'fork-body'} style={{ padding: '1em 4em', minHeight: '400px' }}>
-          <FullEditor ref={(editor) => { this.editor = editor; }} {...editorProps} mode="rich" />
-				</div>
+				<div style={{display: 'flex', flexDirection: 'row'}}>
 
-				{(comparisonDoc) ?
-					<RenderDocumentRebase doc={comparisonDoc} commits={rebaseCommits} acceptCommit={this.acceptCommit} />
-				: null }
+
+					{(this.state.inFork) ?
+						<div>
+							<Button onClick={this.joinParent.bind(this, this.state.forkParent)} iconName="circle-arrow-left" text={this.state.forkParent} />
+
+							{this.state.commits.map((commit) => {
+								return (<CommitMsg onCommitHighlight={this.onCommitHighlight} clearCommitHighlight={this.clearCommitHighlight} commit={commit}/>);
+							})}
+
+						</div>
+						: null
+					}
+
+					<div className={(!this.state.inFork) ? 'main-body' : 'fork-body'} style={{ padding: '1em 4em', minHeight: '400px' }}>
+	          <FullEditor ref={(editor) => { this.editor = editor; }} {...editorProps} mode="rich" />
+					</div>
+
+					{(comparisonDoc) ?
+						<RenderDocumentRebase doc={comparisonDoc} commits={rebaseCommits} acceptCommit={this.acceptCommit} />
+					: null }
+				</div>
 
 			</div>
 

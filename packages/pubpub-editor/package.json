@@ -7,7 +7,9 @@
     "build": "cross-env BABEL_ENV=development babel src --out-dir dist --copy-files",
     "prepublish": "npm run build",
     "watch": "cross-env BABEL_ENV=development babel src --out-dir dist --watch --copy-files",
-    "storybook": "start-storybook -p 9001 -c .storybook"
+    "storybook": "start-storybook -p 9001 -c .storybook",
+    "build-storybook": "build-storybook -c .storybook -o .out",
+    "deploy-storybook": "storybook-to-ghpages"
   },
   "maintainers": [
     {
@@ -82,6 +84,7 @@
     "@blueprintjs/core": "^1.12.0",
     "@kadira/storybook": "^2.35.3",
     "@kadira/storybook-addon-options": "^1.0.2",
+    "@storybook/storybook-deployer": "^2.0.0",
     "babel-cli": "^6.14.0",
     "babel-core": "^6.13.2",
     "babel-eslint": "^6.1.2",

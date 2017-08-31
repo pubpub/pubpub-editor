@@ -25,6 +25,22 @@ const TIMESTAMP = { '.sv': 'timestamp' }
 */
 
 
+/*
+  Firebase class, that does what?
+
+  Plugin should be responsible for:
+    - maintaining state
+    - capturing user actions
+    - providing an interface for firebase to act?
+
+  Need to seperate a collaborative document with the rebasing, selections.
+  How to create an efficient system of cross-plugin communication besides this get plugin state stuff
+
+  base Plugin state?
+
+*/
+
+
 
 const { DecorationSet, Decoration } = require('prosemirror-view');
 
@@ -133,10 +149,7 @@ const rebaseCommit = ({ commit, view, doc, allCommits, newSteps, changesRef, cli
 
 
   const allCommitSteps = [];
-  console.log('got commit steps', commitSteps);
   Object.values(commitSteps).map((commitStep) => {
-
-    console.log('Got commit step1', commitStep);
     const compressedStepsJSON = commitStep.s;
     allCommitSteps.push(...compressedStepsJSON.map(compressedStepJSONToStep));
   });
@@ -420,6 +433,7 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
   	},
 
     view: function(_editorView) {
+
   		editorView = _editorView;
   		loadDocumentAndListen(_editorView);
   		return {
@@ -434,7 +448,10 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
 
   	props: {
 
+
+      // what to store in 'currentCommit'
       fork(forkID) {
+
         const editorRef = firebaseDb.ref(editorKey);
         return new Promise((resolve, reject) => {
           editorRef.once('value', function(snapshot) {
@@ -446,7 +463,14 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
               parent: editorKey,
               forkedKey: latestKey,
             };
-            forkData.forkDoc = compressStateJSON(editorView.state.toJSON());
+            forkData.changes = [];
+            forkData.forks = [];
+            forkData.selections = [];
+
+            const { d } = compressStateJSON(editorView.state.toJSON());
+            forkData.checkpoint = { d, k: 0, t: TIMESTAMP };
+
+            // forkData.forkDoc = compressStateJSON(editorView.state.toJSON());
             firebaseDb.ref(forkID).set(forkData, function(error) {
               if (!error) {
                 editorRef.child('forks').child(forkID).set(true);
@@ -460,7 +484,7 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
       },
 
 
-      storeRebaseSteps({steps, stepOffsets}) {
+      storeRebaseSteps({steps, offsets}) {
         const editorRef = firebaseDb.ref(editorKey);
         const storedSteps =  {
           s: compressStepsLossy(steps).map(
@@ -471,8 +495,8 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
           t: TIMESTAMP,
         };
         editorRef.child('currentCommit/steps').push().set(storedSteps);
-        if (stepOffsets) {
-          editorRef.child('stepOffsets').push().set(stepOffsets);
+        if (offsets) {
+          editorRef.child('stepOffsets').push().set(offsets);
         }
 
       },
@@ -532,8 +556,6 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
             const rebaseCommitHandler = (index) => {
               const singleCommit = commits[index];
               const prevCommits = commits.slice(0, index);
-              console.log(prevCommits);
-              console.log(singleCommit);
               return getSteps({ view: editorView, changesRef: editorChangesRef, key: forkedKey }).then((newSteps) => {
                 rebaseCommit({ commit: singleCommit, allCommits: prevCommits, view: editorView, newSteps, changesRef, clientID: selfClientID, latestKey, selfChanges });
                 return setFirebaseValue({ ref: forkRef, child: `commits/${index}/merged`, data: true });

@@ -64,14 +64,15 @@ function isAdjacentToLastStep(step, prevMap) {
 // commitUUID
 // UUIDs enable easy tracking of commits
 /*
-Keeps track of local stages & commits?
 
-Keep track of collaborated commits to merge steps between?
-Needs to keep a true doc of all steps? To make sure that this doc is consistent and allow for inversions and stuff?
+  - how to make the current commit a combination of all steps?
+  - make current commit store last key?
+
 */
 
 
 // make a class with functions?
+// how to update stored steps?
 const trackChangesPlugin = new Plugin({
   state: {
     init(config, instance) {
@@ -227,6 +228,7 @@ const trackChangesPlugin = new Plugin({
                 const insertstep = replaceStep(oldState.doc, possibleInsert, possibleInsert, (step.slice.size > 0) ? step.slice : Slice.empty);
                 const newOffset = { index: oldEnd, size: inverse.slice.size };
                 this.stepOffsets.push(newOffset);
+                this.storeOffset(newOffset);
                 try {
                   tr = tr.step(insertstep);
                 } catch (err) {
@@ -243,6 +245,7 @@ const trackChangesPlugin = new Plugin({
                 tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', { commitID: this.tracker.uuid  }));
                 const newOffset = { index: oldEnd, size: inverse.slice.size };
                 this.stepOffsets.push(newOffset);
+                this.storeOffset(newOffset);
                 // tr = tr.addMark(insertStart, insertEnd, schema.mark('diff_plus', { commitID: this.commitID }));
               }
               /*
@@ -322,6 +325,7 @@ const trackChangesPlugin = new Plugin({
         const newOffset = { index: beforeSel.from, size: 1 };
         this.storeStep(deleteStep);
         this.stepOffsets.push(newOffset);
+        this.storeOffset(newOffset);
 
         tr = tr.addMark(beforeSel.from, sel.from, schema.mark('diff_minus', { commitID: this.tracker.uuid }));
         tr = tr.setSelection(beforeSel);

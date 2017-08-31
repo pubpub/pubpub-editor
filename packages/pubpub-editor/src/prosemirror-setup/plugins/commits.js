@@ -18,17 +18,25 @@ Functions:
 
 
 const mergeSteps = (steps) => {
-  let mergedStep = null;
-  for (const mergingStep of steps) {
-    if (!mergedStep) {
-      mergedStep = mergingStep;
+  let mergedSteps = [];
+  let mergingStep = null;
+  for (const step of steps) {
+    if (!mergingStep) {
+      mergingStep = step;
     } else {
-      mergedStep = mergedStep.merge(mergingStep);
+      const tryMergeStep = mergingStep.merge(step);
+      if (tryMergeStep) {
+        mergingStep = tryMergeStep;
+      } else {
+        mergedSteps.push(mergingStep);
+        mergingStep = null;
+      }
     }
   }
-  console.log('merging steps', steps, mergedStep);
-
-  return mergedStep;
+  if (mergingStep) {
+    mergedSteps.push(mergingStep);
+  }
+  return mergedSteps;
 }
 
 
@@ -133,8 +141,11 @@ class CommitTracker {
     const editorState = this.plugin.spec.editorView.state;
     const firebasePlugin = getPlugin('firebase', editorState);
     if (this.commit) {
-      const mergedStep = mergeSteps(this.commit.steps);
-      const description = (mergedStep) ? describeStep(mergedStep) : 'No Description';
+      const mergedSteps = mergeSteps(this.commit.steps);
+      const description = (mergedSteps) ? describeStep(mergedSteps[mergedSteps.length - 1]) : 'No Description';
+      if (mergedSteps.length > 1) {
+        console.log('Got merged steps', mergedSteps, this.commit.steps, description);
+      }
       const { steps, uuid, start, end } = this.commit;
       firebasePlugin.props.commit({ description, steps, uuid, start, end });
     }
@@ -147,7 +158,6 @@ class CommitTracker {
       this.commit = new Commit();
     }
     const adjacent = this.commit.add(step);
-    console.log('storing step!', step, adjacent);
 
     if (!adjacent) {
       this.reset(step);
