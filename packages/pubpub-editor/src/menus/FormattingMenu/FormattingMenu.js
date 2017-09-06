@@ -5,10 +5,9 @@ import getMenuItems from './formattingMenuConfig';
 let styles;
 export const FormattingMenu = React.createClass({
 	propTypes: {
-	},
-	contextTypes: {
 		containerId: React.PropTypes.string.isRequired,
 		view: React.PropTypes.object.isRequired,
+		editorState: React.PropTypes.object.isRequired,
 	},
 	getInitialState: function() {
 		return { input: null };
@@ -18,6 +17,13 @@ export const FormattingMenu = React.createClass({
 		this.setState({ input: 'text', run });
 	},
 
+	componentWillReceiveProps(nextProps) {
+		if (this.props.editorState !== nextProps.editorState) {
+			this.onChange();
+		}
+	},
+
+
 	submitInput: function(evt) {
 		if (evt.key === 'Enter') {
 			const link = this.textInput.value;
@@ -26,13 +32,8 @@ export const FormattingMenu = React.createClass({
 		}
 	},
 
-	onCursorChange() {
-		this.onChange();
-	},
-
 	onChange: function() {
-		console.log('GOT FORMAT CHANGE');
-		const { view, containerId } = this.context;
+		const { view, containerId } = this.props;
 
 		const currentPos = view.state.selection.$to.pos;
 		const currentNode = view.state.doc.nodeAt(currentPos - 1);
@@ -69,7 +70,7 @@ export const FormattingMenu = React.createClass({
 
 
 		const { input, left, top } = this.state;
-		const { view } = this.context;
+		const { view } = this.props
 
 		const menuItems = getMenuItems(view);
 

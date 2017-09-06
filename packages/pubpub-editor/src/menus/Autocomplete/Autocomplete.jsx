@@ -22,10 +22,10 @@ export const Autocomplete = React.createClass({
 		localPages: PropTypes.array, // Used in Journals. No Global at the moment
 
 		globalCategories: PropTypes.array, // ['pubs', 'users']
-	},
-	contextTypes: {
+
 		containerId: React.PropTypes.string.isRequired,
 		view: React.PropTypes.object.isRequired,
+		editorState: React.PropTypes.object.isRequired,
 	},
 	getInitialState() {
 		return {
@@ -250,7 +250,7 @@ export const Autocomplete = React.createClass({
 
 
 	updateMentions(mentionInput) {
-		const { containerId } = this.context;
+		const { containerId } = this.props;
 		if (mentionInput) {
 			setTimeout(()=> {
 				const container = document.getElementById(containerId);

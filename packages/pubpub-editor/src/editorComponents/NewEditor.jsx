@@ -42,20 +42,24 @@ const findChildByType = (children, type) => {
 class ViewProvider extends Component {
   static propTypes = {
     view: PropTypes.object.isRequired,
+		editorState: PropTypes.object.isRequired,
 		containerId: PropTypes.string.isRequired,
   }
   // you must specify what you’re adding to the context
   static childContextTypes = {
     view: PropTypes.object.isRequired,
+		editorState: PropTypes.object.isRequired,
 		containerId: PropTypes.string.isRequired,
   }
   getChildContext() {
-   const { view, containerId } = this.props;
-   const context = { view, containerId };
-	 return context;
+   const { view, containerId, editorState } = this.props;
+   return { view, containerId, editorState };
   }
   render() {
-    return <div>{this.props.children}</div>;
+		const { view, containerId, editorState } = this.props;
+    return <div>
+			{ React.Children.map(this.props.children, (child => React.cloneElement(child, { view, containerId, editorState } )))}
+		</div>;
   }
 }
 
@@ -95,10 +99,9 @@ const RichEditor = React.createClass({
 
 
 	onChange() {
-		console.log('GOT CHANGE');
 		this.props.onChange(this.view.state.doc.toJSON());
 		React.Children.forEach(this.props.children, (child) => {
-			console.log(child, child.onChange);
+			console.log(child, child.onChange, child.ref);
 			if (child.onChange) {
 				child.onChange();
 			}
@@ -340,11 +343,9 @@ const RichEditor = React.createClass({
 
 		const newState = this.view.state.apply(transaction);
 		this.view.updateState(newState);
-		if (transaction.docChanged) {
-			this.onChange();
-		} else {
-			this.onCursorChange();
-		}
+
+
+		this.setState({editorState: newState});
 
 		// const trackPlugin = getPlugin('track', this.view.state);
 		const firebasePlugin = getPlugin('firebase', this.view.state);
@@ -360,7 +361,7 @@ const RichEditor = React.createClass({
 		return (
 			<div style={{ position: 'relative' }} id={'rich-editor-container'}>
 				{(this.state.view) ?
-					<ViewProvider view={this.state.view} containerId="rich-editor-container">
+					<ViewProvider view={this.state.view} editorState={this.state.editorState} containerId="rich-editor-container">
 						{this.props.children}
 					</ViewProvider>
 					: null

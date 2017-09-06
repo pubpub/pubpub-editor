@@ -7,22 +7,20 @@ let styles;
 
 export const TableMenu = React.createClass({
 	propTypes: {
-	},
-	contextTypes: {
 		containerId: React.PropTypes.string.isRequired,
 		view: React.PropTypes.object.isRequired,
+		editorState: React.PropTypes.object.isRequired,
 	},
 	getInitialState: function() {
 		return { top: null, left: null };
 	},
-
-	onCursorChange() {
-		this.onChange();
+	componentWillReceiveProps(nextProps) {
+		if (this.props.editorState !== nextProps.editorState) {
+			this.onChange();
+		}
 	},
-
 	onChange() {
-
-		const { view, containerId } = this.context;
+		const { view, containerId } = this.props;
 		const sel = view.state.selection;
 		if (inTable(sel.$from) == -1 || !sel.empty) {
 			if (this.state.top) {
@@ -46,7 +44,7 @@ export const TableMenu = React.createClass({
 
 	render: function() {
 		const { top, left } = this.state;
-		const { view } = this.context;
+		const { view } = this.props;
 
 		if (!top || !editor || !view ) {
 			return null;

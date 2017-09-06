@@ -14,10 +14,9 @@ export const InsertMenu = React.createClass({
 		handleFileUpload: PropTypes.func,
 		handleReferenceAdd: PropTypes.func,
 		allReferences: PropTypes.array,
-	},
-	contextTypes: {
 		containerId: React.PropTypes.string.isRequired,
 		view: React.PropTypes.object.isRequired,
+		editorState: React.PropTypes.object.isRequired,
 	},
 	getInitialState() {
 		return {
@@ -26,13 +25,13 @@ export const InsertMenu = React.createClass({
 			top: null,
 		};
 	},
-
-	onCursorChange() {
-		this.onChange();
+	componentWillReceiveProps(nextProps) {
+		if (this.props.editorState !== nextProps.editorState) {
+			this.onChange();
+		}
 	},
-
 	onChange() {
-		const { view, containerId } = this.context;1
+		const { view, containerId } = this.props;
 		const container = document.getElementById(containerId);
 		const canUse = canUseInsertMenu(view);
 		const sel = view.state.selection;
@@ -110,7 +109,7 @@ export const InsertMenu = React.createClass({
 	},
 
 	render: function() {
-		const { view } = this.context;
+		const { view } = this.props;
 		const { top } = this.state;
 
 		const menuItems = getMenuItems(view, this.openDialog);
