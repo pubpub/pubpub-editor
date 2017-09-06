@@ -24,9 +24,13 @@ export const InsertMenu = React.createClass({
 		};
 	},
 
-	updatePosition(view) {
+	onCursorChange() {
+		this.onChange();
+	},
 
-		const container = document.getElementById('rich-editor-container');
+	onChange() {
+		const { view, containerId } = this.context;1
+		const container = document.getElementById(containerId);
 		const canUse = canUseInsertMenu(view);
 		const sel = view.state.selection;
 		const currentPos = sel.$to.pos;
@@ -103,14 +107,17 @@ export const InsertMenu = React.createClass({
 	},
 
 	render: function() {
-		const menuItems = getMenuItems(this.props.editor, this.openDialog);
+		const { view } = this.context;
+		const { top } = this.state;
 
-		if (!this.state.top) {
+		const menuItems = getMenuItems(view, this.openDialog);
+
+		if (!top) {
 			return null;
 		}
 
 		return (
-			<div style={styles.container(this.state.top)}>
+			<div style={styles.container(top)}>
 				<Popover
 					content={
 						<Menu>

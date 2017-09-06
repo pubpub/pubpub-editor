@@ -7,9 +7,6 @@ require('../../style/fonts.scss');
 
 export const FormattingMenu = React.createClass({
 	propTypes: {
-		editor: PropTypes.object,
-		top: PropTypes.number,
-		left: PropTypes.number,
 	},
 	getInitialState: function() {
 		return { input: null };
@@ -27,22 +24,57 @@ export const FormattingMenu = React.createClass({
 		}
 	},
 
+	onCursorChange() {
+		this.onChange();
+	},
+
+	onChange: function() {
+		const { view, containerId } = this.context;
+
+		const currentPos = view.state.selection.$to.pos;
+		const currentNode = view.state.doc.nodeAt(currentPos - 1);
+		const container = document.getElementById(containerId);
+
+		if (!view.state.selection.$cursor && currentNode && currentNode.text) {
+			const currentFromPos = view.state.selection.$from.pos;
+			const currentToPos = view.state.selection.$to.pos;
+			const left = view.coordsAtPos(currentFromPos).left - container.getBoundingClientRect().left;
+			const right = view.coordsAtPos(currentToPos).right - container.getBoundingClientRect().left;
+			const inlineCenter = left + ((right - left) / 2);
+			const inlineTop = view.coordsAtPos(currentFromPos).top - container.getBoundingClientRect().top;
+			return this.setState({
+				left: inlineCenter,
+				top: inlineTop,
+			});
+		}
+
+		return this.setState({
+			left: 0,
+			top: 0,
+		});
+	},
+
+
 	renderTextInput() {
-		return (<div onKeyPress={this.submitInput} className={'pt-card pt-elevation-0 pt-dark'} style={styles.container(this.props.top, this.props.left, 200)}>
+		const { top, left } = this.state;
+		return (<div onKeyPress={this.submitInput} className={'pt-card pt-elevation-0 pt-dark'} style={styles.container(top, left, 200)}>
 			<input style={styles.textInput} ref={(input) => { this.textInput = input; }} className="pt-input" type="text" placeholder="link" dir="auto" />
 		</div>);
 	},
 
 	render: function() {
-		const menuItems = getMenuItems(this.props.editor);
-		const { input } = this.state;
+
+		const { input, left, top } = this.state;
+		const { view } = this.context;
+
+		const menuItems = getMenuItems(view);
 
 		if (input === 'text') {
 			return this.renderTextInput();
 		}
 
 		return (
-			<div className={'pt-card pt-elevation-0 pt-dark popover-up'} style={styles.container(this.props.top, this.props.left, 400)}>
+			<div className={'pt-card pt-elevation-0 pt-dark popover-up'} style={styles.container(top, left, 400)}>
 				{menuItems.map((item, index)=> {
 					// return <button key={`menuItem-${index}`} className={'pt-button pt-minimal'} style={item.isActive ? { ...styles.button, ...styles.active } : styles.button} onClick={item.run}>{item.text}</button>;
 					// return <button key={`menuItem-${index}`} className={`pt-button pt-minimal ${item.icon}`} style={item.isActive ? { ...styles.button, ...styles.active } : styles.button} onClick={item.run} />;

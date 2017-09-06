@@ -247,13 +247,43 @@ export const Autocomplete = React.createClass({
 	},
 
 
+	updateMentions(mentionInput) {
+		const { containerId } = this.context;
+		if (mentionInput) {
+			setTimeout(()=> {
+				const container = document.getElementById(containerId);
+				const mark = document.getElementsByClassName('mention-marker')[0];
+				if (!container || !mark) {
+					return this.setState({ visible: false });
+				}
+				const top = mark.getBoundingClientRect().bottom - container.getBoundingClientRect().top;
+				const left = mark.getBoundingClientRect().left - container.getBoundingClientRect().left;
+				if (mentionInput !== this.state.input) {
+					this.getNewSelections(mentionInput);
+				}
+				this.setState({
+					visible: true,
+					top: top,
+					left: left,
+					input: mentionInput,
+				});
+			}, 0);
+		} else {
+			this.setState({ visible: false, _selectedIndex: 0, _suggestionCategory: null });
+		}
+	},
+
+
 	render() {
+
+		const { visible, input, top, left } = this.state;
+
 		const results = [...this.state._currentSuggestions] || [];
-		const noResultsNoInput = !results.length && (this.props.input === '' || this.props.input === ' ') && !!this.state._suggestionCategory;
+		const noResultsNoInput = !results.length && (input === '' || input === ' ') && !!this.state._suggestionCategory;
 		if (!results.length && !noResultsNoInput) { return null; }
 
 		return (
-			<div className={'pt-card pt-elevation-4'} style={styles.container(this.props.top, this.props.left, this.props.visible)}>
+			<div className={'pt-card pt-elevation-4'} style={styles.container(top, left, visible)}>
 				{results.map((result, index)=> {
 					const isCategory = !!result.suggestionCategory;
 					let label = result.itemType;

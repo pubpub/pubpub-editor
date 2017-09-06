@@ -7,17 +7,19 @@ let styles;
 
 export const TableMenu = React.createClass({
 	propTypes: {
-		editor: PropTypes.object,
-		top: PropTypes.number,
-		left: PropTypes.number,
 	},
 
 	getInitialState: function() {
 		return { top: null, left: null };
 	},
 
-	updatePosition(view) {
+	onCursorChange() {
+		this.onChange();
+	},
 
+	onChange() {
+
+		const { view, containerId } = this.context;
 		const sel = view.state.selection;
 		if (inTable(sel.$from) == -1 || !sel.empty) {
 			if (this.state.top) {
@@ -26,7 +28,7 @@ export const TableMenu = React.createClass({
 			return;
 		}
 
-		const container = document.getElementById('rich-editor-container');
+		const container = document.getElementById(containerId);
 		const currentFromPos = sel.$from.pos;
 		const left = view.coordsAtPos(currentFromPos).left - container.getBoundingClientRect().left;
 		const inlineCenter = left;
@@ -41,13 +43,11 @@ export const TableMenu = React.createClass({
 
 	render: function() {
 		const { top, left } = this.state;
-		const { editor } = this.props;
+		const { view } = this.context;
 
-		if (!top || !editor || !editor.view ) {
+		if (!top || !editor || !view ) {
 			return null;
 		}
-
-		const view = editor.view;
 
 		return (
 			<div className={'pt-card pt-elevation-0 pt-dark'} style={styles.container(top, left)}>

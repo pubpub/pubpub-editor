@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 
 import Autocomplete from '../Autocomplete/Autocomplete';
 import { FirebaseEditor } from '../prosemirror-setup/editors/firebaseEditor';
@@ -7,8 +7,60 @@ import InsertMenu from '../InsertMenu/InsertMenu';
 import { RichEditor as ProseEditor } from '../prosemirror-setup';
 import TableMenu from '../TableMenu/TableMenu';
 // import ReactDOM from 'react-dom';
-import { createRichMention } from '../Autocomplete/autocompleteConfig';
-import { migrateMarks } from '../migrate/migrateDiffs';
+import { createRichMention } from '../Autocomplete/autocompleteConfig';ß
+
+
+/*
+ * Find and return all matched children by type. `type` can be a React element class or
+ * string
+ */
+export const findAllByType = (children, type) => {
+  const result = [];
+  let types = [];
+
+  if (_.isArray(type)) {
+    types = type.map(t => getDisplayName(t));
+  } else {
+    types = [getDisplayName(type)];
+  }
+
+  React.Children.forEach(children, (child) => {
+    const childType = child && child.type && (child.type.displayName || child.type.name);
+    if (types.indexOf(childType) !== -1) {
+      result.push(child);
+    }
+  });
+
+  return result;
+};
+/*
+ * Return the first matched child by type, return null otherwise.
+ * `type` can be a React element class or string.
+ */
+export const findChildByType = (children, type) => {
+  const result = findAllByType(children, type);
+
+  return result && result[0];
+};
+
+
+class ViewProvider extends Component {
+  static propTypes = {
+    view: PropTypes.object.isRequired,
+  }
+  // you must specify what you’re adding to the context
+  static childContextTypes = {
+    view: PropTypes.object.isRequired,
+  }
+  getChildContext() {
+   const { view, containerId } = this.props
+   return { view, containerId };
+  }
+  render() {
+    // `Children.only` enables us not to add a <div /> for nothing
+    return Children.only(this.props.children)
+  }
+}
 
 export const RichEditor = React.createClass({
 	propTypes: {
@@ -16,7 +68,6 @@ export const RichEditor = React.createClass({
 		onChange: PropTypes.func,
 		handleFileUpload: PropTypes.func,
 		handleReferenceAdd: PropTypes.func,
-
 		/*
 			Where to create forks?
 		*/
@@ -25,25 +76,10 @@ export const RichEditor = React.createClass({
 	    fontSize: PropTypes.number
 	  }),
 		trackChanges: PropTypes.bool,
-
-		localUsers: PropTypes.array,
-		localPubs: PropTypes.array,
-		localFiles: PropTypes.array,
-		localReferences: PropTypes.array,
-		localHighlights: PropTypes.array,
-		localPages: PropTypes.array,
-		globalCategories: PropTypes.array,
 	},
 
 	getInitialState() {
 		return {
-			visible: undefined,
-			top: 0,
-			left: 0,
-			input: '',
-			menuTop: 7,
-			inlineCenter: 0,
-			inlineTop: 0,
 		};
 	},
 
@@ -60,47 +96,29 @@ export const RichEditor = React.createClass({
 		}
 	},
 
-	onChange() {
-		// Should be called on every document change (delete, addition, etc)
-		// is toJSON expensive?
-		this.props.onChange(this.editor.view.state.doc.toJSON());
-		if (this.insertMenu) { this.insertMenu.updatePosition(this.editor.view); }
-		if (this.tableMenu) { this.tableMenu.updatePosition(this.editor.view); }
 
-		this.updateCoordsForMenus();
+	onChange() {
+		this.props.onChange(this.editor.view.state.doc.toJSON());
+		React.Children.forEach(children, (child) => {
+			if (child.onChange) {
+				child.onChange();
+			}
+		});
 	},
 
 	onCursorChange() {
-		// Should be called on every cursor update
-		if (this.insertMenu) { this.insertMenu.updatePosition(this.editor.view); }
-		if (this.tableMenu) { this.tableMenu.updatePosition(this.editor.view); }
-		this.updateCoordsForMenus();
+		React.Children.forEach(children, (child) => {
+			if (child.onCursorChange) {
+				child.onCursorChange();
+			}
+		});
 	},
 
-	updateCoordsForMenus: function() {
-		const currentPos = this.editor.view.state.selection.$to.pos;
-
-		const currentNode = this.editor.view.state.doc.nodeAt(currentPos - 1);
-		const isRoot = this.editor.view.state.selection.$to.depth === 2;
-
-		const container = document.getElementById('rich-editor-container');
-
-		if (!this.editor.view.state.selection.$cursor && currentNode && currentNode.text) {
-			const currentFromPos = this.editor.view.state.selection.$from.pos;
-			const currentToPos = this.editor.view.state.selection.$to.pos;
-			const left = this.editor.view.coordsAtPos(currentFromPos).left - container.getBoundingClientRect().left;
-			const right = this.editor.view.coordsAtPos(currentToPos).right - container.getBoundingClientRect().left;
-			const inlineCenter = left + ((right - left) / 2);
-			const inlineTop = this.editor.view.coordsAtPos(currentFromPos).top - container.getBoundingClientRect().top;
-			return this.setState({
-				inlineCenter: inlineCenter,
-				inlineTop: inlineTop,
-			});
-		}
-
-		return this.setState({
-			inlineTop: 0,
-			inlineCenter: 0,
+	updateMentions(mentionInput) {
+		React.Children.forEach(children, (child) => {
+			if (child.updateMentions) {
+				child.updateMentions(mentionInput);
+			}
 		});
 	},
 
@@ -320,38 +338,9 @@ export const RichEditor = React.createClass({
 
 		return (
 			<div style={{ position: 'relative' }} id={'rich-editor-container'}>
-				<Autocomplete
-					top={this.state.top}
-					left={this.state.left}
-					visible={this.state.visible}
-					input={this.state.input}
-					onSelection={this.onMentionSelection}
-					localUsers={this.props.localUsers}
-					localPubs={this.props.localPubs}
-					localFiles={this.props.localFiles}
-					localReferences={this.props.localReferences}
-					localHighlights={this.props.localHighlights}
-					localPages={this.props.localPages}
-					globalCategories={this.props.globalCategories} />
-
-					<InsertMenu
-						ref={(input) => { this.insertMenu = input; }}
-						editor={this.editor}
-						allReferences={this.props.localReferences}
-						handleFileUpload={this.props.handleFileUpload}
-						handleReferenceAdd={this.props.handleReferenceAdd} />
-
-					<TableMenu
-						ref={(input) => { this.tableMenu = input; }}
-						editor={this.editor} />
-
-				{this.editor &&
-					<FormattingMenu
-						editor={this.editor}
-						top={this.state.inlineTop}
-						left={this.state.inlineCenter} />
-				}
-
+				<ViewProvider view={this.view} containerId="rich-editor-container">
+					{this.props.children}
+				</ViewProvider>
 				<div className="pubEditor" id="pubEditor" />
 			</div>
 		);

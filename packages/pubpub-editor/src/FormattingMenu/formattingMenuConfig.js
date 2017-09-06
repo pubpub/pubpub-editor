@@ -3,14 +3,14 @@ import { joinUp, lift, selectParentNode, setBlockType, toggleMark, wrapIn } from
 import { schema } from '../prosemirror-setup';
 import { wrapInList } from 'prosemirror-schema-list';
 
-function getMenuItems(editor) {
+function getMenuItems(view) {
 
 	/* Marks */
 	/* -------------- */
 	function markIsActive(type) {
 		// Check if the mark is currently active for the given selection
 		// so that we can highlight the button as 'active'
-		const state = editor.view.state;
+		const state = view.state;
 		const { from, $from, to, empty } = state.selection;
 		if (empty) {
 			return type.isInSet(state.storedMarks || $from.marks());
@@ -21,7 +21,7 @@ function getMenuItems(editor) {
 	function applyToggleMark(mark, attrs) {
 		// Toggle the mark on and off. Marks are things like bold, italic, etc
 		const toggleFunction = toggleMark(mark, attrs);
-		toggleFunction(editor.view.state, editor.view.dispatch);
+		toggleFunction(view.state, view.dispatch);
 	}
 	/* -------------- */
 	/* -------------- */
@@ -31,7 +31,7 @@ function getMenuItems(editor) {
 	/* -------------- */
 	function blockTypeIsActive(type, attrs) {
 
-		const $from = editor.view.state.selection.$from;
+		const $from = view.state.selection.$from;
 
 		let wrapperDepth;
 		let currentDepth = $from.depth;
@@ -50,7 +50,7 @@ function getMenuItems(editor) {
 		const isActive = blockTypeIsActive(type, attrs);
 		const newNodeType = isActive ? schema.nodes.paragraph : type;
 		const setBlockFunction = setBlockType(newNodeType, attrs);
-		return setBlockFunction(editor.view.state, editor.view.dispatch);
+		return setBlockFunction(view.state, view.dispatch);
 	}
 	/* -------------- */
 	/* -------------- */
@@ -60,10 +60,10 @@ function getMenuItems(editor) {
 	/* -------------- */
 	function toggleWrap(type) {
 		if (blockTypeIsActive(type)) {
-			return lift(editor.view.state, editor.view.dispatch);
+			return lift(view.state, view.dispatch);
 		}
 		const wrapFunction = wrapIn(type);
-		return wrapFunction(editor.view.state, editor.view.dispatch);
+		return wrapFunction(view.state, view.dispatch);
 	}
 	/* -------------- */
 	/* -------------- */
@@ -73,10 +73,10 @@ function getMenuItems(editor) {
 	/* -------------- */
 	function toggleWrapList(type) {
 		if (blockTypeIsActive(type)) {
-			return lift(editor.view.state, editor.view.dispatch);
+			return lift(view.state, view.dispatch);
 		}
 		const wrapFunction = wrapInList(type);
-		return wrapFunction(editor.view.state, editor.view.dispatch);
+		return wrapFunction(view.state, view.dispatch);
 	}
 	/* -------------- */
 	/* -------------- */

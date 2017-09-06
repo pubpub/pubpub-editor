@@ -73,9 +73,9 @@ function canUseInsertMenu(view) {
 }
 
 
-function getMenuItems(editor, openDialog) {
+function getMenuItems(view, openDialog) {
 
-	if (!editor) {
+	if (!view) {
 		return [];
 	}
 
@@ -89,32 +89,32 @@ function getMenuItems(editor, openDialog) {
 			// 	</label>
 			// </li>,
 			text: 'Upload Files',
-			run: ()=> { openDialog('files', insertEmbed.bind(null, editor.view)); },
+			run: ()=> { openDialog('files', insertEmbed.bind(null, view)); },
 		},
 		{
 			icon: 'pt-icon-h1',
 			text: 'Insert Table',
-			run: insertTable.bind(null, editor.view),
+			run: insertTable.bind(null, view),
 		},
 		{
 			icon: 'pt-icon-h1',
 			text: 'Insert Equation',
-			run: insertLatexEquation.bind(null, editor.view),
+			run: insertLatexEquation.bind(null, view),
 		},
 		{
 			icon: 'pt-icon-h1',
 			text: 'Insert Horizontal Line',
-			run: insertHorizontalRule.bind(null, editor.view),
+			run: insertHorizontalRule.bind(null, view),
 		},
 		{
 			icon: 'pt-icon-h1',
 			text: 'Insert Footnote',
-			run: insertFootnote.bind(null, editor.view),
+			run: insertFootnote.bind(null, view),
 		},
 		{
 			icon: 'pt-icon-h1',
 			text: 'Add References',
-			run: ()=> { openDialog('references', insertReference.bind(null, editor.view)); },
+			run: ()=> { openDialog('references', insertReference.bind(null, view)); },
 		},
 
 	];
