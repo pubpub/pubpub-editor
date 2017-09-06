@@ -94,8 +94,8 @@ const RichEditor = React.createClass({
 
 
 	onChange() {
-		this.props.onChange(this.editor.view.state.doc.toJSON());
-		React.Children.forEach(children, (child) => {
+		this.props.onChange(this.view.state.doc.toJSON());
+		React.Children.forEach(this.props.children, (child) => {
 			if (child.onChange) {
 				child.onChange();
 			}
@@ -103,7 +103,7 @@ const RichEditor = React.createClass({
 	},
 
 	onCursorChange() {
-		React.Children.forEach(children, (child) => {
+		React.Children.forEach(this.props.children, (child) => {
 			if (child.onCursorChange) {
 				child.onCursorChange();
 			}
@@ -111,7 +111,7 @@ const RichEditor = React.createClass({
 	},
 
 	updateMentions(mentionInput) {
-		React.Children.forEach(children, (child) => {
+		React.Children.forEach(this.props.children, (child) => {
 			if (child.updateMentions) {
 				child.updateMentions(mentionInput);
 			}
@@ -128,7 +128,7 @@ const RichEditor = React.createClass({
 
 	configurePlugins() {
 
-		const {pubpubSetup} = require('../prosemirror-setup/setup');
+		const { pubpubSetup } = require('../prosemirror-setup/setup');
 
 		const { collaborative, trackChanges, firebaseConfig, editorKey, clientID } = this.props;
 		const { CitationsPlugin, MentionsPlugin, SelectPlugin, TrackPlugin, FirebasePlugin } = require('../prosemirror-setup/plugins');
@@ -169,9 +169,10 @@ const RichEditor = React.createClass({
 		const { EditorState } = require('prosemirror-state');
 		const { EditorView } = require('prosemirror-view');
 
-		const configureNodeViews = require('../prosemirror-setup/rich-nodes/configureNodeViews');
+		const configureNodeViews = require('../prosemirror-setup/rich-nodes/configureNodeViews').default;
 
 		const menu = buildMenuItems(schema);
+		const plugins = this.configurePlugins();
 
 		const config = {
 			referencesList: this.props.localFiles,
@@ -193,9 +194,6 @@ const RichEditor = React.createClass({
 		const editorView = document.createElement('div');
 		editorView.className = 'pub-body';
 		place.appendChild(editorView);
-
-		const plugins = this.configurePlugins();
-		const nodeViews = this.configurePlugins();
 
 		const props = {
 			referencesList: this.props.localFiles,
@@ -229,7 +227,7 @@ const RichEditor = React.createClass({
 			...props
 		});
 
-		return this.view;
+		this.setState({view: this.view});
 	},
 
 	updateMentions(mentionInput) {
@@ -358,13 +356,15 @@ const RichEditor = React.createClass({
 
 	render: function() {
 
-		console.log('props', this.props);
-
 		return (
 			<div style={{ position: 'relative' }} id={'rich-editor-container'}>
-				<ViewProvider view={this.view} containerId="rich-editor-container">
-					{this.props.children}
-				</ViewProvider>
+				{(this.state.view) ?
+					<ViewProvider view={this.state.view} containerId="rich-editor-container">
+						{this.props.children}
+					</ViewProvider>
+					: null
+				}
+
 				<div className="pubEditor" id="pubEditor" />
 			</div>
 		);

@@ -41,6 +41,12 @@ const TIMESTAMP = { '.sv': 'timestamp' }
 */
 
 
+/*
+  How to create a 'current' merged commit?
+  - Always merge current steps?
+  - Only show up to last steps?
+*/
+
 
 const { DecorationSet, Decoration } = require('prosemirror-view');
 
@@ -268,7 +274,6 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits
   let loadingPromise = Promise.defer();
 
   const loadDocumentAndListen = (view) => {
-
 
     if (fetchedState) {
       return;
