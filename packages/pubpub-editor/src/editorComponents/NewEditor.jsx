@@ -50,10 +50,11 @@ class ViewProvider extends Component {
 		containerId: PropTypes.string.isRequired,
   }
   getChildContext() {
-   const { view, containerId } = this.props
+   const { view, containerId } = this.props;
    return { view, containerId };
   }
   render() {
+		console.log('rendering',this.props);
     return <div>{this.props.children}</div>;
   }
 }
@@ -360,7 +361,9 @@ const RichEditor = React.createClass({
 			<div style={{ position: 'relative' }} id={'rich-editor-container'}>
 				{(this.state.view) ?
 					<ViewProvider view={this.state.view} containerId="rich-editor-container">
-						{this.props.children}
+						{this.props.children.map((child) => {
+							return (React.cloneElement(child));
+						})}
 					</ViewProvider>
 					: null
 				}

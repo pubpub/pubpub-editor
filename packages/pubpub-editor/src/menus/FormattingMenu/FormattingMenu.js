@@ -62,8 +62,12 @@ export const FormattingMenu = React.createClass({
 
 	render: function() {
 
+
 		const { input, left, top } = this.state;
 		const { view } = this.context;
+
+		console.log('RENDERING FORMAT', this.context, this.state);
+
 
 		const menuItems = getMenuItems(view);
 
