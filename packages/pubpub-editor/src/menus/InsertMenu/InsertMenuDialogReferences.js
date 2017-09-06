@@ -1,8 +1,8 @@
 import { Button, Dialog, Item, Menu, MenuItem, Popover, PopoverInteractionKind, Position, Tab, TabList, TabPanel, Tabs } from '@blueprintjs/core';
 import React, { PropTypes } from 'react';
 
-import { generateBibTexString } from '../references/citationConversion';
-import parseBibTeX from '../references/bibtextocsl';
+import { generateBibTexString } from '../../references/citationConversion';
+import parseBibTeX from '../../references/bibtextocsl';
 
 const TabIndexes = {
 	MANUAL: 0,

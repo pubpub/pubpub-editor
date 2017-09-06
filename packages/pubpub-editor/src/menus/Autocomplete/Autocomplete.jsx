@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react';
 
-import {CSLtoString} from '../references/csltostring';
 import fuzzysearch from 'fuzzysearch';
 import request from 'request-promise';
 

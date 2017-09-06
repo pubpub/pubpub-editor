@@ -1,6 +1,6 @@
 import { Menu, MenuItem, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 import React, { PropTypes } from 'react';
-import getMenuItems ,{ canUseInsertMenu, insertEmbed, insertReference } from './insertMenuConfig';
+import getMenuItems , { canUseInsertMenu, insertEmbed, insertReference } from './insertMenuConfig';
 
 import InsertMenuDialogFiles from './InsertMenuDialogFiles';
 import InsertMenuDialogReferences from './InsertMenuDialogReferences';

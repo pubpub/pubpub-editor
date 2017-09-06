@@ -1,16 +1,15 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 // import ReactDOM from 'react-dom';
-import { createRichMention } from '../Autocomplete/autocompleteConfig';
+import { createRichMention } from '../menus/Autocomplete/autocompleteConfig';
 import { getPlugin } from '../prosemirror-setup/plugins';
-
-import { schema } from '../schema';
+import { schema } from '../prosemirror-setup/schema';
 
 /*
  * Find and return all matched children by type. `type` can be a React element class or
  * string
  */
-export const findAllByType = (children, type) => {
+ const findAllByType = (children, type) => {
   const result = [];
   let types = [];
 
@@ -33,7 +32,7 @@ export const findAllByType = (children, type) => {
  * Return the first matched child by type, return null otherwise.
  * `type` can be a React element class or string.
  */
-export const findChildByType = (children, type) => {
+const findChildByType = (children, type) => {
   const result = findAllByType(children, type);
 
   return result && result[0];
@@ -43,22 +42,23 @@ export const findChildByType = (children, type) => {
 class ViewProvider extends Component {
   static propTypes = {
     view: PropTypes.object.isRequired,
+		containerId: PropTypes.string.isRequired,
   }
   // you must specify what you’re adding to the context
   static childContextTypes = {
     view: PropTypes.object.isRequired,
+		containerId: PropTypes.string.isRequired,
   }
   getChildContext() {
    const { view, containerId } = this.props
    return { view, containerId };
   }
   render() {
-    // `Children.only` enables us not to add a <div /> for nothing
-    return Children.only(this.props.children)
+    return <div>{this.props.children}</div>;
   }
 }
 
-export const RichEditor = React.createClass({
+const RichEditor = React.createClass({
 	propTypes: {
 		initialContent: PropTypes.object,
 		onChange: PropTypes.func,
@@ -128,8 +128,11 @@ export const RichEditor = React.createClass({
 
 	configurePlugins() {
 
-		const { collaborative, trackChanges, editorKey, firebaseConfig, editorKey, clientID } = this.props;
-		const { CitationsPlugin, FootnotesPlugin, MentionsPlugin, SelectPlugin, TrackPlugin, FirebasePlugin } = require('../plugins');
+		const {pubpubSetup} = require('../prosemirror-setup/setup');
+
+		const { collaborative, trackChanges, firebaseConfig, editorKey, clientID } = this.props;
+		const { CitationsPlugin, MentionsPlugin, SelectPlugin, TrackPlugin, FirebasePlugin } = require('../prosemirror-setup/plugins');
+		const { collab } = require('prosemirror-collab');
 
 		let plugins = pubpubSetup({ schema })
 		.concat(CitationsPlugin)
@@ -137,7 +140,7 @@ export const RichEditor = React.createClass({
 		.concat(MentionsPlugin);
 
 		if (collaborative) {
-			plugins = plugins.concat(FirebasePlugin({selfClientID: clientID, editorKey, firebaseConfig, updateCommits: config.updateCommits}))
+			plugins = plugins.concat(FirebasePlugin({selfClientID: clientID, editorKey, firebaseConfig, updateCommits: this.props.updateCommits}))
 			.concat(collab({clientID: clientID}));
 		}
 		if (trackChanges) {
@@ -157,21 +160,27 @@ export const RichEditor = React.createClass({
 		const place = document.getElementById('pubEditor');
 
 		const contents = this.props.initialContent;
-		migrateMarks(contents);
+		// migrateMarks(contents);
 
 		// create({ place, contents, plugins, props, config, components: { suggestComponent } = {}, handlers: { createFile, onChange, captureError, updateMentions } }) {
-		const { clipboardParser, clipboardSerializer, transformPastedHTML } = require('../clipboard');
+		const { clipboardParser, clipboardSerializer, transformPastedHTML } = require('../prosemirror-setup/clipboard');
 
-		const { buildMenuItems } = require('../menu-config');
+		const { buildMenuItems } = require('../prosemirror-setup/menu-config');
 		const { EditorState } = require('prosemirror-state');
 		const { EditorView } = require('prosemirror-view');
 
 		const configureNodeViews = require('../prosemirror-setup/rich-nodes/configureNodeViews');
 
-		const menu = buildMenuItems(pubSchema);
+		const menu = buildMenuItems(schema);
+
+		const config = {
+			referencesList: this.props.localFiles,
+			trackChanges: this.props.trackChanges,
+			rebaseChanges: this.props.rebaseChanges,
+			updateCommits: this.props.updateCommits,
+		};
 
 		this.plugins = plugins;
-		this.handlers = { createFile, onChange, captureError };
 
 		const stateConfig = {
 			doc: (contents) ? schema.nodeFromJSON(contents) : undefined,
@@ -184,8 +193,6 @@ export const RichEditor = React.createClass({
 		const editorView = document.createElement('div');
 		editorView.className = 'pub-body';
 		place.appendChild(editorView);
-
-		const { editorKey, firebaseConfig } = config;
 
 		const plugins = this.configurePlugins();
 		const nodeViews = this.configurePlugins();
@@ -207,7 +214,6 @@ export const RichEditor = React.createClass({
 			state: state,
 			dispatchTransaction: this._onAction,
 			spellcheck: true,
-			clipboardParser: markdownParser,
 			clipboardSerializer: clipboardSerializer,
 			transformPastedHTML: transformPastedHTML,
 			handleDOMEvents: {
@@ -217,9 +223,9 @@ export const RichEditor = React.createClass({
 				},
 			},
 			viewHandlers: {
-				updateMentions: updateMentions,
+				updateMentions: this.updateMentions,
 			},
-			nodeViews: configureNodeViews(),
+			nodeViews: configureNodeViews,
 			...props
 		});
 
@@ -282,7 +288,7 @@ export const RichEditor = React.createClass({
 		if (rebasePlugin = getPlugin('rebase', this.view.state)) {
 			return rebasePlugin.props.rebaseSteps.bind(rebasePlugin)(this.view, steps);
 		}
-		return null;
+		return Promise.resolve(null);
 	},
 
 	fork(forkID) {
@@ -290,7 +296,7 @@ export const RichEditor = React.createClass({
 		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
 			return firebasePlugin.props.fork.bind(firebasePlugin)(forkID);
 		}
-		return null;
+		return Promise.resolve(null);
 	},
 
 	rebase(forkID) {
@@ -298,7 +304,7 @@ export const RichEditor = React.createClass({
 		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
 			return firebasePlugin.props.rebase.bind(firebasePlugin)(forkID);
 		}
-		return null;
+		return Promise.resolve(null);
 	},
 
 	rebaseByCommit(forkID) {
@@ -306,7 +312,7 @@ export const RichEditor = React.createClass({
 		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
 			return firebasePlugin.props.rebaseByCommit.bind(firebasePlugin)(forkID);
 		}
-		return null;
+		return Promise.resolve(null);
 	},
 
 	commit(msg) {
@@ -314,7 +320,7 @@ export const RichEditor = React.createClass({
 		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
 			return firebasePlugin.props.commit.bind(firebasePlugin)(msg);
 		}
-		return null;
+		return Promise.resolve(null);
 	},
 
 
@@ -323,7 +329,7 @@ export const RichEditor = React.createClass({
 		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
 			return firebasePlugin.props.getForks.bind(firebasePlugin)();
 		}
-		return null;
+		return Promise.resolve(null);
 	},
 
 	_onAction (transaction) {
@@ -351,6 +357,8 @@ export const RichEditor = React.createClass({
 	},
 
 	render: function() {
+
+		console.log('props', this.props);
 
 		return (
 			<div style={{ position: 'relative' }} id={'rich-editor-container'}>

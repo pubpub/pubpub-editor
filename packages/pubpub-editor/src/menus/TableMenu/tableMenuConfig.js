@@ -1,6 +1,6 @@
 const { createTable, addColumnBefore, addColumnAfter, removeColumn, addRowBefore, addRowAfter, removeRow } = require('prosemirror-schema-table');
 
-import { schema } from '../prosemirror-setup';
+import { schema } from '../../prosemirror-setup';
 
 const inTable = function findRow($pos, pred) {
   for (let d = $pos.depth; d > 0; d--)

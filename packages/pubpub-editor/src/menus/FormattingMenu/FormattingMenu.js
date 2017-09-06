@@ -3,8 +3,6 @@ import React, { PropTypes } from 'react';
 import getMenuItems from './formattingMenuConfig';
 
 let styles;
-require('../../style/fonts.scss');
-
 export const FormattingMenu = React.createClass({
 	propTypes: {
 	},

@@ -1,13 +1,10 @@
+import { Autocomplete, FormattingMenu, InsertMenu, TableMenu } from '../menus';
 import React, { PropTypes } from 'react';
 
-import Autocomplete from '../Autocomplete/Autocomplete';
 import { FirebaseEditor } from '../prosemirror-setup/editors/firebaseEditor';
-import FormattingMenu from '../FormattingMenu/FormattingMenu';
-import InsertMenu from '../InsertMenu/InsertMenu';
 import { RichEditor as ProseEditor } from '../prosemirror-setup';
-import TableMenu from '../TableMenu/TableMenu';
 // import ReactDOM from 'react-dom';
-import { createRichMention } from '../Autocomplete/autocompleteConfig';
+import { createRichMention } from '../menus/Autocomplete/autocompleteConfig';
 import { migrateMarks } from '../migrate/migrateDiffs';
 
 export const RichEditor = React.createClass({
@@ -16,8 +13,11 @@ export const RichEditor = React.createClass({
 		onChange: PropTypes.func,
 		handleFileUpload: PropTypes.func,
 		handleReferenceAdd: PropTypes.func,
-		editorKey: PropTypes.string,
-		collaborative: PropTypes.bool,
+		collaborative: PropTypes.shape({
+	    color: PropTypes.string,
+	    fontSize: PropTypes.number
+	  }),
+		trackChanges: PropTypes.bool,
 
 		localUsers: PropTypes.array,
 		localPubs: PropTypes.array,

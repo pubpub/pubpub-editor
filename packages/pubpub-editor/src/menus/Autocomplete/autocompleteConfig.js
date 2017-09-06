@@ -1,4 +1,4 @@
-import { schema } from '../prosemirror-setup';
+import { schema } from '../../prosemirror-setup';
 
 exports.createMarkdownMention = function(cm, selectedObject) {
 		const currentCursor = cm.getCursor();

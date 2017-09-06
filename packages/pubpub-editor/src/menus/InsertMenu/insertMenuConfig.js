@@ -1,5 +1,5 @@
 import { createTable } from 'prosemirror-schema-table';
-import { schema } from '../prosemirror-setup';
+import { schema } from '../../prosemirror-setup';
 
 /* -------------- */
 /* Horizontal Rule */

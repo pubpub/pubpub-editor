@@ -1,4 +1,4 @@
-import { Autocomplete, FormattingMenu, InsertMenu, TableMenu } from '../';
+import { Autocomplete, FormattingMenu, InsertMenu, TableMenu } from '../src/menus';
 import { Button, Menu, MenuItem, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 import React, { PropTypes } from 'react';
 import { jsonToMarkdown, markdownToJSON } from '../src/markdown';
@@ -219,6 +219,7 @@ export const StoryBookCollaborativeEditor = React.createClass({
 			collaborative: this.props.collaborative,
       editorKey: this.state.editorKey,
       trackChanges: this.props.trackChanges || this.state.inFork,
+			clientID: this.props.clientID,
 			firebaseConfig: firebaseConfig,
 			updateCommits: this.updateCommits,
 		};

@@ -1,9 +1,13 @@
 import { joinUp, lift, selectParentNode, setBlockType, toggleMark, wrapIn } from 'prosemirror-commands';
 
-import { schema } from '../prosemirror-setup';
+import { schema } from '../../prosemirror-setup';
 import { wrapInList } from 'prosemirror-schema-list';
 
 function getMenuItems(view) {
+
+	if (!view) {
+		return [];
+	}
 
 	/* Marks */
 	/* -------------- */

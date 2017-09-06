@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 
-import Autocomplete from '../Autocomplete/Autocomplete';
+import Autocomplete from '../menus/Autocomplete/Autocomplete';
 import CodeMirror from 'codemirror';
 // import Radium from 'radium';
 import SimpleMDE from 'simplemde';
-import { createMarkdownMention } from '../Autocomplete/autocompleteConfig';
+import { createMarkdownMention } from '../menus/Autocomplete/autocompleteConfig';
 
 require('../../style/markdown.scss');
 
