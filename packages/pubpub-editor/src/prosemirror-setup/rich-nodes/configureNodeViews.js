@@ -1,4 +1,4 @@
-import { CitationsView, EmbedView, FootnoteView, HtmlView, IframeView, LatexView, MentionView, ReferenceView } from '.index';
+import { CitationsView, EmbedView, FootnoteView, HtmlView, IframeView, LatexView, MentionView, ReferenceView } from './index';
 
 export default {
 	embed: (node, view, getPos) => new EmbedView(node, view, getPos, { block: true }),

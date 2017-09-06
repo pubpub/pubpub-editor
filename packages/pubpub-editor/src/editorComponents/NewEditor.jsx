@@ -8,7 +8,9 @@ import { RichEditor as ProseEditor } from '../prosemirror-setup';
 import TableMenu from '../TableMenu/TableMenu';
 // import ReactDOM from 'react-dom';
 import { createRichMention } from '../Autocomplete/autocompleteConfig';ß
+import { getPlugin } from '../prosemirror-setup/plugins';
 
+import { schema } from '../schema';
 
 /*
  * Find and return all matched children by type. `type` can be a React element class or
@@ -130,115 +132,104 @@ export const RichEditor = React.createClass({
 		return this.editor.toJSON();
 	},
 
+	configurePlugins() {
+
+		const { collaborative, trackChanges, editorKey, firebaseConfig, editorKey, clientID } = this.props;
+		const { CitationsPlugin, FootnotesPlugin, MentionsPlugin, SelectPlugin, TrackPlugin, FirebasePlugin } = require('../plugins');
+
+		let plugins = pubpubSetup({ schema })
+		.concat(CitationsPlugin)
+		.concat(SelectPlugin)
+		.concat(MentionsPlugin);
+
+		if (collaborative) {
+			plugins = plugins.concat(FirebasePlugin({selfClientID: clientID, editorKey, firebaseConfig, updateCommits: config.updateCommits}))
+			.concat(collab({clientID: clientID}));
+		}
+		if (trackChanges) {
+			plugins = plugins.concat(TrackPlugin);
+		}
+
+		return plugins;
+
+	},
+
 	createEditor(docJSON) {
-		if (this.editor) {
-			this.editor.remove();
+		if (this.view) {
+			this.remove();
 		}
 
 		// const place = ReactDOM.findDOMNode(this.refs.container);
 		const place = document.getElementById('pubEditor');
-		const fileMap = this.generateFileMap();
 
 		const contents = this.props.initialContent;
 		migrateMarks(contents);
 
-		const EditorClass = (this.props.collaborative) ? FirebaseEditor : ProseEditor;
+		// create({ place, contents, plugins, props, config, components: { suggestComponent } = {}, handlers: { createFile, onChange, captureError, updateMentions } }) {
+		const { clipboardParser, clipboardSerializer, transformPastedHTML } = require('../clipboard');
 
-		this.editor = new EditorClass({
-			place: place,
-			contents: contents,
-			config: {
-				fileMap: fileMap,
-				referencesList: this.props.localFiles,
-				trackChanges: this.props.trackChanges,
-				rebaseChanges: this.props.rebaseChanges,
-				editorKey: (this.props.collaborative) ? this.props.editorKey : null,
-				firebaseConfig: this.props.firebaseConfig,
-				updateCommits: this.props.updateCommits,
+		const { buildMenuItems } = require('../menu-config');
+		const { EditorState } = require('prosemirror-state');
+		const { EditorView } = require('prosemirror-view');
+
+		const configureNodeViews = require('../prosemirror-setup/rich-nodes/configureNodeViews');
+
+		const menu = buildMenuItems(pubSchema);
+
+		this.plugins = plugins;
+		this.handlers = { createFile, onChange, captureError };
+
+		const stateConfig = {
+			doc: (contents) ? schema.nodeFromJSON(contents) : undefined,
+			schema: schema,
+			plugins: plugins,
+			...config
+		};
+
+		const state = EditorState.create(stateConfig);
+		const editorView = document.createElement('div');
+		editorView.className = 'pub-body';
+		place.appendChild(editorView);
+
+		const { editorKey, firebaseConfig } = config;
+
+		const plugins = this.configurePlugins();
+		const nodeViews = this.configurePlugins();
+
+		const props = {
+			referencesList: this.props.localFiles,
+			createFile: this.props.handleFileUpload,
+			createReference: this.props.handleReferenceAdd,
+			captureError: this.props.onError,
+			onChange: this.onChange,
+			onCursor: this.onCursorChange,
+			updateCommits: this.props.updateCommits,
+			createFile: this.props.handleFileUpload,
+			captureError: this.props.onError,
+			updateMentions: this.updateMentions,
+		};
+
+		this.view = new EditorView(editorView, {
+			state: state,
+			dispatchTransaction: this._onAction,
+			spellcheck: true,
+			clipboardParser: markdownParser,
+			clipboardSerializer: clipboardSerializer,
+			transformPastedHTML: transformPastedHTML,
+			handleDOMEvents: {
+				dragstart: (view, evt) => {
+					evt.preventDefault();
+					return true;
+				},
 			},
-			props: {
-				fileMap: fileMap,
-				referencesList: this.props.localFiles,
-				createFile: this.props.handleFileUpload,
-				createReference: this.props.handleReferenceAdd,
-				captureError: this.props.onError,
-				onChange: this.onChange,
-				onCursor: this.onCursorChange,
-				updateMentions: this.updateMentions,
+			viewHandlers: {
+				updateMentions: updateMentions,
 			},
-			handlers: {
-				createFile: this.props.handleFileUpload,
-				captureError: this.props.onError,
-				updateMentions: this.updateMentions,
-			}
+			nodeViews: configureNodeViews(),
+			...props
 		});
 
-		create({ place, contents, plugins, props, config, components: { suggestComponent } = {}, handlers: { createFile, onChange, captureError, updateMentions } }) {
-			const { clipboardParser, clipboardSerializer, transformPastedHTML } = require('../clipboard');
-
-			const { buildMenuItems } = require('../menu-config');
-			const { EditorState } = require('prosemirror-state');
-			const { EditorView } = require('prosemirror-view');
-
-			const menu = buildMenuItems(pubSchema);
-			// TO-DO: USE UNIQUE ID FOR USER AND VERSION NUMBER
-
-			this.plugins = plugins;
-			this.handlers = { createFile, onChange, captureError };
-
-			const stateConfig = {
-				doc: (contents) ? pubSchema.nodeFromJSON(contents) : undefined,
-				schema: pubSchema,
-				plugins: plugins,
-				...config
-			};
-
-			const state = EditorState.create(stateConfig);
-
-			const reactMenu = document.createElement('div');
-			const editorView = document.createElement('div');
-			editorView.className = 'pub-body';
-			// place.appendChild(reactMenu);
-			place.appendChild(editorView);
-
-			this.menuElem = reactMenu;
-
-			this.view = new EditorView(editorView, {
-				state: state,
-				dispatchTransaction: this._onAction,
-				spellcheck: true,
-				clipboardParser: markdownParser,
-				clipboardSerializer: clipboardSerializer,
-				transformPastedHTML: transformPastedHTML,
-				handleDOMEvents: {
-					dragstart: (view, evt) => {
-						evt.preventDefault();
-						return true;
-					},
-				},
-				viewHandlers: {
-					updateMentions: updateMentions,
-				},
-				nodeViews: {
-					embed: (node, view, getPos) => new EmbedView(node, view, getPos, { block: true }),
-					equation: (node, view, getPos) => new LatexView(node, view, getPos, { block: false }),
-					block_equation: (node, view, getPos) => new LatexView(node, view, getPos, { block: true }),
-					mention: (node, view, getPos) => new MentionView(node, view, getPos, { block: false, suggestComponent }),
-					reference: (node, view, getPos, decorations) => new ReferenceView(node, view, getPos, { decorations, block: false }),
-					citations: (node, view, getPos) => new CitationsView(node, view, getPos, { block: false }),
-					iframe: (node, view, getPos) => new IframeView(node, view, getPos, {}),
-					html_block: (node, view, getPos) => new HtmlView(node, view, getPos, {}),
-					footnote: (node, view, getPos, decorations) => new FootnoteView(node, view, getPos, { decorations, block: false }),
-				},
-				...props
-			});
-
-			return this.view;
-
-		}
-
-
-
+		return this.view;
 	},
 
 	updateMentions(mentionInput) {
@@ -268,46 +259,77 @@ export const RichEditor = React.createClass({
 		createRichMention(this.editor, selectedObject, mentionPos.start, mentionPos.end);
 	},
 
-	generateFileMap: function() {
-		const files = this.props.localFiles || [];
-		const fileMap = {};
-		for (const file of files) {
-			fileMap[file.name] = file.url;
+
+	remove() {
+		if (this.view) {
+			this.view.destroy();
 		}
-
-		return fileMap;
 	},
 
-	playback: function() {
-		this.editor.playbackDoc();
+	getMentionPos() {
+		let mentionsPlugin;
+		if (mentionsPlugin = getPlugin('mentions', this.view.state)) {
+			return mentionsPlugin.props.getMentionPos(this.view);
+		}
+		return null;
 	},
 
-	getTrackedSteps: function() {
-		return this.editor.getTrackedSteps();
+	getTrackedSteps() {
+		let trackPlugin;
+		if (trackPlugin = getPlugin('track', this.view.state)) {
+			const steps =  trackPlugin.props.getTrackedSteps.bind(trackPlugin)(this.view);
+			return steps;
+		}
+		return null;
 	},
 
-	rebaseSteps: function(steps) {
-		this.editor.rebaseSteps(steps);
+	rebaseSteps(steps) {
+		let rebasePlugin;
+		if (rebasePlugin = getPlugin('rebase', this.view.state)) {
+			return rebasePlugin.props.rebaseSteps.bind(rebasePlugin)(this.view, steps);
+		}
+		return null;
 	},
 
-	fork: function(forkID) {
-		return this.editor.fork(forkID);
+	fork(forkID) {
+		let firebasePlugin;
+		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
+			return firebasePlugin.props.fork.bind(firebasePlugin)(forkID);
+		}
+		return null;
 	},
 
-	rebase: function(forkID) {
-		return this.editor.rebase(forkID);
+	rebase(forkID) {
+		let firebasePlugin;
+		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
+			return firebasePlugin.props.rebase.bind(firebasePlugin)(forkID);
+		}
+		return null;
 	},
 
-	rebaseByCommit: function(forkID) {
-		return this.editor.rebaseByCommit(forkID);
+	rebaseByCommit(forkID) {
+		let firebasePlugin;
+		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
+			return firebasePlugin.props.rebaseByCommit.bind(firebasePlugin)(forkID);
+		}
+		return null;
 	},
 
-	getForks: function() {
-		return this.editor.getForks();
+	commit(msg) {
+		let firebasePlugin;
+		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
+			return firebasePlugin.props.commit.bind(firebasePlugin)(msg);
+		}
+		return null;
 	},
 
-	commit: function(msg) {
-		return this.editor.commit(msg);
+
+	getForks() {
+		let firebasePlugin;
+		if (firebasePlugin = getPlugin('firebase', this.view.state)) {
+			return firebasePlugin.props.getForks.bind(firebasePlugin)();
+		}
+		return null;
 	},
 
 	_onAction (transaction) {
@@ -332,7 +354,7 @@ export const RichEditor = React.createClass({
 				return firebasePlugin.props.updateCollab(transaction, newState);
 			}
 		}
-	}
+	},
 
 	render: function() {
 

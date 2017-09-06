@@ -201,8 +201,6 @@ export const StoryBookCollaborativeEditor = React.createClass({
 
 	acceptCommit: function(index) {
 
-		console.log('accepting commit with index ', index);
-
 		return this.state.rebaseCommitHandler(index).then(() => {
 			const { rebaseCommits } = this.state;
 			const updateObj = {};
@@ -304,7 +302,23 @@ export const StoryBookCollaborativeEditor = React.createClass({
 					}
 
 					<div className={(!this.state.inFork) ? 'main-body' : 'fork-body'} style={{ padding: '1em 4em', minHeight: '400px' }}>
-	          <FullEditor ref={(editor) => { this.editor = editor; }} {...editorProps} mode="rich" />
+	          <FullEditor ref={(editor) => { this.editor = editor; }} {...editorProps} mode="rich">
+							<Autocomplete
+								onSelection={this.onMentionSelection}
+								localUsers={this.props.localUsers}
+								localPubs={this.props.localPubs}
+								localFiles={this.props.localFiles}
+								localReferences={this.props.localReferences}
+								localHighlights={this.props.localHighlights}
+								localPages={this.props.localPages}
+								globalCategories={this.props.globalCategories} />
+							<InsertMenu
+								allReferences={this.props.localReferences}
+								handleFileUpload={this.props.handleFileUpload}
+								handleReferenceAdd={this.props.handleReferenceAdd} />
+							<TableMenu />
+							<FormattingMenu />
+						</FullEditor>
 					</div>
 
 					{(comparisonDoc) ?
