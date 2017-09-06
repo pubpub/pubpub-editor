@@ -23,7 +23,10 @@ export const Autocomplete = React.createClass({
 
 		globalCategories: PropTypes.array, // ['pubs', 'users']
 	},
-
+	contextTypes: {
+		containerId: React.PropTypes.string.isRequired,
+		view: React.PropTypes.object.isRequired,
+	},
 	getInitialState() {
 		return {
 			_suggestionCategory: null,

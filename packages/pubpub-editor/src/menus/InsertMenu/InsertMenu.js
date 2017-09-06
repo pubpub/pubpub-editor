@@ -15,7 +15,10 @@ export const InsertMenu = React.createClass({
 		handleReferenceAdd: PropTypes.func,
 		allReferences: PropTypes.array,
 	},
-
+	contextTypes: {
+		containerId: React.PropTypes.string.isRequired,
+		view: React.PropTypes.object.isRequired,
+	},
 	getInitialState() {
 		return {
 			openDialog: undefined,

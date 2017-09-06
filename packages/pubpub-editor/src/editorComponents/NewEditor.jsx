@@ -51,10 +51,10 @@ class ViewProvider extends Component {
   }
   getChildContext() {
    const { view, containerId } = this.props;
-   return { view, containerId };
+   const context = { view, containerId };
+	 return context;
   }
   render() {
-		console.log('rendering',this.props);
     return <div>{this.props.children}</div>;
   }
 }
@@ -95,8 +95,10 @@ const RichEditor = React.createClass({
 
 
 	onChange() {
+		console.log('GOT CHANGE');
 		this.props.onChange(this.view.state.doc.toJSON());
 		React.Children.forEach(this.props.children, (child) => {
+			console.log(child, child.onChange);
 			if (child.onChange) {
 				child.onChange();
 			}
@@ -339,11 +341,9 @@ const RichEditor = React.createClass({
 		const newState = this.view.state.apply(transaction);
 		this.view.updateState(newState);
 		if (transaction.docChanged) {
-			if (this.view.props.onChange) {
-				this.view.props.onChange();
-			}
-		} else if (this.view.props.onCursor) {
-			this.view.props.onCursor();
+			this.onChange();
+		} else {
+			this.onCursorChange();
 		}
 
 		// const trackPlugin = getPlugin('track', this.view.state);
@@ -361,9 +361,7 @@ const RichEditor = React.createClass({
 			<div style={{ position: 'relative' }} id={'rich-editor-container'}>
 				{(this.state.view) ?
 					<ViewProvider view={this.state.view} containerId="rich-editor-container">
-						{this.props.children.map((child) => {
-							return (React.cloneElement(child));
-						})}
+						{this.props.children}
 					</ViewProvider>
 					: null
 				}

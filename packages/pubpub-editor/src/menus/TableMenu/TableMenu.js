@@ -8,7 +8,10 @@ let styles;
 export const TableMenu = React.createClass({
 	propTypes: {
 	},
-
+	contextTypes: {
+		containerId: React.PropTypes.string.isRequired,
+		view: React.PropTypes.object.isRequired,
+	},
 	getInitialState: function() {
 		return { top: null, left: null };
 	},

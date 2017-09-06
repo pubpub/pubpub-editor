@@ -6,6 +6,10 @@ let styles;
 export const FormattingMenu = React.createClass({
 	propTypes: {
 	},
+	contextTypes: {
+		containerId: React.PropTypes.string.isRequired,
+		view: React.PropTypes.object.isRequired,
+	},
 	getInitialState: function() {
 		return { input: null };
 	},
@@ -27,6 +31,7 @@ export const FormattingMenu = React.createClass({
 	},
 
 	onChange: function() {
+		console.log('GOT FORMAT CHANGE');
 		const { view, containerId } = this.context;
 
 		const currentPos = view.state.selection.$to.pos;
@@ -65,9 +70,6 @@ export const FormattingMenu = React.createClass({
 
 		const { input, left, top } = this.state;
 		const { view } = this.context;
-
-		console.log('RENDERING FORMAT', this.context, this.state);
-
 
 		const menuItems = getMenuItems(view);
 
