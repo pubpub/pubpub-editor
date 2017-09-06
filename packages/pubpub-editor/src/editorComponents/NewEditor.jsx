@@ -1,13 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 
-import Autocomplete from '../Autocomplete/Autocomplete';
-import { FirebaseEditor } from '../prosemirror-setup/editors/firebaseEditor';
-import FormattingMenu from '../FormattingMenu/FormattingMenu';
-import InsertMenu from '../InsertMenu/InsertMenu';
-import { RichEditor as ProseEditor } from '../prosemirror-setup';
-import TableMenu from '../TableMenu/TableMenu';
 // import ReactDOM from 'react-dom';
-import { createRichMention } from '../Autocomplete/autocompleteConfig';ß
+import { createRichMention } from '../Autocomplete/autocompleteConfig';
 import { getPlugin } from '../prosemirror-setup/plugins';
 
 import { schema } from '../schema';

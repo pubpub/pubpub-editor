@@ -1,3 +1,4 @@
+import { Autocomplete, FormattingMenu, InsertMenu, TableMenu } from '../';
 import { Button, Menu, MenuItem, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 import React, { PropTypes } from 'react';
 import { jsonToMarkdown, markdownToJSON } from '../src/markdown';
@@ -6,7 +7,7 @@ import { localDiscussions, localFiles, localHighlights, localPages, localPubs, l
 import ExportButton from '../src/ExportMenu/ExportButton';
 // import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
 // import RichEditor from '../src/editorComponents/RichEditor';
-import FullEditor from '../src/editorComponents/RichEditor';
+import FullEditor from '../src/editorComponents/NewEditor';
 import RenderDocumentRebase from '../src/RenderDocument/RenderDocumentRebase';
 import { csltoBibtex } from '../src/references/csltobibtex';
 import { firebaseConfig } from './config/secrets';
@@ -181,7 +182,6 @@ export const StoryBookCollaborativeEditor = React.createClass({
 	},
 
 	clickDoc: function(evt) {
-		console.log('clicked doc', evt.target);
 		const target = evt.target;
 		let parent = target;
 		let commitUUID = null;
@@ -216,16 +216,6 @@ export const StoryBookCollaborativeEditor = React.createClass({
 		const editorProps = {
 			initialContent: this.state.initialContent,
 			onChange: this.onChange,
-			handleFileUpload: this.handleFileUpload,
-			handleReferenceAdd: this.handleReferenceAdd,
-			localFiles: localFiles,
-			localPubs: localPubs,
-			localReferences: localReferences,
-			localUsers: localUsers,
-			localHighlights: localHighlights,
-			localDiscussions: localDiscussions,
-			localPages: localPages,
-			globalCategories: ['pubs', 'users'],
 			collaborative: this.props.collaborative,
       editorKey: this.state.editorKey,
       trackChanges: this.props.trackChanges || this.state.inFork,
@@ -265,12 +255,10 @@ export const StoryBookCollaborativeEditor = React.createClass({
 									</h4>
 								: null }
 
-
 		            {this.state.forks.map((fork) => {
 		              return (
 										<div>
 											<Button className="pt-minimal" minimal onClick={this.joinFork.bind(this, fork.name)} iconName="document" text={fork.name} />
-
 											{(!fork.merged) ?
 												<span>
 													<Button className="pt-minimal" minimal onClick={this.rebaseByCommit.bind(this, fork.name)} iconName="git-merge" />
@@ -281,14 +269,11 @@ export const StoryBookCollaborativeEditor = React.createClass({
 										</div>);
 		            })}
 							</div>
-
 						: null
 	        }
         </div>
 
 				<div style={{display: 'flex', flexDirection: 'row'}}>
-
-
 					{(this.state.inFork) ?
 						<div>
 							<Button onClick={this.joinParent.bind(this, this.state.forkParent)} iconName="circle-arrow-left" text={this.state.forkParent} />
@@ -311,11 +296,11 @@ export const StoryBookCollaborativeEditor = React.createClass({
 								localReferences={this.props.localReferences}
 								localHighlights={this.props.localHighlights}
 								localPages={this.props.localPages}
-								globalCategories={this.props.globalCategories} />
+								globalCategories={['pubs', 'users']} />
 							<InsertMenu
 								allReferences={this.props.localReferences}
-								handleFileUpload={this.props.handleFileUpload}
-								handleReferenceAdd={this.props.handleReferenceAdd} />
+								handleFileUpload={this.handleFileUpload}
+								handleReferenceAdd={this.handleReferenceAdd} />
 							<TableMenu />
 							<FormattingMenu />
 						</FullEditor>
