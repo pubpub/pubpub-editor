@@ -31,7 +31,13 @@
 /*
 Makes empty paragraphs easier to see
 */
-.Prosemirror p {
+
+.ProseMirror {
+  width: 100%;
+  min-height: 200px;
+}
+
+.ProseMirror p {
   min-height: 1em;
 }
 

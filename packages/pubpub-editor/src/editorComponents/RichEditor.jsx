@@ -5,7 +5,6 @@ import { FirebaseEditor } from '../prosemirror-setup/editors/firebaseEditor';
 import { RichEditor as ProseEditor } from '../prosemirror-setup';
 // import ReactDOM from 'react-dom';
 import { createRichMention } from '../menus/Autocomplete/autocompleteConfig';
-import { migrateMarks } from '../migrate/migrateDiffs';
 
 export const RichEditor = React.createClass({
 	propTypes: {
@@ -115,7 +114,6 @@ export const RichEditor = React.createClass({
 		const fileMap = this.generateFileMap();
 
 		const contents = this.props.initialContent;
-		migrateMarks(contents);
 
 		const EditorClass = (this.props.collaborative) ? FirebaseEditor : ProseEditor;
 

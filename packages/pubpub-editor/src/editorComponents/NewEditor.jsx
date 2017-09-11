@@ -87,7 +87,6 @@ const RichEditor = React.createClass({
 		}
 	},
 
-
 	onChange() {
 		this.props.onChange(this.view.state.doc.toJSON());
 		React.Children.forEach(this.props.children, (child) => {
@@ -112,10 +111,6 @@ const RichEditor = React.createClass({
 				child.updateMentions(mentionInput);
 			}
 		});
-	},
-
-	getMarkdown() {
-		return this.editor.toMarkdown();
 	},
 
 	getJSON() {
@@ -156,18 +151,15 @@ const RichEditor = React.createClass({
 		const place = document.getElementById('pubEditor');
 
 		const contents = this.props.initialContent;
+    console.log('GOT CONTENTS', docJSON, contents);
 		// migrateMarks(contents);
 
-		// create({ place, contents, plugins, props, config, components: { suggestComponent } = {}, handlers: { createFile, onChange, captureError, updateMentions } }) {
 		const { clipboardParser, clipboardSerializer, transformPastedHTML } = require('../prosemirror-setup/clipboard');
 
-		const { buildMenuItems } = require('../prosemirror-setup/menu-config');
 		const { EditorState } = require('prosemirror-state');
 		const { EditorView } = require('prosemirror-view');
 
 		const configureNodeViews = require('../prosemirror-setup/rich-nodes/configureNodeViews').default;
-
-		const menu = buildMenuItems(schema);
 		const plugins = this.configurePlugins();
 
 		const config = {
@@ -180,7 +172,7 @@ const RichEditor = React.createClass({
 		this.plugins = plugins;
 
 		const stateConfig = {
-			doc: (contents) ? schema.nodeFromJSON(contents) : undefined,
+			doc: (contents) ? schema.nodeFromJSON(contents) : schema.nodes.doc.create(),
 			schema: schema,
 			plugins: plugins,
 			...config
@@ -349,7 +341,7 @@ const RichEditor = React.createClass({
 	render: function() {
 
 		return (
-			<div style={{ position: 'relative' }} id={'rich-editor-container'}>
+			<div style={{ position: 'relative', width: '100%', minHeight: 250 }} id={'rich-editor-container'}>
 				{(this.state.view) ?
 					<ViewProvider view={this.state.view} editorState={this.state.editorState} containerId="rich-editor-container">
 						{this.props.children}

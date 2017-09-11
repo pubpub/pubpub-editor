@@ -289,7 +289,7 @@ export const StoryBookCollaborativeEditor = React.createClass({
 						: null
 					}
 
-					<div className={(!this.state.inFork) ? 'main-body' : 'fork-body'} style={{ padding: '1em 4em', minHeight: '400px' }}>
+					<div className={(!this.state.inFork) ? 'main-body' : 'fork-body'} style={{ padding: '1em 4em', minHeight: '400px', minWidth: '400px' }}>
 	          <FullEditor ref={(editor) => { this.editor = editor; }} {...editorProps} mode="rich">
 							<Autocomplete
 								onSelection={this.onMentionSelection}

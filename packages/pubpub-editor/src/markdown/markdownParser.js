@@ -9,8 +9,6 @@ const markdownSchema = pubSchema;
 export const markdownParser = new MarkdownParser(markdownSchema,
 	markdownit,
 	{
-		article: {block: 'article'},
-
 		blockquote: {block: 'blockquote'},
 		paragraph: {block: 'paragraph'},
 		list_item: {block: 'list_item'},
@@ -23,11 +21,6 @@ export const markdownParser = new MarkdownParser(markdownSchema,
 		html_block: {node: 'html_block', attrs: tok => {
 			return {content: tok.content};
 		}},
-
-		diff: {node: 'diff', attrs: tok => { return {type: tok.attrGet('type')}; }},
-
-
-
 		hr: {node: 'horizontal_rule'},
 		pagebreak: {node: 'page_break'},
 		math_inline: {node: 'equation', attrs: tok => { return {content: tok.content}; }},

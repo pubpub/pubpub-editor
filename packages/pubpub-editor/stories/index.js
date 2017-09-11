@@ -60,7 +60,7 @@ storiesOf('Full Editor', module)
 
 storiesOf('Collaborative Editing', module)
 .add('Forking & Rebasing', () => (
-	<CollaborativeEditor clientID="test" editorKey="basicDoc" collaborative={true} allowForking={true} />
+	<CollaborativeEditor clientID="test" editorKey="testDoc3" collaborative={true} allowForking={true} />
 ))
 .add('Track Changes in Forks', () => (
 	<CollaborativeEditor clientID="test" editorKey="basicDoc01" collaborative={true} trackChanges={true} allowForking={false} />

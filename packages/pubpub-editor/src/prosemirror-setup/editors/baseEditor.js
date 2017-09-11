@@ -16,11 +16,9 @@ class BaseEditor {
 		const { clipboardParser, clipboardSerializer, transformPastedHTML } = require('../clipboard');
 		const { markdownParser } = require('../../markdown/markdownParser');
 
-		const { buildMenuItems } = require('../menu-config');
 		const { EditorState } = require('prosemirror-state');
 		const { EditorView } = require('prosemirror-view');
 
-		const menu = buildMenuItems(pubSchema);
 		// TO-DO: USE UNIQUE ID FOR USER AND VERSION NUMBER
 
 		this.plugins = plugins;
@@ -189,7 +187,6 @@ class BaseEditor {
 				return firebasePlugin.props.updateCollab(transaction, newState);
 			}
 		}
-
 	}
 
 	changeNode = (currentFrom, nodeType, nodeAttrs) => {

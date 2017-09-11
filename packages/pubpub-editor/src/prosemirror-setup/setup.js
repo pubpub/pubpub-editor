@@ -14,9 +14,6 @@ const {keymap} = require('prosemirror-keymap');
 const {history} = require('prosemirror-history');
 const {baseKeymap} = require('prosemirror-commands');
 const {Plugin} = require('prosemirror-state');
-
-const {buildMenuItems} = require('./menu-config');
-exports.buildMenuItems = buildMenuItems
 const {buildKeymap} = require('./keymap');
 exports.buildKeymap = buildKeymap;
 
@@ -28,13 +25,7 @@ function pubpubSetup(options) {
 	];
 	if (options.history !== false) deps.push(history())
 
-	return deps.concat(new Plugin({
-		props: {
-			class: () => "PubPub-editor-style",
-			menuContent: buildMenuItems(options.schema).fullMenu,
-			floatingMenu: true
-		}
-	}));
+	return deps;
 }
 
 exports.pubpubSetup = pubpubSetup;
