@@ -11,6 +11,7 @@ export const TableMenu = React.createClass({
 		view: React.PropTypes.object.isRequired,
 		editorState: React.PropTypes.object.isRequired,
 	},
+	statics: {title: "a title"},
 	getInitialState: function() {
 		return { top: null, left: null };
 	},
@@ -22,7 +23,7 @@ export const TableMenu = React.createClass({
 	onChange() {
 		const { view, containerId } = this.props;
 		const sel = view.state.selection;
-		if (inTable(sel.$from) == -1 || !sel.empty) {
+		if (inTable(sel.$from) === -1 || !sel.empty) {
 			if (this.state.top) {
 				this.setState({ top: null });
 			}

@@ -45,20 +45,10 @@ class ViewProvider extends Component {
 		editorState: PropTypes.object.isRequired,
 		containerId: PropTypes.string.isRequired,
   }
-  // you must specify what you’re adding to the context
-  static childContextTypes = {
-    view: PropTypes.object.isRequired,
-		editorState: PropTypes.object.isRequired,
-		containerId: PropTypes.string.isRequired,
-  }
-  getChildContext() {
-   const { view, containerId, editorState } = this.props;
-   return { view, containerId, editorState };
-  }
   render() {
-		const { view, containerId, editorState } = this.props;
+		const { view, containerId, editorState, children } = this.props;
     return <div>
-			{ React.Children.map(this.props.children, (child => React.cloneElement(child, { view, containerId, editorState } )))}
+			{ React.Children.map(children, (child => React.cloneElement(child, { view, containerId, editorState } )))}
 		</div>;
   }
 }

@@ -3,17 +3,19 @@ const { Schema } = require('prosemirror-model');
 const nodes = {
 
 	doc: {
-		content: 'article citations',
+		content: 'block+',
 		attrs: {
 			meta: { default: {} },
 		}
 	},
 
+	/*
 	article: {
 		content: 'block+',
 		parseDOM: [{ tag: 'div.article' }],
 		toDOM(node) { return ['div', { class: 'article' }, 0]; }
 	},
+	*/
 
 	paragraph: {
 		content: 'inline<_>*',
@@ -53,17 +55,6 @@ const nodes = {
 		inline: true,
 	},
 
-	diff: {
-		group: 'inline',
-		content: 'inline<_>*',
-		attrs: {
-			type: { default: 'plus' },
-		},
-		inline: true,
-		toDOM(node) { return ['span', { class: `diff-marker ${(node.attrs.type === 'plus') ? 'added' : 'removed'}` }, 0]; }
-	},
-
-
 	block_equation: {
 		atom: true,
 		group: 'block',
@@ -73,11 +64,10 @@ const nodes = {
 		},
 	},
 
-
 	citations: {
 		atom: true,
 		content: 'citation*',
-		group: 'footer',
+		group: 'block',
 		parseDOM: [{ tag: 'hr.citations' }],
 		selectable: false,
 		toDOM() { return ['div', ['hr']]; }
@@ -279,7 +269,7 @@ const marks = {
 		},
 		parseDOM: [],
 		toDOM(node) { return ['span', { class: `diff-marker added`, "data-commit": node.attrs.commitID }, 0]; },
-		excludes: "diff_minus"
+		excludes: "diff_minus",
 	},
 
 	diff_minus: {
