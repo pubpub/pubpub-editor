@@ -11,8 +11,6 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _renderFiles = require('@pubpub/render-files');
-
 var _embedMenu = require('./embedMenu');
 
 var _embedMenu2 = _interopRequireDefault(_embedMenu);
@@ -21,9 +19,17 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
+var _RenderFile = require('../../render/RenderFile');
+
+var _RenderFile2 = _interopRequireDefault(_RenderFile);
+
 var _reactResizableBox = require('react-resizable-box');
 
 var _reactResizableBox2 = _interopRequireDefault(_reactResizableBox);
+
+var _urlToType = require('../../../utils/urlToType');
+
+var _urlToType2 = _interopRequireDefault(_urlToType);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -105,7 +111,7 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 
 		var caption = this.state.caption || this.props.caption;
 		var data = this.props.data || {};
-		var file = { url: url, name: filename, type: (0, _renderFiles.URLToType)(url) };
+		var file = { url: url, name: filename, type: (0, _urlToType2.default)(url) };
 
 		var popoverContent = _react2.default.createElement(_embedMenu2.default, { align: align, createCaption: this.props.createCaption, removeCaption: this.props.removeCaption, embedAttrs: this.props, updateParams: this.updateAttrs });
 
@@ -152,8 +158,8 @@ var EmbedComponent = exports.EmbedComponent = _react2.default.createClass({
 									_this.updateAttrs({ size: ratio + '%' });
 									// this.updateAttrs({size: clientSize.width + 'px' });
 								} },
-							_react2.default.createElement(_renderFiles.RenderFile, { draggable: 'false', style: styles.image({ selected: selected }), file: file })
-						) : _react2.default.createElement(_renderFiles.RenderFile, { draggable: 'false', style: styles.image({ selected: selected }), file: file }) : _react2.default.createElement(
+							_react2.default.createElement(_RenderFile2.default, { draggable: 'false', style: styles.image({ selected: selected }), file: file })
+						) : _react2.default.createElement(_RenderFile2.default, { draggable: 'false', style: styles.image({ selected: selected }), file: file }) : _react2.default.createElement(
 							'div',
 							{ className: 'pt-callout pt-intent-danger' },
 							_react2.default.createElement(

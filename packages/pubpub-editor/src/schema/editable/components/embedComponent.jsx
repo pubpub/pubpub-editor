@@ -1,10 +1,11 @@
 import { EditableText, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 import React, {PropTypes} from 'react';
-import { RenderFile, URLToType } from '@pubpub/render-files';
 
 import EmbedMenu from './embedMenu';
 import ReactDOM from 'react-dom';
+import RenderFile from '../../render/RenderFile';
 import Resizable from 'react-resizable-box';
+import URLToType from '../../../utils/urlToType';
 
 let styles = {};
 
