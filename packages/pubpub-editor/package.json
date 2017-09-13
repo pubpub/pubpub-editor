@@ -2,7 +2,7 @@
   "name": "@pubpub/editor",
   "version": "3.0.0",
   "description": "A variety of editors (WSIWYG, Markdown, Code, etc.) geared towards Academic Publishing. Used in the PubPub platform.",
-  "main": "./dist/index.js",
+  "main": "./index.js",
   "scripts": {
     "build": "cross-env BABEL_ENV=development babel src --out-dir dist --copy-files",
     "prepublish": "npm run build",
@@ -28,7 +28,6 @@
     "url": "git://github.com/pubpub/pubpub-packages.git"
   },
   "dependencies": {
-    "@pubpub/render-files": "^2.0.64",
     "biblatex-csl-converter": "^0.21.7",
     "bluebird": "^3.5.0",
     "classnames": "^2.2.5",
