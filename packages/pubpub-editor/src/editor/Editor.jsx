@@ -70,9 +70,7 @@ const Editor = React.createClass({
 		// const place = ReactDOM.findDOMNode(this.refs.container);
     const schema = createSchema();
 		const place = document.getElementById('pubEditor');
-
-    console.log('schema', schema);
-
+    
 		const contents = this.props.initialContent;
 		const plugins = this.configurePlugins();
 
@@ -82,8 +80,6 @@ const Editor = React.createClass({
 			rebaseChanges: this.props.rebaseChanges,
 			updateCommits: this.props.updateCommits,
 		};
-
-    console.log(plugins);
 
 		const stateConfig = {
 			doc: (contents) ? schema.nodeFromJSON(contents) : schema.nodes.doc.create(),

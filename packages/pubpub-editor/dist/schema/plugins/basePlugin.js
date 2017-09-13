@@ -60,3 +60,4 @@ class Plugin {
 }
 
 */
+"use strict";

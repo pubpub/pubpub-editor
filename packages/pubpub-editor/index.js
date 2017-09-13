@@ -1,1 +1,1 @@
-export { Autocomplete, InsertMenu, FormattingMenu, TableMenu } from './dist/menus';
+exports.Editor = require('./dist/editor/Editor').default;
