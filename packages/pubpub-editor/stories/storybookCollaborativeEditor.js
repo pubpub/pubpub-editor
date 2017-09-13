@@ -1,18 +1,14 @@
-import { Autocomplete, FormattingMenu, InsertMenu, TableMenu } from '../src/menus';
+import { Autocomplete, CollaborativeAddon, FormattingMenu, InsertMenu, TableMenu } from '../src/addons';
 import { Button, Menu, MenuItem, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 import React, { PropTypes } from 'react';
-import { jsonToMarkdown, markdownToJSON } from '../src/markdown';
 import { localDiscussions, localFiles, localHighlights, localPages, localPubs, localReferences, localUsers } from './sampledocs/autocompleteLocalData';
 
-import ExportButton from '../src/ExportMenu/ExportButton';
 // import MarkdownEditor from '../src/editorComponents/MarkdownEditor';
 // import RichEditor from '../src/editorComponents/RichEditor';
-import FullEditor from '../src/editorComponents/NewEditor';
-import RenderDocumentRebase from '../src/RenderDocument/RenderDocumentRebase';
-import { csltoBibtex } from '../src/references/csltobibtex';
+import FullEditor from '../src/editor/Editor';
+import RenderDocumentRebase from '../src/schema/render/RenderDocumentRebase';
+import { csltoBibtex } from '../src/utils/references/csltobibtex';
 import { firebaseConfig } from './config/secrets';
-import { markdownToExport } from '../src/ExportMenu';
-import request from 'superagent';
 import resetFirebase from './firebase/reset';
 import { s3Upload } from './utils/uploadFile';
 import update from 'react-addons-update';
@@ -101,15 +97,15 @@ export const StoryBookCollaborativeEditor = React.createClass({
 		}
 	},
 
+	componentWillUpdate: function() {
+		if (this.collab && (!this.state.forks || this.state.forks.length === 0) && this.state.editorState) {
+			this.getForks();
+		}
+	},
+
 	onChange: function(newContent) {
 		this.setState({ content: newContent });
 	},
-
-  componentDidMount: function() {
-		if (this.props.allowForking) {
-			this.getForks();
-		}
-  },
 
 	handleFileUpload: function(file, callback) {
 		// Do the uploading - then callback
@@ -129,10 +125,18 @@ export const StoryBookCollaborativeEditor = React.createClass({
 	},
 
   fork: function() {
-    this.editor.fork('testfork'+Math.round(Math.random()*1000)).then((forkName) => {
+    this.collab.fork(this.props.editorKey+Math.round(Math.random()*1000)).then((forkName) => {
       this.getForks();
     });
   },
+
+	getForks: function() {
+		this.collab.getForks().then((forks) => {
+			if (forks) {
+				this.setState({ forks });
+			}
+		});
+	},
 
   rebase: function(forkID) {
     this.editor.rebase(forkID).then(() => {
@@ -156,13 +160,7 @@ export const StoryBookCollaborativeEditor = React.createClass({
     this.setState({ editorKey: name, inFork: true, forkParent: this.state.editorKey });
   },
 
-  getForks: function() {
-    this.editor.getForks().then((forks) => {
-      if (forks) {
-        this.setState({ forks });
-      }
-    });
-  },
+
 
 	commit: function() {
 		const commitMsg = this.commitArea.value;
@@ -218,11 +216,7 @@ export const StoryBookCollaborativeEditor = React.createClass({
 		const editorProps = {
 			initialContent: this.state.initialContent,
 			onChange: this.onChange,
-			collaborative: this.props.collaborative,
-      editorKey: this.state.editorKey,
       trackChanges: this.props.trackChanges || this.state.inFork,
-			clientID: this.props.clientID,
-			firebaseConfig: firebaseConfig,
 			updateCommits: this.updateCommits,
 		};
 
@@ -290,6 +284,7 @@ export const StoryBookCollaborativeEditor = React.createClass({
 					}
 
 					<div className={(!this.state.inFork) ? 'main-body' : 'fork-body'} style={{ padding: '1em 4em', minHeight: '400px', minWidth: '400px' }}>
+
 	          <FullEditor ref={(editor) => { this.editor = editor; }} {...editorProps} mode="rich">
 							<Autocomplete
 								onSelection={this.onMentionSelection}
@@ -306,6 +301,14 @@ export const StoryBookCollaborativeEditor = React.createClass({
 								handleReferenceAdd={this.handleReferenceAdd} />
 							<TableMenu />
 							<FormattingMenu />
+							{/*What happens if a collaborative= plugin is removed?*/}
+							<CollaborativeAddon
+								ref={(collab) => {this.collab = collab;}}
+								firebaseConfig={firebaseConfig}
+								clientID={this.props.clientID}
+								editorKey={this.props.editorKey}
+							/>
+
 						</FullEditor>
 					</div>
 
