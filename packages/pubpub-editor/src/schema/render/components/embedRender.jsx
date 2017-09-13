@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 
-import { RenderFile } from '@pubpub/render-files';
-import { URLToType } from '@pubpub/render-files';
+import RenderFile from '../RenderFile';
+import URLToType from '../../../utils/urlToType';
 
 let styles = {};
 
