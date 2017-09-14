@@ -247,16 +247,32 @@ const rebaseDocument = ({ view, doc, forkedSteps, newSteps, changesRef, clientID
 
 let firebaseApp;
 
-const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, updateCommits, pluginKey }) => {
+const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, rootRef, editorRef,  updateCommits, pluginKey }) => {
 
   if (!firebaseApp) {
     firebaseApp = firebase.initializeApp(firebaseConfig);
   }
-  const db = firebase.database(firebaseApp);
+  let firebaseDb;
+  let firebaseRef;
 
-  const collabEditing = require('prosemirror-collab').collab;
-  const firebaseDb = firebase.database();
-  const firebaseRef = firebaseDb.ref(editorKey);
+  if (firebaseConfig) {
+    const db = firebase.database(firebaseApp);
+    firebaseDb = firebase.database();
+    firebaseRef = firebaseDb.ref(editorKey);
+  } else if (rootRef) {
+    firebaseDb = rootRef;
+    if (editorKey) {
+      firebaseRef = firebaseDb.ref(editorKey);
+    } else if (editorRef) {
+      firebaseRef = editorRef;
+    } else {
+      console.error('Did not include a reference to the editor firebase instance or an editor key');
+      return;
+    }
+  } else {
+    console.error('Did not include a firebase config or root ref');
+    return;
+  }
 
   const checkpointRef  = firebaseRef.child('checkpoint');
   const changesRef = firebaseRef.child('changes');
