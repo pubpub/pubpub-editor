@@ -18,7 +18,9 @@ export const CollaborativeAddon = React.createClass({
 	},
 	statics: {
 		getPlugins({ firebaseConfig, clientID, editorKey }) {
-			return [ FirebasePlugin({selfClientID: clientID, editorKey, firebaseConfig, pluginKey: firebaseKey}), collab({clientID: clientID})];
+			// need to add a random client ID number to account for sessions with the same client
+			const selfClientID = clientID + Math.round(Math.random() * 10000);
+			return [ FirebasePlugin({selfClientID: clientID, editorKey, firebaseConfig, pluginKey: firebaseKey}), collab({clientID: selfClientID})];
 		},
 	},
 	getInitialState: function() {

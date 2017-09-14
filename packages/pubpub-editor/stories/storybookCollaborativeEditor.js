@@ -301,7 +301,6 @@ export const StoryBookCollaborativeEditor = React.createClass({
 								handleReferenceAdd={this.handleReferenceAdd} />
 							<TableMenu />
 							<FormattingMenu />
-							{/*What happens if a collaborative= plugin is removed?*/}
 							<CollaborativeAddon
 								ref={(collab) => {this.collab = collab;}}
 								firebaseConfig={firebaseConfig}
