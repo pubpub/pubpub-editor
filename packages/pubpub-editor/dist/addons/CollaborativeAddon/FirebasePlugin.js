@@ -489,6 +489,8 @@ var FirebasePlugin = function FirebasePlugin(_ref9) {
   var selfClientID = _ref9.selfClientID,
       editorKey = _ref9.editorKey,
       firebaseConfig = _ref9.firebaseConfig,
+      rootRef = _ref9.rootRef,
+      editorRef = _ref9.editorRef,
       updateCommits = _ref9.updateCommits,
       pluginKey = _ref9.pluginKey;
 
@@ -496,11 +498,27 @@ var FirebasePlugin = function FirebasePlugin(_ref9) {
   if (!firebaseApp) {
     firebaseApp = _firebase2.default.initializeApp(firebaseConfig);
   }
-  var db = _firebase2.default.database(firebaseApp);
+  var firebaseDb = void 0;
+  var firebaseRef = void 0;
 
-  var collabEditing = require('prosemirror-collab').collab;
-  var firebaseDb = _firebase2.default.database();
-  var firebaseRef = firebaseDb.ref(editorKey);
+  if (firebaseConfig) {
+    var db = _firebase2.default.database(firebaseApp);
+    firebaseDb = _firebase2.default.database();
+    firebaseRef = firebaseDb.ref(editorKey);
+  } else if (rootRef) {
+    firebaseDb = rootRef;
+    if (editorKey) {
+      firebaseRef = firebaseDb.ref(editorKey);
+    } else if (editorRef) {
+      firebaseRef = editorRef;
+    } else {
+      console.error('Did not include a reference to the editor firebase instance or an editor key.');
+      return;
+    }
+  } else {
+    console.error('Did not include a firebase config or root ref.x');
+    return;
+  }
 
   var checkpointRef = firebaseRef.child('checkpoint');
   var changesRef = firebaseRef.child('changes');

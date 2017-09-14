@@ -1,9 +1,3 @@
-import { AddMarkStep, ReplaceAroundStep, ReplaceStep } from 'prosemirror-transform';
-
-import cuid from 'cuid';
-import { getPlugin } from './pluginKeys';
-
-
 /*
 Functions:
   - Keep an up to date document that actually works and error checkcs
@@ -12,6 +6,14 @@ Functions:
   - Ability to merge between
   - individual commits get uuids, store and replace by them?
 */
+
+
+/*
+import { AddMarkStep, ReplaceAroundStep, ReplaceStep } from 'prosemirror-transform';
+
+import cuid from 'cuid';
+import { getPlugin } from './pluginKeys';
+
 
 
 
@@ -53,3 +55,4 @@ class TrackedDocumentRef extends DocumentRef {
 
 
 exports.CommitTracker = CommitTracker;
+*/

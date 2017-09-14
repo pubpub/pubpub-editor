@@ -71,33 +71,34 @@ var Editor = _react2.default.createClass({
 		var schema = (0, _schema.createSchema)();
 
 		var plugins = (0, _setup.getBasePlugins)({ schema: schema });
-		var _iteratorNormalCompletion = true;
-		var _didIteratorError = false;
-		var _iteratorError = undefined;
+		if (this.props.children && this.props.children.length > 0) {
+			var _iteratorNormalCompletion = true;
+			var _didIteratorError = false;
+			var _iteratorError = undefined;
 
-		try {
-			for (var _iterator = this.props.children[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-				var child = _step.value;
-
-				if (child.type.getPlugins) {
-					plugins = plugins.concat(child.type.getPlugins(child.props));
-				}
-			}
-		} catch (err) {
-			_didIteratorError = true;
-			_iteratorError = err;
-		} finally {
 			try {
-				if (!_iteratorNormalCompletion && _iterator.return) {
-					_iterator.return();
+				for (var _iterator = this.props.children[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+					var child = _step.value;
+
+					if (child.type.getPlugins) {
+						plugins = plugins.concat(child.type.getPlugins(child.props));
+					}
 				}
+			} catch (err) {
+				_didIteratorError = true;
+				_iteratorError = err;
 			} finally {
-				if (_didIteratorError) {
-					throw _iteratorError;
+				try {
+					if (!_iteratorNormalCompletion && _iterator.return) {
+						_iterator.return();
+					}
+				} finally {
+					if (_didIteratorError) {
+						throw _iteratorError;
+					}
 				}
 			}
 		}
-
 		if (trackChanges) {
 			plugins = plugins.concat(TrackPlugin);
 		}
