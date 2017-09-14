@@ -266,11 +266,11 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, rootRef, edit
     } else if (editorRef) {
       firebaseRef = editorRef;
     } else {
-      console.error('Did not include a reference to the editor firebase instance or an editor key');
+      console.error('Did not include a reference to the editor firebase instance or an editor key.');
       return;
     }
   } else {
-    console.error('Did not include a firebase config or root ref');
+    console.error('Did not include a firebase config or root ref.x');
     return;
   }
 

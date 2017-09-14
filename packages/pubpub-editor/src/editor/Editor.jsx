@@ -50,11 +50,13 @@ const Editor = React.createClass({
     const schema = createSchema();
 
 		let plugins = getBasePlugins({ schema });
-    for (const child of this.props.children) {
-      if (child.type.getPlugins) {
-        plugins = plugins.concat(child.type.getPlugins(child.props));
-      }
-    }
+		if (this.props.children && this.props.children.length > 0) {
+			for (const child of this.props.children) {
+				if (child.type.getPlugins) {
+					plugins = plugins.concat(child.type.getPlugins(child.props));
+				}
+			}
+		}
 		if (trackChanges) {
 			plugins = plugins.concat(TrackPlugin);
 		}
@@ -70,7 +72,7 @@ const Editor = React.createClass({
 		// const place = ReactDOM.findDOMNode(this.refs.container);
     const schema = createSchema();
 		const place = document.getElementById('pubEditor');
-    
+
 		const contents = this.props.initialContent;
 		const plugins = this.configurePlugins();
 
