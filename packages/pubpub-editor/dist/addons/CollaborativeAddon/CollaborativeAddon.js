@@ -41,7 +41,7 @@ var CollaborativeAddon = exports.CollaborativeAddon = _react2.default.createClas
 
 			// need to add a random client ID number to account for sessions with the same client
 			var selfClientID = clientID + Math.round(Math.random() * 10000);
-			return [(0, _FirebasePlugin2.default)({ selfClientID: clientID, editorKey: editorKey, firebaseConfig: firebaseConfig, pluginKey: firebaseKey }), (0, _prosemirrorCollab.collab)({ clientID: selfClientID })];
+			return [(0, _FirebasePlugin2.default)({ selfClientID: selfClientID, editorKey: editorKey, firebaseConfig: firebaseConfig, pluginKey: firebaseKey }), (0, _prosemirrorCollab.collab)({ clientID: selfClientID })];
 		}
 	},
 	getInitialState: function getInitialState() {
