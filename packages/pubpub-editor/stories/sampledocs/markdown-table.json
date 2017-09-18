@@ -1,3 +1,0 @@
-{
-  "md": "This is a reference [@Hinton2006] and a footnote ^[this is a footnote] !! great\n\n![A space in a title.gif](A space in a title.gif)\n\n[How to PubPub](/pub/howto) yo\n\n$1+4*8$\n![a caption](giphy.gif){align=left height=200 width=200}\n$$1+4*8$$\n\n|12|2|\n|---------|---------|\n|34|4|\n\ngasg"
-}

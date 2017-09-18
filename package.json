@@ -1,5 +1,70 @@
 {
+  "name": "@pubpub/editor",
+  "version": "3.1.0",
+  "description": "Collaborative Community Editor",
+  "main": "dist/index.js",
+  "author": "PubPub Team <pubpub@media.mit.edu>",
+  "license": "GPL-2.0+",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pubpub/pubpub-editor.git"
+  },
+  "scripts": {
+    "clean": "rm -rf dist && mkdir dist",
+    "build": "npm run clean && babel src -d dist --copy-files",
+    "lint": "eslint src stories .storybook",
+    "start": "start-storybook -p 9002 -c .storybook"
+  },
+  "dependencies": {
+    "prosemirror-commands": "^0.23.0",
+    "prosemirror-history": "^0.23.0",
+    "prosemirror-keymap": "^0.23.0",
+    "prosemirror-model": "^0.23.0",
+    "prosemirror-schema-list": "^0.23.0",
+    "prosemirror-schema-table": "^0.22.0",
+    "prosemirror-state": "^0.23.0",
+    "prosemirror-view": "^0.23.0"
+  },
+  "peerDependencies": {
+    "@blueprintjs/core": "^1.25.1",
+    "react": "^15.5.4",
+    "react-addons-css-transition-group": "^15.6.0",
+    "react-dom": "^15.5.4"
+  },
   "devDependencies": {
-    "lerna": "2.0.0-beta.38"
+    "@blueprintjs/core": "^1.25.1",
+    "@storybook/addon-options": "^3.2.6",
+    "@storybook/react": "^3.2.8",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^7.2.3",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "babel-runtime": "^6.26.0",
+    "bourbon": "^4.3.4",
+    "css-loader": "^0.28.5",
+    "eslint": "^4.5.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-import-resolver-node": "^0.3.1",
+    "eslint-plugin-babel": "^4.1.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.3.0",
+    "file-loader": "^0.11.2",
+    "node-sass": "^4.5.2",
+    "prop-types": "^15.5.10",
+    "react": "^15.5.4",
+    "react-addons-css-transition-group": "^15.6.0",
+    "react-dom": "^15.5.4",
+    "sass-loader": "^6.0.5",
+    "style-loader": "^0.18.2",
+    "url-loader": "^0.5.9",
+    "webpack": "^3.5.5"
+  },
+  "engines": {
+    "node": "8.2.1"
   }
 }

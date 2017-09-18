@@ -1,9 +1,0 @@
-node_modules
-.DS_Store
-*.log
-npm-debug.log
-stats.json
-webpack-stats.json
-misc/*
-translations/messages
-stories/config/secrets.js

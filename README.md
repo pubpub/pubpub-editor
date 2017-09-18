@@ -1,27 +1,25 @@
-# pubpub-packages
-NPM packages released by the pubpub org.
+# PubPub-Editor v4
 
-Other PubPub repos can be found here:
-- PubPub Core: https://github.com/pubpub/pubpub
-- PubPub Editor: https://github.com/pubpub/pubpub-editor
+Collaborative Community Editing
 
-The following packages are found in thise repo:
+This repo is a refactor and new repo for the work done by @ThariqS at [pubpub-packages/pubpub-editor](https://github.com/pubpub/pubpub-packages/tree/master/packages/pubpub-editor).
 
-## PubPub Prose
+## To Install
 
-The core of the pubpub editing experience, built on top of prosemirror: https://github.com/ProseMirror/prosemirror. This repo defines the ppub JSON format for documents (built on top of prosemirror's docJSON format), as well as plugins, menus and editors.
+```
+npm install
+```
 
-### How to test and develop
-- To build run `npm run watch`
-- To test the react components run `npm run storybook`
+## To Run Dev Mode
 
-## PubPub Render Files
+```
+npm start
+```
 
-Used for rendering files on PubPub, includes support for markdown files and ppub flavored documents.
+Navigate to `localhost:9001`	
 
-### How to test and develop
-- To build and watch run `npm run watch`
+## To Build Production Version
 
-## PubPub Pandoc Converter
-
-Converts from PubPub JSON to Pandoc JSON.
+```
+npm run build
+```

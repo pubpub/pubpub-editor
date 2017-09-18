@@ -1,5 +1,0 @@
-| simple  | table |
-|---------|-------|
-| example | okpls |
-
-
