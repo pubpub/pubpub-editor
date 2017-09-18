@@ -7,7 +7,7 @@ import EditorProvider from './EditorProvider';
 // import { configureClipboard } from './schema/setup/clipboard';
 // import configureNodeViews from '../schema/editable/configure';
 // import { createRichMention } from '../addons/Autocomplete/autocompleteConfig';
-import { createSchema } from './schema';
+import createSchema from './schema';
 import { getBasePlugins } from './schema/setup';
 
 const propTypes = {
@@ -67,6 +67,29 @@ class Editor extends Component {
 		}
 
 		return plugins;
+	}
+
+	configureSchema() {
+
+		const schemaNodes = {};
+		const schemaMarks = {};
+		if (this.props.children && this.props.children.length > 0) {
+			this.props.children.forEach((child)=> {
+				if (child.type.schema) {
+					const { nodes, marks } = child.type.schema;
+					Object.keys(nodes || {}).forEach((key) => {
+						schemaNodes[key] = nodes[key];
+					});
+					Object.keys(marks || {}).forEach((key) => {
+						schemaMarks[key] = marks[key];
+					});
+				}
+			});
+		}
+
+		const schema = createSchema({ nodes: schemaNodes, marks: schemaMarks });
+
+		return schema;
 	}
 
 	createEditor() {

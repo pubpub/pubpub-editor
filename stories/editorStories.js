@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { Editor } from 'index';
@@ -11,7 +12,25 @@ storiesOf('Editor', module)
 .add('Default', () => (
 	<div>
 		<Editor onChange={onChange}>
-			<FormattingMenu />
+			{/*
+				<FormattingMenu />
+				<InsertMenu />
+				<Collaborative />
+				<Rebase />
+
+				<Latex />
+				<Footnotes />	
+				<Iframe />
+				<Image />
+				<Video />
+				<Audio />
+				<Discussion />
+				<Reference />
+				<ReferenceList />
+				<UserMention />
+				<File />
+			*/}
+
 		</Editor>
 	</div>
 ));

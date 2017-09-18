@@ -16,7 +16,6 @@ function getMenuItems(view) {
 		if (empty) {
 			return type.isInSet(state.storedMarks || $from.marks());
 		}
-		console.log(state.doc.rangeHasMark(from, to, type), from, to, empty)
 		return state.doc.rangeHasMark(from, to, type);
 	}
 
