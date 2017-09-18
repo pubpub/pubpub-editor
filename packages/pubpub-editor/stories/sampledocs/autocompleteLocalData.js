@@ -1,4 +1,4 @@
-import bibtexToCSL from '../../src/references/bibtextocsl';
+import bibtexToCSL from '../../src/utils/references/bibtextocsl';
 import samplebibtex from './samplebibtex';
 
 export const localFiles = [

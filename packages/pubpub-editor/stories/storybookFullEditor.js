@@ -244,8 +244,8 @@ export const StoryBookFullEditor = React.createClass({
 			localHighlights: localHighlights,
 			localDiscussions: localDiscussions,
 			localPages: localPages,
-
 			globalCategories: ['pubs', 'users'],
+			collaborative: this.props.collaborative,
 		};
 		const pdftexTemplates = this.state.pdftexTemplates;
 		const popoverContent = (

@@ -1,4 +1,4 @@
-import samplepolicy from './samplepolicy';
+import getPolicy from './getPolicy';
 
 export function s3Upload(file, progressEvent, finishEvent, index) {
 	function beginUpload() {
@@ -11,11 +11,13 @@ export function s3Upload(file, progressEvent, finishEvent, index) {
 		const fileType = file.type !== undefined ? file.type : 'image/jpeg';
 		const formData = new FormData();
 
+		const policy = getPolicy();
+
 		formData.append('key', filename);
 		formData.append('AWSAccessKeyId', 'AKIAJQ5MNLCTIMY2ZF7Q');
 		formData.append('acl', 'public-read');
-		formData.append('policy', samplepolicy.policy);
-		formData.append('signature', samplepolicy.signature);
+		formData.append('policy', policy.policy);
+		formData.append('signature', policy.signature);
 		formData.append('Content-Type', fileType);
 		formData.append('success_action_status', '200');
 		formData.append('file', file);
@@ -39,8 +41,8 @@ export function s3Upload(file, progressEvent, finishEvent, index) {
 
 	/*
 	const getPolicy = new XMLHttpRequest();
-	getPolicy.addEventListener('load', beginUpload);
-	getPolicy.open('GET', 'https://www.pubpub.org/api/uploadPolicy?contentType=' + file.type);
-	getPolicy.send();
+		getPolicy.addEventListener('load', beginUpload);
+		getPolicy.open('GET', 'https://www.pubpub.org/api/uploadPolicy?contentType=' + file.type);
+		getPolicy.send();
 	*/
 }

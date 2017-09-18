@@ -3,5 +3,9 @@
   "packages": [
     "packages/*"
   ],
+<<<<<<< HEAD
   "version": "2.0.92"
+=======
+  "version": "3.0.8"
+>>>>>>> liveediting
 }

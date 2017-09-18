@@ -5,5 +5,6 @@ export ReferenceOrdering from './referenceordering';
 export HtmlDoc from './htmldoc';
 export PDFrendering from './pdfrendering';
 export Footnotes from './footnotes';
+export DiffDocs from './diffdoc';
 
 exports.TableMarkdown = require('./markdown-table.json').md;

@@ -31,7 +31,13 @@
 /*
 Makes empty paragraphs easier to see
 */
-.Prosemirror p {
+
+.ProseMirror {
+  width: 100%;
+  min-height: 200px;
+}
+
+.ProseMirror p {
   min-height: 1em;
 }
 
@@ -236,36 +242,16 @@ Selection hovers
 }
 
 
+.commitHover {
+  outline: 1px solid red !important;
+}
+
 /*
 WIP Diff algorithms:
 */
 
 .ProseMirror:not(.ProseMirror-focused,.ProseMirror-hideselection) .selection-marker {
   background-color: rgba(90, 90, 90, 0.15);
-}
-
-.mention-marker {
-  // background-color: red;
-}
-
-.blame-marker{
-	background-color: rgba(255,50,50,0.1);
-}
-
-.blame-marker.editing{
-	background-color: rgba(50,255,50,0.1);
-}
-
-.blame-marker.editing.invisible{
-	background-color: rgba(50,255,50,0.05);
-}
-
-.blame-marker.highlight{
-	background-color: rgba(255,255,50,0.3);
-}
-
-.blame-marker.invisible{
-	background-color: rgba(255,50,50,0.05);
 }
 
 .diff-marker.addition {

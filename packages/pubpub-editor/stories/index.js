@@ -1,28 +1,11 @@
-import { Footnotes, HtmlDoc, PDFrendering, ReferenceOrdering, SampleMarkdown, SingleMention, SingleReference, TableMarkdown } from './sampledocs';
+import { DiffDocs, Footnotes, HtmlDoc, PDFrendering, ReferenceOrdering, SampleMarkdown, SingleMention, SingleReference, TableMarkdown } from './sampledocs';
 import { LongLegacyBug, MentionContentBug, ReferenceNotShowingBug } from './bugdata';
 
-import APIEditor from './storybookAPI';
-import CodeEditor from './storybookCodeEditor';
-import Converter from './storybookConverter';
-import DisplayEditor from './storybookDisplayEditor';
-import ExportMenu from './storybookExportMenu';
-import FullEditor from './storybookFullEditor';
-import ImportConverter from './storybookImportConverter';
-import MarkdownEditor from './storybookMarkdownEditor';
+import CollaborativeEditor from './storybookCollaborativeEditor';
 import React from 'react';
-import RichEditor from './storybookRichEditor';
 import { storiesOf } from '@kadira/storybook';
 
-storiesOf('Code Editor', module)
-.add('basic ', () => (
-	<CodeEditor />
-));
-
-storiesOf('Display Editor', module)
-.add('basic ', () => (
-	<DisplayEditor />
-));
-
+/*
 storiesOf('Full Editor', module)
 .add('basic ', () => (
 	<FullEditor />
@@ -51,14 +34,21 @@ storiesOf('Full Editor', module)
 .add('API Search', () => (
 	<APIEditor />
 ))
-;
+.add('Diff Editor ', () => (
+	<DiffEditor text1={DiffDocs[0]} text2={DiffDocs[1]} />
+));
+*/
 
-storiesOf('Subcomponents', module)
-.add('Export Menu', () => (
-	<ExportMenu/>
+storiesOf('Collaborative Editing', module)
+.add('Forking & Rebasing', () => (
+	<CollaborativeEditor clientID="test" editorKey="testDoc" collaborative={true} allowForking={true} />
+))
+.add('Track Changes in Forks', () => (
+	<CollaborativeEditor clientID="test" editorKey="basicDoc01" collaborative={true} trackChanges={true} allowForking={false} />
 ))
 ;
 
+/*
 storiesOf('Debugging', module)
 .add('mention content ', () => (
 	<FullEditor mode={'markdown'} initialContent={MentionContentBug} />
@@ -68,18 +58,15 @@ storiesOf('Debugging', module)
 ))
 .add('reference debugging ', () => (
 	<FullEditor mode={'rich'} initialContent={ReferenceNotShowingBug} />
-))
-;
+));
+*/
 
-
+/*
 storiesOf('Converter', module)
 .add('Convert to PDF ', () => (
 	<Converter />
 ))
 .add('Import to PubPub ', () => (
 	<ImportConverter  />
-))
-// .add('Convert to Ppub', () => (
-// 	<Converter mode={'rich'} initialContent={LongLegacyBug} />
-// ))
-;
+));
+*/
