@@ -1,14 +1,10 @@
-import { joinUp, lift, selectParentNode, setBlockType, toggleMark, wrapIn } from 'prosemirror-commands';
-
+import { lift, setBlockType, toggleMark, wrapIn } from 'prosemirror-commands';
 import { wrapInList } from 'prosemirror-schema-list';
 
 function getMenuItems(view) {
-
 	const schema = view.state.schema;
 
-	if (!view) {
-		return [];
-	}
+	if (!view) { return []; }
 
 	/* Marks */
 	/* -------------- */
@@ -20,6 +16,7 @@ function getMenuItems(view) {
 		if (empty) {
 			return type.isInSet(state.storedMarks || $from.marks());
 		}
+		console.log(state.doc.rangeHasMark(from, to, type), from, to, empty)
 		return state.doc.rangeHasMark(from, to, type);
 	}
 
@@ -35,7 +32,6 @@ function getMenuItems(view) {
 	/* Blocks */
 	/* -------------- */
 	function blockTypeIsActive(type, attrs) {
-
 		const $from = view.state.selection.$from;
 
 		let wrapperDepth;
@@ -130,7 +126,7 @@ function getMenuItems(view) {
 			isActive: markIsActive(schema.marks.sup),
 		},
 		{
-			icon: 'icon-strike',
+			icon: 'icon-strikethrough',
 			text: '-',
 			run: applyToggleMark.bind(this, schema.marks.strike),
 			isActive: markIsActive(schema.marks.strike),
@@ -142,33 +138,25 @@ function getMenuItems(view) {
 			isActive: blockTypeIsActive(schema.nodes.blockquote),
 		},
 		{
-			icon: 'icon-list-bullet',
+			icon: 'icon-list-ul',
 			text: 'UL',
 			run: toggleWrapList.bind(this, schema.nodes.bullet_list),
 			isActive: blockTypeIsActive(schema.nodes.bullet_list),
 		},
 		{
-			icon: 'icon-list-numbered',
+			icon: 'icon-list-ol',
 			text: 'OL',
 			run: toggleWrapList.bind(this, schema.nodes.ordered_list),
 			isActive: blockTypeIsActive(schema.nodes.ordered_list),
 		},
 		{
-			icon: 'pt-icon-link',
+			icon: 'icon-link',
 			text: 'link',
 			input: 'text',
 			run: applyToggleMark.bind(this, schema.marks.link),
 			isActive: markIsActive(schema.marks.link),
 		},
-		// {
-		// 	icon: 'pt-icon-cb',
-		// 	text: 'CodeB',
-		// 	run: toggleBlockType.bind(this, schema.nodes.code_block, {}),
-		// 	isActive: blockTypeIsActive(schema.nodes.code_block, {}),
-		// },
-
 	];
-
 
 	return menuItems;
 }

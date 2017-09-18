@@ -9,7 +9,6 @@ import EditorProvider from './EditorProvider';
 // import { createRichMention } from '../addons/Autocomplete/autocompleteConfig';
 import { createSchema } from './schema';
 import { getBasePlugins } from './schema/setup';
-// import { getPlugin } from '../schema/plugins';
 
 const propTypes = {
 	initialContent: PropTypes.object,
@@ -29,7 +28,7 @@ class Editor extends Component {
 		this.state = {};
 		// this.onChange = this.onChange.bind(this);
 		this.getJSON = this.getJSON.bind(this);
-		// this.configurePlugins = this.configurePlugins.bind(this);
+		this.configurePlugins = this.configurePlugins.bind(this);
 		this.createEditor = this.createEditor.bind(this);
 		// this.updateMentions = this.updateMentions.bind(this);
 		// this.onMentionSelection = this.onMentionSelection.bind(this);
@@ -55,16 +54,16 @@ class Editor extends Component {
 		return this.view.state.doc.toJSON();
 	}
 
-	configurePlugins() {
-		const schema = createSchema();
+	configurePlugins(schema) {
+		// const schema = createSchema();
 
 		let plugins = getBasePlugins({ schema });
 		if (this.props.children && this.props.children.length > 0) {
-			for (const child of this.props.children) {
+			this.props.children.forEach((child)=> {
 				if (child.type.getPlugins) {
 					plugins = plugins.concat(child.type.getPlugins(child.props));
 				}
-			}
+			});
 		}
 
 		return plugins;
@@ -80,7 +79,7 @@ class Editor extends Component {
 		// const place = ReactDOM.findDOMNode(this.refs.container);
 
 		const contents = this.props.initialContent;
-		const plugins = this.configurePlugins();
+		const plugins = this.configurePlugins(schema);
 
 		const stateConfig = {
 			doc: (contents) ? schema.nodeFromJSON(contents) : schema.nodes.doc.create(),
@@ -88,7 +87,11 @@ class Editor extends Component {
 			plugins: plugins,
 		};
 
-		// const { clipboardParser, clipboardSerializer, transformPastedHTML } = configureClipboard({ schema });
+		// const {
+		// 	clipboardParser,
+		// 	clipboardSerializer,
+		// 	transformPastedHTML
+		// } = configureClipboard({ schema });
 
 		const state = EditorState.create(stateConfig);
 		const editorView = document.createElement('div');
@@ -96,13 +99,13 @@ class Editor extends Component {
 		place.appendChild(editorView);
 
 		// const props = {
-			// referencesList: this.props.localFiles,
-			// createFile: this.props.handleFileUpload,
-			// createReference: this.props.handleReferenceAdd,
-			// captureError: this.props.onError,
-			// onChange: this.onChange,
-			// updateCommits: this.props.updateCommits,
-			// updateMentions: this.updateMentions,
+		// 	referencesList: this.props.localFiles,
+		// 	createFile: this.props.handleFileUpload,
+		// 	createReference: this.props.handleReferenceAdd,
+		// 	captureError: this.props.onError,
+		// 	onChange: this.onChange,
+		// 	updateCommits: this.props.updateCommits,
+		// 	updateMentions: this.updateMentions,
 		// };
 
 		this.view = new EditorView(editorView, {
@@ -214,7 +217,7 @@ class Editor extends Component {
 						view={this.state.view}
 						editorState={this.state.editorState}
 						transaction={this.state.transaction}
-						containerId="@pubpub-editor-container"
+						containerId={'@pubpub-editor-container'}
 					>
 						{this.props.children}
 					</EditorProvider>

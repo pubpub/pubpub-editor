@@ -1,38 +1,33 @@
-import React, { PropTypes } from 'react';
-
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import getMenuItems from './formattingMenuConfig';
 
-let styles;
-export const FormattingMenu = React.createClass({
-	propTypes: {
-		containerId: React.PropTypes.string.isRequired,
-		view: React.PropTypes.object.isRequired,
-		editorState: React.PropTypes.object.isRequired,
-	},
-	getInitialState: function() {
-		return { input: null };
-	},
+require('./formattingMenu.scss');
 
-	startInput: function(type, run) {
-		this.setState({ input: 'text', run });
-	},
+const propTypes = {
+	containerId: PropTypes.string.isRequired,
+	view: PropTypes.object.isRequired,
+	editorState: PropTypes.object.isRequired,
+};
+
+class FormattingMenu extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			input: null,
+		};
+		this.onChange = this.onChange.bind(this);
+		this.startInput = this.startInput.bind(this);
+		this.submitInput = this.submitInput.bind(this);
+	}
 
 	componentWillReceiveProps(nextProps) {
 		if (this.props.editorState !== nextProps.editorState) {
 			this.onChange();
 		}
-	},
+	}
 
-
-	submitInput: function(evt) {
-		if (evt.key === 'Enter') {
-			const link = this.textInput.value;
-			this.state.run({ href: link });
-			this.setState({ input: null, run: null });
-		}
-	},
-
-	onChange: function() {
+	onChange() {
 		const { view, containerId } = this.props;
 
 		const currentPos = view.state.selection.$to.pos;
@@ -56,83 +51,79 @@ export const FormattingMenu = React.createClass({
 			left: 0,
 			top: 0,
 		});
-	},
+	}
 
+	startInput(type, run) {
+		this.setState({ input: 'text', run });
+	}
 
-	renderTextInput() {
-		const { top, left } = this.state;
-		return (<div onKeyPress={this.submitInput} className={'pt-card pt-elevation-0 pt-dark'} style={styles.container(top, left, 200)}>
-			<input style={styles.textInput} ref={(input) => { this.textInput = input; }} className="pt-input" type="text" placeholder="link" dir="auto" />
-		</div>);
-	},
+	submitInput(evt) {
+		if (evt.key === 'Enter') {
+			const link = this.textInput.value;
+			this.state.run({ href: link });
+			this.setState({ input: null, run: null });
+		}
+	}
 
-	render: function() {
+	render() {
+		const menuItems = getMenuItems(this.props.view);
 
+		const width = 315;
+		const wrapperStyle = {
+			display: this.state.top ? 'block' : 'none',
+			top: this.state.top - 40,
+			width: `${width}px`,
+			left: Math.max(this.state.left - (width / 2), -50),
+		};
 
-		const { input, left, top } = this.state;
-		const { view } = this.props
-
-		const menuItems = getMenuItems(view);
-
-		if (input === 'text') {
-			return this.renderTextInput();
+		if (this.state.input === 'text') {
+			return (
+				<div
+					role={'button'}
+					tabIndex={-1}
+					onKeyPress={this.submitInput}
+					className={'formatting-menu'}
+				>
+					<input
+						ref={(input) => { this.textInput = input; }}
+						type="text"
+						placeholder="link"
+						dir="auto"
+					/>
+				</div>
+			);
 		}
 
 		return (
-			<div className={'pt-card pt-elevation-0 pt-dark popover-up'} style={styles.container(top, left, 400)}>
-				{menuItems.map((item, index)=> {
-					// return <button key={`menuItem-${index}`} className={'pt-button pt-minimal'} style={item.isActive ? { ...styles.button, ...styles.active } : styles.button} onClick={item.run}>{item.text}</button>;
-					// return <button key={`menuItem-${index}`} className={`pt-button pt-minimal ${item.icon}`} style={item.isActive ? { ...styles.button, ...styles.active } : styles.button} onClick={item.run} />;
+			<div className={'formatting-menu'} style={wrapperStyle}>
+				{menuItems.map((item)=> {
 					let onClick;
 					if (item.input === 'text' && !item.isActive) {
-						onClick = this.startInput.bind(this, item.input, item.run);
+						onClick = ()=> {
+							this.startInput.bind(this, item.input, item.run)();
+							this.props.view.focus();
+						};
 					} else {
-						onClick = item.run;
+						onClick = ()=> {
+							item.run();
+							this.props.view.focus();
+						};
 					}
-					return <button key={`menuItem-${index}`} className={`pt-button pt-minimal ${item.icon}`} style={item.isActive ? { ...styles.button, ...styles.active } : styles.button} onClick={onClick} />;
+					return (
+						<div
+							role={'button'}
+							tabIndex={-1}
+							key={`menuItem-${item.icon}`}
+							className={`button ${item.icon} ${item.isActive ? 'active' : ''}`}
+							onClick={onClick}
+						/>
+					);
 				})}
 
 			</div>
 		);
 	}
+}
 
-});
-
+FormattingMenu.propTypes = propTypes;
 export default FormattingMenu;
-
-styles = {
-	textInput: {
-		height: '80%',
-		verticalAlign: 'baseline',
-	},
-	container: function(top, left, width) {
-		if (!top) {
-			return {
-				display: 'none'
-			};
-		}
-		return {
-			transition: 'left 0.25s, top 0.1s',
-			width: `${width}px`,
-			position: 'absolute',
-			height: '30px',
-			lineHeight: '30px',
-			padding: '0px',
-			textAlign: 'center',
-			top: top - 40,
-			left: Math.max(left - (width / 2), -50),
-			overflow: 'hidden',
-		};
-	},
-	button: {
-		minWidth: '5px',
-		padding: '0px 7px',
-		fontSize: '1.1em',
-		outline: 'none',
-		borderRadius: '0px',
-		color: 'rgba(255, 255, 255, 0.7)',
-	},
-	active: {
-		color: 'rgba(255, 255, 255, 1)',
-	},
-};
