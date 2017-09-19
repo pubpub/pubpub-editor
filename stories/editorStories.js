@@ -14,7 +14,6 @@ const editorWrapper = {
 let editorRef = undefined;
 
 const focusEditor = ()=> {
-	console.log('yo?');
 	editorRef.focus();
 };
 
@@ -67,7 +66,7 @@ const equationDoc = {
 storiesOf('Editor', module)
 .add('Default', () => (
 	<div style={editorWrapper} onClick={focusEditor}>
-		<Editor onChange={onChange} ref={(ref)=> { editorRef = ref; }}>
+		<Editor onChange={onChange} ref={(ref)=> { editorRef = ref; }} placeholder={'Begin writing...'}>
 			<FormattingMenu />
 		</Editor>
 	</div>

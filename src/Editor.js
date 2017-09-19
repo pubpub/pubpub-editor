@@ -14,12 +14,14 @@ const propTypes = {
 	initialContent: PropTypes.object,
 	onChange: PropTypes.func,
 	children: PropTypes.node,
+	placeholder: PropTypes.string,
 };
 
 const defaultProps = {
 	initialContent: undefined,
 	onChange: undefined,
 	children: undefined,
+	placeholder: undefined,
 };
 
 class Editor extends Component {
@@ -63,7 +65,7 @@ class Editor extends Component {
 	configurePlugins(schema) {
 		// const schema = createSchema();
 
-		let plugins = getBasePlugins({ schema });
+		let plugins = getBasePlugins({ schema, placeholder: this.props.placeholder });
 		if (this.props.children) {
 			React.Children.forEach(this.props.children, (child)=> {
 				if (child.type.getPlugins) {
@@ -254,6 +256,9 @@ class Editor extends Component {
 	render() {
 		return (
 			<div style={{ position: 'relative' }} id={this.containerId}>
+				<style>{`
+					.prosemirror-placeholder { opacity: 0.5; }
+				`}</style>
 				{this.state.view
 					? React.Children.map(this.props.children, (child) => {
 						return React.cloneElement(child, {
