@@ -28,6 +28,7 @@ class Editor extends Component {
 		this.state = {};
 		// this.onChange = this.onChange.bind(this);
 		this.getJSON = this.getJSON.bind(this);
+		this.configureSchema = this.configureSchema.bind(this);
 		this.configurePlugins = this.configurePlugins.bind(this);
 		this.createEditor = this.createEditor.bind(this);
 		// this.updateMentions = this.updateMentions.bind(this);
@@ -70,7 +71,6 @@ class Editor extends Component {
 	}
 
 	configureSchema() {
-
 		const schemaNodes = {};
 		const schemaMarks = {};
 		if (this.props.children && this.props.children.length > 0) {
@@ -88,7 +88,6 @@ class Editor extends Component {
 		}
 
 		const schema = createSchema({ nodes: schemaNodes, marks: schemaMarks });
-
 		return schema;
 	}
 
@@ -97,7 +96,8 @@ class Editor extends Component {
 			this.remove();
 		}
 
-		const schema = createSchema();
+		// const schema = createSchema();
+		const schema = this.configureSchema();
 		const place = document.getElementById('@pubpub-editor');
 		// const place = ReactDOM.findDOMNode(this.refs.container);
 

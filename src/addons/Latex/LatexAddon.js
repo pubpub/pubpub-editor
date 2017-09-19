@@ -3,6 +3,12 @@ import PropTypes from 'prop-types';
 import LatexEditable from './LatexEditable';
 import LatexStatic from './LatexStatic';
 
+// Convert editable and static to r16
+// Clean up and import katex.css
+// install katex
+// Create storyboard for latex components
+// 
+
 const propTypes = {
 	containerId: PropTypes.string.isRequired,
 	view: PropTypes.object.isRequired,

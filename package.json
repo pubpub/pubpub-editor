@@ -16,6 +16,7 @@
     "start": "start-storybook -p 9002 -c .storybook"
   },
   "dependencies": {
+    "katex": "^0.8.3",
     "prosemirror-commands": "^0.23.0",
     "prosemirror-history": "^0.23.0",
     "prosemirror-keymap": "^0.23.0",
