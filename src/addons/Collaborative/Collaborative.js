@@ -7,10 +7,15 @@ import FirebasePlugin from './firebasePlugin';
 const firebaseKey = new PluginKey('firebase');
 
 const propTypes = {
-	view: PropTypes.object.isRequired,
-	editorState: PropTypes.object.isRequired,
+	view: PropTypes.object,
+	editorState: PropTypes.object,
 	// editorRef: PropTypes.object.isRequired,
 	// showCollaborators: React.PropTypes.bool.isRequired,
+};
+
+const defaultProps = {
+	view: undefined,
+	editorState: undefined,
 };
 
 class Collaborative extends Component {
@@ -87,4 +92,5 @@ class Collaborative extends Component {
 }
 
 Collaborative.propTypes = propTypes;
+Collaborative.defaultProps = defaultProps;
 export default Collaborative;
