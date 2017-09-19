@@ -58,8 +58,8 @@ class Editor extends Component {
 		// const schema = createSchema();
 
 		let plugins = getBasePlugins({ schema });
-		if (this.props.children && this.props.children.length > 0) {
-			this.props.children.forEach((child)=> {
+		if (this.props.children) {
+			React.Children.forEach(this.props.children, (child)=> {
 				if (child.type.getPlugins) {
 					plugins = plugins.concat(child.type.getPlugins(child.props));
 				}
