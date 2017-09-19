@@ -1,11 +1,11 @@
-import Collaborative from 'addons/Collaborative/Collaborative';
-import { Editor } from 'index';
-import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
-import InsertMenu from 'addons/InsertMenu/InsertMenu';
-import Latex from 'addons/Latex/LatexAddon';
 /* eslint-disable */
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { Editor } from 'index';
+import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
+import Collaborative from 'addons/Collaborative/Collaborative';
+import InsertMenu from 'addons/InsertMenu/InsertMenu';
+import Latex from 'addons/Latex/LatexAddon';
 
 const editorWrapper = {
 	border: '1px solid #CCC',
