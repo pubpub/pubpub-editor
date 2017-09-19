@@ -257,7 +257,13 @@ class Editor extends Component {
 		return (
 			<div style={{ position: 'relative' }} id={this.containerId}>
 				<style>{`
-					.prosemirror-placeholder { opacity: 0.5; }
+					.prosemirror-placeholder { 
+						opacity: 0.5;
+						width: 0;
+						display: inline-block;
+						overflow: visible;
+						white-space: nowrap;
+					}
 				`}</style>
 				{this.state.view
 					? React.Children.map(this.props.children, (child) => {
