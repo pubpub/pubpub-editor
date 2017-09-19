@@ -10,6 +10,7 @@ const editorWrapper = {
 	border: '1px solid #CCC',
 	maxWidth: '600px',
 	minHeight: '250px',
+	cursor: 'text',
 };
 let editorRef = undefined;
 
