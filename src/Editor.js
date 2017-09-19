@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
-import PropTypes from 'prop-types';
 import ReactView from './schema/reactView';
 // import { configureClipboard } from './schema/setup/clipboard';
 // import configureNodeViews from '../schema/editable/configure';
@@ -165,8 +165,8 @@ class Editor extends Component {
 			// ...props
 		});
 
-		// const newNode = this.view.state.schema.nodes.equation.create({ content: '\\sum_ix^i' });
-		// this.view.dispatch(this.view.state.tr.replaceSelectionWith(newNode));
+		const newNode = this.view.state.schema.nodes.equation.create({ content: '\\sum_ix^i' });
+		this.view.dispatch(this.view.state.tr.replaceSelectionWith(newNode));
 
 		this.setState({ view: this.view, editorState: state });
 	}
@@ -252,7 +252,7 @@ class Editor extends Component {
 
 	render() {
 		return (
-			<div style={{ position: 'relative', width: '100%', minHeight: 250 }} id={this.containerId}>
+			<div style={{ position: 'relative' }} id={this.containerId}>
 				{this.state.view
 					? React.Children.map(this.props.children, (child) => {
 						return React.cloneElement(child, {
@@ -265,7 +265,7 @@ class Editor extends Component {
 					: null
 				}
 
-				<div ref={el => this.editorElement = el} className="@pubpub-editor" />
+				<div ref={elem => this.editorElement = elem} className="pubpub-editor" />
 			</div>
 		);
 	}

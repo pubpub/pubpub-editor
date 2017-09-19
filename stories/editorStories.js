@@ -1,9 +1,9 @@
 /* eslint-disable */
-import { Editor } from 'index';
-import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
-import Latex from 'addons/Latex/LatexAddon';
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { Editor } from 'index';
+import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
+import Latex from '../addons/Latex';
 
 const onChange = (evt)=> {
 	console.log(evt);
@@ -42,13 +42,17 @@ storiesOf('Editor', module)
 storiesOf('Editor', module)
 .add('Multiple Editors', () => (
 	<div>
-		<Editor>
-			<FormattingMenu />
-			<Latex />
-		</Editor>
-		<Editor>
-			<FormattingMenu />
-			<Latex />
-		</Editor>
+		<div className={'1'}>
+			<Editor>
+				<FormattingMenu />
+				<Latex />
+			</Editor>
+		</div>
+		<div className={'2'}>
+			<Editor>
+				<FormattingMenu />
+				<Latex />
+			</Editor>
+		</div>
 	</div>
 ));
