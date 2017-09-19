@@ -7,12 +7,11 @@ import katex from 'katex';
 require('./latex.scss');
 
 const propTypes = {
-	value: PropTypes.string,
-	block: PropTypes.bool,
-	updateValue: PropTypes.func,
-	changeToBlock: PropTypes.func,
-	changeToInline: PropTypes.func,
-	forceSelection: PropTypes.func,
+	value: PropTypes.string.isRequired,
+	isBlock: PropTypes.bool.isRequired,
+	isSelected: PropTypes.bool.isRequired,
+	view: PropTypes.object.isRequired,
+	helperFunctions: PropTypes.object.isRequired,
 };
 
 class LatexEditable extends Component {
@@ -23,13 +22,11 @@ class LatexEditable extends Component {
 			value: null,
 			displayHTML: this.generateHTML(this.props.value)
 		};
-		this.forceSelection = this.forceSelection.bind(this);
 		this.changeToEditing = this.changeToEditing.bind(this);
 		this.changeToDisplay = this.changeToDisplay.bind(this);
 		this.handleChange = this.handleChange.bind(this);
 		this.generateHTML = this.generateHTML.bind(this);
 		this.handleKeyPress = this.handleKeyPress.bind(this);
-		this.setSelected = this.setSelected.bind(this);
 		this.changeToInline = this.changeToInline.bind(this);
 		this.changeToBlock = this.changeToBlock.bind(this);
 		this.renderDisplay = this.renderDisplay.bind(this);
@@ -37,7 +34,7 @@ class LatexEditable extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		if (this.props.block !== nextProps.block) {
+		if (this.props.isBlock !== nextProps.isBlock) {
 			this.setState({ closePopOver: false });
 		}
 		if (this.props.value !== nextProps.value) {
@@ -49,13 +46,6 @@ class LatexEditable extends Component {
 		}
 	}
 
-	forceSelection(evt) {
-		if (!this.state.selected) {
-			this.props.forceSelection();
-		}
-		evt.preventDefault();
-	}
-
 	changeToEditing() {
 		const clientWidth = ReactDOM.findDOMNode(this.refs.latexElem).getBoundingClientRect().width;
 		this.setState({ editing: true, clientWidth });
@@ -64,8 +54,8 @@ class LatexEditable extends Component {
 
 	changeToDisplay() {
 		const value = this.state.value || this.props.value;
-		const displayHTML= this.generateHTML(value);
-		this.props.updateValue(value);
+		const displayHTML = this.generateHTML(value);
+		this.props.helperFunctions.updateContent(value);
 		this.setState({ editing: false, displayHTML, value: null });
 	}
 
@@ -78,40 +68,38 @@ class LatexEditable extends Component {
 
 	generateHTML(text) {
 		try {
-			return katex.renderToString(text, { displayMode: this.props.block });
+			return katex.renderToString(text, { displayMode: this.props.isBlock });
 		} catch (err) {
 			return "<div class='pub-latex-error'>Error rendering equation</div>";
 		}
 	}
 
 	handleKeyPress(evt) {
-		if (evt.key === 'Enter' && !this.props.block) {
+		if (evt.key === 'Enter' && !this.props.isBlock) {
 			this.changeToDisplay();
 		}
 	}
 
-	setSelected(selected) {
-		this.setState({ selected });
-	}
 
 	changeToInline() {
 		this.setState({ closePopOver: true });
-		this.props.changeToInline();
+		this.props.helperFunctions.changeNode(this.props.view.state.schema.nodes.equation, { content: this.props.value }, null);
 	}
 
 	changeToBlock() {
 		this.setState({ closePopOver: true });
-		this.props.changeToBlock();
+		this.props.helperFunctions.changeNode(this.props.view.state.schema.nodes.block_equation, { content: this.props.value }, null);
 	}
 
 	renderDisplay() {
-		const { displayHTML, selected, closePopOver } = this.state;
-		const { block, value } = this.props;
+		const { displayHTML, closePopOver } = this.state;
+		const { isBlock, value } = this.props;
 
+		const selected = this.props.isSelected;
 		const popoverContent = (
 			<div className="pt-button-group pt-minimal">
 				<Button iconName="annotation" onClick={this.changeToEditing}>Edit</Button>
-				{!block
+				{!isBlock
 					? <Button iconName="maximize" onClick={this.changeToBlock}>Block</Button>
 					: <Button iconName="minimize" onClick={this.changeToInline}>Inline</Button>
 				}
@@ -121,8 +109,7 @@ class LatexEditable extends Component {
 		const isPopOverOpen = (closePopOver) ? false : undefined;
 
 		return (
-			<span onClick={this.forceSelection}>
-				<Style rules={katexStyles} />
+			<span>
 				<Popover
 					content={popoverContent}
 					isOpen={isPopOverOpen}
@@ -144,7 +131,7 @@ class LatexEditable extends Component {
 
 	renderEdit() {
 		// const { clientWidth } = this.state;
-		const { block } = this.props;
+		const { isBlock } = this.props;
 
 		const value = this.state.value || this.props.value;
 
@@ -155,8 +142,8 @@ class LatexEditable extends Component {
 		);
 
 		return (
-			<span style={{ position: 'relative' }} onClick={this.forceSelection}>
-				{block
+			<span style={{ position: 'relative' }}>
+				{isBlock
 					? <Popover
 						content={popoverContent}
 						defaultIsOpen={true}

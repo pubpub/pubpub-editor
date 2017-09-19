@@ -5,9 +5,15 @@ import getMenuItems from './formattingMenuConfig';
 require('./formattingMenu.scss');
 
 const propTypes = {
-	containerId: PropTypes.string.isRequired,
-	view: PropTypes.object.isRequired,
-	editorState: PropTypes.object.isRequired,
+	containerId: PropTypes.string,
+	view: PropTypes.object,
+	editorState: PropTypes.object,
+};
+
+const defaultProps = {
+	containerId: undefined,
+	view: undefined,
+	editorState: undefined,
 };
 
 class FormattingMenu extends Component {
@@ -128,4 +134,5 @@ class FormattingMenu extends Component {
 }
 
 FormattingMenu.propTypes = propTypes;
+FormattingMenu.defaultProps = defaultProps;
 export default FormattingMenu;

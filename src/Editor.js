@@ -8,6 +8,7 @@ import EditorProvider from './EditorProvider';
 // import configureNodeViews from '../schema/editable/configure';
 // import { createRichMention } from '../addons/Autocomplete/autocompleteConfig';
 import createSchema from './schema';
+import ReactView from './schema/reactView';
 import { getBasePlugins } from './schema/setup';
 
 const propTypes = {
@@ -70,6 +71,21 @@ class Editor extends Component {
 		return plugins;
 	}
 
+	configureNodeViews(schema) {
+		const nodeViews = {};
+		const nodes = schema.nodes;
+		Object.keys(nodes).forEach((nodeName) => {
+			const nodeSpec = nodes[nodeName].spec;
+			if (nodeSpec.toEditable) {
+				nodeViews[nodeName] = (node, view, getPos, decorations) => {
+					return new ReactView(node, view, getPos, decorations);
+				};
+			}
+		});
+
+		return nodeViews;
+	}
+
 	configureSchema() {
 		const schemaNodes = {};
 		const schemaMarks = {};
@@ -103,6 +119,7 @@ class Editor extends Component {
 
 		const contents = this.props.initialContent;
 		const plugins = this.configurePlugins(schema);
+		const nodeViews = this.configureNodeViews(schema);
 
 		const stateConfig = {
 			doc: (contents) ? schema.nodeFromJSON(contents) : schema.nodes.doc.create(),
@@ -146,7 +163,7 @@ class Editor extends Component {
 			// viewHandlers: {
 			// 	updateMentions: this.updateMentions,
 			// },
-			// nodeViews: configureNodeViews,
+			nodeViews: nodeViews,
 			// ...props
 		});
 

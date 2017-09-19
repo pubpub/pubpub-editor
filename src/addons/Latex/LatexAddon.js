@@ -1,19 +1,18 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import LatexEditable from './LatexEditable';
 import LatexStatic from './LatexStatic';
 
-// Convert editable and static to r16
-// Clean up and import katex.css
-// install katex
-// Create storyboard for latex components
-// Cleanup Editor comments
+/* 
+All addons get the following props, 
+but certain schema-based addons may not need them
+*/
 
-const propTypes = {
-	containerId: PropTypes.string.isRequired,
-	view: PropTypes.object.isRequired,
-	editorState: PropTypes.object.isRequired,
-};
+// const propTypes = {
+// 	containerId: PropTypes.string.isRequired,
+// 	view: PropTypes.object.isRequired,
+// 	editorState: PropTypes.object.isRequired,
+// };
 
 class LatexAddon extends Component {
 	static fish = 12;
@@ -36,14 +35,22 @@ class LatexAddon extends Component {
 							view.dispatch(view.state.tr.replaceSelectionWith(newNode));
 						},
 					},
-					toEditable({ node }) {
+					toEditable(node, view, decorations, isSelected, helperFunctions) {
 						let equationText;
 						if (node.content && node.content.length >= 1) {
 							equationText = node.content[0].text;
 						} else if (node.attrs.content) {
 							equationText = node.attrs.content;
 						}
-						return <LatexEditable value={equationText} block={false} />;
+						return (
+							<LatexEditable
+								value={equationText}
+								isBlock={false}
+								isSelected={isSelected}
+								view={view}
+								helperFunctions={helperFunctions}
+							/>
+						);
 					},
 					toStatic({ node }) {
 						let equationText;
@@ -64,14 +71,22 @@ class LatexAddon extends Component {
 					attrs: {
 						content: { default: '' },
 					},
-					toEditable({ node }) {
+					toEditable(node, view, decorations, isSelected, helperFunctions) {
 						let equationText;
 						if (node.content && node.content.length >= 1) {
 							equationText = node.content[0].text;
 						} else if (node.attrs.content) {
 							equationText = node.attrs.content;
 						}
-						return <LatexEditable value={equationText} block={false} />;
+						return (
+							<LatexEditable
+								value={equationText}
+								isBlock={true}
+								isSelected={isSelected}
+								view={view}
+								helperFunctions={helperFunctions}
+							/>
+						);
 					},
 					toStatic({ node }) {
 						let equationText;
@@ -80,7 +95,7 @@ class LatexAddon extends Component {
 						} else if (node.attrs.content) {
 							equationText = node.attrs.content;
 						}
-						return <LatexStatic value={equationText} block={false} />;
+						return <LatexStatic value={equationText} block={true} />;
 					}
 				},
 			}
@@ -92,5 +107,5 @@ class LatexAddon extends Component {
 	}
 }
 
-LatexAddon.propTypes = propTypes;
+// LatexAddon.propTypes = propTypes;
 export default LatexAddon;
