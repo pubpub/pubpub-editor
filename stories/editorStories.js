@@ -9,37 +9,60 @@ const onChange = (evt)=> {
 	console.log(evt);
 };
 
+{/*
+	<FormattingMenu />
+	<InsertMenu />
+	<Collaborative />
+	<Rebase />
+
+	<Latex />
+	<Footnotes />
+	<Iframe />
+	<Image />
+	<Video />
+	<Audio />
+	<Discussion />
+	<Reference />
+	<ReferenceList />
+	<UserMention />
+	<File />
+*/}
+
+const equationDoc = {
+	type: 'doc',
+	attrs: {
+		'meta': {}
+	},
+	content: [
+		{
+			type: 'paragraph',
+			content: [
+				{
+					type: 'equation',
+					attrs: {
+					  content: '\\sum_ix^i'
+					}
+				},
+				{
+					type: 'text',
+					text: ' and hello.'
+				}
+			]
+		}
+	]
+};
 storiesOf('Editor', module)
 .add('Default', () => (
-	<div>
-		<Editor onChange={onChange}>
-			<FormattingMenu />
-			<Latex />
-			{/*
-				<FormattingMenu />
-				<InsertMenu />
-				<Collaborative />
-				<Rebase />
-
-				<Latex />
-				<Footnotes />
-				<Iframe />
-				<Image />
-				<Video />
-				<Audio />
-				<Discussion />
-				<Reference />
-				<ReferenceList />
-				<UserMention />
-				<File />
-			*/}
-
-		</Editor>
-	</div>
-));
-
-
-storiesOf('Editor', module)
+	<Editor onChange={onChange}>
+		<FormattingMenu />
+	</Editor>
+))
+.add('Latex', () => (
+	<Editor onChange={onChange} initialContent={equationDoc}>
+		<FormattingMenu />
+		<Latex />
+	</Editor>
+))
 .add('Multiple Editors', () => (
 	<div>
 		<div className={'1'}>

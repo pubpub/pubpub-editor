@@ -165,9 +165,6 @@ class Editor extends Component {
 			// ...props
 		});
 
-		const newNode = this.view.state.schema.nodes.equation.create({ content: '\\sum_ix^i' });
-		this.view.dispatch(this.view.state.tr.replaceSelectionWith(newNode));
-
 		this.setState({ view: this.view, editorState: state });
 	}
 
