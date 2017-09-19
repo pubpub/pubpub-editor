@@ -27,6 +27,7 @@ class FormattingMenu extends Component {
 		this.onChange = this.onChange.bind(this);
 		this.startInput = this.startInput.bind(this);
 		this.submitInput = this.submitInput.bind(this);
+		this.handleMouseDown = this.handleMouseDown.bind(this);
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -73,6 +74,11 @@ class FormattingMenu extends Component {
 		}
 	}
 
+	handleMouseDown(evt) {
+		// This is to prevent losing focus on menu click
+		evt.preventDefault();
+	}
+
 	render() {
 		const menuItems = getMenuItems(this.props.view);
 
@@ -103,7 +109,7 @@ class FormattingMenu extends Component {
 		}
 
 		return (
-			<div className={'formatting-menu'} style={wrapperStyle}>
+			<div className={'formatting-menu'} style={wrapperStyle} onMouseDown={this.handleMouseDown}>
 				{menuItems.map((item)=> {
 					let onClick;
 					if (item.input === 'text' && !item.isActive) {
