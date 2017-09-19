@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
-
-import EditorProvider from './EditorProvider';
 // import { configureClipboard } from './schema/setup/clipboard';
 // import configureNodeViews from '../schema/editable/configure';
 // import { createRichMention } from '../addons/Autocomplete/autocompleteConfig';
@@ -256,14 +254,14 @@ class Editor extends Component {
 		return (
 			<div style={{ position: 'relative', width: '100%', minHeight: 250 }} id={'@pubpub-editor-container'}>
 				{this.state.view
-					? <EditorProvider
-						view={this.state.view}
-						editorState={this.state.editorState}
-						transaction={this.state.transaction}
-						containerId={'@pubpub-editor-container'}
-					>
-						{this.props.children}
-					</EditorProvider>
+					? React.Children.map(this.props.children, (child) => {
+						return React.cloneElement(child, {
+							view: this.state.view,
+							editorState: this.state.editorState,
+							transaction: this.state.transaction,
+							containerId: '@pubpub-editor-container'
+						});
+					})
 					: null
 				}
 
