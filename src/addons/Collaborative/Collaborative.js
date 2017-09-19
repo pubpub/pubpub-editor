@@ -42,24 +42,23 @@ class Collaborative extends Component {
 			this.onChange(nextProps);
 		}
 	}
+
 	onChange(props) {
 		const { editorState, transaction } = props;
-		if (!editorState || !transaction) {
-			return;
-		}
+		if (!editorState || !transaction) { return null; }
+
 		const firebasePlugin = firebaseKey.get(editorState);
-		if (firebasePlugin) {
-			if (!transaction.getMeta('rebase')) {
-				return firebasePlugin.props.updateCollab(transaction, editorState);
-			}
+		if (firebasePlugin && !transaction.getMeta('rebase')) {
+			return firebasePlugin.props.updateCollab(transaction, editorState);
 		}
+		return null;
 	}
 
 	getForks() {
 		const { editorState } = this.props;
 
-		let firebasePlugin;
-		if (firebasePlugin = firebaseKey.get(editorState)) {
+		const firebasePlugin = firebaseKey.get(editorState);
+		if (firebasePlugin) {
 			return firebasePlugin.props.getForks.bind(firebasePlugin)();
 		}
 		return Promise.resolve(null);
@@ -68,8 +67,8 @@ class Collaborative extends Component {
 	fork(forkID) {
 		const { editorState } = this.props;
 
-		let firebasePlugin;
-		if (firebasePlugin = firebaseKey.get(editorState)) {
+		const firebasePlugin = firebaseKey.get(editorState);
+		if (firebasePlugin) {
 			return firebasePlugin.props.fork.bind(firebasePlugin)(forkID);
 		}
 		return Promise.resolve(null);

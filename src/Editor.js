@@ -262,7 +262,7 @@ class Editor extends Component {
 					: null
 				}
 
-				<div ref={elem => this.editorElement = elem} className="pubpub-editor" />
+				<div ref={(elem)=> { this.editorElement = elem; }} className="pubpub-editor" />
 			</div>
 		);
 	}
