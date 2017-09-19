@@ -56,6 +56,10 @@ class Editor extends Component {
 		return this.view.state.doc.toJSON();
 	}
 
+	focus() {
+		this.view.focus();
+	}
+
 	configurePlugins(schema) {
 		// const schema = createSchema();
 
