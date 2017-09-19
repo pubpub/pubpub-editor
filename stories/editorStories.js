@@ -1,9 +1,9 @@
 /* eslint-disable */
-import React from 'react';
-import { storiesOf } from '@storybook/react';
 import { Editor } from 'index';
 import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
-import Latex from '../addons/Latex';
+import Latex from 'addons/Latex/LatexAddon';
+import React from 'react';
+import { storiesOf } from '@storybook/react';
 
 const onChange = (evt)=> {
 	console.log(evt);
@@ -22,7 +22,7 @@ storiesOf('Editor', module)
 				<Rebase />
 
 				<Latex />
-				<Footnotes />	
+				<Footnotes />
 				<Iframe />
 				<Image />
 				<Video />
@@ -34,6 +34,21 @@ storiesOf('Editor', module)
 				<File />
 			*/}
 
+		</Editor>
+	</div>
+));
+
+
+storiesOf('Editor', module)
+.add('Multiple Editors', () => (
+	<div>
+		<Editor>
+			<FormattingMenu />
+			<Latex />
+		</Editor>
+		<Editor>
+			<FormattingMenu />
+			<Latex />
 		</Editor>
 	</div>
 ));
