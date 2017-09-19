@@ -3,7 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { Editor } from 'index';
 import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
-import Latex from 'addons/Latex/LatexAddon';
+import Latex from '../addons/Latex';
 
 const onChange = (evt)=> {
 	console.log(evt);

@@ -1,1 +1,1 @@
-export default from '../dist/addons/Latex/LatexAddon';
+module.exports = require('../dist/addons/Latex/LatexAddon').default;

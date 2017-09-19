@@ -1,1 +1,1 @@
-export default from '../dist/addons/FormattingMenu/FormattingMenu';
+module.exports = require('../dist/addons/FormattingMenu/FormattingMenu').default;
