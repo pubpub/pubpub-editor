@@ -76,7 +76,7 @@ class Editor extends Component {
 		if (this.props.children && this.props.children.length > 0) {
 			this.props.children.forEach((child)=> {
 				if (child.type.schema) {
-					const { nodes, marks } = child.type.schema;
+					const { nodes, marks } = child.type.schema();
 					Object.keys(nodes || {}).forEach((key) => {
 						schemaNodes[key] = nodes[key];
 					});
@@ -87,7 +87,7 @@ class Editor extends Component {
 			});
 		}
 
-		const schema = createSchema({ nodes: schemaNodes, marks: schemaMarks });
+		const schema = createSchema(schemaNodes, schemaMarks);
 		return schema;
 	}
 
@@ -149,6 +149,9 @@ class Editor extends Component {
 			// nodeViews: configureNodeViews,
 			// ...props
 		});
+
+		const newNode = this.view.state.schema.nodes.equation.create({ content: '\\sum_ix^i' });
+		this.view.dispatch(this.view.state.tr.replaceSelectionWith(newNode));
 
 		this.setState({ view: this.view, editorState: state });
 	}

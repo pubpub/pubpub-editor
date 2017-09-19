@@ -54,27 +54,27 @@ class LatexEditable extends Component {
 			this.props.forceSelection();
 		}
 		evt.preventDefault();
-	},
+	}
 
 	changeToEditing() {
 		const clientWidth = ReactDOM.findDOMNode(this.refs.latexElem).getBoundingClientRect().width;
 		this.setState({ editing: true, clientWidth });
 		setTimeout(() => this.refs.input.focus(), 10);
-	},
+	}
 
 	changeToDisplay() {
 		const value = this.state.value || this.props.value;
 		const displayHTML= this.generateHTML(value);
 		this.props.updateValue(value);
 		this.setState({ editing: false, displayHTML, value: null });
-	},
+	}
 
 	handleChange(event) {
 		const value = event.target.value;
 		this.setState({ value });
 		this.forceUpdate();
 		// this.props.updateValue(value);
-	},
+	}
 
 	generateHTML(text) {
 		try {
@@ -82,27 +82,27 @@ class LatexEditable extends Component {
 		} catch (err) {
 			return "<div class='pub-latex-error'>Error rendering equation</div>";
 		}
-	},
+	}
 
 	handleKeyPress(evt) {
 		if (evt.key === 'Enter' && !this.props.block) {
 			this.changeToDisplay();
 		}
-	},
+	}
 
 	setSelected(selected) {
 		this.setState({ selected });
-	},
+	}
 
 	changeToInline() {
 		this.setState({ closePopOver: true });
 		this.props.changeToInline();
-	},
+	}
 
 	changeToBlock() {
 		this.setState({ closePopOver: true });
 		this.props.changeToBlock();
-	},
+	}
 
 	renderDisplay() {
 		const { displayHTML, selected, closePopOver } = this.state;
@@ -140,7 +140,7 @@ class LatexEditable extends Component {
 				</Popover>
 			</span>
 		);
-	},
+	}
 
 	renderEdit() {
 		// const { clientWidth } = this.state;
@@ -192,7 +192,7 @@ class LatexEditable extends Component {
 				}
 			</span>
 		);
-	},
+	}
 
 	render() {
 		const { editing } = this.state;

@@ -15,6 +15,8 @@ class FormattingMenu extends Component {
 		super(props);
 		this.state = {
 			input: null,
+			top: 0,
+			left: 0,
 		};
 		this.onChange = this.onChange.bind(this);
 		this.startInput = this.startInput.bind(this);

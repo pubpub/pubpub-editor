@@ -16,6 +16,7 @@ const propTypes = {
 };
 
 class LatexAddon extends Component {
+	static fish = 12;
 	static schema = ()=> {
 		return {
 			nodes: {
@@ -44,15 +45,15 @@ class LatexAddon extends Component {
 						}
 						return <LatexEditable value={equationText} block={false} />;
 					},
-					toStatic({ node, index }) {
+					toStatic({ node }) {
 						let equationText;
 						if (node.content && node.content.length >= 1) {
 							equationText = node.content[0].text;
 						} else if (node.attrs.content) {
 							equationText = node.attrs.content;
 						}
-						return <LatexStatic key={index} value={equationText} block={false} />;
-					}
+						return <LatexStatic value={equationText} block={false} />;
+					},
 				},
 
 
@@ -72,14 +73,14 @@ class LatexAddon extends Component {
 						}
 						return <LatexEditable value={equationText} block={false} />;
 					},
-					toStatic({ node, index }) {
+					toStatic({ node }) {
 						let equationText;
 						if (node.content && node.content.length >= 1) {
 							equationText = node.content[0].text;
 						} else if (node.attrs.content) {
 							equationText = node.attrs.content;
 						}
-						return <LatexStatic key={index} value={equationText} block={false} />;
+						return <LatexStatic value={equationText} block={false} />;
 					}
 				},
 			}

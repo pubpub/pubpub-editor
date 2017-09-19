@@ -13,11 +13,10 @@ const schemaNodes = baseSchema.spec.nodes;
 const listSchema = addListNodes(schemaNodes, 'paragraph block*', 'block');
 // const tableSchema = addTableNodes(listSchema, 'paragraph block*', 'block');
 
-export default ({ addonNodes, addonMarks }) => {
+export default (addonNodes, addonMarks) => {
 	return new Schema({
-		// nodes: tableSchema,
 		nodes: listSchema.append(addonNodes),
-		marks: marks.append(addonMarks),
+		marks: { ...marks, ...addonMarks },
 		topNode: 'doc'
 	});
 };
