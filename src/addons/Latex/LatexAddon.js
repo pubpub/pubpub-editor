@@ -7,7 +7,7 @@ import LatexStatic from './LatexStatic';
 // Clean up and import katex.css
 // install katex
 // Create storyboard for latex components
-// 
+// Cleanup Editor comments
 
 const propTypes = {
 	containerId: PropTypes.string.isRequired,

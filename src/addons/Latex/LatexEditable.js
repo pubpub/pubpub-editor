@@ -1,36 +1,42 @@
-import { Button, EditableText, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
-import Radium, { Style } from 'radium';
-import React, { PropTypes } from 'react';
-
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
+import { Button, EditableText, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 import katex from 'katex';
-import katexStyles from './katex.css.js';
 
-const ERROR_MSG_HTML = "<div class='pub-latex-error'>Error rendering equation</div>";
+require('./latex.scss');
 
-export const LatexEditor = React.createClass({
-	propTypes: {
-		value: PropTypes.string,
-		block: PropTypes.bool,
-		updateValue: PropTypes.func,
-		changeToBlock: PropTypes.func,
-		changeToInline: PropTypes.func,
-		forceSelection: PropTypes.func,
-	},
-	getInitialState: function() {
-		const displayHTML = this.generateHTML(this.props.value);
-		return {
+const propTypes = {
+	value: PropTypes.string,
+	block: PropTypes.bool,
+	updateValue: PropTypes.func,
+	changeToBlock: PropTypes.func,
+	changeToInline: PropTypes.func,
+	forceSelection: PropTypes.func,
+};
+
+class LatexEditable extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
 			editing: false,
-			displayHTML,
 			value: null,
+			displayHTML: this.generateHTML(this.props.value)
 		};
-	},
+		this.forceSelection = this.forceSelection.bind(this);
+		this.changeToEditing = this.changeToEditing.bind(this);
+		this.changeToDisplay = this.changeToDisplay.bind(this);
+		this.handleChange = this.handleChange.bind(this);
+		this.generateHTML = this.generateHTML.bind(this);
+		this.handleKeyPress = this.handleKeyPress.bind(this);
+		this.setSelected = this.setSelected.bind(this);
+		this.changeToInline = this.changeToInline.bind(this);
+		this.changeToBlock = this.changeToBlock.bind(this);
+		this.renderDisplay = this.renderDisplay.bind(this);
+		this.renderEdit = this.renderEdit.bind(this);
+	}
 
-	getDefaultProps: function() {
-		return { };
-	},
-
-	componentWillReceiveProps: function(nextProps) {
+	componentWillReceiveProps(nextProps) {
 		if (this.props.block !== nextProps.block) {
 			this.setState({ closePopOver: false });
 		}
@@ -41,29 +47,29 @@ export const LatexEditor = React.createClass({
 				this.setState({ displayHTML });
 			}
 		}
-	},
+	}
 
-	forceSelection: function(evt) {
+	forceSelection(evt) {
 		if (!this.state.selected) {
 			this.props.forceSelection();
 		}
 		evt.preventDefault();
 	},
 
-	changeToEditing: function() {
+	changeToEditing() {
 		const clientWidth = ReactDOM.findDOMNode(this.refs.latexElem).getBoundingClientRect().width;
 		this.setState({ editing: true, clientWidth });
 		setTimeout(() => this.refs.input.focus(), 10);
 	},
 
-	changeToNormal: function() {
+	changeToDisplay() {
 		const value = this.state.value || this.props.value;
 		const displayHTML= this.generateHTML(value);
 		this.props.updateValue(value);
 		this.setState({ editing: false, displayHTML, value: null });
 	},
 
-	handleChange: function(event) {
+	handleChange(event) {
 		const value = event.target.value;
 		this.setState({ value });
 		this.forceUpdate();
@@ -74,26 +80,26 @@ export const LatexEditor = React.createClass({
 		try {
 			return katex.renderToString(text, { displayMode: this.props.block });
 		} catch (err) {
-			return ERROR_MSG_HTML;
+			return "<div class='pub-latex-error'>Error rendering equation</div>";
 		}
 	},
 
-	handleKeyPress: function(evt) {
+	handleKeyPress(evt) {
 		if (evt.key === 'Enter' && !this.props.block) {
-			this.changeToNormal();
+			this.changeToDisplay();
 		}
 	},
 
-	setSelected: function(selected) {
+	setSelected(selected) {
 		this.setState({ selected });
 	},
 
-	changeToInline: function() {
+	changeToInline() {
 		this.setState({ closePopOver: true });
 		this.props.changeToInline();
 	},
 
-	changeToBlock: function() {
+	changeToBlock() {
 		this.setState({ closePopOver: true });
 		this.props.changeToBlock();
 	},
@@ -129,7 +135,8 @@ export const LatexEditor = React.createClass({
 					<span
 						ref={'latexElem'}
 						className={('pub-embed-latex' + ((selected) ? ' selected' : ''))}
-	          dangerouslySetInnerHTML={{__html: displayHTML}}/>
+						dangerouslySetInnerHTML={{__html: displayHTML}}
+					/>
 				</Popover>
 			</span>
 		);
@@ -143,7 +150,7 @@ export const LatexEditor = React.createClass({
 
 		const popoverContent = (
 			<div>
-				<Button iconName="annotation" onClick={this.changeToNormal}>Save</Button>
+				<Button iconName="annotation" onClick={this.changeToDisplay}>Save</Button>
 			</div>
 		);
 
@@ -187,13 +194,14 @@ export const LatexEditor = React.createClass({
 		);
 	},
 
-	render: function() {
+	render() {
 		const { editing } = this.state;
 
 		if (editing) { return this.renderEdit(); }
 		return this.renderDisplay();
 	}
 
-});
+}
 
-export default LatexEditor;
+LatexEditable.propTypes = propTypes;
+export default LatexEditable;
