@@ -1,10 +1,11 @@
+import Collaborative from 'addons/Collaborative/Collaborative';
+import { Editor } from 'index';
+import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
+import InsertMenu from 'addons/InsertMenu/InsertMenu';
+import Latex from 'addons/Latex/LatexAddon';
 /* eslint-disable */
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { Editor } from 'index';
-import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
-import Collaborative from 'addons/Collaborative/Collaborative';
-import Latex from 'addons/Latex/LatexAddon';
 
 const editorWrapper = {
 	border: '1px solid #CCC',
@@ -19,7 +20,7 @@ const focusEditor = ()=> {
 };
 
 const onChange = (evt)=> {
-	console.log(evt);
+	// console.log(evt);
 };
 
 {/*
@@ -81,7 +82,7 @@ storiesOf('Editor', module)
 .add('Collaborative', () => (
 	<Editor onChange={onChange}>
 		<FormattingMenu />
-		<Collaborative 
+		<Collaborative
 			// ref={(collab) => { this.collab = collab; }}
 			firebaseConfig={{
 				apiKey: 'AIzaSyBpE1sz_-JqtcIm2P4bw4aoMEzwGITfk0U',
