@@ -1,15 +1,18 @@
-import { getPlugin, keys } from '../../schema/plugins/pluginKeys';
+// import { getPlugin, keys } from '../../schema/plugins/pluginKeys';
 
-import { Plugin } from 'prosemirror-state';
-import Promise from 'bluebird';
+const getPlugin = ()=> {};
+
+import { Plugin, Selection } from 'prosemirror-state';
+import defer from 'promise-defer';
+// var defer = require("promise-defer")
+// import Promise from 'bluebird';
 import firebase from 'firebase';
 
-const { Selection } = require('prosemirror-state')
-const { Node } = require('prosemirror-model')
-const { Step, Mapping } = require('prosemirror-transform')
-const { sendableSteps, receiveTransaction } = require('prosemirror-collab')
-const { compressStepsLossy, compressStateJSON, uncompressStateJSON, compressSelectionJSON, uncompressSelectionJSON, compressStepJSON, uncompressStepJSON } = require('prosemirror-compress')
-const TIMESTAMP = { '.sv': 'timestamp' }
+const { Node } = require('prosemirror-model');
+const { Step, Mapping } = require('prosemirror-transform');
+const { sendableSteps, receiveTransaction } = require('prosemirror-collab');
+const { compressStepsLossy, compressStateJSON, uncompressStateJSON, compressSelectionJSON, uncompressSelectionJSON, compressStepJSON, uncompressStepJSON } = require('prosemirror-compress');
+const TIMESTAMP = { '.sv': 'timestamp' };
 
 /*
 
@@ -288,7 +291,8 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, rootRef, edit
 	let selectionMarkers = {};
 	let editorView;
 
-	let loadingPromise = Promise.defer();
+	let loadingPromise = defer();
+	// let loadingPromise = Promise.defer();
 
 	const loadDocumentAndListen = (view) => {
 
@@ -626,21 +630,21 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, rootRef, edit
 
 			getForks() {
 				return loadingPromise.promise.then(() => {
-					const forksKey = firebaseDb.ref(editorKey).child("forks");
-					return getFirebaseValue({ref: firebaseDb.ref(editorKey), child: "forks"})
-						.then((forkList) => {
-							if (!forkList) {
-								return [];
-							}
-							const forkNames = Object.keys(forkList);
-							const getForkData = forkNames.map((forkName) => {
-								return getFirebaseValue({ ref: firebaseDb.ref(forkName), child: "forkData" }).then((forkData) => {
-									forkData.name = forkName;
-									return forkData;
-								});
+					const forksKey = firebaseDb.ref(editorKey).child('forks');
+					return getFirebaseValue({ ref: firebaseDb.ref(editorKey), child: 'forks' })
+					.then((forkList) => {
+						if (!forkList) {
+							return [];
+						}
+						const forkNames = Object.keys(forkList);
+						const getForkData = forkNames.map((forkName) => {
+							return getFirebaseValue({ ref: firebaseDb.ref(forkName), child: 'forkData' }).then((forkData) => {
+								forkData.name = forkName;
+								return forkData;
 							});
-							return Promise.all(getForkData);
 						});
+						return Promise.all(getForkData);
+					});
 				});
 			},
 

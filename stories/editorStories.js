@@ -3,6 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { Editor } from 'index';
 import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
+import Collaborative from 'addons/Collaborative/Collaborative';
 import Latex from '../addons/Latex';
 
 const onChange = (evt)=> {
@@ -61,6 +62,24 @@ storiesOf('Editor', module)
 	<Editor onChange={onChange} initialContent={equationDoc}>
 		<FormattingMenu />
 		<Latex />
+	</Editor>
+))
+.add('Collaborative', () => (
+	<Editor onChange={onChange}>
+		<FormattingMenu />
+		<Collaborative 
+			// ref={(collab) => { this.collab = collab; }}
+			firebaseConfig={{
+				apiKey: 'AIzaSyBpE1sz_-JqtcIm2P4bw4aoMEzwGITfk0U',
+				authDomain: 'pubpub-rich.firebaseapp.com',
+				databaseURL: 'https://pubpub-rich.firebaseio.com',
+				projectId: 'pubpub-rich',
+				storageBucket: 'pubpub-rich.appspot.com',
+				messagingSenderId: '543714905893',
+			}}
+			clientID={'storybook-clientid'}
+			editorKey={'storybook-editorkey'}
+		/>
 	</Editor>
 ))
 .add('Multiple Editors', () => (

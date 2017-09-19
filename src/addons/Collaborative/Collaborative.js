@@ -13,7 +13,7 @@ const propTypes = {
 	// showCollaborators: React.PropTypes.bool.isRequired,
 };
 
-class CollaborativeAddon extends Component {
+class Collaborative extends Component {
 	static getPlugins({ firebaseConfig, clientID, editorKey }) {
 		// need to add a random client ID number to account for sessions with the same client
 		const selfClientID = clientID + Math.round(Math.random() * 10000);
@@ -87,5 +87,5 @@ class CollaborativeAddon extends Component {
 	}
 }
 
-CollaborativeAddon.propTypes = propTypes;
-export default CollaborativeAddon;
+Collaborative.propTypes = propTypes;
+export default Collaborative;
