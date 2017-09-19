@@ -4,7 +4,19 @@ import { storiesOf } from '@storybook/react';
 import { Editor } from 'index';
 import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
 import Collaborative from 'addons/Collaborative/Collaborative';
-import Latex from '../addons/Latex';
+import Latex from 'addons/Latex/LatexAddon';
+
+const editorWrapper = {
+	border: '1px solid #CCC',
+	maxWidth: '600px',
+	minHeight: '250px',
+};
+let editorRef = undefined;
+
+const focusEditor = ()=> {
+	console.log('yo?');
+	editorRef.focus();
+};
 
 const onChange = (evt)=> {
 	console.log(evt);
@@ -54,9 +66,11 @@ const equationDoc = {
 };
 storiesOf('Editor', module)
 .add('Default', () => (
-	<Editor onChange={onChange}>
-		<FormattingMenu />
-	</Editor>
+	<div style={editorWrapper} onClick={focusEditor}>
+		<Editor onChange={onChange} ref={(ref)=> { editorRef = ref; }}>
+			<FormattingMenu />
+		</Editor>
+	</div>
 ))
 .add('Latex', () => (
 	<Editor onChange={onChange} initialContent={equationDoc}>

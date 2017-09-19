@@ -37,7 +37,7 @@ const nodes = {
 	*/
 
 	paragraph: {
-		content: 'inline<_>*',
+		content: 'inline*',
 		group: 'block',
 		parseDOM: [{ tag: 'p' }],
 		toDOM() { return ['p', 0]; },
@@ -253,7 +253,7 @@ const nodes = {
 
 	heading: {
 		attrs: { level: { default: 1 } },
-		content: 'inline<_>*',
+		content: 'inline*',
 		group: 'block',
 		parseDOM: [
 			{ tag: 'h1', attrs: { level: 1 } },

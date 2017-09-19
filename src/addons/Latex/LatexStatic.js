@@ -1,4 +1,5 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import katex from 'katex';
 
 require('./latex.scss');
@@ -14,12 +15,15 @@ const defaultProps = {
 };
 
 const LatexEditor = function(props) {
-	const displayHTML = katex.renderToString(props.value, {displayMode: props.block, throwOnError: false});	
+	const displayHTML = katex.renderToString(props.value, {
+		displayMode: props.block,
+		throwOnError: false
+	});
 	return (
-		<span 
-		  	className={`latex-wrapper ${props.block ? 'block' : ''}`}
-		  	dangerouslySetInnerHTML={{__html: displayHTML}}
-	  	/>
+		<span
+			className={`latex-wrapper ${props.block ? 'block' : ''}`}
+			dangerouslySetInnerHTML={{ __html: displayHTML }}
+		/>
 	);
 };
 

@@ -1,6 +1,6 @@
 {
   "name": "@pubpub/editor",
-  "version": "4.0.0-beta.3",
+  "version": "4.0.0-beta.4",
   "description": "Collaborative Community Editor",
   "main": "dist/index.js",
   "author": "PubPub Team <pubpub@media.mit.edu>",
@@ -14,7 +14,7 @@
     "clean": "rm -rf dist && mkdir dist",
     "lint": "eslint src stories .storybook",
     "prepublish-soon": "npm run lint && rm -rf node_modules && npm install && npm run build",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "rm -rf node_modules && npm install && npm run build",
     "start": "start-storybook -p 9002 -c .storybook"
   },
   "dependencies": {
