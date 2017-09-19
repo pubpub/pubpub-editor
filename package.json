@@ -10,11 +10,11 @@
     "url": "https://github.com/pubpub/pubpub-editor.git"
   },
   "scripts": {
-    "prepubish-soon": "npm run lint && rm -rf node_modules && npm install && npm run build",
-    "prepubish": "rm -rf node_modules && npm install && npm run build",
-    "clean": "rm -rf dist && mkdir dist",
     "build": "npm run clean && babel src -d dist --copy-files",
+    "clean": "rm -rf dist && mkdir dist",
     "lint": "eslint src stories .storybook",
+    "prepublish-soon": "npm run lint && rm -rf node_modules && npm install && npm run build",
+    "prepublishOnly": "rm -rf node_modules && npm install && npm run build",
     "start": "start-storybook -p 9002 -c .storybook"
   },
   "dependencies": {
