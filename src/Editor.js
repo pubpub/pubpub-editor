@@ -133,7 +133,7 @@ class Editor extends Component {
 
 		const state = EditorState.create(stateConfig);
 		const editorView = document.createElement('div');
-		editorView.className = 'pub-body';
+		// editorView.className = 'pub-body';
 		place.appendChild(editorView);
 
 		// const props = {
