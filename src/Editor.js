@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
+import PropTypes from 'prop-types';
+import ReactView from './schema/reactView';
 // import { configureClipboard } from './schema/setup/clipboard';
 // import configureNodeViews from '../schema/editable/configure';
 // import { createRichMention } from '../addons/Autocomplete/autocompleteConfig';
 import createSchema from './schema';
-import ReactView from './schema/reactView';
 import { getBasePlugins } from './schema/setup';
 
 const propTypes = {
@@ -24,6 +25,7 @@ const defaultProps = {
 class Editor extends Component {
 	constructor(props) {
 		super(props);
+		this.containerId = `pubpub-editor-container-${Math.round(Math.random() * 10000)}`;
 		this.state = {};
 		// this.onChange = this.onChange.bind(this);
 		this.getJSON = this.getJSON.bind(this);
@@ -110,10 +112,8 @@ class Editor extends Component {
 			this.remove();
 		}
 
-		// const schema = createSchema();
 		const schema = this.configureSchema();
-		const place = document.getElementById('@pubpub-editor');
-		// const place = ReactDOM.findDOMNode(this.refs.container);
+		const place = this.editorElement;
 
 		const contents = this.props.initialContent;
 		const plugins = this.configurePlugins(schema);
@@ -252,20 +252,20 @@ class Editor extends Component {
 
 	render() {
 		return (
-			<div style={{ position: 'relative', width: '100%', minHeight: 250 }} id={'@pubpub-editor-container'}>
+			<div style={{ position: 'relative', width: '100%', minHeight: 250 }} id={this.containerId}>
 				{this.state.view
 					? React.Children.map(this.props.children, (child) => {
 						return React.cloneElement(child, {
 							view: this.state.view,
 							editorState: this.state.editorState,
 							transaction: this.state.transaction,
-							containerId: '@pubpub-editor-container'
+							containerId: this.containerId
 						});
 					})
 					: null
 				}
 
-				<div className="@pubpub-editor" id="@pubpub-editor" />
+				<div ref={el => this.editorElement = el} className="@pubpub-editor" />
 			</div>
 		);
 	}
