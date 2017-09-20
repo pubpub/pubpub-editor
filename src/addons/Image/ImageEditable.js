@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import ImageMenu from './ImageMenu';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import Resizable from 'react-resizable-box';
+import Resizable from 're-resizable';
 
 let styles = {};
 
@@ -52,29 +52,29 @@ class ImageEditable extends Component {
 	}
 
 	createCaption = () => {
-    // Need to check if caption already exists?
+		// Need to check if caption already exists?
 		const view = this.props.view;
-    const from = this.props.getPos() + 1;
-    const textnode = view.state.schema.text('Enter caption');
-    const captionNode = view.state.schema.nodes.caption.create({}, textnode);
-    const transaction = view.state.tr.insert(from, captionNode);
-    view.dispatch(transaction);
-  }
+		const from = this.props.getPos() + 1;
+		const textnode = view.state.schema.text('Enter caption');
+		const captionNode = view.state.schema.nodes.caption.create({}, textnode);
+		const transaction = view.state.tr.insert(from, captionNode);
+		view.dispatch(transaction);
+	}
 
-  removeCaption = () => {
+	removeCaption = () => {
 		const view = this.props.view;
 
-    let textNode = this.getTextNode();
-    if (!textNode) {
-      console.log('could not find textNode');
-      return;
-    }
-    const from = textNode.from - 1;
-    const to = textNode.to;
-    const checkSlice = view.state.doc.slice(from, to);
-    const transaction = view.state.tr.deleteRange(from, to);
-    view.dispatch(transaction);
-  }
+		let textNode = this.getTextNode();
+		if (!textNode) {
+			console.log('could not find textNode');
+			return;
+		}
+		const from = textNode.from - 1;
+		const to = textNode.to;
+		const checkSlice = view.state.doc.slice(from, to);
+		const transaction = view.state.tr.deleteRange(from, to);
+		view.dispatch(transaction);
+	}
 
 	getTextNode = () => {
 		let textNode = findNodesWithIndex(this.node, 'text');
@@ -91,20 +91,32 @@ class ImageEditable extends Component {
 
 	updateCaption = (txt) => {
 		const view = this.props.view;
-    let textNode = this.getTextNode();
+		let textNode = this.getTextNode();
 
-    if (!textNode) {
-      console.log('could not find textNode');
-      return;
-    }
+		if (!textNode) {
+			console.log('could not find textNode');
+			return;
+		}
 
-    const slice = new Slice(Fragment.from(view.state.schema.text(txt)), 0, 0);
-    const transaction = view.state.tr.replaceRange(textNode.from, textNode.to, slice);
-    view.dispatch(transaction);
+		const slice = new Slice(Fragment.from(view.state.schema.text(txt)), 0, 0);
+		const transaction = view.state.tr.replaceRange(textNode.from, textNode.to, slice);
+		view.dispatch(transaction);
+	}
+
+	openFileDialog = () => {
+		this.setState({openDialog: true});
+	}
+
+	closeFileDialog = () => {
+		this.setState({openDialog: false});
+	}
+
+	onFileSelect = () => {
+
 	}
 
 	render() {
-		const {size, align, filename, selected} = this.props;
+		const { size, align, filename, selected } = this.props;
 		const caption = this.props.caption;
 
 		const url = "https://i.imgur.com/4jIx7oE.gif";
@@ -115,120 +127,132 @@ class ImageEditable extends Component {
 		const maxImageWidth = 600;
 
 		return (
-			<div draggable="false" ref="embedroot" className="pub-embed" onClick={this.forceSelection}>
+			<div
+				draggable="false"
+				ref="embedroot"
+				className="pub-embed"
+				onDoubleClick={this.openFileDialog}
+				onClick={this.props.forceSelection}>
+
+				<InsertMenuDialogFiles
+					isOpen={this.state.openDialog === 'files'}
+					onClose={this.closeFileDialog}
+					onFileSelect={this.onFileSelect} />
+
 				<figure style={styles.figure({size, align, selected: false})}>
-				<div style={styles.row({size, align})}>
-				<Popover content={popoverContent}
-								 interactionKind={PopoverInteractionKind.CLICK}
-								 popoverClassName="pt-popover-content-sizing pt-minimal pt-dark"
-								 position={Position.BOTTOM}
-								 autoFocus={false}
-								 popoverWillOpen={(evt) => {
-									 this.refs.embedroot.focus();
-								 }}
-								 useSmartPositioning={false}>
 
-				{ (!!url) ?
-					(align !== 'max') ?
-					<Resizable
-						width={'100%'}
-						height={'auto'}
-						maxWidth={maxImageWidth}
-						customStyle={styles.outline({selected: false})}
-						enable={false}
-						minWidth={(align === 'max') ? '100%' : undefined}
-						onResizeStop={(direction, styleSize, clientSize, delta) => {
-							const docWidth = document.querySelector(".pub-body").clientWidth;
-							const ratio = ((clientSize.width / docWidth ) * 100).toFixed(1);
-							this.updateAttrs({size: ratio + '%' });
-						}}>
-							<img style={styles.image({selected})} src={url}/>
-						</Resizable>
-						:
-						<img style={styles.image({selected})}  src={url}/>
-					:
-					<div className="pt-callout pt-intent-danger">
-					  <h5>Could not find file: {filename}</h5>
-					  The file you're including is not uploaded to your pub, so it cannot be displayed.
+					<div style={styles.row({size, align})}>
+						<Popover content={popoverContent}
+							interactionKind={PopoverInteractionKind.CLICK}
+							popoverClassName="pt-popover-content-sizing pt-minimal pt-dark"
+							position={Position.BOTTOM}
+							autoFocus={false}
+							popoverWillOpen={(evt) => {
+								this.refs.embedroot.focus();
+							}}
+							useSmartPositioning={false}>
+
+							{ (!!url) ?
+								(align !== 'max') ?
+								<Resizable
+									width={'100%'}
+									height={'auto'}
+									maxWidth={maxImageWidth}
+									customStyle={styles.outline({selected: false})}
+									enable={false}
+									minWidth={(align === 'max') ? '100%' : undefined}
+									onResizeStop={(direction, styleSize, clientSize, delta) => {
+										const docWidth = document.querySelector(".pub-body").clientWidth;
+										const ratio = ((clientSize.width / docWidth ) * 100).toFixed(1);
+										this.updateAttrs({size: ratio + '%' });
+									}}>
+									<img style={styles.image({selected})} src={url}/>
+								</Resizable>
+								:
+								<img style={styles.image({selected})}  src={url}/>
+								:
+								<div className="pt-callout pt-intent-danger">
+									<h5>Could not find file: {filename}</h5>
+									The file you're including is not uploaded to your pub, so it cannot be displayed.
+								</div>
+							}
+						</Popover>
 					</div>
-				}
-				</Popover>
-			</div>
-			<figcaption style={styles.caption({size, align})}>
-				{(this.props.caption) ?
-					<EditableText
-							className="pub-caption"
-							ref="captionArea"
-							maxLines={5}
-							minLines={1}
-							multiline
-							confirmOnEnterKey
-							placeholder="Edit caption"
-							defaultValue={caption}
-							onConfirm={this.updateCaption}
-					/>
-						 : null}
-			</figcaption>
-			</figure>
-			</div>
-		);
-	}
-}
-
-styles = {
-	row: function ({ size, align }) {
-		return {
-			width: (align !== 'max') ? size : '100%',
-			position: 'relative',
-			display: 'table-row'
-		 };
-	},
-	image: function({ selected }) {
-		return {
-			width: '100%',
-			outline: (selected) ? '3px solid #BBBDC0' : '3px solid transparent',
-			transition: 'outline-color 0.15s ease-in',
-		};
-	},
-	outline: function({selected}) {
-		return {
-			outline: (selected) ? '3px solid #BBBDC0' : '3px solid transparent',
-			transition: 'outline-color 0.15s ease-in',
-			paddingTop: '10px',
-
-		};
-	},
-	figure: function({ size, align, selected }) {
-		const style = {
-			width: (!!size) ? size : 'auto',
-			display: 'table',
-			outline: (selected) ? '3px solid #BBBDC0' : '3px solid transparent',
-			transition: 'outline-color 0.15s ease-in',
-			paddingTop: '10px',
-			marginRight: (align === 'left') ? '20px' : null,
-			marginLeft: (align === 'right') ? '20px' : null,
-		};
-		if (align === 'max') {
-			style.width = 'calc(100% + 30px)';
-			style.margin = '0 0 0 -15px';
-		} else if (align === 'left') {
-			style.float = 'left';
-		} else if (align === 'right') {
-			style.float = 'right';
-		} else if (align === 'full' || !align) {
-			style.margin = '0 auto';
+					<figcaption style={styles.caption({size, align})}>
+						{(this.props.caption) ?
+							<EditableText
+								className="pub-caption"
+								ref="captionArea"
+								maxLines={5}
+								minLines={1}
+								multiline
+								confirmOnEnterKey
+								placeholder="Edit caption"
+								defaultValue={caption}
+								onConfirm={this.updateCaption}
+							/>
+							: null}
+						</figcaption>
+					</figure>
+				</div>
+			);
 		}
- 		return style;
-	},
-	caption: function({size, align}) {
-		const style = {
-			lineHeight: '30px',
-			fontSize: '1em',
-			width: size,
-			display: 'table-row',
-		};
-		return style;
 	}
-};
 
-export default ImageEditable;
+	styles = {
+		row: function ({ size, align }) {
+			return {
+				width: (align !== 'max') ? size : '100%',
+				position: 'relative',
+				display: 'table-row'
+			};
+		},
+		image: function({ selected }) {
+			return {
+				width: '100%',
+				outline: (selected) ? '3px solid #BBBDC0' : '3px solid transparent',
+				transition: 'outline-color 0.15s ease-in',
+			};
+		},
+		outline: function({selected}) {
+			return {
+				outline: (selected) ? '3px solid #BBBDC0' : '3px solid transparent',
+				transition: 'outline-color 0.15s ease-in',
+				paddingTop: '10px',
+
+			};
+		},
+		figure: function({ size, align, selected }) {
+			const style = {
+				width: (!!size) ? size : 'auto',
+				display: 'table',
+				outline: (selected) ? '3px solid #BBBDC0' : '3px solid transparent',
+				transition: 'outline-color 0.15s ease-in',
+				paddingTop: '10px',
+				marginRight: (align === 'left') ? '20px' : null,
+				marginLeft: (align === 'right') ? '20px' : null,
+			};
+			if (align === 'max') {
+				style.width = 'calc(100% + 30px)';
+				style.margin = '0 0 0 -15px';
+			} else if (align === 'left') {
+				style.float = 'left';
+			} else if (align === 'right') {
+				style.float = 'right';
+			} else if (align === 'full' || !align) {
+				style.margin = '0 auto';
+			}
+			return style;
+		},
+		caption: function({size, align}) {
+			const style = {
+				lineHeight: '30px',
+				fontSize: '1em',
+				width: size,
+				display: 'table-row',
+			};
+			return style;
+		}
+	};
+
+	export default ImageEditable;
