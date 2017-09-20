@@ -1,6 +1,7 @@
 import { EditableText, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 import React, { Component } from 'react';
 
+import ImageFileUploader from './ImageFileUploader';
 import ImageMenu from './ImageMenu';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
@@ -17,6 +18,13 @@ const propTypes = {
 
 class ImageEditable extends Component {
 
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			openDialog: false
+		};
+	}
 
 	getSize = () => {
 		const elem = ReactDOM.findDOMNode(this.refs.menupointer);
@@ -104,22 +112,33 @@ class ImageEditable extends Component {
 	}
 
 	openFileDialog = () => {
-		this.setState({openDialog: true});
+		this.setState({ openDialog: true });
 	}
 
 	closeFileDialog = () => {
-		this.setState({openDialog: false});
+		this.setState({ openDialog: false });
 	}
 
-	onFileSelect = () => {
-
+	onFileSelect = (evt) => {
+		// Need to upload file
+		// Need to add new file object to file list
+		// Need to insert file content into editor
+		const file = evt.target.files[0];
+		evt.target.value = null;
+		this.props.handleFileUpload(file, ({filename, url})=>{
+			console.log('got url!', url);
+			console.log(arguments);
+			this.props.updateAttrs({ url });
+			this.setState({
+				openDialog: false,
+				callback: undefined,
+			});
+		});
 	}
 
 	render() {
-		const { size, align, filename, selected } = this.props;
+		const { size, align, filename, selected, url } = this.props;
 		const caption = this.props.caption;
-
-		const url = "https://i.imgur.com/4jIx7oE.gif";
 
 		const popoverContent = (<ImageMenu align={align} createCaption={this.props.createCaption} removeCaption={this.props.removeCaption} embedAttrs={this.props} updateParams={this.updateAttrs}/>);
 
@@ -134,8 +153,8 @@ class ImageEditable extends Component {
 				onDoubleClick={this.openFileDialog}
 				onClick={this.props.forceSelection}>
 
-				<InsertMenuDialogFiles
-					isOpen={this.state.openDialog === 'files'}
+				<ImageFileUploader
+					isOpen={!!this.state.openDialog}
 					onClose={this.closeFileDialog}
 					onFileSelect={this.onFileSelect} />
 

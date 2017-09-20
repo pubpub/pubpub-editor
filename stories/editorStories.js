@@ -7,6 +7,7 @@ import Latex from 'addons/Latex/LatexAddon';
 /* eslint-disable */
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import uploadFile from './utils/uploadFile';
 
 const editorWrapper = {
 	border: '1px solid #CCC',
@@ -85,7 +86,7 @@ storiesOf('Editor', module)
 		<Editor onChange={onChange}>
 			<FormattingMenu />
 			<InsertMenu />
-			<Image />
+			<Image handleFileUpload={uploadFile}/>
 		</Editor>
 	</div>
 ))

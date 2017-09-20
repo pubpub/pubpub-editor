@@ -16,7 +16,8 @@ but certain schema-based addons may not need them
 // };
 
 class ImageAddon extends Component {
-	static schema = ()=> {
+	static schema = ({ handleFileUpload })=> {
+		console.log('handle files!', handleFileUpload);
 		return {
 			nodes: {
 				image: {
@@ -42,7 +43,7 @@ class ImageAddon extends Component {
 							const captionNode = view.state.schema.nodes.caption.create({}, textnode);
 							const imageNode = view.state.schema.nodes.image.create(
 								{
-									url: "google.com",
+									url: "https://i.imgur.com/4jIx7oE.gif",
 								},
 								captionNode
 							);
@@ -51,19 +52,14 @@ class ImageAddon extends Component {
 						},
 					},
 					toEditable(node, view, decorations, isSelected, helperFunctions) {
-						let equationText;
-						if (node.content && node.content.length >= 1) {
-							equationText = node.content[0].text;
-						} else if (node.attrs.content) {
-							equationText = node.attrs.content;
-						}
 						return (
 							<ImageEditable
-								value={equationText}
-								isBlock={false}
+								url={node.attrs.url}
+								size={node.attrs.size}
 								isSelected={isSelected}
 								view={view}
-								helperFunctions={helperFunctions}
+								{...helperFunctions}
+								handleFileUpload={handleFileUpload}
 							/>
 						);
 					},

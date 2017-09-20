@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
+import PropTypes from 'prop-types';
 import ReactView from './schema/reactView';
 // import { configureClipboard } from './schema/setup/clipboard';
 // import configureNodeViews from '../schema/editable/configure';
@@ -98,7 +98,7 @@ class Editor extends Component {
 		if (this.props.children) {
 			React.Children.forEach(this.props.children, (child)=> {
 				if (child.type.schema) {
-					const { nodes, marks } = child.type.schema();
+					const { nodes, marks } = child.type.schema(child.props);
 					Object.keys(nodes || {}).forEach((key) => {
 						schemaNodes[key] = nodes[key];
 					});
@@ -257,7 +257,7 @@ class Editor extends Component {
 		return (
 			<div style={{ position: 'relative' }} id={this.containerId}>
 				<style>{`
-					.prosemirror-placeholder { 
+					.prosemirror-placeholder {
 						opacity: 0.5;
 						width: 0;
 						display: inline-block;
