@@ -1,9 +1,9 @@
 /* eslint-disable react/no-render-return-value */
 /* eslint-disable class-methods-use-this */
 
+import { NodeSelection } from 'prosemirror-state';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { NodeSelection } from 'prosemirror-state';
 import ReactViewWrapper from './ReactViewWrapper';
 
 class ReactView {
@@ -60,6 +60,7 @@ class ReactView {
 				updateContent={this.updateContent}
 				changeNode={this.changeNode}
 				renderComponent={this.renderComponent}
+				getPos={this.getPos}
 			/>, domChild);
 	}
 

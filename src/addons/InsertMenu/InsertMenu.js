@@ -2,7 +2,6 @@ import { Menu, MenuItem, Popover, PopoverInteractionKind, Position } from '@blue
 import React, { Component } from 'react';
 import getMenuItems , { canUseInsertMenu, insertEmbed, insertReference } from './insertMenuConfig';
 
-import InsertMenuDialogFiles from './InsertMenuDialogFiles';
 import PropTypes from 'prop-types';
 
 let styles;
@@ -143,11 +142,6 @@ class InsertMenu extends Component {
 					useSmartPositioning={false}>
 					<button className={'pt-button pt-minimal pt-icon-insert'} />
 				</Popover>
-
-				<InsertMenuDialogFiles
-					isOpen={this.state.openDialog === 'files'}
-					onClose={this.closeDialog}
-					onFileSelect={this.onFileSelect} />
 
 				{/*
 				<InsertMenuDialogReferences

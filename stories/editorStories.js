@@ -1,11 +1,12 @@
+import Collaborative from 'addons/Collaborative/Collaborative';
+import { Editor } from 'index';
+import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
+import Image from 'addons/Image/ImageAddon';
+import InsertMenu from 'addons/InsertMenu/InsertMenu';
+import Latex from 'addons/Latex/LatexAddon';
 /* eslint-disable */
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { Editor } from 'index';
-import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
-import Collaborative from 'addons/Collaborative/Collaborative';
-import InsertMenu from 'addons/InsertMenu/InsertMenu';
-import Latex from 'addons/Latex/LatexAddon';
 
 const editorWrapper = {
 	border: '1px solid #CCC',
@@ -78,6 +79,15 @@ storiesOf('Editor', module)
 		<FormattingMenu />
 		<Latex />
 	</Editor>
+))
+.add('Images', () => (
+	<div style={{width: "80%", margin: "0 auto"}}>
+		<Editor onChange={onChange}>
+			<FormattingMenu />
+			<InsertMenu />
+			<Image />
+		</Editor>
+	</div>
 ))
 .add('Collaborative', () => (
 	<Editor onChange={onChange}>

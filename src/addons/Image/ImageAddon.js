@@ -16,24 +16,38 @@ but certain schema-based addons may not need them
 // };
 
 class ImageAddon extends Component {
-	static fish = 12;
 	static schema = ()=> {
 		return {
 			nodes: {
 				image: {
 					atom: true,
-					group: 'inline',
-					content: 'inline<_>*',
+					content: 'caption?',
 					attrs: {
-						content: { default: '' },
+						filename: { default: '' },
+						url: { default: '' },
+						figureName: { default: '' },
+						size: { default: '' },
+						align: { default: '' },
 					},
-					inline: true,
+					parseDOM: [{ tag: 'img[src]' }],
+					inline: false,
+					group: 'block',
+					draggable: false,
+					selectable: true,
 					insertMenu: {
 						label: 'Insert Image',
 						icon: 'pt-equation',
 						onInsert: (view) => {
-							const newNode = view.state.schema.nodes.equation.create({ content: '\\sum_ix^i' });
-							view.dispatch(view.state.tr.replaceSelectionWith(newNode));
+							const textnode = view.state.schema.text('Enter caption.');
+							const captionNode = view.state.schema.nodes.caption.create({}, textnode);
+							const imageNode = view.state.schema.nodes.image.create(
+								{
+									url: "google.com",
+								},
+								captionNode
+							);
+							let transaction = view.state.tr.replaceSelectionWith(imageNode);
+							view.dispatch(transaction);
 						},
 					},
 					toEditable(node, view, decorations, isSelected, helperFunctions) {
@@ -53,14 +67,10 @@ class ImageAddon extends Component {
 							/>
 						);
 					},
-					toStatic({ node }) {
-						let equationText;
-						if (node.content && node.content.length >= 1) {
-							equationText = node.content[0].text;
-						} else if (node.attrs.content) {
-							equationText = node.attrs.content;
-						}
-						return <ImageStatic value={equationText} block={false} />;
+					toStatic({ node, index, renderContent }) {
+						const filename = node.attrs.filename;
+						const url = meta.fileMap[filename];
+						return <ImageStatic key={index} {...node.attrs} url={url}>{renderContent(node.content, meta)}</ImageStatic>
 					},
 				},
 			}

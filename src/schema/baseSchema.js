@@ -232,6 +232,13 @@ const nodes = {
 	// 	}
 	// },
 
+	caption: {
+		content: 'inline<_>*',
+		group: 'block',
+		parseDOM: [{ tag: 'p' }],
+		toDOM() { return ['p', 0]; }
+	},
+
 	blockquote: {
 		content: 'block+',
 		group: 'block',

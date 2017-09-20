@@ -1,7 +1,6 @@
 import React, {PropTypes} from 'react';
-import katex from 'katex';
 
-require('./latex.scss');
+import katex from 'katex';
 
 const propTypes = {
 	value: PropTypes.string,
@@ -14,9 +13,9 @@ const defaultProps = {
 };
 
 const LatexEditor = function(props) {
-	const displayHTML = katex.renderToString(props.value, {displayMode: props.block, throwOnError: false});	
+	const displayHTML = "test";
 	return (
-		<span 
+		<span
 		  	className={`latex-wrapper ${props.block ? 'block' : ''}`}
 		  	dangerouslySetInnerHTML={{__html: displayHTML}}
 	  	/>

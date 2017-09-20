@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import PropTypes from 'prop-types';
 
 const propTypes = {
@@ -40,6 +41,7 @@ class ReactViewWrapper extends Component {
 			updateAttrs: this.props.updateAttrs,
 			changeNode: this.props.changeNode,
 			updateContent: this.props.updateContent,
+			getPos: this.props.getPos,
 		};
 		return (
 			<span role={'button'} tabIndex={-1} onClick={this.forceSelection}>

@@ -1,7 +1,7 @@
 import { Button, Dialog } from '@blueprintjs/core';
 import React, { PropTypes } from 'react';
 
-export const InsertMenuDialogFiles = React.createClass({
+export const ImageFileUploader = React.createClass({
 	propTypes: {
 		onClose: PropTypes.func,
 		isOpen: PropTypes.bool,
@@ -21,8 +21,8 @@ export const InsertMenuDialogFiles = React.createClass({
 				</div>
 			</Dialog>
 		);
- 
+
 	}
 });
 
-export default InsertMenuDialogFiles;
+export default ImageFileUploader;

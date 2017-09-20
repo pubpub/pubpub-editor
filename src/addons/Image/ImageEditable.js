@@ -1,11 +1,10 @@
 import { EditableText, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
-import React, {PropTypes} from 'react';
+import React, { Component } from 'react';
 
 import ImageMenu from './ImageMenu';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import RenderFile from '../../render/RenderFile';
 import Resizable from 'react-resizable-box';
-import URLToType from '../../../utils/urlToType';
 
 let styles = {};
 
@@ -52,20 +51,72 @@ class ImageEditable extends Component {
 		evt.preventDefault();
 	}
 
+	createCaption = () => {
+    // Need to check if caption already exists?
+		const view = this.props.view;
+    const from = this.props.getPos() + 1;
+    const textnode = view.state.schema.text('Enter caption');
+    const captionNode = view.state.schema.nodes.caption.create({}, textnode);
+    const transaction = view.state.tr.insert(from, captionNode);
+    view.dispatch(transaction);
+  }
+
+  removeCaption = () => {
+		const view = this.props.view;
+
+    let textNode = this.getTextNode();
+    if (!textNode) {
+      console.log('could not find textNode');
+      return;
+    }
+    const from = textNode.from - 1;
+    const to = textNode.to;
+    const checkSlice = view.state.doc.slice(from, to);
+    const transaction = view.state.tr.deleteRange(from, to);
+    view.dispatch(transaction);
+  }
+
+	getTextNode = () => {
+		let textNode = findNodesWithIndex(this.node, 'text');
+		if (textNode.length === 1) {
+			textNode = textNode[0];
+		} else {
+			console.log('could not find textnode', this.node);
+			return null;
+		}
+		const from = this.props.getPos() + textNode.index + 1;
+		const to = from + textNode.node.nodeSize;
+		return {from, to};
+	}
+
+	updateCaption = (txt) => {
+		const view = this.props.view;
+    let textNode = this.getTextNode();
+
+    if (!textNode) {
+      console.log('could not find textNode');
+      return;
+    }
+
+    const slice = new Slice(Fragment.from(view.state.schema.text(txt)), 0, 0);
+    const transaction = view.state.tr.replaceRange(textNode.from, textNode.to, slice);
+    view.dispatch(transaction);
+	}
+
 	render() {
-		const {size, align, url, filename} = this.props;
-		const {selected} = this.state;
-		const caption = (this.state.caption || this.props.caption);
-		const data = this.props.data || {};
-		const file = {url, name: filename, type: URLToType(url)}
+		const {size, align, filename, selected} = this.props;
+		const caption = this.props.caption;
+
+		const url = "https://i.imgur.com/4jIx7oE.gif";
 
 		const popoverContent = (<ImageMenu align={align} createCaption={this.props.createCaption} removeCaption={this.props.removeCaption} embedAttrs={this.props} updateParams={this.updateAttrs}/>);
 
-		const maxImageWidth = document.querySelector(".pub-body").clientWidth;
+		// const maxImageWidth = document.querySelector(".pub-body").clientWidth;
+		const maxImageWidth = 600;
 
 		return (
 			<div draggable="false" ref="embedroot" className="pub-embed" onClick={this.forceSelection}>
-				<figure style={styles.figure({size, align, false})}>
+				<figure style={styles.figure({size, align, selected: false})}>
 				<div style={styles.row({size, align})}>
 				<Popover content={popoverContent}
 								 interactionKind={PopoverInteractionKind.CLICK}
@@ -73,7 +124,6 @@ class ImageEditable extends Component {
 								 position={Position.BOTTOM}
 								 autoFocus={false}
 								 popoverWillOpen={(evt) => {
-									 // returns focus to the image so that deleting the embed will work
 									 this.refs.embedroot.focus();
 								 }}
 								 useSmartPositioning={false}>
@@ -84,24 +134,18 @@ class ImageEditable extends Component {
 						width={'100%'}
 						height={'auto'}
 						maxWidth={maxImageWidth}
-						customStyle={styles.outline({false})}
+						customStyle={styles.outline({selected: false})}
 						enable={false}
 						minWidth={(align === 'max') ? '100%' : undefined}
 						onResizeStop={(direction, styleSize, clientSize, delta) => {
-							// const ratio = ((clientSize.width / this.DOC_WIDTH ) * 100).toFixed(1);
-							// const ratio = ((clientSize.width / this.DOC_WIDTH ) * 100);
-							// this.updateAttrs({size: ratio + '%' });
-							// get width and scale?
-
 							const docWidth = document.querySelector(".pub-body").clientWidth;
 							const ratio = ((clientSize.width / docWidth ) * 100).toFixed(1);
 							this.updateAttrs({size: ratio + '%' });
-							// this.updateAttrs({size: clientSize.width + 'px' });
 						}}>
-						<RenderFile draggable="false" style={styles.image({selected})} file={file}/>
+							<img style={styles.image({selected})} src={url}/>
 						</Resizable>
 						:
-						<RenderFile draggable="false" style={styles.image({selected})} file={file}/>
+						<img style={styles.image({selected})}  src={url}/>
 					:
 					<div className="pt-callout pt-intent-danger">
 					  <h5>Could not find file: {filename}</h5>
@@ -129,7 +173,7 @@ class ImageEditable extends Component {
 			</div>
 		);
 	}
-});
+}
 
 styles = {
 	row: function ({ size, align }) {
