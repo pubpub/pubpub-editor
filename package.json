@@ -1,6 +1,6 @@
 {
   "name": "@pubpub/editor",
-  "version": "4.0.0-beta.7",
+  "version": "4.0.0-beta.8",
   "description": "Collaborative Community Editor",
   "main": "dist/index.js",
   "author": "PubPub Team <pubpub@media.mit.edu>",
@@ -32,7 +32,7 @@
     "prosemirror-state": "^0.23.0",
     "prosemirror-transform": "^0.23.0",
     "prosemirror-view": "^0.23.0",
-    "re-resizable": "^4.0.0",
+    "re-resizable": "^4.0.0"
   },
   "peerDependencies": {
     "@blueprintjs/core": "^1.25.1",
