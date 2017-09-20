@@ -3,6 +3,7 @@
 const getPlugin = ()=> {};
 
 import { Plugin, Selection } from 'prosemirror-state';
+
 import defer from 'promise-defer';
 // var defer = require("promise-defer")
 // import Promise from 'bluebird';
@@ -438,7 +439,6 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, rootRef, edit
 	return new Plugin({
 		state: {
 			init(config, instance) {
-
 				return { };
 			},
 			apply(transaction, state, prevEditorState, editorState) {
@@ -710,6 +710,7 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, rootRef, edit
 
 
 			decorations(state) {
+				// return null;
 				return DecorationSet.create(state.doc, Object.entries(selections).map(
 					function ([ clientID, { from, to } ]) {
 							if (clientID === selfClientID) {
@@ -718,7 +719,8 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, rootRef, edit
 							if (from === to) {
 									let elem = document.createElement('span')
 									elem.className = "collab-cursor";
-									elem.style.borderLeft = `1px solid ${stringToColor(clientID)}`
+									elem.style.borderLeft = `1px solid ${stringToColor(clientID)}`;
+									elem.style["pointer-events"] = "none";
 									return Decoration.widget(from, elem)
 							} else {
 									return Decoration.inline(from, to, {
@@ -726,7 +728,7 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, rootRef, edit
 									})
 							}
 					}
-				));
+				).filter((dec) => (!!dec)));
 			},
 		},
 		key: pluginKey,
