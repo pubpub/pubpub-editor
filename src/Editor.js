@@ -264,6 +264,9 @@ class Editor extends Component {
 						overflow: visible;
 						white-space: nowrap;
 					}
+					.ProseMirror:focus {
+						outline: 0px;
+					}
 				`}</style>
 				{this.state.view
 					? React.Children.map(this.props.children, (child) => {
