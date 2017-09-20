@@ -15,7 +15,7 @@ but certain schema-based addons may not need them
 // 	editorState: PropTypes.object.isRequired,
 // };
 
-class LatexAddon extends Component {
+class ImageAddon extends Component {
 	static fish = 12;
 	static schema = ()=> {
 		return {
@@ -44,7 +44,7 @@ class LatexAddon extends Component {
 							equationText = node.attrs.content;
 						}
 						return (
-							<LatexEditable
+							<ImageEditable
 								value={equationText}
 								isBlock={false}
 								isSelected={isSelected}
@@ -60,7 +60,7 @@ class LatexAddon extends Component {
 						} else if (node.attrs.content) {
 							equationText = node.attrs.content;
 						}
-						return <LatexStatic value={equationText} block={false} />;
+						return <ImageStatic value={equationText} block={false} />;
 					},
 				},
 			}
@@ -73,4 +73,4 @@ class LatexAddon extends Component {
 }
 
 // LatexAddon.propTypes = propTypes;
-export default LatexAddon;
+export default ImageAddon;
