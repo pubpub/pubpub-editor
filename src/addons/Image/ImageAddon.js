@@ -17,7 +17,6 @@ but certain schema-based addons may not need them
 
 class ImageAddon extends Component {
 	static schema = ({ handleFileUpload })=> {
-		console.log('handle files!', handleFileUpload);
 		return {
 			nodes: {
 				image: {
@@ -52,9 +51,14 @@ class ImageAddon extends Component {
 						},
 					},
 					toEditable(node, view, decorations, isSelected, helperFunctions) {
+						const contentNode = node.content;
+						const hasCaption = (contentNode && contentNode.content && contentNode.content.length > 0);
+						const caption = (hasCaption) ? contentNode.content[0].content.content[0].text : null;
 						return (
 							<ImageEditable
+								caption={caption}
 								url={node.attrs.url}
+								align={node.attrs.align}
 								size={node.attrs.size}
 								isSelected={isSelected}
 								view={view}
@@ -63,10 +67,17 @@ class ImageAddon extends Component {
 							/>
 						);
 					},
-					toStatic({ node, index, renderContent }) {
-						const filename = node.attrs.filename;
-						const url = meta.fileMap[filename];
-						return <ImageStatic key={index} {...node.attrs} url={url}>{renderContent(node.content, meta)}</ImageStatic>
+					toStatic(node, view, decorations, isSelected) {
+						const contentNode = node.content;
+						const hasCaption = (contentNode && contentNode.content && contentNode.content.length > 0);
+						const caption = (hasCaption) ? contentNode.content[0].content.content[0].text : null;
+						return (
+							<ImageStatic
+								align={node.attrs.align}
+								url={node.attrs.url}
+								selected={isSelected}
+								caption={caption}
+							/>);
 					},
 				},
 			}

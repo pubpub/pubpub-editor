@@ -1,3 +1,5 @@
+import { equationDoc, imageDoc } from './data';
+
 import Collaborative from 'addons/Collaborative/Collaborative';
 import { Editor } from 'index';
 import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
@@ -8,6 +10,8 @@ import Latex from 'addons/Latex/LatexAddon';
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import uploadFile from './utils/uploadFile';
+
+require('@blueprintjs/core/dist/blueprint.css');
 
 const editorWrapper = {
 	border: '1px solid #CCC',
@@ -44,29 +48,6 @@ const onChange = (evt)=> {
 	<File />
 */}
 
-const equationDoc = {
-	type: 'doc',
-	attrs: {
-		'meta': {}
-	},
-	content: [
-		{
-			type: 'paragraph',
-			content: [
-				{
-					type: 'equation',
-					attrs: {
-					  content: '\\sum_ix^i'
-					}
-				},
-				{
-					type: 'text',
-					text: ' and hello.'
-				}
-			]
-		}
-	]
-};
 storiesOf('Editor', module)
 .add('Default', () => (
 	<div style={editorWrapper} onClick={focusEditor}>
@@ -82,14 +63,14 @@ storiesOf('Editor', module)
 	</Editor>
 ))
 .add('ReadOnly', () => (
-	<Editor isReadOnly={true} initialContent={equationDoc}>
+	<Editor isReadOnly={true} initialContent={imageDoc}>
 		<FormattingMenu />
-		<Latex />
+		<Image />
 	</Editor>
 ))
 .add('Images', () => (
 	<div style={{width: "80%", margin: "0 auto"}}>
-		<Editor onChange={onChange}>
+		<Editor onChange={onChange} initialContent={imageDoc}>
 			<FormattingMenu />
 			<InsertMenu />
 			<Image handleFileUpload={uploadFile}/>

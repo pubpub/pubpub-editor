@@ -86,7 +86,7 @@ class Editor extends Component {
 			const nodeSpec = nodes[nodeName].spec;
 			if (nodeSpec.toEditable) {
 				nodeViews[nodeName] = (node, view, getPos, decorations) => {
-					return new ReactView(node, view, getPos, decorations);
+					return new ReactView(node, view, getPos, decorations, this.props.isReadOnly);
 				};
 			}
 		});
@@ -155,7 +155,6 @@ class Editor extends Component {
 		// };
 
 
-		console.log('readonly', !!this.props.isReadOnly);
 		this.view = new EditorView(editorView, {
 			state: state,
 			dispatchTransaction: this._onAction,
@@ -171,7 +170,7 @@ class Editor extends Component {
 			// viewHandlers: {
 			// 	updafteMentions: this.updateMentions,
 			// },
-			editable: () => (!!this.props.isReadOnly),
+			editable: () => (!this.props.isReadOnly),
 			nodeViews: nodeViews,
 		});
 

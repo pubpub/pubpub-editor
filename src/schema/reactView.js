@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom';
 import ReactViewWrapper from './ReactViewWrapper';
 
 class ReactView {
-	constructor(node, view, getPos, decorations) {
+	constructor(node, view, getPos, decorations, isReadOnly) {
 		this.changeNode = this.changeNode.bind(this);
 		this.updateAttrs = this.updateAttrs.bind(this);
 		this.updateContent = this.updateContent.bind(this);
@@ -22,7 +22,7 @@ class ReactView {
 		this.node = node;
 		this.view = view;
 		this.getPos = getPos;
-		this.renderComponent = nodeSpec.toEditable;
+		this.renderComponent = (!isReadOnly) ? nodeSpec.toEditable : nodeSpec.toStatic;
 
 		const domChild = (this.block) ? document.createElement('div') : document.createElement('span');
 		const reactElement = this.renderElement(domChild);
@@ -61,6 +61,7 @@ class ReactView {
 				changeNode={this.changeNode}
 				renderComponent={this.renderComponent}
 				getPos={this.getPos}
+				isReadOnly={this.isReadOnly}
 			/>, domChild);
 	}
 

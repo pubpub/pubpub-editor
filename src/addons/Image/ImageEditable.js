@@ -125,9 +125,7 @@ class ImageEditable extends Component {
 		// Need to insert file content into editor
 		const file = evt.target.files[0];
 		evt.target.value = null;
-		this.props.handleFileUpload(file, ({filename, url})=>{
-			console.log('got url!', url);
-			console.log(arguments);
+		this.props.handleFileUpload(file, ({ filename, url })=>{
 			this.props.updateAttrs({ url });
 			this.setState({
 				openDialog: false,
@@ -137,14 +135,12 @@ class ImageEditable extends Component {
 	}
 
 	render() {
-		const { size, align, filename, selected, url } = this.props;
-		const caption = this.props.caption;
+		const { size, align, selected, url, caption } = this.props;
 
 		const popoverContent = (<ImageMenu align={align} createCaption={this.props.createCaption} removeCaption={this.props.removeCaption} embedAttrs={this.props} updateParams={this.updateAttrs}/>);
 
-		// const maxImageWidth = document.querySelector(".pub-body").clientWidth;
-		const maxImageWidth = 600;
-
+		const maxImageWidth = document.querySelector(".pubpub-editor").clientWidth;
+		// const maxImageWidth = 600;
 		return (
 			<div
 				draggable="false"
@@ -174,16 +170,15 @@ class ImageEditable extends Component {
 							{ (!!url) ?
 								(align !== 'max') ?
 								<Resizable
-									width={'100%'}
-									height={'auto'}
 									maxWidth={maxImageWidth}
 									customStyle={styles.outline({selected: false})}
 									enable={false}
 									minWidth={(align === 'max') ? '100%' : undefined}
 									onResizeStop={(direction, styleSize, clientSize, delta) => {
-										const docWidth = document.querySelector(".pub-body").clientWidth;
+										console.log('got resize!');
+										const docWidth = document.querySelector(".pubpub-editor").clientWidth;
 										const ratio = ((clientSize.width / docWidth ) * 100).toFixed(1);
-										this.updateAttrs({size: ratio + '%' });
+										this.props.updateAttrs({size: ratio + '%' });
 									}}>
 									<img style={styles.image({selected})} src={url}/>
 								</Resizable>

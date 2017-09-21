@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+
 // import PropTypes from 'prop-types';
 import LatexEditable from './LatexEditable';
 import LatexStatic from './LatexStatic';
 
-/* 
-All addons get the following props, 
+/*
+All addons get the following props,
 but certain schema-based addons may not need them
 */
 
@@ -52,7 +53,7 @@ class LatexAddon extends Component {
 							/>
 						);
 					},
-					toStatic({ node }) {
+					toStatic(node) {
 						let equationText;
 						if (node.content && node.content.length >= 1) {
 							equationText = node.content[0].text;
