@@ -8,6 +8,12 @@ const imageDoc = {
 			type: 'paragraph',
 			content: [
 				{
+					type: 'equation',
+					attrs: {
+					  content: '\\sum_ix^i'
+					}
+				},
+				{
 					type: 'text',
 					text: ' and hello.'
 				}

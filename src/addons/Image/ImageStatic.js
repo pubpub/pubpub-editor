@@ -19,7 +19,7 @@ class ImageStatic extends Component {
 
 		return (
 			<div ref="embedroot" className={'pub-embed ' + (this.props.className) ? this.props.className : null }>
-				<figure style={styles.figure({size, align, selected})}>
+				<figure style={styles.figure({size, align, selected: false})}>
   				<div style={styles.row({size, align})}>
 						<img style={styles.image} src={url}/>
           </div>

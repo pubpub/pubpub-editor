@@ -53,7 +53,7 @@ class LatexAddon extends Component {
 							/>
 						);
 					},
-					toStatic(node) {
+					toStatic(node, view, decorations) {
 						let equationText;
 						if (node.content && node.content.length >= 1) {
 							equationText = node.content[0].text;

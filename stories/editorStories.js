@@ -66,6 +66,7 @@ storiesOf('Editor', module)
 	<Editor isReadOnly={true} initialContent={imageDoc}>
 		<FormattingMenu />
 		<Image />
+		<Latex />
 	</Editor>
 ))
 .add('Images', () => (
@@ -73,6 +74,7 @@ storiesOf('Editor', module)
 		<Editor onChange={onChange} initialContent={imageDoc}>
 			<FormattingMenu />
 			<InsertMenu />
+			<Latex />
 			<Image handleFileUpload={uploadFile}/>
 		</Editor>
 	</div>
