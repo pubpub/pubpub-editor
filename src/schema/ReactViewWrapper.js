@@ -24,15 +24,21 @@ class ReactViewWrapper extends Component {
 		this.setSelected = this.setSelected.bind(this);
 	}
 
-	setSelected(isSelected) {
+	setSelected = (isSelected) => {
 		this.setState({ isSelected });
 	}
 
-	forceSelection(evt) {
+	forceSelection = (evt) => {
 		if (!this.state.selected) {
+			this.setState({ isSelected: true });
 			this.props.forceSelection();
 		}
 		evt.preventDefault();
+	}
+
+	focusAndSelect = () => {
+		this.setState({isSelected: true});
+		this.rootElem.focus();
 	}
 
 	render() {
@@ -44,7 +50,7 @@ class ReactViewWrapper extends Component {
 			getPos: this.props.getPos,
 		};
 		return (
-			<span role={'button'} tabIndex={-1} onClick={this.forceSelection}>
+			<span ref={c => { this.rootElem = c; }} draggable="false" onClick={this.forceSelection}>
 				{renderComponent(node, view, decorations, this.state.isSelected, helperFunctions)}
 			</span>
 		);

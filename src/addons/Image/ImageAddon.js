@@ -42,7 +42,9 @@ class ImageAddon extends Component {
 							const captionNode = view.state.schema.nodes.caption.create({}, textnode);
 							const imageNode = view.state.schema.nodes.image.create(
 								{
-									url: "https://i.imgur.com/4jIx7oE.gif",
+									url: 'https://i.imgur.com/4jIx7oE.gif',
+									size: '50%',
+									align: 'full'
 								},
 								captionNode
 							);
@@ -56,11 +58,12 @@ class ImageAddon extends Component {
 						const caption = (hasCaption) ? contentNode.content[0].content.content[0].text : null;
 						return (
 							<ImageEditable
+								node={node}
 								caption={caption}
 								url={node.attrs.url}
 								align={node.attrs.align}
 								size={node.attrs.size}
-								isSelected={isSelected}
+								selected={isSelected}
 								view={view}
 								{...helperFunctions}
 								handleFileUpload={handleFileUpload}
@@ -75,6 +78,7 @@ class ImageAddon extends Component {
 							<ImageStatic
 								align={node.attrs.align}
 								url={node.attrs.url}
+								size={node.attrs.size}
 								selected={isSelected}
 								caption={caption}
 							/>);

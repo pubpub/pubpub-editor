@@ -78,22 +78,26 @@ storiesOf('Editor', module)
 	</div>
 ))
 .add('Collaborative', () => (
-	<Editor onChange={onChange}>
-		<FormattingMenu />
-		<Collaborative
-			// ref={(collab) => { this.collab = collab; }}
-			firebaseConfig={{
-				apiKey: 'AIzaSyBpE1sz_-JqtcIm2P4bw4aoMEzwGITfk0U',
-				authDomain: 'pubpub-rich.firebaseapp.com',
-				databaseURL: 'https://pubpub-rich.firebaseio.com',
-				projectId: 'pubpub-rich',
-				storageBucket: 'pubpub-rich.appspot.com',
-				messagingSenderId: '543714905893',
-			}}
-			clientID={`storybook-clientid-${Math.ceil(Math.random() * 25000)}`}
-			editorKey={'storybook-editorkey'}
-		/>
-	</Editor>
+	<div style={{width: "80%", margin: "0 auto"}}>
+		<Editor onChange={onChange}>
+			<FormattingMenu />
+			<InsertMenu />
+			<Image handleFileUpload={uploadFile}/>
+			<Collaborative
+				// ref={(collab) => { this.collab = collab; }}
+				firebaseConfig={{
+					apiKey: 'AIzaSyBpE1sz_-JqtcIm2P4bw4aoMEzwGITfk0U',
+					authDomain: 'pubpub-rich.firebaseapp.com',
+					databaseURL: 'https://pubpub-rich.firebaseio.com',
+					projectId: 'pubpub-rich',
+					storageBucket: 'pubpub-rich.appspot.com',
+					messagingSenderId: '543714905893',
+				}}
+				clientID={`storybook-clientid-${Math.ceil(Math.random() * 25000)}`}
+				editorKey={'storybook-editorkey'}
+			/>
+		</Editor>
+	</div>
 ))
 .add('Multiple Editors', () => (
 	<div>

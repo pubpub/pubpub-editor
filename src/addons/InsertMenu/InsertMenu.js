@@ -43,8 +43,6 @@ class InsertMenu extends Component {
 		const sel = view.state.selection;
 		const currentPos = sel.$to.pos;
 
-
-		console.log('got change!', canUse, sel, containerId);
 		if (sel.empty && canUse) {
 			this.setState({ top: view.coordsAtPos(currentPos).top - container.getBoundingClientRect().top + 5 });
 		} else {

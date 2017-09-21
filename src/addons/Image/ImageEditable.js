@@ -1,8 +1,10 @@
 import { EditableText, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
+import { Fragment, Slice } from 'prosemirror-model';
 import React, { Component } from 'react';
 
 import ImageFileUploader from './ImageFileUploader';
 import ImageMenu from './ImageMenu';
+import { NodeSelection } from 'prosemirror-state';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import Resizable from 're-resizable';
@@ -85,15 +87,16 @@ class ImageEditable extends Component {
 	}
 
 	getTextNode = () => {
-		let textNode = findNodesWithIndex(this.node, 'text');
-		if (textNode.length === 1) {
-			textNode = textNode[0];
-		} else {
+		// let textNode = findNodesWithIndex(this.node, 'text');
+		const contentNode = this.props.node.content;
+		const hasCaption = (contentNode && contentNode.content && contentNode.content.length > 0);
+		const textNode = (hasCaption) ? contentNode.content[0].content.content[0] : null;
+		if (!textNode) {
 			console.log('could not find textnode', this.node);
 			return null;
 		}
-		const from = this.props.getPos() + textNode.index + 1;
-		const to = from + textNode.node.nodeSize;
+		const from = this.props.getPos() + 3;
+		const to = from + textNode.nodeSize;
 		return {from, to};
 	}
 
@@ -137,17 +140,16 @@ class ImageEditable extends Component {
 	render() {
 		const { size, align, selected, url, caption } = this.props;
 
-		const popoverContent = (<ImageMenu align={align} createCaption={this.props.createCaption} removeCaption={this.props.removeCaption} embedAttrs={this.props} updateParams={this.updateAttrs}/>);
+		const popoverContent = (<ImageMenu align={align} createCaption={this.createCaption} removeCaption={this.removeCaption} embedAttrs={this.props} updateParams={this.updateAttrs}/>);
 
 		const maxImageWidth = document.querySelector(".pubpub-editor").clientWidth;
 		// const maxImageWidth = 600;
 		return (
 			<div
 				draggable="false"
-				ref="embedroot"
 				className="pub-embed"
-				onDoubleClick={this.openFileDialog}
-				onClick={this.props.forceSelection}>
+				ref="embedroot"
+				>
 
 				<ImageFileUploader
 					isOpen={!!this.state.openDialog}
@@ -170,20 +172,21 @@ class ImageEditable extends Component {
 							{ (!!url) ?
 								(align !== 'max') ?
 								<Resizable
+									height="auto"
+									ref={c => { this.resizable = c; }}
 									maxWidth={maxImageWidth}
-									customStyle={styles.outline({selected: false})}
-									enable={false}
+									customStyle={styles.outline({selected})}
 									minWidth={(align === 'max') ? '100%' : undefined}
-									onResizeStop={(direction, styleSize, clientSize, delta) => {
-										console.log('got resize!');
+									onResizeStop={(event, direction, ref, delta) => {
 										const docWidth = document.querySelector(".pubpub-editor").clientWidth;
-										const ratio = ((clientSize.width / docWidth ) * 100).toFixed(1);
+										const clientWidth = this.resizable.state.width;
+										const ratio = ((clientWidth / docWidth ) * 100).toFixed(1);
 										this.props.updateAttrs({size: ratio + '%' });
 									}}>
-									<img style={styles.image({selected})} src={url}/>
+									<img onDoubleClick={this.openFileDialog} style={styles.image({selected})} src={url}/>
 								</Resizable>
 								:
-								<img style={styles.image({selected})}  src={url}/>
+								<img onDoubleClick={this.openFileDialog} style={styles.image({selected})}  src={url}/>
 								:
 								<div className="pt-callout pt-intent-danger">
 									<h5>Could not find file: {filename}</h5>

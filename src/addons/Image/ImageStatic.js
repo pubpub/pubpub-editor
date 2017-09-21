@@ -13,19 +13,19 @@ const propTypes = {
 class ImageStatic extends Component {
 
 	render() {
-		const { size, align, url, children } = this.props;
+		const { size, align, url, children, caption, selected } = this.props;
 		const captionNode = (children) ? children[0] : null;
 		const captionText = (captionNode) ? captionNode.text : '';
 
 		return (
 			<div ref="embedroot" className={'pub-embed ' + (this.props.className) ? this.props.className : null }>
-				<figure style={styles.figure({size, align, selected: false})}>
+				<figure style={styles.figure({size, align, selected})}>
   				<div style={styles.row({size, align})}>
 						<img style={styles.image} src={url}/>
           </div>
           <figcaption style={styles.caption({size, align})}>
             <div style={styles.captionInput} ref="captioninsert">
-              {children}
+              {caption}
             </div>
           </figcaption>
         </figure>

@@ -95,6 +95,14 @@ class ReactView {
 		this.view.dispatch(transaction);
 	}
 
+	selectNode() {
+		this.reactElement.focusAndSelect();
+	}
+
+	deselectNode() {
+		this.reactElement.setSelected(false);
+	}
+
 	/*
 	setSelection() {
 

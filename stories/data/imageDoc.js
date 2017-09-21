@@ -17,8 +17,21 @@ const imageDoc = {
       type: 'image',
       attrs: {
         url: "https://i.imgur.com/4jIx7oE.gif",
-        caption: "hey"
-      }
+        caption: "hey",
+        align: "full",
+        size: "35%"
+      },
+      content: [
+        {
+          type: 'caption',
+          content: [
+            {
+              type: 'text',
+              text: ' and hello.'
+            }
+          ]
+        }
+      ]
     },
 	]
 };
