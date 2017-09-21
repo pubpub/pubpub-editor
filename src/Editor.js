@@ -15,6 +15,7 @@ const propTypes = {
 	onChange: PropTypes.func,
 	children: PropTypes.node,
 	placeholder: PropTypes.string,
+	isReadOnly: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -22,6 +23,7 @@ const defaultProps = {
 	onChange: undefined,
 	children: undefined,
 	placeholder: undefined,
+	isReadOnly: false,
 };
 
 class Editor extends Component {
@@ -152,6 +154,8 @@ class Editor extends Component {
 		// 	updateMentions: this.updateMentions,
 		// };
 
+
+		console.log('readonly', !!this.props.isReadOnly);
 		this.view = new EditorView(editorView, {
 			state: state,
 			dispatchTransaction: this._onAction,
@@ -165,10 +169,10 @@ class Editor extends Component {
 			// 	},
 			// },
 			// viewHandlers: {
-			// 	updateMentions: this.updateMentions,
+			// 	updafteMentions: this.updateMentions,
 			// },
+			editable: () => (!!this.props.isReadOnly),
 			nodeViews: nodeViews,
-			// ...props
 		});
 
 		this.setState({ view: this.view, editorState: state });

@@ -81,6 +81,12 @@ storiesOf('Editor', module)
 		<Latex />
 	</Editor>
 ))
+.add('ReadOnly', () => (
+	<Editor isReadOnly={true} initialContent={equationDoc}>
+		<FormattingMenu />
+		<Latex />
+	</Editor>
+))
 .add('Images', () => (
 	<div style={{width: "80%", margin: "0 auto"}}>
 		<Editor onChange={onChange}>
