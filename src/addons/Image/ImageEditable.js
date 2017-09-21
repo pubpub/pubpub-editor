@@ -188,9 +188,7 @@ class ImageEditable extends Component {
 								:
 								<img onDoubleClick={this.openFileDialog} style={styles.image({selected})}  src={url}/>
 								:
-								<div className="pt-callout pt-intent-danger">
-									<h5>Could not find file: {filename}</h5>
-									The file you're including is not uploaded to your pub, so it cannot be displayed.
+								<div onDoubleClick={this.openFileDialog}  style={styles.container({selected})}>
 								</div>
 							}
 						</Popover>
@@ -222,6 +220,15 @@ class ImageEditable extends Component {
 				width: (align !== 'max') ? size : '100%',
 				position: 'relative',
 				display: 'table-row'
+			};
+		},
+		container: function({ selected }) {
+			return {
+				minHeight: '250',
+				minWidth: '250',
+				width: '100%',
+				outline: (selected) ? '3px dashed #BBBDC0' : '1px dashed #BBBDC0',
+				transition: 'outline-color 0.15s ease-in',
 			};
 		},
 		image: function({ selected }) {

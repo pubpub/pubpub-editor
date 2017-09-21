@@ -42,7 +42,7 @@ class ImageAddon extends Component {
 							const captionNode = view.state.schema.nodes.caption.create({}, textnode);
 							const imageNode = view.state.schema.nodes.image.create(
 								{
-									url: 'https://i.imgur.com/4jIx7oE.gif',
+									// url: 'https://i.imgur.com/4jIx7oE.gif',
 									size: '50%',
 									align: 'full'
 								},
