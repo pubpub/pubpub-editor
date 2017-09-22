@@ -128,7 +128,7 @@ class ImageEditable extends Component {
 		// Need to insert file content into editor
 		const file = evt.target.files[0];
 		evt.target.value = null;
-		this.props.handleFileUpload(file, ({ filename, url })=>{
+		this.props.handleFileUpload(file, ()=> {}, ({ filename, url })=>{
 			this.props.updateAttrs({ url });
 			this.setState({
 				openDialog: false,
