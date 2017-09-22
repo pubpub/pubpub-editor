@@ -233,7 +233,7 @@ const nodes = {
 	// },
 
 	caption: {
-		content: 'inline<_>*',
+		content: 'inline*',
 		group: 'block',
 		parseDOM: [{ tag: 'p' }],
 		toDOM() { return ['p', 0]; }
