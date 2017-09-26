@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import PropTypes from 'prop-types';
 import getMenuItems from './formattingMenuConfig';
 
@@ -16,6 +17,21 @@ const defaultProps = {
 	editorState: undefined,
 };
 
+
+/**
+ * @module Addons
+ */
+
+/**
+ * @component
+ *
+ * Displays a formatting menu for inline operation such as bold, italics, etc. when a user selects some text.
+ * The options are not currently configurable by other add-ons in the way that the InsertMenu addon is.
+ * @example
+ * return <Editor placeholder="Please start typing">
+ 		<FormattingMenu/>
+	</Editor>
+ */
 class FormattingMenu extends Component {
 	constructor(props) {
 		super(props);

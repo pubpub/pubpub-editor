@@ -26,6 +26,24 @@ const defaultProps = {
 	isReadOnly: false,
 };
 
+
+/**
+ * @module Components
+ */
+
+/**
+ * @component
+ *
+ * The main Editor component, by itself it acts largely as plain textEditor. Nesting plugins enables greater functionality.
+ *
+ * @example
+ * return <Editor placeholder="Please start typing"/>
+ * @prop {object} initialContent A JSON document representing the initial content. This JSON should be of the form that comes from the 'toJSON' function
+ * @prop {func} onChange Fired whenever the document is changed.
+ * @prop {String} placeholder A placeholder string that will appear if there is no content.
+ * @prop {bool} isReadOnly Set to true to disallow editing, both in text and modifying or inserting add ons.
+
+ */
 class Editor extends Component {
 	constructor(props) {
 		super(props);
@@ -52,10 +70,10 @@ class Editor extends Component {
 		this.createEditor();
 	}
 
-	// onChange() {
-	// 	this.props.onChange(this.view.state.doc.toJSON());
-	// }
-
+	/**
+	 * Get JSON
+	 * @return {json} The JSON structure of the document, useful for saving documents for use in initialContent.
+	 */
 	getJSON() {
 		return this.view.state.doc.toJSON();
 	}

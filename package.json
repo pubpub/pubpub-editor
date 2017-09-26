@@ -15,10 +15,13 @@
     "lint": "eslint src stories .storybook",
     "prepublish-soon": "npm run lint && rm -rf node_modules && npm install && npm run build",
     "prepublishOnly": "rm -rf node_modules && npm install && npm run build",
-    "start": "start-storybook -p 9002 -c .storybook"
+    "start": "start-storybook -p 9002 -c .storybook",
+    "docs": "jsdoc -c ./docs/conf.json",
+    "deploy-docs": "npm run docs && node docs/publish.js"
   },
   "dependencies": {
     "firebase": "^4.3.1",
+    "jsdonk": "^0.7.0",
     "katex": "^0.8.3",
     "promise-defer": "^1.0.0",
     "prosemirror-collab": "^0.23.0",
@@ -63,12 +66,17 @@
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.3.0",
     "file-loader": "^0.11.2",
+    "jsdoc": "^3.5.5",
+    "jsdoc-babel": "^0.3.0",
+    "jsdoc-react-proptypes": "^1.0.3",
+    "jsdoc-theme": "^0.1.4",
     "node-sass": "^4.5.2",
     "prop-types": "^15.5.10",
     "react": "^15.5.4",
     "react-addons-css-transition-group": "^15.6.0",
     "react-dom": "^15.5.4",
     "sass-loader": "^6.0.5",
+    "smooth-jsdoc": "0.0.1",
     "style-loader": "^0.18.2",
     "url-loader": "^0.5.9",
     "webpack": "^3.5.5"
