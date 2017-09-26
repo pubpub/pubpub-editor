@@ -2,11 +2,12 @@ import { AddMarkStep, ReplaceAroundStep, ReplaceStep, canJoin, insertPoint, join
 import { Decoration, DecorationSet } from "prosemirror-view";
 import { Fragment, Node, NodeRange, Slice } from 'prosemirror-model';
 import { Mapping, Step, findWrapping } from 'prosemirror-transform';
-import { getPlugin, keys } from './pluginKeys';
 
 import { CommitTracker } from './CommitTracker';
 import { Plugin } from 'prosemirror-state';
 import { Selection } from 'prosemirror-state';
+
+const getPlugin = ()=> {};
 
 /*
 - How to store in a firebase account?
@@ -294,7 +295,7 @@ const trackChangesPlugin = new Plugin({
       }
     }
   },
-  key: keys.track,
+  // key: keys.track,
   props: {
     updateCommits: function(commits) {
       this.commits = commits;
