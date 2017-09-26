@@ -1,6 +1,6 @@
+import { EditorState, PluginKey } from 'prosemirror-state';
 import React, { Component } from 'react';
 
-import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import PropTypes from 'prop-types';
 import ReactView from './schema/reactView';
@@ -82,6 +82,39 @@ class Editor extends Component {
 		this.view.focus();
 	}
 
+	getPlugin(key) {
+		if (this.state.pluginKeys[key]) {
+			return this.state.pluginKeys[key].get(this.editorState);
+		}
+		return null;
+	}
+
+	configurePlugins() {
+		const schema = createSchema();
+
+		const pluginKeys = {};
+
+		let plugins = getBasePlugins({ schema });
+
+		if (this.props.children) {
+			React.Children.forEach(this.props.children, (child) => {
+				if (child.type.getPlugins) {
+					const key = new PluginKey(child.type.displayName);
+					pluginKeys[child.type.displayName] = key;
+					const addonPlugins = child.type.getPlugins({
+						...child.props,
+						key,
+						getPlugin: this.getPlugin
+					});
+					plugins = plugins.concat(addonPlugins);
+				}
+			});
+		}
+
+		return { plugins, pluginKeys };
+	}
+
+	/*
 	configurePlugins(schema) {
 		// const schema = createSchema();
 
@@ -96,6 +129,7 @@ class Editor extends Component {
 
 		return plugins;
 	}
+	*/
 
 	configureNodeViews(schema) {
 		const nodeViews = {};
@@ -142,7 +176,7 @@ class Editor extends Component {
 		const place = this.editorElement;
 
 		const contents = this.props.initialContent;
-		const plugins = this.configurePlugins(schema);
+		const { plugins, pluginKeys } = this.configurePlugins(schema);
 		const nodeViews = this.configureNodeViews(schema);
 
 		const stateConfig = {
@@ -192,7 +226,7 @@ class Editor extends Component {
 			nodeViews: nodeViews,
 		});
 
-		this.setState({ view: this.view, editorState: state });
+		this.setState({ view: this.view, editorState: state, pluginKeys });
 	}
 
 	// updateMentions(mentionInput) {
