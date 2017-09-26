@@ -1,0 +1,34 @@
+{
+  	"source": {
+      "include": [ "docs/INTRO.md","docs/JsdocTypes.js", "src" ],
+      "includePattern": ".+jsx?"
+  	},
+    "plugins": [
+      "node_modules/jsdoc-react-proptypes/lib/plugin",
+      "node_modules/jsdoc-babel",
+      "node_modules/jsdonk/lib/plugins/react-tags",
+      "node_modules/jsdoc-react-proptypes/lib/plugin"
+    ],
+    "opts": {
+        "destination": "./out/docs/",
+        "encoding": "utf8",
+        "recurse": true,
+        "template": "node_modules/jsdonk",
+        "jsdonk": {
+          "title": "PubPub Editor",
+          "repo": {
+            "github": "https://github.com/pubpub/pubpub-editor"
+          },
+          "sections": {
+            "module": {
+              "typedef": false
+            },
+            "typedef": false
+          },
+          "output": {
+            "taffyjson": true,
+            "heirarchyjson": true
+          }
+       }
+    }
+}
