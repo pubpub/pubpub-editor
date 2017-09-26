@@ -251,7 +251,7 @@ const rebaseDocument = ({ view, doc, forkedSteps, newSteps, changesRef, clientID
 
 let firebaseApp;
 
-const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, rootRef, editorRef,  updateCommits, pluginKey }) => {
+const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, rootRef, editorRef,  updateCommits, pluginKey, onClientChange }) => {
 
 	if (!firebaseApp) {
 		firebaseApp = firebase.initializeApp(firebaseConfig);
@@ -397,9 +397,26 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, rootRef, edit
 								editor.dispatch(editor.state.tr)
 							}
 						}
-						selectionsRef.on('child_added', updateClientSelection)
-						selectionsRef.on('child_changed', updateClientSelection)
-						selectionsRef.on('child_removed', updateClientSelection)
+
+
+						function deleteClientSelection(snapshot) {
+							const clientID = snapshot.key
+							delete selections[clientID];
+							if (onClientChange) {
+								onClientChange(Object.keys(selections));
+							}
+						}
+
+						function addClientSelection(snapshot) {
+							updateClientSelection(snapshot);
+							if (onClientChange) {
+								onClientChange(Object.keys(selections));
+							}
+						}
+
+						selectionsRef.on('child_added', addClientSelection);
+						selectionsRef.on('child_changed', updateClientSelection);
+						selectionsRef.on('child_removed', deleteClientSelection);
 
 						changesRef.startAt(null, String(latestKey + 1)).on(
 							'child_added',
@@ -711,8 +728,15 @@ const FirebasePlugin = ({ selfClientID, editorKey, firebaseConfig, rootRef, edit
 
 			decorations(state) {
 				// return null;
-				return DecorationSet.create(state.doc, Object.entries(selections).map(
-					function ([ clientID, { from, to } ]) {
+				return DecorationSet.create(state.doc, Object.keys(selections).map(
+					function (clientID) {
+
+							const selection = selections[clientID];
+							if (!selection) {
+								return;
+							}
+							const { from, to } = selection;
+
 							if (clientID === selfClientID) {
 								return null;
 							}

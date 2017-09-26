@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { PluginKey } from 'prosemirror-state';
 import { collab } from 'prosemirror-collab';
-import FirebasePlugin from './firebasePlugin';
+// import FirebasePlugin from './firebasePlugin';
+import FirebasePlugin from './newFirebasePlugin';
 
 const firebaseKey = new PluginKey('firebase');
 
@@ -19,15 +20,16 @@ const defaultProps = {
 };
 
 class Collaborative extends Component {
-	static getPlugins({ firebaseConfig, clientID, editorKey }) {
+	static getPlugins({ firebaseConfig, clientID, editorKey, onClientChange }) {
 		// need to add a random client ID number to account for sessions with the same client
 		const selfClientID = clientID + Math.round(Math.random() * 10000);
 		return [
-			FirebasePlugin({
-				selfClientID: selfClientID,
+			new FirebasePlugin({
+				localClientId: selfClientID,
 				editorKey,
 				firebaseConfig,
-				pluginKey: firebaseKey
+				pluginKey: firebaseKey,
+				onClientChange
 			}),
 			collab({
 				clientID: selfClientID
@@ -54,7 +56,7 @@ class Collaborative extends Component {
 
 		const firebasePlugin = firebaseKey.get(editorState);
 		if (firebasePlugin && !transaction.getMeta('rebase')) {
-			return firebasePlugin.props.updateCollab(transaction, editorState);
+			// return firebasePlugin.props.updateCollab(transaction, editorState);
 		}
 		return null;
 	}

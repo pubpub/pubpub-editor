@@ -95,6 +95,7 @@ storiesOf('Editor', module)
 					storageBucket: 'pubpub-rich.appspot.com',
 					messagingSenderId: '543714905893',
 				}}
+				onClientChange={(clients) => { console.log(clients);}}
 				clientID={`storybook-clientid-${Math.ceil(Math.random() * 25000)}`}
 				editorKey={'storybook-editorkey'}
 			/>
