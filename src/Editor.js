@@ -11,7 +11,6 @@ import createSchema from './schema';
 import { getBasePlugins } from './schema/setup';
 
 const propTypes = {
-	/** Set to true to disable the button, and `onClick` calls will no longer be called when clicked. */
 	initialContent: PropTypes.object,
 	onChange: PropTypes.func,
 	children: PropTypes.node,
@@ -28,7 +27,6 @@ const defaultProps = {
 };
 
 
-
 /**
  * @module Components
  */
@@ -36,13 +34,15 @@ const defaultProps = {
 /**
  * @component
  *
- * `Editor` is a simple component that displays a button.
- * It does not keep state.
+ * The main Editor component, by itself it acts largely as plain textEditor. Nesting plugins enables greater functionality.
  *
  * @example
- * return <Button>Button text</Button>
- * @prop {object} shout An prop
- * @prop {Array<string>} [yellees = []] An array of names of people to yell at
+ * return <Editor placeholder="Please start typing"/>
+ * @prop {object} initialContent A JSON document representing the initial content. This JSON should be of the form that comes from the 'toJSON' function
+ * @prop {func} onChange Fired whenever the document is changed.
+ * @prop {String} placeholder A placeholder string that will appear if there is no content.
+ * @prop {bool} isReadOnly Set to true to disallow editing, both in text and modifying or inserting add ons.
+
  */
 class Editor extends Component {
 	constructor(props) {
@@ -72,7 +72,7 @@ class Editor extends Component {
 
 	/**
 	 * Get JSON
-	 * @return {json} The JSON structure of the document
+	 * @return {json} The JSON structure of the document, useful for saving documents for use in initialContent.
 	 */
 	getJSON() {
 		return this.view.state.doc.toJSON();

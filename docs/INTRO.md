@@ -1,6 +1,6 @@
-# PubPub-Editor v4
+# PubPub Editor
 
-Collaborative Community Editing
+A stand alone, extensible WSIWYG editor. 
 
 ## To Install
 
