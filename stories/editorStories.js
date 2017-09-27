@@ -6,6 +6,8 @@ import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
 import Image from 'addons/Image/ImageAddon';
 import InsertMenu from 'addons/InsertMenu/InsertMenu';
 import Latex from 'addons/Latex/LatexAddon';
+import TrackChanges from 'addons/TrackChanges/TrackChangesAddon';
+
 /* eslint-disable */
 import React from 'react';
 import { storiesOf } from '@storybook/react';
@@ -74,6 +76,17 @@ storiesOf('Editor', module)
 		<Editor onChange={onChange} initialContent={imageDoc}>
 			<FormattingMenu />
 			<InsertMenu />
+			<Latex />
+			<Image handleFileUpload={uploadFile}/>
+		</Editor>
+	</div>
+))
+.add('Track Changes', () => (
+	<div style={{width: "80%", margin: "0 auto"}}>
+		<Editor onChange={onChange} initialContent={imageDoc}>
+			<FormattingMenu />
+			<InsertMenu />
+			<TrackChanges />
 			<Latex />
 			<Image handleFileUpload={uploadFile}/>
 		</Editor>

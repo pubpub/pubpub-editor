@@ -37,7 +37,6 @@ class DocumentRef {
 			checkpointKey = Number(checkpointKey);
 			const newDoc = d && Node.fromJSON(this.view.state.schema, uncompressStateJSON({ d }).doc);
 			if (isFirstLoad) {
-				console.log('Got checkpoint!', checkpointKey);
 				this.latestKey = checkpointKey;
 			}
 			return { newDoc, checkpointKey };
@@ -58,7 +57,6 @@ class DocumentRef {
 				const keys = Object.keys(changes);
 				const stepsWithKeys = [];
 				this.latestKey = Math.max(...keys);
-				console.log('Setting max key', this.latestKey);
 
 				for (const key of keys) {
 					const compressedStepsJSON = changes[key].s;
@@ -90,8 +88,6 @@ class DocumentRef {
 						m: meta,
 						t: TIMESTAMP,
 					};
-				} else {
-					console.log('GOT EXISTING BATCHED STEPS');
 				}
 			},
 			(error, committed, { key })=> {
@@ -112,8 +108,6 @@ class DocumentRef {
 
 	listenToChanges = (onRemoteChange) => {
 		const changesRef = this.ref.child('changes');
-
-		console.log('Listening to latest Key', this.latestKey);
 
 		changesRef.startAt(null, String(this.latestKey + 1))
 		.on('child_added', (snapshot) => {
@@ -152,9 +146,7 @@ class DocumentRef {
 		if (clientID !== this.localClientId) {
 			const compressedSelection = snapshot.val();
 			if (compressedSelection) {
-				console.log(clientID, this.localClientId, this.selections);
 				try {
-					console.log('selections is', this.selections[clientID]);
 					this.selections[clientID] = Selection.fromJSON(this.view.state.doc, uncompressSelectionJSON(compressedSelection));
 				} catch (error) {
 					console.warn('updateClientSelection', error);
@@ -203,7 +195,7 @@ class DocumentRef {
 		const placeholderClientId = `_oldClient${Math.random()}`;
 		const changesRef = this.ref.child('changes');
 
-		console.log('healing database');
+		console.log('Healing database');
 		for (const step of stepsWithKeys) {
 			try {
 				const trans = receiveTransaction(view.state, step.steps, [placeholderClientId]);
@@ -326,11 +318,6 @@ class FirebasePlugin extends Plugin {
 			delete meta.addToHistory;
 		}
 
-		const sendable = sendableSteps(newState);
-		if (sendable && sendable.version === this.sendableVersion) {
-			console.log('Yo thats whack - not sending');
-			return null;
-		}
 		/*
 		const trackPlugin = getPlugin('track', editorView.state);
 		const updateRebasedSteps = () => {
@@ -345,26 +332,16 @@ class FirebasePlugin extends Plugin {
 			window.setTimeout(updateRebasedSteps, 0);
 		}
 		*/
-		if (sendable) {
+
+		const sendable = sendableSteps(newState);
+
+		// Do not perform if sendable.version is duplicated.
+		if (sendable && sendable.version !== this.sendableVersion) {
 			this.sendableVersion = sendable.version;
-			console.log('sendable', sendable);
 			const { steps, clientID } = sendable;
-			// if (steps.length > 6) {
-				this.document.sendChanges({ steps, clientID, meta, newState });
-				const recievedClientIDs = new Array(steps.length).fill(this.localClientId);
-				/*
-				const trans = receiveTransaction(this.view.state, steps, recievedClientIDs);
-				if (meta) {
-					for (let metaKey in meta) {
-						trans.setMeta(metaKey, meta[metaKey]);
-					}
-				}
-				trans.setMeta('receiveDoc', true);
-				this.view.dispatch(trans);
-				*/
-				// console.log('sending changes', this.document.latestKey, steps);
-				this.selfChanges[this.document.latestKey] = steps;
-			// }
+			this.document.sendChanges({ steps, clientID, meta, newState });
+			const recievedClientIDs = new Array(steps.length).fill(this.localClientId);
+			this.selfChanges[this.document.latestKey] = steps;
 		}
 	}
 
@@ -374,13 +351,9 @@ class FirebasePlugin extends Plugin {
 
 		if (isLocal) {
 			receivedSteps = this.selfChanges[changeKey];
-			if (!receivedSteps) {
-				console.log('Could not find local step!');
-			} 
 			recievedClientIDs = new Array(receivedSteps.length).fill(this.localClientId);
 			// console.log('got local ', changeKey, receivedSteps, recievedClientIDs);
 		} else {
-			console.log('receiving change', changeKey, steps);
 			receivedSteps = steps;
 			recievedClientIDs = stepClientIDs;
 		}

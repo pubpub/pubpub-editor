@@ -1,7 +1,11 @@
 import { AddMarkStep, ReplaceAroundStep, ReplaceStep } from 'prosemirror-transform';
 
 import cuid from 'cuid';
-import { getPlugin } from './pluginKeys';
+// import { getPlugin } from './pluginKeys';
+
+const getPlugin = () => {
+  
+}
 
 /*
   - better cross browser message passing?

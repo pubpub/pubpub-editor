@@ -428,22 +428,6 @@ const marks = {
 		],
 		toDOM() { return ['strong']; }
 	},
-	diff_plus: {
-		attrs: {
-			commitID: { default: null }
-		},
-		parseDOM: [],
-		toDOM(node) { return ['span', { class: `diff-marker added`, "data-commit": node.attrs.commitID }, 0]; },
-		excludes: "diff_minus",
-	},
-	diff_minus: {
-		attrs: {
-			commitID: { default: null }
-		},
-		parseDOM: [],
-		toDOM(node) { return ['span', { class: `diff-marker removed`, "data-commit": node.attrs.commitID }, 0]; },
-		excludes: "diff_plus"
-	},
 	link: {
 		attrs: {
 			href: { default: '' },

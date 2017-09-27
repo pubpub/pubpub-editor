@@ -22,12 +22,36 @@ export const TrackAddon = React.createClass({
 	},
 	statics: {
 		getPlugins({  }) {
-			return [ TrackChangesPlugin ];
+			console.log(TrackChangesPlugin);
+			return [ TrackChangesPlugin(trackKey) ];
 		},
+		schema({ }) {
+			return {
+				marks: {
+					diff_plus: {
+						attrs: {
+							commitID: { default: null }
+						},
+						parseDOM: [],
+						toDOM(node) { return ['span', { class: `diff-marker added`, "data-commit": node.attrs.commitID }, 0]; },
+						excludes: "diff_minus",
+					},
+					diff_minus: {
+						attrs: {
+							commitID: { default: null }
+						},
+						parseDOM: [],
+						toDOM(node) { return ['span', { class: `diff-marker removed`, "data-commit": node.attrs.commitID }, 0]; },
+						excludes: "diff_plus"
+					},
+				}
+			}
+		}
 	},
 	getInitialState: function() {
 		return { collaborators: [] };
 	},
+	/*
 	componentWillReceiveProps(nextProps) {
 		if (this.props.editorState !== nextProps.editorState) {
 			this.onChange(nextProps);
@@ -37,12 +61,6 @@ export const TrackAddon = React.createClass({
 		const { editorState, transaction } = props;
 		if (!editorState || !transaction) {
 			return;
-		}
-		const firebasePlugin = firebaseKey.get(editorState);
-		if (firebasePlugin) {
-			if (!transaction.getMeta("rebase") ) {
-				return firebasePlugin.props.updateCollab(transaction, editorState);
-			}
 		}
 	},
 
@@ -65,14 +83,16 @@ export const TrackAddon = React.createClass({
 		}
 		return Promise.resolve(null);
 	},
+		*/
+
 
 	render: function() {
-		const { top, left } = this.state;
-		const { view } = this.props;
 
-		if (!top || !editor || !view ) {
+		if (!view) {
 			return null;
 		}
+
+		return (<div></div>);
 
 		return (
 			<div>
