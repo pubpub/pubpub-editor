@@ -1,10 +1,9 @@
 import { AddMarkStep, ReplaceAroundStep, ReplaceStep } from 'prosemirror-transform';
 
 import cuid from 'cuid';
-// import { getPlugin } from './pluginKeys';
 
 const getPlugin = () => {
-  
+  return null;
 }
 
 /*
@@ -142,9 +141,9 @@ class CommitTracker {
   }
 
   reset = (step) => {
-    const editorState = this.plugin.spec.editorView.state;
+    const editorState = this.plugin.spec.view.state;
     const firebasePlugin = getPlugin('firebase', editorState);
-    if (this.commit) {
+    if (this.commit && firebasePlugin) {
       const mergedSteps = mergeSteps(this.commit.steps);
       const description = (mergedSteps) ? describeStep(mergedSteps[mergedSteps.length - 1]) : 'No Description';
       if (mergedSteps.length > 1) {
