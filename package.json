@@ -20,6 +20,7 @@
     "deploy-docs": "npm run docs && node docs/publish.js"
   },
   "dependencies": {
+    "debounce": "^1.0.2",
     "firebase": "^4.3.1",
     "jsdonk": "^0.7.0",
     "katex": "^0.8.3",

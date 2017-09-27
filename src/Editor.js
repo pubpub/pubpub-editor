@@ -103,7 +103,7 @@ class Editor extends Component {
 					pluginKeys[child.type.displayName] = key;
 					const addonPlugins = child.type.getPlugins({
 						...child.props,
-						key,
+						pluginKey: key,
 						getPlugin: this.getPlugin
 					});
 					plugins = plugins.concat(addonPlugins);
@@ -335,7 +335,8 @@ class Editor extends Component {
 							view: this.state.view,
 							editorState: this.state.editorState,
 							transaction: this.state.transaction,
-							containerId: this.containerId
+							containerId: this.containerId,
+							pluginKey: this.state.pluginKeys[child.type.displayName]
 						});
 					})
 					: null

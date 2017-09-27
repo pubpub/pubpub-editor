@@ -1,13 +1,14 @@
-import defer from 'promise-defer';
+// import defer from 'promise-defer';
 import firebase from 'firebase';
 import { Node } from 'prosemirror-model';
 import { Step, Mapping } from 'prosemirror-transform';
-import { Plugin, Selection, EditorState } from 'prosemirror-state';
+import { Plugin, Selection, EditorState, AllSelection } from 'prosemirror-state';
 import { sendableSteps, receiveTransaction } from 'prosemirror-collab';
 import { compressStepsLossy, compressStateJSON, uncompressStateJSON, compressSelectionJSON, uncompressSelectionJSON, compressStepJSON, uncompressStepJSON } from 'prosemirror-compress';
 import { DecorationSet, Decoration } from 'prosemirror-view';
 
 const TIMESTAMP = { '.sv': 'timestamp' };
+const SAVE_EVERY_N_STEPS = 100;
 
 const stringToColor = (string, alpha = 1)=> {
 	const hue = string.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % 360;
@@ -32,10 +33,11 @@ class DocumentRef {
 		const checkpointRef = this.ref.child('checkpoint');
 		return checkpointRef.once('value').then((snapshot) => {
 			const { d, k } = snapshot.val() || {};
-			let checkpointKey = k || -1;
+			let checkpointKey = k || 0;
 			checkpointKey = Number(checkpointKey);
 			const newDoc = d && Node.fromJSON(this.view.state.schema, uncompressStateJSON({ d }).doc);
 			if (isFirstLoad) {
+				console.log('Got checkpoint!', checkpointKey);
 				this.latestKey = checkpointKey;
 			}
 			return { newDoc, checkpointKey };
@@ -46,7 +48,7 @@ class DocumentRef {
 		const changesRef = this.ref.child('changes');
 
 		return changesRef
-		.startAt(null, String(changesKey + 1))
+		.startAt(null, String(changesKey))
 		.once('value').then((snapshot) => {
 			const changes = snapshot.val();
 			if (changes) {
@@ -54,34 +56,86 @@ class DocumentRef {
 				const stepClientIDs = [];
 				const placeholderClientId = `_oldClient${Math.random()}`;
 				const keys = Object.keys(changes);
+				const stepsWithKeys = [];
 				this.latestKey = Math.max(...keys);
+				console.log('Setting max key', this.latestKey);
+
 				for (const key of keys) {
 					const compressedStepsJSON = changes[key].s;
+					const uncompressedSteps = compressedStepsJSON.map(this.compressedStepJSONToStep);
+					stepsWithKeys.push({ key, steps: uncompressedSteps });
 					steps.push(...compressedStepsJSON.map(this.compressedStepJSONToStep));
 					stepClientIDs.push(...new Array(compressedStepsJSON.length).fill(placeholderClientId));
 				}
-				return { steps, stepClientIDs };
+				return { steps, stepClientIDs, stepsWithKeys };
 			}
-			return null;
+			return {steps: null, stepClientIDs: null, stepsWithKeys: null};
 		});
+	}
+
+	sendChanges = ({ steps, clientID, meta, newState }) => {
+		const changesRef = this.ref.child('changes');
+		this.latestKey = this.latestKey + 1;
+
+		return changesRef.child(this.latestKey).transaction(
+			(existingBatchedSteps)=> {
+				if (!existingBatchedSteps) {
+					// selfChanges[latestKey + 1] = steps
+					return {
+						s: compressStepsLossy(steps)
+						.map((step) => {
+							return compressStepJSON(step.toJSON());
+						}),
+						c: clientID,
+						m: meta,
+						t: TIMESTAMP,
+					};
+				} else {
+					console.log('GOT EXISTING BATCHED STEPS');
+				}
+			},
+			(error, committed, { key })=> {
+				if (error) {
+					console.error('updateCollab', error, steps, clientID, key);
+				} else if (committed && key % SAVE_EVERY_N_STEPS === 0 && key > 0) {
+					this.updateCheckpoint(newState, key);
+				}
+			},
+			false);
+	}
+
+	updateCheckpoint = (newState, key) => {
+		const checkpointRef = this.ref.child('checkpoint');
+		const { d } = compressStateJSON(newState.toJSON());
+		checkpointRef.set({ d, k: key, t: TIMESTAMP });
 	}
 
 	listenToChanges = (onRemoteChange) => {
 		const changesRef = this.ref.child('changes');
+
+		console.log('Listening to latest Key', this.latestKey);
 
 		changesRef.startAt(null, String(this.latestKey + 1))
 		.on('child_added', (snapshot) => {
 			this.latestKey = Number(snapshot.key);
 			const { s: compressedStepsJSON, c: clientID, m: meta } = snapshot.val();
 			const isLocal = (clientID === this.localClientId);
-			const steps = (!isLocal ? compressedStepsJSON.map(this.compressedStepJSONToStep) : null);
-			const stepClientIDs = new Array(steps.length).fill(clientID);
-			onRemoteChange({ steps, stepClientIDs, meta, changeKey: this.latestKey });
+			if (isLocal) {
+				onRemoteChange({ isLocal, meta, changeKey: this.latestKey });
+			} else {
+				const steps = compressedStepsJSON.map(this.compressedStepJSONToStep);
+				const stepClientIDs = new Array(steps.length).fill(clientID);
+				onRemoteChange({ steps, stepClientIDs, meta, changeKey: this.latestKey });
+			}
 		});
 	}
 
 	listenToSelections = (onClientChange) => {
 		const selectionsRef = this.ref.child('selections');
+
+		const selfSelectionRef = selectionsRef.child(this.localClientId);
+		selfSelectionRef.onDisconnect().remove();
+
 		this.onClientChange = onClientChange;
 		selectionsRef.on('child_added', this.addClientSelection);
 		selectionsRef.on('child_changed', this.updateClientSelection);
@@ -98,7 +152,9 @@ class DocumentRef {
 		if (clientID !== this.localClientId) {
 			const compressedSelection = snapshot.val();
 			if (compressedSelection) {
+				console.log(clientID, this.localClientId, this.selections);
 				try {
+					console.log('selections is', this.selections[clientID]);
 					this.selections[clientID] = Selection.fromJSON(this.view.state.doc, uncompressSelectionJSON(compressedSelection));
 				} catch (error) {
 					console.warn('updateClientSelection', error);
@@ -134,13 +190,33 @@ class DocumentRef {
 	}
 
 	mapSelection = (transaction, editorState) => {
-		for (let clientID in this.selections) {
+		for (const clientID in this.selections) {
 			this.selections[clientID] = this.selections[clientID].map(editorState.doc, transaction.mapping);
 		}
 	}
 
-	healDatabase = ()=> {
+	// healDatabase - In case a step corrupts the document (happens surpsiginly often), 
+	// apply each step individually to find errors
+	// and then delete all of those steps
+	healDatabase = ({ stepsWithKeys, view }) => {
+		const stepsToDelete = [];
+		const placeholderClientId = `_oldClient${Math.random()}`;
+		const changesRef = this.ref.child('changes');
 
+		console.log('healing database');
+		for (const step of stepsWithKeys) {
+			try {
+				const trans = receiveTransaction(view.state, step.steps, [placeholderClientId]);
+				trans.setMeta('receiveDoc', true);
+				view.dispatch(trans);
+			} catch (err) {
+				stepsToDelete.push(step.key);
+			}
+		}
+
+		for (const stepToDelete of stepsToDelete) {
+			changesRef.child(stepToDelete).remove();
+		}
 	}
 }
 
@@ -159,12 +235,13 @@ class FirebasePlugin extends Plugin {
 		};
 
 		this.props = {
-			deocrations: this.decorations
+			decorations: this.decorations
 		};
 
 		this.onClientChange = onClientChange;
 		this.localClientId = localClientId;
 		this.editorKey = editorKey;
+		this.selfChanges = {};
 
 		if (!firebaseApp) {
 			firebaseApp = firebase.initializeApp(firebaseConfig);
@@ -213,22 +290,101 @@ class FirebasePlugin extends Plugin {
 
 			return this.document.getChanges(checkpointKey);
 		})
-		.then(({steps, stepClientIDs}) => {
-			try {
-				const trans = receiveTransaction(this.view.state, steps, stepClientIDs);
-				trans.setMeta('receiveDoc', true);
-				this.view.dispatch(trans);
-			} catch (err) {
-				this.document.healDatabase();
+		.then(({ steps, stepClientIDs, stepsWithKeys }) => {
+			if (steps) {
+				try {
+					const trans = receiveTransaction(this.view.state, steps, stepClientIDs);
+					trans.setMeta('receiveDoc', true);
+					this.view.dispatch(trans);
+				} catch (err) {
+					this.document.healDatabase({ stepsWithKeys, view: this.view });
+				}
 			}
-
-			// this.document.listenToSelections(this.onClientChange);
-			// this.document.listenToChanges(this.onRemoteChange);
+			this.document.listenToSelections(this.onClientChange);
+			this.document.listenToChanges(this.onRemoteChange);
 		});
 	}
 
-	onRemoteChange = ({ steps, stepClientIDs, changeKey, meta }) => {
-		const trans = receiveTransaction(this.view.state, steps, stepClientIDs);
+	sendCollabChanges = (transaction, newState) => {
+		const { meta } = transaction;
+
+		if (newState !== this.view.state) {
+			console.log('FREAK OUT AABOUT STATE');
+			debugger;
+		}
+
+		if (meta.collab$ || meta.rebase) {
+			return;
+		}
+		if (meta.pointer) {
+			delete meta.pointer;
+		}
+		if (meta.rebase) {
+			delete meta.rebase;
+		}
+		if (meta.addToHistory) {
+			delete meta.addToHistory;
+		}
+
+		const sendable = sendableSteps(newState);
+		if (sendable && sendable.version === this.sendableVersion) {
+			console.log('Yo thats whack - not sending');
+			return null;
+		}
+		/*
+		const trackPlugin = getPlugin('track', editorView.state);
+		const updateRebasedSteps = () => {
+			const sendableTracks = trackPlugin.getSendableSteps();
+			if (sendableTracks) {
+				this.props.storeRebaseSteps(sendableTracks);
+			}
+		}
+
+		// undo timeout?
+		if (trackPlugin) {
+			window.setTimeout(updateRebasedSteps, 0);
+		}
+		*/
+		if (sendable) {
+			this.sendableVersion = sendable.version;
+			console.log('sendable', sendable);
+			const { steps, clientID } = sendable;
+			// if (steps.length > 6) {
+				this.document.sendChanges({ steps, clientID, meta, newState });
+				const recievedClientIDs = new Array(steps.length).fill(this.localClientId);
+				/*
+				const trans = receiveTransaction(this.view.state, steps, recievedClientIDs);
+				if (meta) {
+					for (let metaKey in meta) {
+						trans.setMeta(metaKey, meta[metaKey]);
+					}
+				}
+				trans.setMeta('receiveDoc', true);
+				this.view.dispatch(trans);
+				*/
+				// console.log('sending changes', this.document.latestKey, steps);
+				this.selfChanges[this.document.latestKey] = steps;
+			// }
+		}
+	}
+
+	onRemoteChange = ({ steps, stepClientIDs, changeKey, meta, isLocal }) => {
+		let receivedSteps;
+		let recievedClientIDs;
+
+		if (isLocal) {
+			receivedSteps = this.selfChanges[changeKey];
+			if (!receivedSteps) {
+				console.log('Could not find local step!');
+			} 
+			recievedClientIDs = new Array(receivedSteps.length).fill(this.localClientId);
+			// console.log('got local ', changeKey, receivedSteps, recievedClientIDs);
+		} else {
+			console.log('receiving change', changeKey, steps);
+			receivedSteps = steps;
+			recievedClientIDs = stepClientIDs;
+		}
+		const trans = receiveTransaction(this.view.state, receivedSteps, recievedClientIDs);
 		if (meta) {
 			for (let metaKey in meta) {
 				trans.setMeta(metaKey, meta[metaKey]);
@@ -244,12 +400,17 @@ class FirebasePlugin extends Plugin {
 			this.document.mapSelection(transaction, editorState);
 		}
 
+		// console.log(transaction, transaction.meta, transaction.selectionSet);
+		// Right now - arrow keys won't update the selection. We should check 
+		// if arrow key and change if so.
 		if (transaction.getMeta('pointer')) {
 			const selection = editorState.selection;
-			this.document.setSelection(selection);
+			if (selection instanceof AllSelection === false) {
+				this.document.setSelection(selection);
+			}
 		}
 
-		return { };
+		return {};
 	}
 
 	updateView = (view) => {
@@ -267,6 +428,7 @@ class FirebasePlugin extends Plugin {
 
 	decorations = (state) => {
 		// return null;
+		if (!this.document) { return null; }
 		return DecorationSet.create(state.doc, Object.keys(this.document.selections).map((clientID)=> {
 			const selection = this.document.selections[clientID];
 			if (!selection) {
@@ -279,7 +441,7 @@ class FirebasePlugin extends Plugin {
 			}
 			if (from === to) {
 				const elem = document.createElement('span');
-				elem.className = 'collab-cursor';
+				elem.className = `collab-cursor ${this.localClientId}`;
 				elem.style.borderLeft = `1px solid ${stringToColor(clientID)}`;
 				elem.style['pointer-events'] = 'none';
 				return Decoration.widget(from, elem);

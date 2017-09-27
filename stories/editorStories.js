@@ -81,7 +81,7 @@ storiesOf('Editor', module)
 ))
 .add('Collaborative', () => (
 	<div style={{width: "80%", margin: "0 auto"}}>
-		<Editor onChange={onChange}>
+		<Editor>
 			<FormattingMenu />
 			<InsertMenu />
 			<Image handleFileUpload={uploadFile}/>
@@ -95,9 +95,9 @@ storiesOf('Editor', module)
 					storageBucket: 'pubpub-rich.appspot.com',
 					messagingSenderId: '543714905893',
 				}}
-				onClientChange={(clients) => { console.log(clients);}}
-				clientID={`storybook-clientid-${Math.ceil(Math.random() * 25000)}`}
-				editorKey={'storybook-editorkey'}
+				// onClientChange={(clients) => { console.log(clients);}}
+				clientID={`storybook-clientid`}
+				editorKey={'storybook-editorkey-v12'}
 			/>
 		</Editor>
 	</div>

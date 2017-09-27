@@ -4,6 +4,7 @@ import { PluginKey } from 'prosemirror-state';
 import { collab } from 'prosemirror-collab';
 // import FirebasePlugin from './firebasePlugin';
 import FirebasePlugin from './newFirebasePlugin';
+// import debounce from 'debounce';
 
 const firebaseKey = new PluginKey('firebase');
 
@@ -20,7 +21,7 @@ const defaultProps = {
 };
 
 class Collaborative extends Component {
-	static getPlugins({ firebaseConfig, clientID, editorKey, onClientChange }) {
+	static getPlugins({ firebaseConfig, clientID, editorKey, onClientChange, pluginKey }) {
 		// need to add a random client ID number to account for sessions with the same client
 		const selfClientID = clientID + Math.round(Math.random() * 10000);
 		return [
@@ -28,7 +29,7 @@ class Collaborative extends Component {
 				localClientId: selfClientID,
 				editorKey,
 				firebaseConfig,
-				pluginKey: firebaseKey,
+				pluginKey: pluginKey,
 				onClientChange
 			}),
 			collab({
@@ -42,10 +43,14 @@ class Collaborative extends Component {
 		this.state = {
 			collaborators: []
 		};
+		// this.onChangeDebounced = debounce((nextProps)=> {
+		// 	this.onChange(nextProps);
+		// }, 100);
 	}
 
 	componentWillReceiveProps(nextProps) {
 		if (this.props.editorState !== nextProps.editorState) {
+			// this.onChangeDebounced(nextProps);
 			this.onChange(nextProps);
 		}
 	}
@@ -53,10 +58,9 @@ class Collaborative extends Component {
 	onChange(props) {
 		const { editorState, transaction } = props;
 		if (!editorState || !transaction) { return null; }
-
-		const firebasePlugin = firebaseKey.get(editorState);
-		if (firebasePlugin && !transaction.getMeta('rebase')) {
-			// return firebasePlugin.props.updateCollab(transaction, editorState);
+		const firebasePlugin = this.props.pluginKey.get(editorState);
+		if (firebasePlugin) {
+			return firebasePlugin.sendCollabChanges(transaction, editorState);
 		}
 		return null;
 	}
