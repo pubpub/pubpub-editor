@@ -3,7 +3,7 @@ import { Decoration, DecorationSet } from "prosemirror-view";
 import { Fragment, Node, NodeRange, Slice } from 'prosemirror-model';
 import { Mapping, Step, StepMap, findWrapping } from 'prosemirror-transform';
 
-import { CommitTracker } from './commitTracker';
+import { CommitTracker } from './CommitTracker';
 import { Plugin } from 'prosemirror-state';
 import { Selection } from 'prosemirror-state';
 

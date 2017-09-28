@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 
 import { PluginKey } from 'prosemirror-state';
 import PropTypes from 'prop-types';
-import TrackChangesPlugin from './trackChangesPlugin';
+import TrackChangesPlugin from './TrackChangesPlugin';
 
 let styles;
 
