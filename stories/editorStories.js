@@ -1,3 +1,5 @@
+/* eslint-disable */
+import React, { Component } from 'react';
 import { equationDoc, imageDoc } from './data';
 
 import Collaborative from 'addons/Collaborative/Collaborative';
@@ -6,8 +8,6 @@ import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
 import Image from 'addons/Image/ImageAddon';
 import InsertMenu from 'addons/InsertMenu/InsertMenu';
 import Latex from 'addons/Latex/LatexAddon';
-/* eslint-disable */
-import React from 'react';
 import TrackChanges from 'addons/TrackChanges/TrackChangesAddon';
 import { storiesOf } from '@storybook/react';
 import uploadFile from './utils/uploadFile';
@@ -43,24 +43,56 @@ const onClientChange = (evt)=> {
 	console.log('Clients', evt);
 };
 
-{/*
-	<FormattingMenu />
-	<InsertMenu />
-	<Collaborative />
-	<Rebase />
 
-	<Latex />
-	<Footnotes />
-	<Iframe />
-	<Image />
-	<Video />
-	<Audio />
-	<Discussion />
-	<Reference />
-	<ReferenceList />
-	<UserMention />
-	<File />
-*/}
+class ForkStory extends Component {
+
+	constructor(props) {
+		super(props);
+		this.state = {
+			rootKey: 'storybook-track-fork-v1',
+			editorKey: 'storybook-track-fork-v1',
+			inFork: false
+		};
+	}
+
+	fork() {
+		const { inFork } = this.state;
+		if (!inFork) {
+			this.collab.fork().then((forkName) => {
+				this.setState({editorKey: forkName, inFork: true});
+			})
+		} else {
+			this.setState({ editorKey: this.state.rootKey, inFork: false });
+		}
+
+	}
+
+	render() {
+		const { editorKey, inFork } = this.state;
+
+		return (<div style={{width: "80%", margin: "0 auto"}}>
+				<button onClick={this.fork}>{(!inFork)? 'Fork' : 'Back' }</button>
+				<Editor key={editorKey}>
+					<FormattingMenu />
+					<InsertMenu />
+					{(inFork) ? <TrackChanges /> : null }
+					<Latex />
+					<Image handleFileUpload={uploadFile}/>
+					<Collaborative
+						ref={(collab) => { this.collab = collab; }}
+						firebaseConfig={firebaseConfig}
+						clientData={{
+							id: 'storybook-clientid',
+							name: 'Anon User',
+							backgroundColor: 'rgba(0, 0, 250, 0.2)',
+							cursorColor: 'rgba(0, 0, 250, 0.8)',
+						}}
+						editorKey={editorKey}
+					/>
+				</Editor>
+			</div>);
+	}
+}
 
 storiesOf('Editor', module)
 .add('Default', () => (
@@ -127,6 +159,9 @@ storiesOf('Editor', module)
 			/>
 		</Editor>
 	</div>
+))
+.add('Fork stories', () => (
+	<ForkStory/>
 ))
 .add('Collaborative', () => (
 	<div style={{width: "80%", margin: "0 auto"}}>

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { PluginKey } from 'prosemirror-state';
-import { collab } from 'prosemirror-collab';
+
 // import FirebasePlugin from './firebasePlugin';
 import FirebasePlugin from './newFirebasePlugin';
+import { PluginKey } from 'prosemirror-state';
+import PropTypes from 'prop-types';
+import { collab } from 'prosemirror-collab';
 
 require('./collaborative.scss');
 
@@ -61,7 +62,7 @@ class Collaborative extends Component {
 		}
 	}
 
-	onChange(props) {
+	onChange = (props) => {
 		const { editorState, transaction } = props;
 		if (!editorState || !transaction) { return null; }
 		const firebasePlugin = this.props.pluginKey.get(editorState);
@@ -71,24 +72,18 @@ class Collaborative extends Component {
 		return null;
 	}
 
-	getForks() {
-		const { editorState } = this.props;
-
-		const firebasePlugin = firebaseKey.get(editorState);
-		if (firebasePlugin) {
-			return firebasePlugin.props.getForks.bind(firebasePlugin)();
-		}
-		return Promise.resolve(null);
+	getPlugin() {
+		const { pluginKey, editorState } = this.props;
+		return pluginKey.get(editorState);
 	}
 
-	fork(forkID) {
-		const { editorState } = this.props;
+	getForks = () => {
+		return this.getPlugin().getForks();
+	}
 
-		const firebasePlugin = firebaseKey.get(editorState);
-		if (firebasePlugin) {
-			return firebasePlugin.props.fork.bind(firebasePlugin)(forkID);
-		}
-		return Promise.resolve(null);
+	fork = () => {
+		const forkID = this.props.editorRef + Math.round(Math.random() * 1000);
+		return this.getPlugin().fork(forkID);
 	}
 
 	render() {
