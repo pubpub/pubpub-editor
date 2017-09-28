@@ -69,9 +69,6 @@ class Editor extends Component {
 	componentDidMount() {
 		this.createEditor();
 	}
-	componentWillUnmount() {
-		console.log('Unmounting');
-	}
 
 	/**
 	 * Get JSON

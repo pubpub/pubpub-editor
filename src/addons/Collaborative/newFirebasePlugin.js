@@ -11,11 +11,8 @@ const stringToColor = (string, alpha = 1)=> {
 	return `hsla(${hue}, 100%, 50%, ${alpha})`;
 };
 
-
-let firebaseApp;
-
 class FirebasePlugin extends Plugin {
-	constructor({ localClientId, editorKey, firebaseConfig, rootRef, editorRef, pluginKey, onClientChange }) {
+	constructor({ localClientId, localClientData, editorKey, firebaseConfig, rootRef, editorRef, pluginKey, onClientChange }) {
 		super({ key: pluginKey });
 		this.spec = {
 			view: this.updateView,
@@ -34,13 +31,12 @@ class FirebasePlugin extends Plugin {
 		this.editorKey = editorKey;
 		this.selfChanges = {};
 
-		if (!firebaseApp) {
-			firebaseApp = firebase.initializeApp(firebaseConfig);
-		}
+		this.firebaseApp = firebase.initializeApp(firebaseConfig);
 
 		if (firebaseConfig) {
 			// firebaseDb = firebase.database();
-			this.rootRef = firebase.database(firebaseApp);
+			this.rootRef = firebase.database(this.firebaseApp);
+			this.rootRef.goOnline();
 			this.firebaseRef = this.rootRef.ref(editorKey);
 		} else if (rootRef) {
 			this.rootRef = rootRef;
@@ -68,7 +64,7 @@ class FirebasePlugin extends Plugin {
 			return null;
 		}
 		this.startedLoad = true;
-		this.document = new DocumentRef(this.firebaseRef, this.view, this.localClientId);
+		this.document = new DocumentRef(this.firebaseRef, this.view, this.localClientId, this.localClientData);
 		this.document.getCheckpoint(true)
 		.then(({ newDoc, checkpointKey }) => {
 			if (newDoc) {
@@ -224,11 +220,16 @@ class FirebasePlugin extends Plugin {
 		});
 	}
 
+	disconnect = ()=> {
+		this.firebaseApp.delete();
+	}
+
 	decorations = (state) => {
 		// return null;
 		if (!this.document) { return null; }
 		return DecorationSet.create(state.doc, Object.keys(this.document.selections).map((clientID)=> {
 			const selection = this.document.selections[clientID];
+			const data = selection.data || {};
 			if (!selection) {
 				return null;
 			}

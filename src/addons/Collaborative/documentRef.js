@@ -178,7 +178,7 @@ class DocumentRef {
 		const selectionsRef = this.ref.child('selections');
 		const selfSelectionRef = selectionsRef.child(this.localClientId);
 		const compressed = compressSelectionJSON(selection.toJSON());
-		compressed.data = this.localClientData;
+		compressed.data = this.localClientData || null;
 		return selfSelectionRef.set(compressed);
 	}
 

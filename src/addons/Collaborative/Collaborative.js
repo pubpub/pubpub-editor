@@ -61,6 +61,10 @@ class Collaborative extends Component {
 			this.onChange(nextProps);
 		}
 	}
+	componentWillUnmount() {
+		console.log('Unmounting');
+		this.getPlugin().disconnect();
+	}
 
 	onChange = (props) => {
 		const { editorState, transaction } = props;
