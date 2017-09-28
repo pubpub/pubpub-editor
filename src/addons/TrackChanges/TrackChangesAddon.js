@@ -1,10 +1,14 @@
 import { Button, Menu, MenuItem, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
-import React, { PropTypes } from 'react';
+import React, { Component } from 'react';
 
 import { PluginKey } from 'prosemirror-state';
-import TrackChangesPlugin from './TrackChangesPlugin';
+import PropTypes from 'prop-types';
+import TrackChangesPlugin from './trackChangesPlugin';
 
 let styles;
+
+require('./trackChanges.scss');
+
 
 const trackKey = new PluginKey('track');
 // how to track firebase changes well?
@@ -12,45 +16,49 @@ const trackKey = new PluginKey('track');
 // store plugin keys with others?
 // create a track plugin
 
-export const TrackAddon = React.createClass({
-	propTypes: {
-		containerId: React.PropTypes.string.isRequired,
-		view: React.PropTypes.object.isRequired,
-		editorState: React.PropTypes.object.isRequired,
-		editorRef: React.PropTypes.object.isRequired,
-		showCollaborators: React.PropTypes.bool.isRequired,
-	},
-	statics: {
-		getPlugins({  }) {
-			console.log(TrackChangesPlugin);
-			return [ TrackChangesPlugin(trackKey) ];
-		},
-		schema({ }) {
-			return {
-				marks: {
-					diff_plus: {
-						attrs: {
-							commitID: { default: null }
-						},
-						parseDOM: [],
-						toDOM(node) { return ['span', { class: `diff-marker added`, "data-commit": node.attrs.commitID }, 0]; },
-						excludes: "diff_minus",
+const propTypes = {
+	view: React.PropTypes.object,
+};
+
+const defaultProps = {
+	view: undefined,
+};
+
+
+
+class TrackAddon extends Component {
+
+	static getPlugins() {
+		return [ TrackChangesPlugin(trackKey) ];
+	}
+
+	static schema({ }) {
+		return {
+			marks: {
+				diff_plus: {
+					attrs: {
+						commitID: { default: null }
 					},
-					diff_minus: {
-						attrs: {
-							commitID: { default: null }
-						},
-						parseDOM: [],
-						toDOM(node) { return ['span', { class: `diff-marker removed`, "data-commit": node.attrs.commitID }, 0]; },
-						excludes: "diff_plus"
+					parseDOM: [],
+					toDOM(node) { return ['span', { class: `diff-marker added`, "data-commit": node.attrs.commitID }, 0]; },
+					excludes: "diff_minus",
+				},
+				diff_minus: {
+					attrs: {
+						commitID: { default: null }
 					},
-				}
+					parseDOM: [],
+					toDOM(node) { return ['span', { class: `diff-marker removed`, "data-commit": node.attrs.commitID }, 0]; },
+					excludes: "diff_plus"
+				},
 			}
 		}
-	},
-	getInitialState: function() {
-		return { collaborators: [] };
-	},
+	}
+
+	constructor(props) {
+		super(props);
+		this.state = { };
+	}
 	/*
 	componentWillReceiveProps(nextProps) {
 		if (this.props.editorState !== nextProps.editorState) {
@@ -86,8 +94,9 @@ export const TrackAddon = React.createClass({
 		*/
 
 
-	render: function() {
+	render() {
 
+		const { view } = this.props;
 		if (!view) {
 			return null;
 		}
@@ -108,9 +117,6 @@ export const TrackAddon = React.createClass({
 		);
 	}
 
-});
+}
 
 export default TrackAddon;
-
-styles = {
-};

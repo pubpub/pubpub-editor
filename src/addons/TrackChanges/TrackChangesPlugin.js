@@ -1,9 +1,9 @@
 import { AddMarkStep, ReplaceAroundStep, ReplaceStep, canJoin, insertPoint, joinPoint, replaceStep } from 'prosemirror-transform';
 import { Decoration, DecorationSet } from "prosemirror-view";
 import { Fragment, Node, NodeRange, Slice } from 'prosemirror-model';
-import { Mapping, Step, findWrapping } from 'prosemirror-transform';
+import { Mapping, Step, StepMap, findWrapping } from 'prosemirror-transform';
 
-import { CommitTracker } from './CommitTracker';
+import { CommitTracker } from './commitTracker';
 import { Plugin } from 'prosemirror-state';
 import { Selection } from 'prosemirror-state';
 
@@ -79,7 +79,7 @@ function isAdjacentToLastStep(step, prevMap) {
 const createTrackPlugin = (trackKey) => {
 
 
-  const trackChangesPlugin = new Plugin({
+  return new Plugin({
     state: {
       init(config, instance) {
         this.storedSteps = [];
@@ -96,8 +96,8 @@ const createTrackPlugin = (trackKey) => {
           if (step.slice && step.slice.content) {
             for (const stepContent of step.slice.content.content) {
               const marks = stepContent.marks;
-              const diffPlusMark = this.view.state.schema.marks['diff_plus'];
-              const diffMinusMark = this.view.state.schema.marks['diff_minus'];
+              const diffPlusMark = this.spec.view.state.schema.marks['diff_plus'];
+              const diffMinusMark = this.spec.view.state.schema.marks['diff_minus'];
               stepContent.marks = diffMinusMark.removeFromSet(diffPlusMark.removeFromSet(marks));
             }
           }
@@ -170,7 +170,8 @@ const createTrackPlugin = (trackKey) => {
             }
           }
 
-          mappedStep = mappedStep.offset(totalOffset * -1);
+          const offsetMap = StepMap.offset(totalOffset * -1)
+          mappedStep = mappedStep.map(offsetMap);
           this.storeStep(mappedStep);
         }
 
@@ -335,7 +336,7 @@ const createTrackPlugin = (trackKey) => {
           this.stepOffsets.push(newOffset);
           this.storeOffset(newOffset);
 
-          tr = tr.addMark(beforeSel.from, sel.from, schema.mark('diff_minus', { commitID: this.tracker.uuid }));
+          tr = tr.addMark(beforeSel.from, sel.from, view.state.schema.mark('diff_minus', { commitID: this.tracker.uuid }));
           tr = tr.setSelection(beforeSel);
           tr.setMeta('backdelete', true);
           tr.setMeta('trackAddition', true);
