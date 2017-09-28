@@ -7,33 +7,12 @@ import { CommitTracker } from './CommitTracker';
 import { Plugin } from 'prosemirror-state';
 import { Selection } from 'prosemirror-state';
 
-const getPlugin = ()=> {};
-
-/*
-- How to store in a firebase account?
-- How to not store marks in steps?
-*/
-
 /*
   if you only store deletions in a map, then inevitably it will be removeD?
   instead store deletions to remove after a certain map?
   e.g. store at POS 34, remove 4. at pos 40, remove 5
   How to represent deleted items? Can't use widgets because of removal
 */
-
-/*
-NEED TO STORE OFFSETS IN FIREBASE!!!
-
-*/
-
-
-/*
-Sketch of one channel merge:
-  - Gather all steps
-  -
-
-*/
-
 
 // need to store an array of steps that recreate the original document
 // need to store mappings that remove additions
@@ -72,9 +51,6 @@ function isAdjacentToLastStep(step, prevMap) {
   - why does description not work?
 
 */
-
-
-// make a class with functions?
 // how to update stored steps?
 const createTrackPlugin = (trackKey) => {
 
