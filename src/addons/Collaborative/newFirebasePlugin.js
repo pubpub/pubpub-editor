@@ -147,7 +147,10 @@ class DocumentRef {
 			const compressedSelection = snapshot.val();
 			if (compressedSelection) {
 				try {
-					this.selections[clientID] = Selection.fromJSON(this.view.state.doc, uncompressSelectionJSON(compressedSelection));
+					this.selections[clientID] = {
+						...Selection.fromJSON(this.view.state.doc, uncompressSelectionJSON(compressedSelection)),
+						cat: Math.random()
+					};
 				} catch (error) {
 					console.warn('updateClientSelection', error);
 				}
@@ -163,7 +166,7 @@ class DocumentRef {
 		const clientID = snapshot.key;
 		delete this.selections[clientID];
 		if (this.onClientChange) {
-			this.onClientChange(Object.keys(this.selections));
+			this.onClientChange(this.selections);
 		}
 		this.issueEmptyTransaction();
 	}
@@ -171,7 +174,7 @@ class DocumentRef {
 	addClientSelection = (snapshot) => {
 		this.updateClientSelection(snapshot);
 		if (this.onClientChange) {
-			this.onClientChange(Object.keys(this.selections));
+			this.onClientChange(this.selections);
 		}
 	}
 
