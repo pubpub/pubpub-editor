@@ -240,7 +240,6 @@ class FirebasePlugin extends Plugin {
 			if (from === to) {
 				// Create element in element here.
 				const elem = document.createElement('span');
-<<<<<<< 9f0f404cc6fdee2fa42a78b64f82e383c03b235a
 				elem.className = `collab-cursor ${data.id}`;
 
 				/* Add Vertical Bar */
@@ -300,16 +299,6 @@ class FirebasePlugin extends Plugin {
 			return Decoration.inline(from, to, {
 				class: `collab-selection ${data.id}`,
 				style: `background-color: ${data.backgroundColor || 'rgba(0, 25, 150, 0.2)'};`,
-=======
-				elem.className = `collab-cursor ${this.localClientId}`;
-				// elem.style.borderLeft = `1px solid ${stringToColor(clientID)}`;
-				elem.style['pointer-events'] = 'none';
-				return Decoration.widget(from, elem);
-			}
-			return Decoration.inline(from, to, {
-				class: `collab-selection ${this.localClientId}`,
-				// style: `background-color: ${stringToColor(clientID, 0.2)};`,
->>>>>>> fork functionality in collab
 			});
 		}).filter((dec) => {
 			return !!dec;
