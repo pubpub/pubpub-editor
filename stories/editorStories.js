@@ -6,14 +6,23 @@ import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
 import Image from 'addons/Image/ImageAddon';
 import InsertMenu from 'addons/InsertMenu/InsertMenu';
 import Latex from 'addons/Latex/LatexAddon';
-import TrackChanges from 'addons/TrackChanges/TrackChangesAddon';
-
 /* eslint-disable */
 import React from 'react';
+import TrackChanges from 'addons/TrackChanges/TrackChangesAddon';
 import { storiesOf } from '@storybook/react';
 import uploadFile from './utils/uploadFile';
 
 require('@blueprintjs/core/dist/blueprint.css');
+
+
+const firebaseConfig = {
+	apiKey: 'AIzaSyBpE1sz_-JqtcIm2P4bw4aoMEzwGITfk0U',
+	authDomain: 'pubpub-rich.firebaseapp.com',
+	databaseURL: 'https://pubpub-rich.firebaseio.com',
+	projectId: 'pubpub-rich',
+	storageBucket: 'pubpub-rich.appspot.com',
+	messagingSenderId: '543714905893',
+};
 
 const editorWrapper = {
 	border: '1px solid #CCC',
@@ -95,6 +104,28 @@ storiesOf('Editor', module)
 		</Editor>
 	</div>
 ))
+.add('Track Changes with Collaborative', () => (
+	<div style={{width: "80%", margin: "0 auto"}}>
+		<Editor onChange={onChange}>
+			<FormattingMenu />
+			<InsertMenu />
+			<TrackChanges />
+			<Latex />
+			<Image handleFileUpload={uploadFile}/>
+			<Collaborative
+				// ref={(collab) => { this.collab = collab; }}
+				firebaseConfig={firebaseConfig}
+				clientData={{
+					id: 'storybook-clientid',
+					name: 'Anon User',
+					backgroundColor: 'rgba(0, 0, 250, 0.2)',
+					cursorColor: 'rgba(0, 0, 250, 0.8)',
+				}}
+				editorKey={'storybook-track-collab-v1'}
+			/>
+		</Editor>
+	</div>
+))
 .add('Collaborative', () => (
 	<div style={{width: "80%", margin: "0 auto"}}>
 		<Editor>
@@ -103,16 +134,15 @@ storiesOf('Editor', module)
 			<Image handleFileUpload={uploadFile}/>
 			<Collaborative
 				// ref={(collab) => { this.collab = collab; }}
-				firebaseConfig={{
-					apiKey: 'AIzaSyBpE1sz_-JqtcIm2P4bw4aoMEzwGITfk0U',
-					authDomain: 'pubpub-rich.firebaseapp.com',
-					databaseURL: 'https://pubpub-rich.firebaseio.com',
-					projectId: 'pubpub-rich',
-					storageBucket: 'pubpub-rich.appspot.com',
-					messagingSenderId: '543714905893',
+				firebaseConfig={firebaseConfig}
+				onClientChange={(clients) => { }}
+				clientData={{
+					id: 'storybook-clientid',
+					name: 'Anon User',
+					backgroundColor: 'rgba(0, 0, 250, 0.2)',
+					cursorColor: 'rgba(0, 0, 250, 0.8)',
 				}}
 				onClientChange={onClientChange}
-				clientID={`storybook-clientid`}
 				editorKey={'storybook-editorkey-v12'}
 			/>
 		</Editor>
@@ -134,3 +164,15 @@ storiesOf('Editor', module)
 		</div>
 	</div>
 ));
+
+
+/*
+this.rebase.fork(fork).then((forkRef) => {
+	this.setState({inFork: true, editorRef: forkRef});
+});
+
+this.rebase.getForks(); // => [array of forks];
+this.rebase.isFork(); // => if current branch is in a fork
+this.rebase.startRebase(forkName);
+
+*/

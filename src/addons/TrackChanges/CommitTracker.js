@@ -131,8 +131,9 @@ class Commit {
 
 class CommitTracker {
 
-  constructor(plugin) {
+  constructor(plugin, getPlugin) {
     this.plugin = plugin;
+    this.getPlugin = getPlugin;
     this.commit = null;
   }
 

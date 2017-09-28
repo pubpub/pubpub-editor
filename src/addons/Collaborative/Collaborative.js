@@ -22,25 +22,26 @@ const defaultProps = {
 };
 
 class Collaborative extends Component {
-	static getPlugins({ firebaseConfig, clientID, editorKey, onClientChange, pluginKey }) {
+	static getPlugins({ firebaseConfig, clientData, editorKey, onClientChange, pluginKey }) {
 		// need to add a random client ID number to account for sessions with the same client
 		const possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
 		let clientHash = '';
 		for (let index = 0; index < 6; index++) {
 			clientHash += possible.charAt(Math.floor(Math.random() * possible.length));
 		}
-		const selfClientID = `clientId-${clientId}-${clientHash}`;
+		const selfClientId = `clientId-${clientData.id}-${clientHash}`;
 
 		return [
 			new FirebasePlugin({
-				localClientId: selfClientID,
+				localClientId: selfClientId,
+				localClientData: clientData,
 				editorKey,
 				firebaseConfig,
 				pluginKey: pluginKey,
 				onClientChange
 			}),
 			collab({
-				clientID: selfClientID
+				clientID: selfClientId
 			})
 		];
 	}

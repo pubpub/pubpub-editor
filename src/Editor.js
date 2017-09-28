@@ -84,7 +84,7 @@ class Editor extends Component {
 
 	getPlugin(key) {
 		if (this.state.pluginKeys[key]) {
-			return this.state.pluginKeys[key].get(this.editorState);
+			return this.state.pluginKeys[key].get(this.state.editorState);
 		}
 		return null;
 	}
@@ -110,8 +110,6 @@ class Editor extends Component {
 				}
 			});
 		}
-
-		// console.log(plugins);
 
 		return { plugins, pluginKeys };
 	}

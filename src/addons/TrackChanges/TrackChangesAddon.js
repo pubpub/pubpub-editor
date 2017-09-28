@@ -9,8 +9,6 @@ let styles;
 
 require('./trackChanges.scss');
 
-
-const trackKey = new PluginKey('track');
 // how to track firebase changes well?
 // how to use other keys in the export?
 // store plugin keys with others?
@@ -24,12 +22,10 @@ const defaultProps = {
 	view: undefined,
 };
 
-
-
 class TrackAddon extends Component {
 
-	static getPlugins() {
-		return [ TrackChangesPlugin(trackKey) ];
+	static getPlugins({ getPlugin, pluginKey }) {
+		return [TrackChangesPlugin(pluginKey, getPlugin)];
 	}
 
 	static schema({ }) {
@@ -103,20 +99,10 @@ class TrackAddon extends Component {
 
 		return (<div></div>);
 
-		return (
-			<div>
-				<div>
-					<Button onClick={this.joinParent.bind(this, this.state.forkParent)} iconName="circle-arrow-left" text={"hey this is a commit"} />
-
-					{this.state.commits.map((commit) => {
-						return (<CommitMsg onCommitHighlight={this.onCommitHighlight} clearCommitHighlight={this.clearCommitHighlight} commit={commit}/>);
-					})}
-
-				</div>
-			</div>
-		);
 	}
 
 }
 
+TrackAddon.propTypes = propTypes;
+TrackAddon.defaultProps = defaultProps;
 export default TrackAddon;
