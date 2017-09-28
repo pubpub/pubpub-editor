@@ -169,7 +169,6 @@ class DocumentRef {
 		this.updateClientSelection(snapshot);
 		if (this.onClientChange) {
 			this.onClientChange(Object.keys(this.selections).map((key)=> {
-				console.log('key', key, this.selections[key])
 				return this.selections[key].data;
 			}));
 		}
@@ -180,13 +179,14 @@ class DocumentRef {
 		const selfSelectionRef = selectionsRef.child(this.localClientId);
 		const compressed = compressSelectionJSON(selection.toJSON());
 		compressed.data = this.localClientData;
-		console.log('Compressed Selection ', compressed);
 		return selfSelectionRef.set(compressed);
 	}
 
 	mapSelection = (transaction, editorState) => {
-		for (const clientID in this.selections) {
-			this.selections[clientID] = this.selections[clientID].map(editorState.doc, transaction.mapping);
+		for (const clientId in this.selections) {
+			const originalClientData = this.selections[clientId].data;
+			this.selections[clientId] = this.selections[clientId].map(editorState.doc, transaction.mapping);
+			this.selections[clientId].data = originalClientData;
 		}
 	}
 

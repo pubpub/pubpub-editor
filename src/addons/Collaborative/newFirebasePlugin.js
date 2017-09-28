@@ -175,12 +175,12 @@ class FirebasePlugin extends Plugin {
 		// console.log(transaction, transaction.meta, transaction.selectionSet);
 		// Right now - arrow keys won't update the selection. We should check
 		// if arrow key and change if so.
-		if (transaction.getMeta('pointer')) {
-			const selection = editorState.selection;
-			if (selection instanceof AllSelection === false) {
-				this.document.setSelection(selection);
-			}
+		// if (transaction.getMeta('pointer')) {
+		const selection = editorState.selection;
+		if (selection instanceof AllSelection === false) {
+			this.document.setSelection(selection);
 		}
+		// }
 
 		return {};
 	}
@@ -213,15 +213,67 @@ class FirebasePlugin extends Plugin {
 				return null;
 			}
 			if (from === to) {
+				// Create element in element here.
 				const elem = document.createElement('span');
 				elem.className = `collab-cursor ${data.id}`;
-				elem.style.borderLeft = `1px solid ${data.cursorColor || 'rgba(0, 25, 150, 0.8)'}`;
-				elem.style['pointer-events'] = 'none';
+
+				/* Add Vertical Bar */
+				const innerChildBar = document.createElement('span');
+				innerChildBar.className = 'inner-bar';
+				elem.appendChild(innerChildBar);
+
+				/* Add small circle at top of bar */
+				const innerChildCircleSmall = document.createElement('span');
+				innerChildCircleSmall.className = 'inner-circle-small';
+				innerChildBar.appendChild(innerChildCircleSmall);
+
+				/* Add wrapper for hover items at top of bar */
+				const hoverItemsWrapper = document.createElement('span');
+				hoverItemsWrapper.className = 'hover-wrapper';
+				innerChildBar.appendChild(hoverItemsWrapper);
+
+				/* Add Large Circle for hover */
+				const innerChildCircleBig = document.createElement('span');
+				innerChildCircleBig.className = 'inner-circle-big';
+				hoverItemsWrapper.appendChild(innerChildCircleBig);
+
+				/* If Initials exist - add to hover items wrapper */
+				if (data.initials) {
+					const innerCircleInitials = document.createElement('span');
+					innerCircleInitials.className = 'initials';
+					innerCircleInitials.textContent = data.initials;
+					hoverItemsWrapper.appendChild(innerCircleInitials);
+				}
+				/* If Image exists - add to hover items wrapper */
+				if (data.image) {
+					const innerCircleImage = document.createElement('img');
+					innerCircleImage.src = data.image;
+					hoverItemsWrapper.appendChild(innerCircleImage);
+				}
+
+				/* If name exists - add to hover items wrapper */
+				if (data.name) {
+					const innerCircleName = document.createElement('span');
+					innerCircleName.className = 'name';
+					innerCircleName.textContent = data.name;
+					if (data.cursorColor) {
+						innerCircleName.style.backgroundColor = data.cursorColor;
+					}
+					hoverItemsWrapper.appendChild(innerCircleName);
+				}
+
+				/* If cursor color provided - override defaults */
+				if (data.cursorColor) {
+					innerChildBar.style.backgroundColor = data.cursorColor;
+					innerChildCircleSmall.style.backgroundColor = data.cursorColor;
+					innerChildCircleBig.style.backgroundColor = data.cursorColor;
+				}
+
 				return Decoration.widget(from, elem);
 			}
 			return Decoration.inline(from, to, {
 				class: `collab-selection ${data.id}`,
-				style: `background-color: ${data.backgroundColor || 'rgba(0, 25, 150, 0.8)'};`,
+				style: `background-color: ${data.backgroundColor || 'rgba(0, 25, 150, 0.2)'};`,
 			});
 		}).filter((dec) => {
 			return !!dec;

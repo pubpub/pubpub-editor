@@ -119,7 +119,9 @@ storiesOf('Editor', module)
 					id: 'storybook-clientid',
 					name: 'Anon User',
 					backgroundColor: 'rgba(0, 0, 250, 0.2)',
-					cursorColor: 'rgba(0, 0, 250, 0.8)',
+					cursorColor: 'rgba(0, 0, 250, 1.0)',
+					image: 'https://s3.amazonaws.com/uifaces/faces/twitter/rickdt/128.jpg',
+					initials: 'DR',
 				}}
 				editorKey={'storybook-track-collab-v1'}
 			/>
@@ -140,7 +142,9 @@ storiesOf('Editor', module)
 					id: 'storybook-clientid',
 					name: 'Anon User',
 					backgroundColor: 'rgba(0, 0, 250, 0.2)',
-					cursorColor: 'rgba(0, 0, 250, 0.8)',
+					cursorColor: 'rgba(0, 0, 250, 1.0)',
+					image: 'https://s3.amazonaws.com/uifaces/faces/twitter/rickdt/128.jpg',
+					initials: 'DR',
 				}}
 				onClientChange={onClientChange}
 				editorKey={'storybook-editorkey-v13'}

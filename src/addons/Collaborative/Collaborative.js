@@ -5,6 +5,8 @@ import { collab } from 'prosemirror-collab';
 // import FirebasePlugin from './firebasePlugin';
 import FirebasePlugin from './newFirebasePlugin';
 
+require('./collaborative.scss');
+
 const firebaseKey = new PluginKey('firebase');
 
 const propTypes = {
