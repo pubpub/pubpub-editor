@@ -4,7 +4,6 @@ import { PluginKey } from 'prosemirror-state';
 import { collab } from 'prosemirror-collab';
 // import FirebasePlugin from './firebasePlugin';
 import FirebasePlugin from './newFirebasePlugin';
-// import debounce from 'debounce';
 
 const firebaseKey = new PluginKey('firebase');
 
@@ -43,14 +42,10 @@ class Collaborative extends Component {
 		this.state = {
 			collaborators: []
 		};
-		// this.onChangeDebounced = debounce((nextProps)=> {
-		// 	this.onChange(nextProps);
-		// }, 100);
 	}
 
 	componentWillReceiveProps(nextProps) {
 		if (this.props.editorState !== nextProps.editorState) {
-			// this.onChangeDebounced(nextProps);
 			this.onChange(nextProps);
 		}
 	}

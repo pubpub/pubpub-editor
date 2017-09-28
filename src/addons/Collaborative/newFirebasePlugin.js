@@ -300,10 +300,10 @@ class FirebasePlugin extends Plugin {
 	sendCollabChanges = (transaction, newState) => {
 		const { meta } = transaction;
 
-		if (newState !== this.view.state) {
-			console.log('FREAK OUT AABOUT STATE');
-			debugger;
-		}
+		// if (newState !== this.view.state) {
+		// 	console.log('FREAK OUT AABOUT STATE');
+		// 	debugger;
+		// }
 
 		if (meta.collab$ || meta.rebase) {
 			return;
