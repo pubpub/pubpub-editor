@@ -1,6 +1,6 @@
 import getPolicy from './getPolicy';
 
-function s3Upload(file, finishEvent, index) {
+function s3Upload(file, progressEvent, finishEvent, index) {
 	function beginUpload() {
 		let folderName = '';
 		const possible = 'abcdefghijklmnopqrstuvwxyz';
