@@ -143,7 +143,7 @@ storiesOf('Editor', module)
 					cursorColor: 'rgba(0, 0, 250, 0.8)',
 				}}
 				onClientChange={onClientChange}
-				editorKey={'storybook-editorkey-v12'}
+				editorKey={'storybook-editorkey-v13'}
 			/>
 		</Editor>
 	</div>

@@ -142,7 +142,7 @@ class DocumentRef {
 			if (compressedSelection) {
 				try {
 					this.selections[clientID] = Selection.fromJSON(this.view.state.doc, uncompressSelectionJSON(compressedSelection));
-					this.selections[clientID].data = this.localClientData;
+					this.selections[clientID].data = compressedSelection.data;
 				} catch (error) {
 					console.warn('updateClientSelection', error);
 				}
@@ -169,6 +169,7 @@ class DocumentRef {
 		this.updateClientSelection(snapshot);
 		if (this.onClientChange) {
 			this.onClientChange(Object.keys(this.selections).map((key)=> {
+				console.log('key', key, this.selections[key])
 				return this.selections[key].data;
 			}));
 		}
@@ -177,7 +178,10 @@ class DocumentRef {
 	setSelection = (selection) => {
 		const selectionsRef = this.ref.child('selections');
 		const selfSelectionRef = selectionsRef.child(this.localClientId);
-		return selfSelectionRef.set(compressSelectionJSON(selection.toJSON()));
+		const compressed = compressSelectionJSON(selection.toJSON());
+		compressed.data = this.localClientData;
+		console.log('Compressed Selection ', compressed);
+		return selfSelectionRef.set(compressed);
 	}
 
 	mapSelection = (transaction, editorState) => {

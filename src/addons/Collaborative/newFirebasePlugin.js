@@ -214,13 +214,13 @@ class FirebasePlugin extends Plugin {
 			}
 			if (from === to) {
 				const elem = document.createElement('span');
-				elem.className = `collab-cursor ${this.localClientId}`;
+				elem.className = `collab-cursor ${data.id}`;
 				elem.style.borderLeft = `1px solid ${data.cursorColor || 'rgba(0, 25, 150, 0.8)'}`;
 				elem.style['pointer-events'] = 'none';
 				return Decoration.widget(from, elem);
 			}
 			return Decoration.inline(from, to, {
-				class: `collab-selection ${this.localClientId}`,
+				class: `collab-selection ${data.id}`,
 				style: `background-color: ${data.backgroundColor || 'rgba(0, 25, 150, 0.8)'};`,
 			});
 		}).filter((dec) => {
