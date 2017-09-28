@@ -415,12 +415,13 @@ class FirebasePlugin extends Plugin {
 			if (from === to) {
 				const elem = document.createElement('span');
 				elem.className = `collab-cursor ${this.localClientId}`;
-				elem.style.borderLeft = `1px solid ${stringToColor(clientID)}`;
+				// elem.style.borderLeft = `1px solid ${stringToColor(clientID)}`;
 				elem.style['pointer-events'] = 'none';
 				return Decoration.widget(from, elem);
 			}
 			return Decoration.inline(from, to, {
-				style: `background-color: ${stringToColor(clientID, 0.2)};`,
+				class: `collab-selection ${this.localClientId}`,
+				// style: `background-color: ${stringToColor(clientID, 0.2)};`,
 			});
 		}).filter((dec) => {
 			return !!dec;
