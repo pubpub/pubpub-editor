@@ -30,6 +30,9 @@ const focusEditor = ()=> {
 const onChange = (evt)=> {
 	// console.log(evt);
 };
+const onClientChange = (evt)=> {
+	console.log('Clients', evt);
+};
 
 {/*
 	<FormattingMenu />
@@ -108,7 +111,7 @@ storiesOf('Editor', module)
 					storageBucket: 'pubpub-rich.appspot.com',
 					messagingSenderId: '543714905893',
 				}}
-				// onClientChange={(clients) => { console.log(clients);}}
+				onClientChange={onClientChange}
 				clientID={`storybook-clientid`}
 				editorKey={'storybook-editorkey-v12'}
 			/>

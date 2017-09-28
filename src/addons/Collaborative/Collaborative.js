@@ -12,17 +12,25 @@ const propTypes = {
 	editorState: PropTypes.object,
 	// editorRef: PropTypes.object.isRequired,
 	// showCollaborators: React.PropTypes.bool.isRequired,
+	onClientChange: PropTypes.func,
 };
 
 const defaultProps = {
 	view: undefined,
 	editorState: undefined,
+	onClientChange: ()=>{},
 };
 
 class Collaborative extends Component {
 	static getPlugins({ firebaseConfig, clientID, editorKey, onClientChange, pluginKey }) {
 		// need to add a random client ID number to account for sessions with the same client
-		const selfClientID = clientID + Math.round(Math.random() * 10000);
+		const possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
+		let clientHash = '';
+		for (let index = 0; index < 6; index++) {
+			clientHash += possible.charAt(Math.floor(Math.random() * possible.length));
+		}
+		const selfClientID = `clientID-${clientHash}`;
+		
 		return [
 			new FirebasePlugin({
 				localClientId: selfClientID,
