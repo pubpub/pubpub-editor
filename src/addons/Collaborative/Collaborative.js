@@ -72,20 +72,18 @@ class Collaborative extends Component {
 		return null;
 	}
 
-	getForks = () => {
+	getPlugin() {
 		const { pluginKey, editorState } = this.props;
-		const firebasePlugin = pluginKey.get(this.editorState);
-		if (firebasePlugin) {
-			return firebasePlugin.getForks();
-		}
+		return pluginKey.get(editorState);
 	}
 
-	fork = (forkID) => {
-		const { pluginKey, editorState } = this.props;
-		const firebasePlugin = pluginKey.get(this.editorState);
-		if (firebasePlugin) {
-			return firebasePlugin.fork(forkID);
-		}
+	getForks = () => {
+		return this.getPlugin().getForks();
+	}
+
+	fork = () => {
+		const forkID = this.props.editorRef + Math.round(Math.random() * 1000);
+		return this.getPlugin().fork(forkID);
 	}
 
 	render() {

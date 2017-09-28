@@ -98,7 +98,7 @@ class Editor extends Component {
 
 		if (this.props.children) {
 			React.Children.forEach(this.props.children, (child) => {
-				if (child.type.getPlugins) {
+				if (child && child.type.getPlugins) {
 					const key = new PluginKey(child.type.displayName);
 					pluginKeys[child.type.displayName] = key;
 					const addonPlugins = child.type.getPlugins({
@@ -151,7 +151,7 @@ class Editor extends Component {
 		const schemaMarks = {};
 		if (this.props.children) {
 			React.Children.forEach(this.props.children, (child)=> {
-				if (child.type.schema) {
+				if (child && child.type.schema) {
 					const { nodes, marks } = child.type.schema(child.props);
 					Object.keys(nodes || {}).forEach((key) => {
 						schemaNodes[key] = nodes[key];
@@ -331,6 +331,9 @@ class Editor extends Component {
 				`}</style>
 				{this.state.view
 					? React.Children.map(this.props.children, (child) => {
+						if (!child) {
+							return null;
+						}
 						return React.cloneElement(child, {
 							view: this.state.view,
 							editorState: this.state.editorState,
