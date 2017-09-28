@@ -11,10 +11,11 @@ const stringToColor = (string, alpha = 1)=> {
 	return `hsla(${hue}, 100%, 50%, ${alpha})`;
 };
 
+
 let firebaseApp;
 
 class FirebasePlugin extends Plugin {
-	constructor({ localClientId, localClientData, editorKey, firebaseConfig, rootRef, editorRef, pluginKey, onClientChange }) {
+	constructor({ localClientId, editorKey, firebaseConfig, rootRef, editorRef, pluginKey, onClientChange }) {
 		super({ key: pluginKey });
 		this.spec = {
 			view: this.updateView,
@@ -30,7 +31,6 @@ class FirebasePlugin extends Plugin {
 
 		this.onClientChange = onClientChange;
 		this.localClientId = localClientId;
-		this.localClientData = localClientData;
 		this.editorKey = editorKey;
 		this.selfChanges = {};
 
@@ -68,7 +68,7 @@ class FirebasePlugin extends Plugin {
 			return null;
 		}
 		this.startedLoad = true;
-		this.document = new DocumentRef(this.firebaseRef, this.view, this.localClientId, this.localClientData);
+		this.document = new DocumentRef(this.firebaseRef, this.view, this.localClientId);
 		this.document.getCheckpoint(true)
 		.then(({ newDoc, checkpointKey }) => {
 			if (newDoc) {
@@ -198,12 +198,37 @@ class FirebasePlugin extends Plugin {
 		};
 	}
 
+	fork = (forkID) => {
+		this.document.copyDataForFork().then((fork) => {
+			this.rootRef.ref(forkID).set(fork, function(error) {
+				if (!error) {
+					this.document.ref.child('forks').child(forkID).set(true);
+					resolve(forkID);
+				} else {
+					reject(error);
+				}
+			});
+		});
+	}
+
+	getForks = () => {
+		return this.document.getForks().then((forkNames) => {
+			const getForkList = forkNames.map((forkName) => {
+				return this.rootRef.child(`${forkName}/forkMeta`).once('value').then((snapshot) => {
+					const forkMeta = snapshot.val();
+					forkMeta.name = forkName;
+					return forkMeta;
+				});
+			});
+			return Promise.all(getForkList);
+		});
+	}
+
 	decorations = (state) => {
 		// return null;
 		if (!this.document) { return null; }
 		return DecorationSet.create(state.doc, Object.keys(this.document.selections).map((clientID)=> {
 			const selection = this.document.selections[clientID];
-			const data = selection.data || {};
 			if (!selection) {
 				return null;
 			}
@@ -215,6 +240,7 @@ class FirebasePlugin extends Plugin {
 			if (from === to) {
 				// Create element in element here.
 				const elem = document.createElement('span');
+<<<<<<< 9f0f404cc6fdee2fa42a78b64f82e383c03b235a
 				elem.className = `collab-cursor ${data.id}`;
 
 				/* Add Vertical Bar */
@@ -274,6 +300,16 @@ class FirebasePlugin extends Plugin {
 			return Decoration.inline(from, to, {
 				class: `collab-selection ${data.id}`,
 				style: `background-color: ${data.backgroundColor || 'rgba(0, 25, 150, 0.2)'};`,
+=======
+				elem.className = `collab-cursor ${this.localClientId}`;
+				// elem.style.borderLeft = `1px solid ${stringToColor(clientID)}`;
+				elem.style['pointer-events'] = 'none';
+				return Decoration.widget(from, elem);
+			}
+			return Decoration.inline(from, to, {
+				class: `collab-selection ${this.localClientId}`,
+				// style: `background-color: ${stringToColor(clientID, 0.2)};`,
+>>>>>>> fork functionality in collab
 			});
 		}).filter((dec) => {
 			return !!dec;

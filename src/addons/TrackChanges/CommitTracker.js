@@ -2,14 +2,6 @@ import { AddMarkStep, ReplaceAroundStep, ReplaceStep } from 'prosemirror-transfo
 
 import cuid from 'cuid';
 
-const getPlugin = () => {
-  return null;
-}
-
-/*
-  - better cross browser message passing?
-*/
-
 /*
 Functions:
   - Keep an up to date document that actually works and error checkcs
@@ -143,7 +135,7 @@ class CommitTracker {
 
   reset = (step) => {
     const editorState = this.plugin.spec.view.state;
-    const firebasePlugin = getPlugin('firebase', editorState);
+    const firebasePlugin = this.getPlugin('firebase', editorState);
     if (this.commit && firebasePlugin) {
       const mergedSteps = mergeSteps(this.commit.steps);
       const description = (mergedSteps) ? describeStep(mergedSteps[mergedSteps.length - 1]) : 'No Description';
