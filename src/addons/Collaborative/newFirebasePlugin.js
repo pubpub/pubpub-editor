@@ -32,7 +32,11 @@ class FirebasePlugin extends Plugin {
 		this.editorKey = editorKey;
 		this.selfChanges = {};
 
-		this.firebaseApp = firebase.initializeApp(firebaseConfig);
+		// This isn't quite right
+		if (!firebase.apps.length) {
+			this.firebaseApp = firebase.initializeApp(firebaseConfig);
+		}
+		
 
 		if (firebaseConfig) {
 			// firebaseDb = firebase.database();
@@ -222,6 +226,7 @@ class FirebasePlugin extends Plugin {
 	}
 
 	disconnect = ()=> {
+		// This isn't quite right
 		this.firebaseApp.delete();
 	}
 

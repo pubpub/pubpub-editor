@@ -62,7 +62,6 @@ class Collaborative extends Component {
 		}
 	}
 	componentWillUnmount() {
-		console.log('Unmounting');
 		this.getPlugin().disconnect();
 	}
 
