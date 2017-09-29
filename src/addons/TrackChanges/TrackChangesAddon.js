@@ -55,6 +55,10 @@ class TrackAddon extends Component {
 		super(props);
 		this.state = { };
 	}
+
+	componentWillUnmount() {
+		console.log('UNMOUNTING TRACK CAHGNES');
+	}
 	/*
 	componentWillReceiveProps(nextProps) {
 		if (this.props.editorState !== nextProps.editorState) {

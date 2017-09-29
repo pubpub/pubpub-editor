@@ -264,7 +264,7 @@ class DocumentRef {
 			s: compressStepsLossy(steps).map(
 				function (step) {
 					return compressStepJSON(step.toJSON()) } ),
-			c: selfClientID,
+			c: this.localClientId,
 			m: {},
 			t: TIMESTAMP,
 		};

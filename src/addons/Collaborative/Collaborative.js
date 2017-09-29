@@ -13,15 +13,15 @@ const firebaseKey = new PluginKey('firebase');
 const propTypes = {
 	view: PropTypes.object,
 	editorState: PropTypes.object,
-	// editorRef: PropTypes.object.isRequired,
-	// showCollaborators: React.PropTypes.bool.isRequired,
 	onClientChange: PropTypes.func,
+	onForksUpdate: PropTypes.func,
 };
 
 const defaultProps = {
 	view: undefined,
 	editorState: undefined,
 	onClientChange: ()=>{},
+	onForksUpdate: ()=>{},
 };
 
 class Collaborative extends Component {

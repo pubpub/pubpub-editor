@@ -134,7 +134,7 @@ class CommitTracker {
   }
 
   reset = (step) => {
-    const editorState = this.plugin.spec.view.state;
+    const editorState = this.plugin.view.state;
     const firebasePlugin = this.getPlugin('Collaborative', editorState);
     console.log('firebase plugin!', firebasePlugin);
     if (this.commit && firebasePlugin) {
@@ -144,7 +144,7 @@ class CommitTracker {
         console.log('Got merged steps', mergedSteps, this.commit.steps, description);
       }
       const { steps, uuid, start, end } = this.commit;
-      firebasePlugin.props.commit({ description, steps, uuid, start, end });
+      firebasePlugin.commit({ description, steps, uuid, start, end });
     }
 
     this.commit = new Commit(step);

@@ -70,7 +70,6 @@ class Editor extends Component {
 	componentDidMount() {
 		this.createEditor();
 		this._isMounted = true;
-		
 	}
 	componentWillUnmount() {
 		this._isMounted = false;
@@ -87,7 +86,7 @@ class Editor extends Component {
 		this.view.focus();
 	}
 
-	getPlugin(key) {
+	getPlugin = (key) => {
 		if (this.state.pluginKeys[key]) {
 			return this.state.pluginKeys[key].get(this.state.editorState);
 		}
@@ -104,8 +103,8 @@ class Editor extends Component {
 		if (this.props.children) {
 			React.Children.forEach(this.props.children, (child) => {
 				if (child && child.type.getPlugins) {
-					const key = new PluginKey(child.type.displayName);
-					pluginKeys[child.type.displayName] = key;
+					const key = new PluginKey(child.type.name);
+					pluginKeys[child.type.name] = key;
 					const addonPlugins = child.type.getPlugins({
 						...child.props,
 						pluginKey: key,
@@ -347,7 +346,7 @@ class Editor extends Component {
 							editorState: this.state.editorState,
 							transaction: this.state.transaction,
 							containerId: this.containerId,
-							pluginKey: this.state.pluginKeys[child.type.displayName]
+							pluginKey: this.state.pluginKeys[child.type.name]
 						});
 					})
 					: null
