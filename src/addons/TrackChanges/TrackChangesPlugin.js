@@ -68,6 +68,7 @@ const createTrackPlugin = (trackKey) => {
         this.tracker = new CommitTracker(this);
 
         this.storeStep = (step) => {
+          console.log(this);
           this.tracker.add(step);
           if (step.slice && step.slice.content) {
             for (const stepContent of step.slice.content.content) {
