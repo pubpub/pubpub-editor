@@ -10,6 +10,8 @@ import ReactView from './schema/reactView';
 import createSchema from './schema';
 import { getBasePlugins } from './schema/setup';
 
+require('./style.scss');
+
 const propTypes = {
 	initialContent: PropTypes.object,
 	onChange: PropTypes.func,
@@ -99,7 +101,7 @@ class Editor extends Component {
 
 		const pluginKeys = {};
 
-		let plugins = getBasePlugins({ schema });
+		let plugins = getBasePlugins({ schema, isReadOnly: this.props.isReadOnly });
 
 		if (this.props.children) {
 			React.Children.forEach(this.props.children, (child) => {
@@ -228,7 +230,12 @@ class Editor extends Component {
 			// 	updafteMentions: this.updateMentions,
 			// },
 			// handleDOMEvents: {
-
+			// 	onselectionchange: (view, evt)=> {
+			// 		console.log(view, evt);
+			// 	},
+			// 	select: (view, evt)=> {
+			// 		console.log(view, evt);
+			// 	}
 			// },
 			editable: () => (!this.props.isReadOnly),
 			nodeViews: nodeViews,

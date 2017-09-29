@@ -40,8 +40,8 @@ function getBasePlugins(options) {
 		// inputRules({ rules: allInputRules.concat(buildInputRules(options.schema)) }),
 		keymap(buildKeymap(options.schema, options.mapKeys)),
 		keymap(baseKeymap),
-		SelectPlugin
 	];
+	if (!options.isReadOnly) { deps.push(SelectPlugin); }
 	if (options.placeholder) { deps.push(placeholderPlugin(options.placeholder)); }
 	if (options.history !== false) { deps.push(history()); }
 
