@@ -9,6 +9,37 @@ const stringToColor = (string, alpha = 1)=> {
 	return `hsla(${hue}, 100%, 50%, ${alpha})`;
 };
 
+class WidgetType {
+  constructor(widget, spec) {
+    this.spec = spec || noSpec
+    this.side = this.spec.side || 0
+
+    if (!this.spec.raw) {
+      if (widget.nodeType != 1) {
+        let wrap = document.createElement("span")
+        wrap.appendChild(widget)
+        widget = wrap
+      }
+      widget.contentEditable = true
+      widget.classList.add("ProseMirror-widget-weee")
+    }
+    this.widget = widget
+  }
+
+  map(mapping, span, offset, oldOffset) {
+    let {pos, deleted} = mapping.mapResult(span.from + oldOffset, this.side < 0 ? -1 : 1)
+    return deleted ? null : new Decoration(pos - offset, pos - offset, this)
+  }
+
+  valid() { return true }
+
+  eq(other) {
+    return this == other ||
+      (other instanceof WidgetType && (this.widget == other.widget || this.spec.key) &&
+       compareObjs(this.spec, other.spec))
+  }
+}
+
 class FirebasePlugin extends Plugin {
 	constructor({ localClientId, localClientData, editorKey, firebaseConfig, rootRef, editorRef, pluginKey, onClientChange }) {
 		super({ key: pluginKey });
@@ -24,20 +55,26 @@ class FirebasePlugin extends Plugin {
 			decorations: this.decorations
 		};
 
+		console.log('In the FirebasePlugin constructor');
 		this.onClientChange = onClientChange;
 		this.localClientId = localClientId;
 		this.localClientData = localClientData;
 		this.editorKey = editorKey;
 		this.selfChanges = {};
 
+		const existingApp = firebase.apps.reduce((prev, curr)=> {
+			if (curr.name === editorKey) { return curr; }
+			return prev;
+		}, undefined);
 		// This isn't quite right
-		// if (!firebase.apps.length) {
-			this.firebaseApp = firebase.initializeApp(firebaseConfig, `${Math.random()}`);
-		// } else {
-		// 	this.firebaseApp = firebase.apps[0];
+		if (!existingApp) {
+			this.firebaseApp = firebase.initializeApp(firebaseConfig, editorKey);
+		} else {
+			console.log(existingApp);
+			this.firebaseApp = existingApp;
 		// 	console.log('Trying to go online');
 		// 	// firebase.database().goOnline();
-		// }
+		}
 
 		if (firebaseConfig) {
 			// firebaseDb = firebase.database();
@@ -264,9 +301,14 @@ class FirebasePlugin extends Plugin {
 				innerChildBar.className = 'inner-bar';
 				elem.appendChild(innerChildBar);
 
+
+				const style = document.createElement('style');
+				elem.appendChild(style);
+				let innerStyle = '';
+
 				/* Add small circle at top of bar */
 				const innerChildCircleSmall = document.createElement('span');
-				innerChildCircleSmall.className = 'inner-circle-small';
+				innerChildCircleSmall.className = `inner-circle-small ${data.id}`;
 				innerChildBar.appendChild(innerChildCircleSmall);
 
 				/* Add wrapper for hover items at top of bar */
@@ -282,22 +324,27 @@ class FirebasePlugin extends Plugin {
 				/* If Initials exist - add to hover items wrapper */
 				if (data.initials) {
 					const innerCircleInitials = document.createElement('span');
-					innerCircleInitials.className = 'initials';
-					innerCircleInitials.textContent = data.initials;
+					innerCircleInitials.className = `initials ${data.id}`;
+					// innerCircleInitials.textContent = data.initials;
+					innerStyle += `.initials.${data.id}::after { content: "${data.initials}"; } `;
 					hoverItemsWrapper.appendChild(innerCircleInitials);
 				}
 				/* If Image exists - add to hover items wrapper */
 				if (data.image) {
-					const innerCircleImage = document.createElement('img');
-					innerCircleImage.src = data.image;
+					// const innerCircleImage = document.createElement('img');
+					const innerCircleImage = document.createElement('span');
+					innerCircleImage.className = `image ${data.id}`;
+					// innerCircleImage.src = data.image;
+					innerStyle += `.image.${data.id}::after { background-image: url('${data.image}'); } `;
 					hoverItemsWrapper.appendChild(innerCircleImage);
 				}
 
 				/* If name exists - add to hover items wrapper */
 				if (data.name) {
 					const innerCircleName = document.createElement('span');
-					innerCircleName.className = 'name';
-					innerCircleName.textContent = data.name;
+					innerCircleName.className = `name ${data.id}`;
+					// innerCircleName.textContent = data.name;
+					innerStyle += `.name.${data.id}::after { content: "${data.name}"; } `;
 					if (data.cursorColor) {
 						innerCircleName.style.backgroundColor = data.cursorColor;
 					}
@@ -309,9 +356,17 @@ class FirebasePlugin extends Plugin {
 					innerChildBar.style.backgroundColor = data.cursorColor;
 					innerChildCircleSmall.style.backgroundColor = data.cursorColor;
 					innerChildCircleBig.style.backgroundColor = data.cursorColor;
+					innerStyle += `.name.${data.id}::after { background-color: ${data.cursorColor} !important; } `;
 				}
+				style.innerHTML = innerStyle;
 
-				return Decoration.widget(from, elem);
+				// return Decoration.widget(from, elem);
+				return new Decoration(from, from, new WidgetType(elem, {}));
+				// setTimeout(()=> {
+				// 	const wrapper = document.getElementsByClassName(`collab-cursor ${data.id}`)[0];
+				// 	wrapper.appendChild(elem);
+				// }, 1000);
+				// return Decoration.inline(from, from + 1, { class: `collab-cursor ${data.id}` });
 			}
 			return Decoration.inline(from, to, {
 				class: `collab-selection ${data.id}`,

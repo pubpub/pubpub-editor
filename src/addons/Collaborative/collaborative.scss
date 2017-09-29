@@ -27,6 +27,7 @@
 			display: block;
 			position: absolute;
 			bottom: 100%;
+			pointer-events: none;
 			.inner-circle-big {
 				position: absolute;
 				height: 24px;
@@ -36,7 +37,8 @@
 				bottom: 0px;
 				left: -11px;
 			}
-			.initials {
+			.initials:after {
+				display: block;
 				position: absolute;
 				width: 20px;
 				height: 20px;
@@ -48,8 +50,9 @@
 				text-align: center;
 				z-index: 4;
 				white-space: nowrap;
+				user-select: none;
 			}
-			.name {
+			.name:after {
 				position: absolute;
 				display: block;
 				padding: 2px 12px;
@@ -63,8 +66,9 @@
 				left: 6px;
 				white-space: nowrap;
 				z-index: 3;
+				user-select: none;
 			}
-			img {
+			.image:after {
 				position: absolute;
 				bottom: 2px;
 				left: -9px;
@@ -72,7 +76,8 @@
 				border-radius: 10px;
 				width: 20px;
 				height: 20px;
-
+				background-size: cover;
+				content: "";
 			    max-width: none;
 			    margin-top: 0px;
 			}
