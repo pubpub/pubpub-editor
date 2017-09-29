@@ -25,7 +25,7 @@ const defaultProps = {
 };
 
 class Collaborative extends Component {
-	static getPlugins({ firebaseConfig, clientData, editorKey, onClientChange, pluginKey }) {
+	static getPlugins({ firebaseConfig, clientData, editorKey, onClientChange, pluginKey, onForksUpdate }) {
 		// need to add a random client ID number to account for sessions with the same client
 		const possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
 		let clientHash = '';
@@ -42,7 +42,8 @@ class Collaborative extends Component {
 				editorKey,
 				firebaseConfig,
 				pluginKey: pluginKey,
-				onClientChange
+				onClientChange,
+				onForksUpdate
 			}),
 			collab({
 				clientID: selfClientId
@@ -87,8 +88,11 @@ class Collaborative extends Component {
 	}
 
 	fork = () => {
-		const forkID = this.props.editorRef + Math.round(Math.random() * 1000);
-		return this.getPlugin().fork(forkID);
+		return this.getPlugin().fork();
+	}
+
+	commit = ({ description, uuid, steps, start, end }) => {
+		return this.getPlugin().commit({ description, uuid, steps, start, end });
 	}
 
 	render() {

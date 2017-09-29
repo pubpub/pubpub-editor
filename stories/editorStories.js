@@ -51,11 +51,12 @@ class ForkStory extends Component {
 		this.state = {
 			rootKey: 'storybook-track-fork-v1',
 			editorKey: 'storybook-track-fork-v1',
-			inFork: false
+			inFork: false,
+			forks: [],
 		};
 	}
 
-	fork() {
+	fork = () => {
 		const { inFork } = this.state;
 		if (!inFork) {
 			this.collab.fork().then((forkName) => {
@@ -67,11 +68,24 @@ class ForkStory extends Component {
 
 	}
 
+	updateForks = (forks) => {
+		console.log('got forks!!', forks);
+		this.setState({ forks });
+	}
+
+	joinFork = (fork) => {
+		this.setState({ editorKey: fork.name, inFork: true });
+	}
+
 	render() {
-		const { editorKey, inFork } = this.state;
+		const { editorKey, inFork, forks } = this.state;
 
 		return (<div style={{width: "80%", margin: "0 auto"}}>
 				<button onClick={this.fork}>{(!inFork)? 'Fork' : 'Back' }</button>
+				{forks.map((fork) => {
+					return (<button onClick={this.joinFork.bind(this, fork)}>{fork.name}</button>)
+				})}
+
 				<Editor key={editorKey}>
 					<FormattingMenu />
 					<InsertMenu />
@@ -80,6 +94,7 @@ class ForkStory extends Component {
 					<Image handleFileUpload={uploadFile}/>
 					<Collaborative
 						ref={(collab) => { this.collab = collab; }}
+						onForksUpdate={this.updateForks}
 						firebaseConfig={firebaseConfig}
 						clientData={{
 							id: 'storybook-clientid',
