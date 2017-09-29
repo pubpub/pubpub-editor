@@ -227,6 +227,9 @@ class Editor extends Component {
 			// viewHandlers: {
 			// 	updafteMentions: this.updateMentions,
 			// },
+			// handleDOMEvents: {
+
+			// },
 			editable: () => (!this.props.isReadOnly),
 			nodeViews: nodeViews,
 		});

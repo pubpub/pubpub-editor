@@ -96,9 +96,8 @@ class FirebasePlugin extends Plugin {
 			if (this.onForksUpdate) {
 				this.getForks().then((forks) => {
 					this.onForksUpdate(forks);
-				})
+				});
 			}
-
 		});
 	}
 
@@ -121,6 +120,9 @@ class FirebasePlugin extends Plugin {
 		}
 		if (meta.addToHistory) {
 			delete meta.addToHistory;
+		}
+		if (meta.history$) {
+			delete meta.history$;
 		}
 
 		/*
