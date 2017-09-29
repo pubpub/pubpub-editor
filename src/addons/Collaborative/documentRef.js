@@ -118,22 +118,11 @@ class DocumentRef {
 		});
 	}
 
-	removeSelfSelection = ()=> {
-		const selectionsRef = this.ref.child('selections');
-		// selectionsRef.remove();
-		const selfSelectionRef = selectionsRef.child(this.localClientId);
-		selfSelectionRef.remove();
-	}
 	listenToSelections = (onClientChange) => {
 		const selectionsRef = this.ref.child('selections');
 
 		const selfSelectionRef = selectionsRef.child(this.localClientId);
 		selfSelectionRef.onDisconnect().remove();
-
-		// setTimeout(()=> {
-		// 	console.log('Going off');
-		// 	selfSelectionRef.off();
-		// }, 5000);
 
 		this.onClientChange = onClientChange;
 		selectionsRef.on('child_added', this.addClientSelection);
@@ -189,7 +178,7 @@ class DocumentRef {
 		const selectionsRef = this.ref.child('selections');
 		const selfSelectionRef = selectionsRef.child(this.localClientId);
 		const compressed = compressSelectionJSON(selection.toJSON());
-		compressed.data = this.localClientData || null;
+		compressed.data = this.localClientData;
 		return selfSelectionRef.set(compressed);
 	}
 
@@ -225,28 +214,26 @@ class DocumentRef {
 		}
 	}
 
-	fork = (editorKey) => {
+	copyDataForFork = (editorKey) => {
 		const editorRef = this.ref;
-		return new Promise((resolve, reject) => {
-			editorRef.once('value', function(snapshot) {
-				const fork = snapshot.val();
-				fork.currentCommit = { commitID: 0 };
-				fork.forkMeta = {
-					merged: false,
-					date: new Date(),
-					parent: editorKey,
-					forkedKey: latestKey,
-				};
-				fork.changes = [];
-				fork.forks = [];
-				fork.selections = [];
+		return editorRef.once('value').then((snapshot) => {
+			const fork = snapshot.val();
+			fork.currentCommit = { commitID: 0 };
+			fork.forkMeta = {
+				merged: false,
+				date: new Date(),
+				parent: editorKey,
+				forkedKey: this.latestKey,
+			};
+			fork.changes = [];
+			fork.forks = [];
+			fork.selections = [];
 
-				const { d } = compressStateJSON(editorView.state.toJSON());
-				fork.checkpoint = { d, k: 0, t: TIMESTAMP };
+			const { d } = compressStateJSON(this.view.state.toJSON());
+			fork.checkpoint = { d, k: 0, t: TIMESTAMP };
 
-				return fork;
+			return fork;
 
-			});
 		});
 	}
 
@@ -259,7 +246,7 @@ class DocumentRef {
 			}
 			const forkNames = Object.keys(forkList);
 			return forkNames.map((forkName) => {
-				return forkName
+				return forkName;
 			});
 		});
 	}

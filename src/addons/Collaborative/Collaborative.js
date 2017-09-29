@@ -86,8 +86,7 @@ class Collaborative extends Component {
 	}
 
 	fork = () => {
-		const forkID = this.props.editorRef + Math.round(Math.random() * 1000);
-		return this.getPlugin().fork(forkID);
+		return this.getPlugin().fork();
 	}
 
 	commit = ({ description, uuid, steps, start, end }) => {

@@ -1,8 +1,9 @@
 import { AllSelection, EditorState, Plugin } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 import { receiveTransaction, sendableSteps } from 'prosemirror-collab';
-import firebase from 'firebase';
+
 import DocumentRef from './documentRef';
+import firebase from 'firebase';
 
 const stringToColor = (string, alpha = 1)=> {
 	const hue = string.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % 360;
@@ -205,15 +206,12 @@ class FirebasePlugin extends Plugin {
 		return this.document.commit({ description, uuid, steps, start, end });
 	}
 
-	fork = (forkID) => {
-		this.document.copyDataForFork().then((fork) => {
-			this.rootRef.ref(forkID).set(fork, function(error) {
-				if (!error) {
-					this.document.ref.child('forks').child(forkID).set(true);
-					resolve(forkID);
-				} else {
-					reject(error);
-				}
+	fork = () => {
+		const forkID = this.editorKey + Math.round(Math.random() * 1000);
+		return this.document.copyDataForFork(this.editorKey).then((fork) => {
+			return this.rootRef.ref(forkID).set(fork).then(() => {
+				this.document.ref.child('forks').child(forkID).set(true);
+				return forkID;
 			});
 		});
 	}
@@ -237,9 +235,9 @@ class FirebasePlugin extends Plugin {
 		// console.log(firebase.apps);
 		// firebase.app().delete().then(()=> {
 		console.log('delete it');
-		// 	console.log(firebase.apps);	
+		// 	console.log(firebase.apps);
 		// });
-		
+
 		// this.document.removeSelfSelection();
 		// firebase.database().goOffline();
 	}
