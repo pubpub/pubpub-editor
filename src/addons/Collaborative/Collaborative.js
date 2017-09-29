@@ -56,7 +56,6 @@ class Collaborative extends Component {
 		this.state = {
 			collaborators: []
 		};
-		console.log('In the Collaborative constructor');
 	}
 
 	componentWillReceiveProps(nextProps) {

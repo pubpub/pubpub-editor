@@ -51,12 +51,12 @@ class ReactViewWrapper extends Component {
 			getPos: this.props.getPos,
 		};
 		return (
-			<span 
+			<span
 				ref={(elem) => { this.rootElem = elem; }}
 				draggable="false"
 				onClick={this.forceSelection}
-				role={'textbox'}
-				tabIndex={-1}
+				// role={'textbox'}
+				// tabIndex={-1}
 			>
 				{renderComponent(node, view, decorations, this.state.isSelected, helperFunctions)}
 			</span>

@@ -69,6 +69,7 @@ class Editor extends Component {
 
 	componentDidMount() {
 		this.createEditor();
+		this._isMounted = true;
 		
 	}
 	componentWillUnmount() {
