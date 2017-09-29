@@ -36,7 +36,6 @@ class FirebasePlugin extends Plugin {
 		if (!firebase.apps.length) {
 			this.firebaseApp = firebase.initializeApp(firebaseConfig);
 		}
-		
 
 		if (firebaseConfig) {
 			// firebaseDb = firebase.database();
@@ -195,6 +194,7 @@ class FirebasePlugin extends Plugin {
 			},
 			destroy: () => {
 				this.view = null;
+				// firebase.app().delete();
 			}
 		};
 	}
@@ -228,6 +228,8 @@ class FirebasePlugin extends Plugin {
 	disconnect = ()=> {
 		// This isn't quite right
 		this.firebaseApp.delete();
+		// console.log('delete it');
+		// firebase.app().delete();
 	}
 
 	decorations = (state) => {
