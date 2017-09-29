@@ -224,6 +224,82 @@ class DocumentRef {
 			changesRef.child(stepToDelete).remove();
 		}
 	}
+
+	fork = (editorKey) => {
+		const editorRef = this.ref;
+		return new Promise((resolve, reject) => {
+			editorRef.once('value', function(snapshot) {
+				const fork = snapshot.val();
+				fork.currentCommit = { commitID: 0 };
+				fork.forkMeta = {
+					merged: false,
+					date: new Date(),
+					parent: editorKey,
+					forkedKey: latestKey,
+				};
+				fork.changes = [];
+				fork.forks = [];
+				fork.selections = [];
+
+				const { d } = compressStateJSON(editorView.state.toJSON());
+				fork.checkpoint = { d, k: 0, t: TIMESTAMP };
+
+				return fork;
+
+			});
+		});
+	}
+
+	getForks = () => {
+		return this.ref.child('forks').once('value')
+		.then((snapshot) => {
+			const forkList = snapshot.val();
+			if (!forkList) {
+				return [];
+			}
+			const forkNames = Object.keys(forkList);
+			return forkNames.map((forkName) => {
+				return forkName
+			});
+		});
+	}
+
+	commit = ({ description, uuid, steps, start, end }) => {
+		const editorRef = this.ref;
+
+		const commitSteps =  {
+			s: compressStepsLossy(steps).map(
+				function (step) {
+					return compressStepJSON(step.toJSON()) } ),
+			c: selfClientID,
+			m: {},
+			t: TIMESTAMP,
+		};
+		return editorRef.child('currentCommit').once('value').then((snapshot) => {
+			const currentCommit = snapshot.val();
+			const commitID = currentCommit.commitID;
+			const commit = {
+				description,
+				clientID: '',
+				steps: [commitSteps],
+				uuid: uuid,
+				merged: false,
+				commitKey: this.latestKey,
+				start,
+				end
+			};
+			const newCommitID = commitID + 1;
+			return editorRef.child(`commits/${commitID}`).set(commit).then(() => {
+				editorRef.child('currentCommit').set({ commitID: newCommitID });
+				// const { d } = compressStateJSON(editorView.state.toJSON());
+				// checkpointRef.set({ d, k: latestKey, t: TIMESTAMP });
+			});
+		});
+	}
+
+
+
+
 }
 
 export default DocumentRef;

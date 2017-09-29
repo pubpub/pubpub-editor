@@ -90,6 +90,10 @@ class Collaborative extends Component {
 		return this.getPlugin().fork(forkID);
 	}
 
+	commit = ({ description, uuid, steps, start, end }) => {
+		return this.getPlugin().commit({ description, uuid, steps, start, end });
+	}
+
 	render() {
 		// const { top, left } = this.state;
 		const { view } = this.props;

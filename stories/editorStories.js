@@ -55,7 +55,7 @@ class ForkStory extends Component {
 		};
 	}
 
-	fork() {
+	fork = () => {
 		const { inFork } = this.state;
 		if (!inFork) {
 			this.collab.fork().then((forkName) => {

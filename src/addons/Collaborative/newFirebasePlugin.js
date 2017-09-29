@@ -201,6 +201,10 @@ class FirebasePlugin extends Plugin {
 		};
 	}
 
+	commit = ({ description, uuid, steps, start, end }) => {
+		return this.document.commit({ description, uuid, steps, start, end });
+	}
+
 	fork = (forkID) => {
 		this.document.copyDataForFork().then((fork) => {
 			this.rootRef.ref(forkID).set(fork, function(error) {
