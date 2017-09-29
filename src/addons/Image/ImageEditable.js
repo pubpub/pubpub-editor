@@ -175,7 +175,7 @@ class ImageEditable extends Component {
 									height="auto"
 									ref={c => { this.resizable = c; }}
 									maxWidth={maxImageWidth}
-									customStyle={styles.outline({selected})}
+									style={styles.outline({selected})}
 									minWidth={(align === 'max') ? '100%' : undefined}
 									onResizeStop={(event, direction, ref, delta) => {
 										const docWidth = document.querySelector(".pubpub-editor").clientWidth;

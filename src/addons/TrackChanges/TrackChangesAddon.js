@@ -15,7 +15,7 @@ require('./trackChanges.scss');
 // create a track plugin
 
 const propTypes = {
-	view: React.PropTypes.object,
+	view: PropTypes.object,
 };
 
 const defaultProps = {

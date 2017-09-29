@@ -23,7 +23,7 @@ class LatexAddon extends Component {
 				equation: {
 					atom: true,
 					group: 'inline',
-					content: 'inline<_>*',
+					content: 'inline*',
 					attrs: {
 						content: { default: '' },
 					},
@@ -68,7 +68,7 @@ class LatexAddon extends Component {
 				block_equation: {
 					atom: true,
 					group: 'block',
-					content: 'inline<_>*',
+					content: 'inline*',
 					attrs: {
 						content: { default: '' },
 					},

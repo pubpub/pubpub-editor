@@ -63,11 +63,16 @@ class Editor extends Component {
 		// this.rebase = this.rebase.bind(this);
 		// this.rebaseByCommit = this.rebaseByCommit.bind(this);
 		// this.commit = this.commit.bind(this);
+		this._isMounted = false;
 		this._onAction = this._onAction.bind(this);
 	}
 
 	componentDidMount() {
 		this.createEditor();
+		
+	}
+	componentWillUnmount() {
+		this._isMounted = false;
 	}
 	/**
 	 * Get JSON
@@ -297,7 +302,7 @@ class Editor extends Component {
 
 
 	_onAction(transaction) {
-		if (this.view && this.view.state) {
+		if (this.view && this.view.state && this._isMounted) {
 			const newState = this.view.state.apply(transaction);
 			this.view.updateState(newState);
 			this.setState({ editorState: newState, transaction: transaction });
