@@ -182,7 +182,7 @@ storiesOf('Editor', module)
 					initials: 'DR',
 				}}
 				onClientChange={onClientChange}
-				editorKey={'storybook-editorkey-v13'}
+				editorKey={'storybook-editorkey-v14'}
 			/>
 		</Editor>
 	</div>

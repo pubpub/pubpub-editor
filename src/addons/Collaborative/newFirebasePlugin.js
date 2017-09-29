@@ -28,6 +28,7 @@ class FirebasePlugin extends Plugin {
 
 		this.onClientChange = onClientChange;
 		this.localClientId = localClientId;
+		this.localClientData = localClientData;
 		this.editorKey = editorKey;
 		this.selfChanges = {};
 
