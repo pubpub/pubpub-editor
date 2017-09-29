@@ -52,7 +52,7 @@ function isAdjacentToLastStep(step, prevMap) {
 
 */
 // how to update stored steps?
-const createTrackPlugin = (trackKey) => {
+const createTrackPlugin = (trackKey, getPlugin) => {
 
 
   return new Plugin({
@@ -65,15 +65,15 @@ const createTrackPlugin = (trackKey) => {
 
         this.transactions = {};
 
-        this.tracker = new CommitTracker(this);
+        this.tracker = new CommitTracker(this, getPlugin);
 
         this.storeStep = (step) => {
           this.tracker.add(step);
           if (step.slice && step.slice.content) {
             for (const stepContent of step.slice.content.content) {
               const marks = stepContent.marks;
-              const diffPlusMark = this.spec.view.state.schema.marks['diff_plus'];
-              const diffMinusMark = this.spec.view.state.schema.marks['diff_minus'];
+              const diffPlusMark = this.view.state.schema.marks['diff_plus'];
+              const diffMinusMark = this.view.state.schema.marks['diff_minus'];
               stepContent.marks = diffMinusMark.removeFromSet(diffPlusMark.removeFromSet(marks));
             }
           }
@@ -109,10 +109,6 @@ const createTrackPlugin = (trackKey) => {
         return state;
       }
     },
-
-
-
-
     appendTransaction: function (transactions, oldState, newState) {
       const firstTransaction = transactions[0];
       if (!firstTransaction || transactions.length > 1) {
@@ -177,8 +173,6 @@ const createTrackPlugin = (trackKey) => {
 
               if (oldStart !== oldEnd) {
                 const inverse = step.invert(oldState.doc);
-
-
                 /*
                 This checks if it is a 'space operation' that prosemirror does, i.e. it will sometimes replace a space with a space and the character you just typed.
                 */
@@ -197,7 +191,6 @@ const createTrackPlugin = (trackKey) => {
                     isSpaceOperation = true;
                   }
                 }
-
 
                 if (isSpaceOperation) {
                   tr = tr.addMark(newStart, newEnd, schema.mark('diff_plus', { commitID: this.tracker.uuid  }));
@@ -250,8 +243,7 @@ const createTrackPlugin = (trackKey) => {
               } else {
                 tr = tr.addMark(newStart, newEnd, schema.mark('diff_plus', { commitID: this.tracker.uuid  }));
                 tr.setMeta("trackAddition", true);
-              //  transaction.setMeta('appendedTransaction', true);
-
+                tr.setStoredMarks(schema.mark('diff_plus', { commitID: this.tracker.uuid  }));
               }
 
 
@@ -265,13 +257,14 @@ const createTrackPlugin = (trackKey) => {
       return null;
     },
     view: function(_view) {
-      this.view = _view;
+      const plugin = this.key.get(_view.state);
+      plugin.view = _view;
       return {
         update: (newView, prevState) => {
-          this.view = newView;
+          plugin.view = newView;
         },
         destroy: () => {
-          this.view = null;
+          plugin.view = null;
         }
       }
     },

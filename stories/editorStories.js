@@ -49,8 +49,8 @@ class ForkStory extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			rootKey: 'storybook-track-fork-v1',
-			editorKey: 'storybook-track-fork-v1',
+			rootKey: 'storybook-track-fork-v3',
+			editorKey: 'storybook-track-fork-v3',
 			inFork: false,
 			forks: [],
 		};
@@ -69,7 +69,6 @@ class ForkStory extends Component {
 	}
 
 	updateForks = (forks) => {
-		console.log('got forks!!', forks);
 		this.setState({ forks });
 	}
 
