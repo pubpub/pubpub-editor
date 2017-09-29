@@ -33,6 +33,7 @@ class Collaborative extends Component {
 			clientHash += possible.charAt(Math.floor(Math.random() * possible.length));
 		}
 		const selfClientId = `clientId-${clientData.id}-${clientHash}`;
+		// const selfClientId = `clientId-${clientData.id}`;
 
 		return [
 			new FirebasePlugin({

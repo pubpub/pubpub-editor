@@ -1,10 +1,8 @@
 import { AllSelection, EditorState, Plugin } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 import { receiveTransaction, sendableSteps } from 'prosemirror-collab';
-
-import DocumentRef from './documentRef';
-// import defer from 'promise-defer';
 import firebase from 'firebase';
+import DocumentRef from './documentRef';
 
 const stringToColor = (string, alpha = 1)=> {
 	const hue = string.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % 360;
@@ -33,9 +31,13 @@ class FirebasePlugin extends Plugin {
 		this.selfChanges = {};
 
 		// This isn't quite right
-		if (!firebase.apps.length) {
-			this.firebaseApp = firebase.initializeApp(firebaseConfig);
-		}
+		// if (!firebase.apps.length) {
+			this.firebaseApp = firebase.initializeApp(firebaseConfig, `${Math.random()}`);
+		// } else {
+		// 	this.firebaseApp = firebase.apps[0];
+		// 	console.log('Trying to go online');
+		// 	// firebase.database().goOnline();
+		// }
 
 		if (firebaseConfig) {
 			// firebaseDb = firebase.database();
@@ -228,8 +230,14 @@ class FirebasePlugin extends Plugin {
 	disconnect = ()=> {
 		// This isn't quite right
 		this.firebaseApp.delete();
-		// console.log('delete it');
-		// firebase.app().delete();
+		// console.log(firebase.apps);
+		// firebase.app().delete().then(()=> {
+		console.log('delete it');
+		// 	console.log(firebase.apps);	
+		// });
+		
+		// this.document.removeSelfSelection();
+		// firebase.database().goOffline();
 	}
 
 	decorations = (state) => {

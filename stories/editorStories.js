@@ -174,7 +174,7 @@ storiesOf('Editor', module)
 				firebaseConfig={firebaseConfig}
 				onClientChange={(clients) => { }}
 				clientData={{
-					id: 'storybook-clientid',
+					id: `storybook-clientid-${Math.floor(Math.random() * 2500)}`,
 					name: 'Anon User',
 					backgroundColor: 'rgba(0, 0, 250, 0.2)',
 					cursorColor: 'rgba(0, 0, 250, 1.0)',

@@ -69,7 +69,6 @@ class Editor extends Component {
 	componentDidMount() {
 		this.createEditor();
 	}
-
 	/**
 	 * Get JSON
 	 * @return {json} The JSON structure of the document, useful for saving documents for use in initialContent.
