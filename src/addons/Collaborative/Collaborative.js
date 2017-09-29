@@ -92,13 +92,7 @@ class Collaborative extends Component {
 	}
 
 	render() {
-		// const { top, left } = this.state;
-		const { view } = this.props;
-
-		if (!view) {
-			return null;
-		}
-
+		if (!this.props.view) { return null; }
 		return <div />;
 	}
 }

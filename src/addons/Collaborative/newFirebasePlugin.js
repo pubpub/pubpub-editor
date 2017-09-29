@@ -2,43 +2,8 @@ import { AllSelection, EditorState, Plugin } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 import { receiveTransaction, sendableSteps } from 'prosemirror-collab';
 import firebase from 'firebase';
+import CursorType from './CursorType';
 import DocumentRef from './documentRef';
-
-const stringToColor = (string, alpha = 1)=> {
-	const hue = string.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0) % 360;
-	return `hsla(${hue}, 100%, 50%, ${alpha})`;
-};
-
-class WidgetType {
-  constructor(widget, spec) {
-    this.spec = spec || noSpec
-    this.side = this.spec.side || 0
-
-    if (!this.spec.raw) {
-      if (widget.nodeType != 1) {
-        let wrap = document.createElement("span")
-        wrap.appendChild(widget)
-        widget = wrap
-      }
-      widget.contentEditable = true
-      widget.classList.add("ProseMirror-widget-weee")
-    }
-    this.widget = widget
-  }
-
-  map(mapping, span, offset, oldOffset) {
-    let {pos, deleted} = mapping.mapResult(span.from + oldOffset, this.side < 0 ? -1 : 1)
-    return deleted ? null : new Decoration(pos - offset, pos - offset, this)
-  }
-
-  valid() { return true }
-
-  eq(other) {
-    return this == other ||
-      (other instanceof WidgetType && (this.widget == other.widget || this.spec.key) &&
-       compareObjs(this.spec, other.spec))
-  }
-}
 
 class FirebasePlugin extends Plugin {
 	constructor({ localClientId, localClientData, editorKey, firebaseConfig, rootRef, editorRef, pluginKey, onClientChange }) {
@@ -55,7 +20,6 @@ class FirebasePlugin extends Plugin {
 			decorations: this.decorations
 		};
 
-		console.log('In the FirebasePlugin constructor');
 		this.onClientChange = onClientChange;
 		this.localClientId = localClientId;
 		this.localClientData = localClientData;
@@ -66,18 +30,14 @@ class FirebasePlugin extends Plugin {
 			if (curr.name === editorKey) { return curr; }
 			return prev;
 		}, undefined);
-		// This isn't quite right
+
 		if (!existingApp) {
 			this.firebaseApp = firebase.initializeApp(firebaseConfig, editorKey);
 		} else {
-			console.log(existingApp);
 			this.firebaseApp = existingApp;
-		// 	console.log('Trying to go online');
-		// 	// firebase.database().goOnline();
 		}
 
 		if (firebaseConfig) {
-			// firebaseDb = firebase.database();
 			this.rootRef = firebase.database(this.firebaseApp);
 			this.rootRef.goOnline();
 			this.firebaseRef = this.rootRef.ref(editorKey);
@@ -190,7 +150,6 @@ class FirebasePlugin extends Plugin {
 		if (isLocal) {
 			receivedSteps = this.selfChanges[changeKey];
 			recievedClientIDs = new Array(receivedSteps.length).fill(this.localClientId);
-			// console.log('got local ', changeKey, receivedSteps, recievedClientIDs);
 		} else {
 			receivedSteps = steps;
 			recievedClientIDs = stepClientIDs;
@@ -212,8 +171,6 @@ class FirebasePlugin extends Plugin {
 		}
 
 		// console.log(transaction, transaction.meta, transaction.selectionSet);
-		// Right now - arrow keys won't update the selection. We should check
-		// if arrow key and change if so.
 		// if (transaction.getMeta('pointer')) {
 		const selection = editorState.selection;
 		if (selection instanceof AllSelection === false) {
@@ -265,20 +222,10 @@ class FirebasePlugin extends Plugin {
 	}
 
 	disconnect = ()=> {
-		// This isn't quite right
 		this.firebaseApp.delete();
-		// console.log(firebase.apps);
-		// firebase.app().delete().then(()=> {
-		console.log('delete it');
-		// 	console.log(firebase.apps);	
-		// });
-		
-		// this.document.removeSelfSelection();
-		// firebase.database().goOffline();
 	}
 
 	decorations = (state) => {
-		// return null;
 		if (!this.document) { return null; }
 		return DecorationSet.create(state.doc, Object.keys(this.document.selections).map((clientID)=> {
 			const selection = this.document.selections[clientID];
@@ -292,7 +239,6 @@ class FirebasePlugin extends Plugin {
 				return null;
 			}
 			if (from === to) {
-				// Create element in element here.
 				const elem = document.createElement('span');
 				elem.className = `collab-cursor ${data.id}`;
 
@@ -300,7 +246,6 @@ class FirebasePlugin extends Plugin {
 				const innerChildBar = document.createElement('span');
 				innerChildBar.className = 'inner-bar';
 				elem.appendChild(innerChildBar);
-
 
 				const style = document.createElement('style');
 				elem.appendChild(style);
@@ -325,16 +270,13 @@ class FirebasePlugin extends Plugin {
 				if (data.initials) {
 					const innerCircleInitials = document.createElement('span');
 					innerCircleInitials.className = `initials ${data.id}`;
-					// innerCircleInitials.textContent = data.initials;
 					innerStyle += `.initials.${data.id}::after { content: "${data.initials}"; } `;
 					hoverItemsWrapper.appendChild(innerCircleInitials);
 				}
 				/* If Image exists - add to hover items wrapper */
 				if (data.image) {
-					// const innerCircleImage = document.createElement('img');
 					const innerCircleImage = document.createElement('span');
 					innerCircleImage.className = `image ${data.id}`;
-					// innerCircleImage.src = data.image;
 					innerStyle += `.image.${data.id}::after { background-image: url('${data.image}'); } `;
 					hoverItemsWrapper.appendChild(innerCircleImage);
 				}
@@ -343,7 +285,6 @@ class FirebasePlugin extends Plugin {
 				if (data.name) {
 					const innerCircleName = document.createElement('span');
 					innerCircleName.className = `name ${data.id}`;
-					// innerCircleName.textContent = data.name;
 					innerStyle += `.name.${data.id}::after { content: "${data.name}"; } `;
 					if (data.cursorColor) {
 						innerCircleName.style.backgroundColor = data.cursorColor;
@@ -360,13 +301,11 @@ class FirebasePlugin extends Plugin {
 				}
 				style.innerHTML = innerStyle;
 
-				// return Decoration.widget(from, elem);
-				return new Decoration(from, from, new WidgetType(elem, {}));
-				// setTimeout(()=> {
-				// 	const wrapper = document.getElementsByClassName(`collab-cursor ${data.id}`)[0];
-				// 	wrapper.appendChild(elem);
-				// }, 1000);
-				// return Decoration.inline(from, from + 1, { class: `collab-cursor ${data.id}` });
+				/* This custom Decoration funkiness is because we don't want the cursor to */
+				/* be contenteditable="false". This will break spellcheck. So instead */
+				/* we do a bunch of specific :after elements and custom styles */
+				/* to build the rich cursor UI */
+				return new Decoration(from, from, new CursorType(elem, {}));
 			}
 			return Decoration.inline(from, to, {
 				class: `collab-selection ${data.id}`,

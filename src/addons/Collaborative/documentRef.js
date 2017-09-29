@@ -120,7 +120,6 @@ class DocumentRef {
 
 	removeSelfSelection = ()=> {
 		const selectionsRef = this.ref.child('selections');
-		// selectionsRef.remove();
 		const selfSelectionRef = selectionsRef.child(this.localClientId);
 		selfSelectionRef.remove();
 	}
@@ -129,11 +128,6 @@ class DocumentRef {
 
 		const selfSelectionRef = selectionsRef.child(this.localClientId);
 		selfSelectionRef.onDisconnect().remove();
-
-		// setTimeout(()=> {
-		// 	console.log('Going off');
-		// 	selfSelectionRef.off();
-		// }, 5000);
 
 		this.onClientChange = onClientChange;
 		selectionsRef.on('child_added', this.addClientSelection);
