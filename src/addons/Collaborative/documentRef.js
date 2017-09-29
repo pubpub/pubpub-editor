@@ -117,7 +117,7 @@ class DocumentRef {
 			}
 		});
 	}
-
+	
 	listenToSelections = (onClientChange) => {
 		const selectionsRef = this.ref.child('selections');
 

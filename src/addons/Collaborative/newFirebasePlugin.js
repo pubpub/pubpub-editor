@@ -11,7 +11,7 @@ const stringToColor = (string, alpha = 1)=> {
 };
 
 class FirebasePlugin extends Plugin {
-	constructor({ localClientId, localClientData, editorKey, firebaseConfig, rootRef, editorRef, pluginKey, onClientChange }) {
+	constructor({ localClientId, localClientData, editorKey, firebaseConfig, rootRef, editorRef, pluginKey, onClientChange, onForksUpdate }) {
 		super({ key: pluginKey });
 		this.spec = {
 			view: this.updateView,
@@ -25,6 +25,7 @@ class FirebasePlugin extends Plugin {
 			decorations: this.decorations
 		};
 
+		this.onForksUpdate = onForksUpdate;
 		this.onClientChange = onClientChange;
 		this.localClientId = localClientId;
 		this.localClientData = localClientData;
@@ -96,6 +97,12 @@ class FirebasePlugin extends Plugin {
 			}
 			this.document.listenToSelections(this.onClientChange);
 			this.document.listenToChanges(this.onRemoteChange);
+			if (this.onForksUpdate) {
+				this.getForks().then((forks) => {
+					this.onForksUpdate(forks);
+				})
+			}
+
 		});
 	}
 
@@ -219,7 +226,7 @@ class FirebasePlugin extends Plugin {
 	getForks = () => {
 		return this.document.getForks().then((forkNames) => {
 			const getForkList = forkNames.map((forkName) => {
-				return this.rootRef.child(`${forkName}/forkMeta`).once('value').then((snapshot) => {
+				return this.rootRef.ref(`${forkName}/forkMeta`).once('value').then((snapshot) => {
 					const forkMeta = snapshot.val();
 					forkMeta.name = forkName;
 					return forkMeta;
