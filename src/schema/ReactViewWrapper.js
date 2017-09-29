@@ -10,6 +10,7 @@ const propTypes = {
 	updateAttrs: PropTypes.func.isRequired,
 	updateContent: PropTypes.func.isRequired,
 	changeNode: PropTypes.func.isRequired,
+	getPos: PropTypes.func.isRequired,
 	renderComponent: PropTypes.func.isRequired,
 };
 
@@ -37,7 +38,7 @@ class ReactViewWrapper extends Component {
 	}
 
 	focusAndSelect = () => {
-		this.setState({isSelected: true});
+		this.setState({ isSelected: true });
 		this.rootElem.focus();
 	}
 
@@ -50,7 +51,13 @@ class ReactViewWrapper extends Component {
 			getPos: this.props.getPos,
 		};
 		return (
-			<span ref={c => { this.rootElem = c; }} draggable="false" onClick={this.forceSelection}>
+			<span 
+				ref={(elem) => { this.rootElem = elem; }}
+				draggable="false"
+				onClick={this.forceSelection}
+				role={'textbox'}
+				tabIndex={-1}
+			>
 				{renderComponent(node, view, decorations, this.state.isSelected, helperFunctions)}
 			</span>
 		);
