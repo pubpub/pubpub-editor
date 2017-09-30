@@ -1,10 +1,10 @@
 import { AllSelection, EditorState, Plugin } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 import { receiveTransaction, sendableSteps } from 'prosemirror-collab';
-
-import CursorType from './CursorType';
-import DocumentRef from './documentRef';
 import firebase from 'firebase';
+// import CursorType from './CursorType';
+import DocumentRef from './documentRef';
+
 
 class FirebasePlugin extends Plugin {
 	constructor({ localClientId, localClientData, editorKey, firebaseConfig, rootRef, editorRef, pluginKey, onClientChange, onForksUpdate }) {
