@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-
-// import FirebasePlugin from './firebasePlugin';
-import FirebasePlugin from './newFirebasePlugin';
 import { PluginKey } from 'prosemirror-state';
 import PropTypes from 'prop-types';
 import { collab } from 'prosemirror-collab';
+import FirebasePlugin from './firebasePlugin';
 
 require('./collaborative.scss');
 
