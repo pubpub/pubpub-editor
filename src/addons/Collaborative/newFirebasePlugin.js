@@ -259,11 +259,8 @@ class FirebasePlugin extends Plugin {
 				const existingCursor = document.getElementById(`cursor-${this.editorKey}`);
 				const currentCursor = existingCursor || document.createElement('span');
 				
-				// console.log('rootElem is', rootElem);
-				
 				/* If no cursor yet - create it and its children */
 				if (!existingCursor) {
-					console.log('Creating cursor!');
 					currentCursor.id = `cursor-${this.editorKey}`;
 					currentCursor.className = 'left-cursor';
 					rootElem.appendChild(currentCursor);
@@ -294,101 +291,71 @@ class FirebasePlugin extends Plugin {
 						currentCursor.appendChild(cursorName);
 					}
 				}
-
-
-				// } else {
-					
-				// 	fake.id = 'fake-thing';
-				// 	fake.className = 'fake-cursor';
-				// 	rootElem.appendChild(fake);
-				// 	// fake.style.top = cursorCoords.top - rootElemCoords.top;
-				// 	// fake.style.left = cursorCoords.left - rootElemCoords.left;
-				// }
-				
-				// console.log('!!', this.view.domAtPos(selection.$to.pos), this.view.domAtPos(selection.$to.pos).node.getBoundingClientRect());
-				// console.log(cursorCoords, rootElemCoords);
-				// console.log(cursorCoords.top - rootElemCoords.top, cursorCoords.left - rootElemCoords.left);
-				// currentCursor.style.top = `${cursorCoords.top - rootElemCoords.top - 20}px`;
 				const top = `${cursorCoords.top - rootElemCoords.top}px`;
 				currentCursor.style.transform = `translate3d(-30px, ${top}, 0)`;
-				console.log('Set to ', top);
-				// let left;
-				// if (cursorCoords.left > (rootElemCoords.left + rootElemCoords.width - 20)) {
-					// currentCursor.style.left = `${cursorCoords.left - rootElemCoords.left - 1}px`;
-					// left = `${cursorCoords.left - rootElemCoords.left - 1}px`;
-				// } else {
-					// console.log('Uh oh no go');
-					// const cursorCoords2 = this.view.coordsAtPos(selection.$to.pos - 1);
-					// console.log(cursorCoords2);
-					// currentCursor.style.left = `${cursorCoords2.left - rootElemCoords.left - 1}px`;
-					// left = `${cursorCoords2.left - rootElemCoords.left - 1}px`;
-				// }
-				
-			// } catch(err) {
-			// 	console.log('Error in stuff', err);
-			// }
-				
-			// 	const elem = document.createElement('span');
-			// 	elem.className = `collab-cursor ${data.id}`;
 
-			// 	/* Add Vertical Bar */
-			// 	const innerChildBar = document.createElement('span');
-			// 	innerChildBar.className = 'inner-bar';
-			// 	elem.appendChild(innerChildBar);
 
-			// 	const style = document.createElement('style');
-			// 	elem.appendChild(style);
-			// 	let innerStyle = '';
+				// 	const elem = document.createElement('span');
+				// 	elem.className = `collab-cursor ${data.id}`;
 
-			// 	/* Add small circle at top of bar */
-			// 	const innerChildCircleSmall = document.createElement('span');
-			// 	innerChildCircleSmall.className = `inner-circle-small ${data.id}`;
-			// 	innerChildBar.appendChild(innerChildCircleSmall);
+				// 	/* Add Vertical Bar */
+				// 	const innerChildBar = document.createElement('span');
+				// 	innerChildBar.className = 'inner-bar';
+				// 	elem.appendChild(innerChildBar);
 
-			// 	/* Add wrapper for hover items at top of bar */
-			// 	const hoverItemsWrapper = document.createElement('span');
-			// 	hoverItemsWrapper.className = 'hover-wrapper';
-			// 	innerChildBar.appendChild(hoverItemsWrapper);
+				// 	const style = document.createElement('style');
+				// 	elem.appendChild(style);
+				// 	let innerStyle = '';
 
-			// 	/* Add Large Circle for hover */
-			// 	const innerChildCircleBig = document.createElement('span');
-			// 	innerChildCircleBig.className = 'inner-circle-big';
-			// 	hoverItemsWrapper.appendChild(innerChildCircleBig);
+				// 	/* Add small circle at top of bar */
+				// 	const innerChildCircleSmall = document.createElement('span');
+				// 	innerChildCircleSmall.className = `inner-circle-small ${data.id}`;
+				// 	innerChildBar.appendChild(innerChildCircleSmall);
 
-			// 	/* If Initials exist - add to hover items wrapper */
-			// 	if (data.initials) {
-			// 		const innerCircleInitials = document.createElement('span');
-			// 		innerCircleInitials.className = `initials ${data.id}`;
-			// 		innerStyle += `.initials.${data.id}::after { content: "${data.initials}"; } `;
-			// 		hoverItemsWrapper.appendChild(innerCircleInitials);
-			// 	}
-			// 	/* If Image exists - add to hover items wrapper */
-			// 	if (data.image) {
-			// 		const innerCircleImage = document.createElement('span');
-			// 		innerCircleImage.className = `image ${data.id}`;
-			// 		innerStyle += `.image.${data.id}::after { background-image: url('${data.image}'); } `;
-			// 		hoverItemsWrapper.appendChild(innerCircleImage);
-			// 	}
+				// 	/* Add wrapper for hover items at top of bar */
+				// 	const hoverItemsWrapper = document.createElement('span');
+				// 	hoverItemsWrapper.className = 'hover-wrapper';
+				// 	innerChildBar.appendChild(hoverItemsWrapper);
 
-			// 	/* If name exists - add to hover items wrapper */
-			// 	if (data.name) {
-			// 		const innerCircleName = document.createElement('span');
-			// 		innerCircleName.className = `name ${data.id}`;
-			// 		innerStyle += `.name.${data.id}::after { content: "${data.name}"; } `;
-			// 		if (data.cursorColor) {
-			// 			innerCircleName.style.backgroundColor = data.cursorColor;
-			// 		}
-			// 		hoverItemsWrapper.appendChild(innerCircleName);
-			// 	}
+				// 	/* Add Large Circle for hover */
+				// 	const innerChildCircleBig = document.createElement('span');
+				// 	innerChildCircleBig.className = 'inner-circle-big';
+				// 	hoverItemsWrapper.appendChild(innerChildCircleBig);
 
-			// 	/* If cursor color provided - override defaults */
-			// 	if (data.cursorColor) {
-			// 		innerChildBar.style.backgroundColor = data.cursorColor;
-			// 		innerChildCircleSmall.style.backgroundColor = data.cursorColor;
-			// 		innerChildCircleBig.style.backgroundColor = data.cursorColor;
-			// 		innerStyle += `.name.${data.id}::after { background-color: ${data.cursorColor} !important; } `;
-			// 	}
-			// 	style.innerHTML = innerStyle;
+				// 	/* If Initials exist - add to hover items wrapper */
+				// 	if (data.initials) {
+				// 		const innerCircleInitials = document.createElement('span');
+				// 		innerCircleInitials.className = `initials ${data.id}`;
+				// 		innerStyle += `.initials.${data.id}::after { content: "${data.initials}"; } `;
+				// 		hoverItemsWrapper.appendChild(innerCircleInitials);
+				// 	}
+				// 	/* If Image exists - add to hover items wrapper */
+				// 	if (data.image) {
+				// 		const innerCircleImage = document.createElement('span');
+				// 		innerCircleImage.className = `image ${data.id}`;
+				// 		innerStyle += `.image.${data.id}::after { background-image: url('${data.image}'); } `;
+				// 		hoverItemsWrapper.appendChild(innerCircleImage);
+				// 	}
+
+				// 	/* If name exists - add to hover items wrapper */
+				// 	if (data.name) {
+				// 		const innerCircleName = document.createElement('span');
+				// 		innerCircleName.className = `name ${data.id}`;
+				// 		innerStyle += `.name.${data.id}::after { content: "${data.name}"; } `;
+				// 		if (data.cursorColor) {
+				// 			innerCircleName.style.backgroundColor = data.cursorColor;
+				// 		}
+				// 		hoverItemsWrapper.appendChild(innerCircleName);
+				// 	}
+
+				// 	/* If cursor color provided - override defaults */
+				// 	if (data.cursorColor) {
+				// 		innerChildBar.style.backgroundColor = data.cursorColor;
+				// 		innerChildCircleSmall.style.backgroundColor = data.cursorColor;
+				// 		innerChildCircleBig.style.backgroundColor = data.cursorColor;
+				// 		innerStyle += `.name.${data.id}::after { background-color: ${data.cursorColor} !important; } `;
+				// 	}
+				// 	style.innerHTML = innerStyle;
 
 				/* This custom Decoration funkiness is because we don't want the cursor to */
 				/* be contenteditable="false". This will break spellcheck. So instead */
