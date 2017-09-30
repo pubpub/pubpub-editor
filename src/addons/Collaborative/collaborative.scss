@@ -11,6 +11,7 @@
 		transition: .2s .4s linear opacity, 0s .6s linear box-shadow;
 		font-family: -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica Neue", sans-serif;
 		color: white;
+		cursor: default;
 		&:hover {
 			opacity: 1.0;
 			transition: .2s 0s linear opacity, 0s 0s linear box-shadow;
@@ -63,7 +64,7 @@
 			user-select: none;
 			transform: scale(0, 1);
 			transform-origin: center left;
-			transition: .2s .4s ease-in transform;
+			transition: .2s .4s ease-in transform, 0s .6s linear box-shadow;
 		}
 	}
 }
