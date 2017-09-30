@@ -240,56 +240,6 @@ class FirebasePlugin extends Plugin {
 		if (!this.document) { return null; }
 		return DecorationSet.create(state.doc, Object.keys(this.document.selections).map((clientID)=> {
 			const selection = this.document.selections[clientID];
-			try {
-				console.log(selection);
-				console.log('cursor coords', this.view.coordsAtPos(selection.$to.pos));
-				const cursorCoords = this.view.coordsAtPos(selection.$to.pos);
-
-				console.log('string ', `cursor-container-${this.editorKey}`)
-				const rootElem = document.getElementById(`cursor-container-${this.editorKey}`);
-				console.log('rootElem is', rootElem);
-				if (!rootElem) { return null; }
-
-				const rootElemCoords = rootElem.getBoundingClientRect();
-
-				const existingCursor = document.getElementById('fake-thing');
-				const fake = document.createElement('span');
-				if (existingCursor) {
-					console.log('That cursor exists');
-					
-				} else {
-					
-					fake.id = 'fake-thing';
-					fake.className = 'fake-cursor';
-					rootElem.appendChild(fake);
-					// fake.style.top = cursorCoords.top - rootElemCoords.top;
-					// fake.style.left = cursorCoords.left - rootElemCoords.left;
-				}
-				const currentCursor = existingCursor || fake;
-				// console.log('!!', this.view.domAtPos(selection.$to.pos), this.view.domAtPos(selection.$to.pos).node.getBoundingClientRect());
-				console.log(cursorCoords, rootElemCoords);
-				console.log(cursorCoords.top - rootElemCoords.top, cursorCoords.left - rootElemCoords.left);
-				// currentCursor.style.top = `${cursorCoords.top - rootElemCoords.top - 20}px`;
-				const top = `${cursorCoords.top - rootElemCoords.top - 20}px`;
-				let left;
-				if (cursorCoords.left > (rootElemCoords.left + rootElemCoords.width - 20)) {
-					// currentCursor.style.left = `${cursorCoords.left - rootElemCoords.left - 1}px`;
-					left = `${cursorCoords.left - rootElemCoords.left - 1}px`;
-				} else {
-					console.log('Uh oh no go');
-					const cursorCoords2 = this.view.coordsAtPos(selection.$to.pos - 1);
-					console.log(cursorCoords2);
-					// currentCursor.style.left = `${cursorCoords2.left - rootElemCoords.left - 1}px`;
-					left = `${cursorCoords2.left - rootElemCoords.left - 1}px`;
-				}
-				currentCursor.style.transform = `translate3d(-25px, ${top}, 0)`;
-			} catch(err) {
-				console.log('Error in stuff', err);
-			}
-			
-			// currentCursor.style.left = '-10px';
-			
-
 			const data = selection.data || {};
 			if (!selection) {
 				return null;
@@ -300,6 +250,84 @@ class FirebasePlugin extends Plugin {
 				return null;
 			}
 			if (from === to) {
+				const toPos = selection.$to.pos;
+				if (!toPos) { return null; }
+				const cursorCoords = this.view.coordsAtPos(toPos);
+				const rootElem = document.getElementById(`cursor-container-${this.editorKey}`);
+				if (!rootElem) { return null; }
+				const rootElemCoords = rootElem.getBoundingClientRect();
+				const existingCursor = document.getElementById(`cursor-${this.editorKey}`);
+				const currentCursor = existingCursor || document.createElement('span');
+				
+				// console.log('rootElem is', rootElem);
+				
+				/* If no cursor yet - create it and its children */
+				if (!existingCursor) {
+					console.log('Creating cursor!');
+					currentCursor.id = `cursor-${this.editorKey}`;
+					currentCursor.className = 'left-cursor';
+					rootElem.appendChild(currentCursor);
+
+					if (data.cursorColor) {
+						currentCursor.style.backgroundColor = data.cursorColor;
+					}
+
+					if (data.image) {
+						const cursorImage = document.createElement('img');
+						cursorImage.className = `image ${data.id}`;
+						cursorImage.src = data.image;
+						currentCursor.appendChild(cursorImage);
+					}
+					if (data.initials) {
+						const cursorInitials = document.createElement('span');
+						cursorInitials.className = `initials ${data.id}`;
+						cursorInitials.textContent = data.initials
+						currentCursor.appendChild(cursorInitials);
+					}
+					if (data.name) {
+						const cursorName = document.createElement('span');
+						cursorName.className = `name ${data.id}`;
+						cursorName.textContent = data.name;
+						if (data.cursorColor) {
+							cursorName.style.backgroundColor = data.cursorColor;
+						}
+						currentCursor.appendChild(cursorName);
+					}
+				}
+
+
+				// } else {
+					
+				// 	fake.id = 'fake-thing';
+				// 	fake.className = 'fake-cursor';
+				// 	rootElem.appendChild(fake);
+				// 	// fake.style.top = cursorCoords.top - rootElemCoords.top;
+				// 	// fake.style.left = cursorCoords.left - rootElemCoords.left;
+				// }
+				
+				// console.log('!!', this.view.domAtPos(selection.$to.pos), this.view.domAtPos(selection.$to.pos).node.getBoundingClientRect());
+				// console.log(cursorCoords, rootElemCoords);
+				// console.log(cursorCoords.top - rootElemCoords.top, cursorCoords.left - rootElemCoords.left);
+				// currentCursor.style.top = `${cursorCoords.top - rootElemCoords.top - 20}px`;
+				const top = `${cursorCoords.top - rootElemCoords.top}px`;
+				currentCursor.style.transform = `translate3d(-30px, ${top}, 0)`;
+				console.log('Set to ', top);
+				// let left;
+				// if (cursorCoords.left > (rootElemCoords.left + rootElemCoords.width - 20)) {
+					// currentCursor.style.left = `${cursorCoords.left - rootElemCoords.left - 1}px`;
+					// left = `${cursorCoords.left - rootElemCoords.left - 1}px`;
+				// } else {
+					// console.log('Uh oh no go');
+					// const cursorCoords2 = this.view.coordsAtPos(selection.$to.pos - 1);
+					// console.log(cursorCoords2);
+					// currentCursor.style.left = `${cursorCoords2.left - rootElemCoords.left - 1}px`;
+					// left = `${cursorCoords2.left - rootElemCoords.left - 1}px`;
+				// }
+				
+			// } catch(err) {
+			// 	console.log('Error in stuff', err);
+			// }
+				
 			// 	const elem = document.createElement('span');
 			// 	elem.className = `collab-cursor ${data.id}`;
 
