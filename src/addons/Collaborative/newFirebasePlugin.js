@@ -275,7 +275,7 @@ class FirebasePlugin extends Plugin {
 						cursorImage.src = data.image;
 						currentCursor.appendChild(cursorImage);
 					}
-					if (data.initials) {
+					if (data.initials && !data.image) {
 						const cursorInitials = document.createElement('span');
 						cursorInitials.className = `initials ${data.id}`;
 						cursorInitials.textContent = data.initials
@@ -292,7 +292,7 @@ class FirebasePlugin extends Plugin {
 					}
 				}
 				const top = `${cursorCoords.top - rootElemCoords.top}px`;
-				currentCursor.style.transform = `translate3d(-30px, ${top}, 0)`;
+				currentCursor.style.transform = `translate3d(-25px, ${top}, 0)`;
 
 
 				// 	const elem = document.createElement('span');

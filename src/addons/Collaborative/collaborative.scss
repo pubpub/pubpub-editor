@@ -1,8 +1,8 @@
 .cursor-container {
 	.left-cursor {
 		display: block;
-		height: 24px;
-		width: 24px;
+		height: 20px;
+		width: 20px;
 		border-radius: 20px;
 		opacity: 0.35;
 		z-index: 1;
@@ -20,9 +20,9 @@
 			}
 		}
 		.image {
-			width: 20px;
-			height: 20px;
-			border-radius: 20px;
+			width: 16px;
+			height: 16px;
+			border-radius: 16px;
 			top: 2px;
 			left: 2px;
 			position: absolute;
@@ -31,8 +31,8 @@
 		.initials {
 			display: block;
 			position: absolute;
-			width: 24px;
-			height: 24px;
+			width: 20px;
+			height: 20px;
 			top:0;
 			left: 0px;
 			font-size: 12px;
@@ -46,14 +46,14 @@
 		.name {
 			position: absolute;
 			display: block;
-			padding: 2px 12px;
+			padding: 1px 12px;
 			border-radius: 2px;
 			background-color: #777;
 			font-size: 12px;
-			line-height: 16px;
+			line-height: 14px;
 			font-weight: 400;
 			bottom: 2px;
-			left: 18px;
+			left: 15px;
 			z-index: 1;
 			white-space: nowrap;
 			user-select: none;
