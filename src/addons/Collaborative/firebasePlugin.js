@@ -277,22 +277,23 @@ class FirebasePlugin extends Plugin {
 					currentCursor.className = 'left-cursor';
 					rootElem.appendChild(currentCursor);
 
-					if (data.cursorColor) {
-						currentCursor.style.backgroundColor = data.cursorColor;
-					}
-
 					if (data.image) {
 						const cursorImage = document.createElement('img');
 						cursorImage.className = `image ${data.id}`;
 						cursorImage.src = data.image;
 						currentCursor.appendChild(cursorImage);
 					}
-					if (data.initials && !data.image) {
-						const cursorInitials = document.createElement('span');
-						cursorInitials.className = `initials ${data.id}`;
-						cursorInitials.textContent = data.initials
-						currentCursor.appendChild(cursorInitials);
+
+					const cursorInitials = document.createElement('span');
+					cursorInitials.className = `initials ${data.id}`;
+					if (!data.image && data.initials) {
+						cursorInitials.textContent = data.initials;
 					}
+					if (data.cursorColor) {
+						cursorInitials.style.backgroundColor = data.cursorColor;
+					}
+					currentCursor.appendChild(cursorInitials);
+
 					if (data.name) {
 						const cursorName = document.createElement('span');
 						cursorName.className = `name ${data.id}`;
