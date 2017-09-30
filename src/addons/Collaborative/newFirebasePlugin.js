@@ -291,6 +291,7 @@ class FirebasePlugin extends Plugin {
 						currentCursor.appendChild(cursorName);
 					}
 				}
+
 				const top = `${cursorCoords.top - rootElemCoords.top}px`;
 				currentCursor.style.transform = `translate3d(-25px, ${top}, 0)`;
 

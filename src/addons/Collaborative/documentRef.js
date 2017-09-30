@@ -185,14 +185,30 @@ class DocumentRef {
 		const selfSelectionRef = selectionsRef.child(this.localClientId);
 		const compressed = compressSelectionJSON(selection.toJSON());
 		compressed.data = this.localClientData;
+		// compressed.data.lastActive has to be rounded to the nearest minute (or some larger value)
+		// If it is updated every millisecond, firebase will see it as constant changes
+		// And you'll get a loop of updates triggering millisecond updates.
+		// - The lastActive is updated anytime a client makes or receives changes.
+		// A client will be active even if they have a tab open and are 'watching'. 
+		const smoothingTimeFactor = 1000 * 60;
+		compressed.data.lastActive = Math.round(new Date().getTime() / smoothingTimeFactor) * smoothingTimeFactor;
 		return selfSelectionRef.set(compressed);
 	}
 
 	mapSelection = (transaction, editorState) => {
 		for (const clientId in this.selections) {
-			const originalClientData = this.selections[clientId].data;
-			this.selections[clientId] = this.selections[clientId].map(editorState.doc, transaction.mapping);
-			this.selections[clientId].data = originalClientData;
+			const originalClientData = this.selections[clientId].data || {};
+			const expirationTime = (1000 * 60 * 10); // 10 Minutes
+			if (!originalClientData.lastActive  || 
+				(originalClientData.lastActive + expirationTime) < new Date().getTime()
+			) {
+				const selectionsRef = this.ref.child('selections');
+				const clientSelectionRef = selectionsRef.child(clientId);
+				clientSelectionRef.remove();
+			} else {
+				this.selections[clientId] = this.selections[clientId].map(editorState.doc, transaction.mapping);
+				this.selections[clientId].data = originalClientData;
+			}
 		}
 	}
 
