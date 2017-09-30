@@ -238,15 +238,27 @@ class FirebasePlugin extends Plugin {
 
 	decorations = (state) => {
 		if (!this.document) { return null; }
-		return DecorationSet.create(state.doc, Object.keys(this.document.selections).map((clientID)=> {
-			const selection = this.document.selections[clientID];
+
+		/* Remove inactive cursor bubbles */
+		const selectionKeys = Object.keys(this.document.selections);
+		const existingElements = document.getElementsByClassName('left-cursor');
+		for (let index = 0; index < existingElements.length; index++) {
+			const domItemClientId = existingElements[index].id.replace('cursor-', '');
+			const itemIndex = selectionKeys.indexOf(domItemClientId);
+			if (itemIndex === -1) {
+				existingElements[index].remove();
+			}
+		}
+
+		return DecorationSet.create(state.doc, selectionKeys.map((clientId)=> {
+			const selection = this.document.selections[clientId];
 			const data = selection.data || {};
 			if (!selection) {
 				return null;
 			}
 			const { from, to } = selection;
 
-			if (clientID === this.localClientId) {
+			if (clientId === this.localClientId) {
 				return null;
 			}
 			if (from === to) {
@@ -256,12 +268,12 @@ class FirebasePlugin extends Plugin {
 				const rootElem = document.getElementById(`cursor-container-${this.editorKey}`);
 				if (!rootElem) { return null; }
 				const rootElemCoords = rootElem.getBoundingClientRect();
-				const existingCursor = document.getElementById(`cursor-${this.editorKey}`);
+				const existingCursor = document.getElementById(`cursor-${clientId}`);
 				const currentCursor = existingCursor || document.createElement('span');
 				
 				/* If no cursor yet - create it and its children */
 				if (!existingCursor) {
-					currentCursor.id = `cursor-${this.editorKey}`;
+					currentCursor.id = `cursor-${clientId}`;
 					currentCursor.className = 'left-cursor';
 					rootElem.appendChild(currentCursor);
 
