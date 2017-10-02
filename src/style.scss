@@ -6,3 +6,22 @@
 	top: 0px;
 	border-left: 1px solid black;
 }
+.prosemirror-placeholder {
+	opacity: 0.5;
+	width: 0;
+	display: inline-block;
+	overflow: visible;
+	white-space: nowrap;
+	position: absolute;
+	pointer-events: none;
+}
+.ProseMirror:focus {
+	outline: 0px;
+}
+
+/*Wierd bug with blueprint editable text empty on default*/
+.pt-editable-text:not(.pt-editable-editing) .pt-editable-content {
+  height: auto !important;
+}
+
+

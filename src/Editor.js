@@ -327,24 +327,6 @@ class Editor extends Component {
 	render() {
 		return (
 			<div style={{ position: 'relative' }} id={this.containerId}>
-				<style>{`
-					.prosemirror-placeholder {
-						opacity: 0.5;
-						width: 0;
-						display: inline-block;
-						overflow: visible;
-						white-space: nowrap;
-					}
-					.ProseMirror:focus {
-						outline: 0px;
-					}
-
-					/*Wierd bug with blueprint editable text empty on default*/
-					.pt-editable-text:not(.pt-editable-editing) .pt-editable-content {
-					  height: auto !important;
-					}
-
-				`}</style>
 				{this.state.view
 					? React.Children.map(this.props.children, (child) => {
 						if (!child) {

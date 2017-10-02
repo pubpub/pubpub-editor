@@ -26,7 +26,7 @@ function placeholderPlugin(text) {
 			decorations(state) {
 				const doc = state.doc;
 				if (doc.childCount === 0 || (doc.childCount === 1 && doc.firstChild.isTextblock && doc.firstChild.content.size === 0)) {
-					const placeHolderElem = document.createElement('span');
+					const placeHolderElem = document.createElement('p');
 					placeHolderElem.className = 'prosemirror-placeholder';
 					placeHolderElem.innerHTML = text;
 					return DecorationSet.create(doc, [Decoration.widget(doc.childCount, placeHolderElem)]);
@@ -42,11 +42,11 @@ function getBasePlugins(options) {
 		buildInputRules(options.schema),
 		keymap(buildKeymap(options.schema, options.mapKeys)),
 		keymap(baseKeymap),
-		gapCursor(),
 	];
 	if (!options.isReadOnly) { deps.push(SelectPlugin); }
 	if (options.placeholder) { deps.push(placeholderPlugin(options.placeholder)); }
 	if (options.history !== false) { deps.push(history()); }
+	deps.push(gapCursor());
 
 	return deps;
 }
