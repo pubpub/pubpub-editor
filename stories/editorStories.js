@@ -111,6 +111,9 @@ class ForkStory extends Component {
 storiesOf('Editor', module)
 .add('Default', () => (
 	<div style={editorWrapper} onClick={focusEditor}>
+		<style>{`
+			.pubpub-editor { font-family: serif; }	
+		`}</style>
 		<Editor onChange={onChange} ref={(ref)=> { editorRef = ref; }} placeholder={'Begin writing...'}>
 			<FormattingMenu />
 		</Editor>

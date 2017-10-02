@@ -54,11 +54,10 @@ class FormattingMenu extends Component {
 
 	onChange() {
 		const { view, containerId } = this.props;
-
 		const currentPos = view.state.selection.$to.pos;
+		if (currentPos === 0) { return null; }
 		const currentNode = view.state.doc.nodeAt(currentPos - 1);
 		const container = document.getElementById(containerId);
-
 		if (!view.state.selection.$cursor && currentNode && currentNode.text) {
 			const currentFromPos = view.state.selection.$from.pos;
 			const currentToPos = view.state.selection.$to.pos;

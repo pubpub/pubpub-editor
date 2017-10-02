@@ -2,6 +2,7 @@ import { baseKeymap } from 'prosemirror-commands';
 import { history } from 'prosemirror-history';
 import { keymap } from 'prosemirror-keymap';
 import { Plugin } from 'prosemirror-state';
+import { gapCursor } from 'prosemirror-gapcursor';
 import { DecorationSet, Decoration } from 'prosemirror-view';
 import { buildKeymap } from './keymap';
 import { buildInputRules } from './inputRules';
@@ -41,6 +42,7 @@ function getBasePlugins(options) {
 		buildInputRules(options.schema),
 		keymap(buildKeymap(options.schema, options.mapKeys)),
 		keymap(baseKeymap),
+		gapCursor(),
 	];
 	if (!options.isReadOnly) { deps.push(SelectPlugin); }
 	if (options.placeholder) { deps.push(placeholderPlugin(options.placeholder)); }

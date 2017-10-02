@@ -1,1 +1,8 @@
 // @import "~prosemirror-view/style/prosemirror.css";
+@import "~prosemirror-gapcursor/style/gapcursor.css";
+.ProseMirror-gapcursor:after {
+	width: 1px;
+	height: 1.2em;
+	top: 0px;
+	border-left: 1px solid black;
+}

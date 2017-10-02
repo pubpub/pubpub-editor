@@ -96,10 +96,13 @@ class Editor extends Component {
 	}
 
 	configurePlugins(schema) {
-
 		const pluginKeys = {};
 
-		let plugins = getBasePlugins({ schema, isReadOnly: this.props.isReadOnly });
+		let plugins = getBasePlugins({
+			schema,
+			isReadOnly: this.props.isReadOnly,
+			placeholder: this.props.placeholder
+		});
 
 		if (this.props.children) {
 			React.Children.forEach(this.props.children, (child) => {
