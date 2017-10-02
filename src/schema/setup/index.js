@@ -4,6 +4,7 @@ import { keymap } from 'prosemirror-keymap';
 import { Plugin } from 'prosemirror-state';
 import { DecorationSet, Decoration } from 'prosemirror-view';
 import { buildKeymap } from './keymap';
+import { buildInputRules } from './inputRules';
 import SelectPlugin from './selectPlugin';
 
 exports.buildKeymap = buildKeymap;
@@ -37,7 +38,7 @@ function placeholderPlugin(text) {
 
 function getBasePlugins(options) {
 	const deps = [
-		// inputRules({ rules: allInputRules.concat(buildInputRules(options.schema)) }),
+		buildInputRules(options.schema),
 		keymap(buildKeymap(options.schema, options.mapKeys)),
 		keymap(baseKeymap),
 	];

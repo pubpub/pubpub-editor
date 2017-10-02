@@ -95,8 +95,7 @@ class Editor extends Component {
 		return null;
 	}
 
-	configurePlugins() {
-		const schema = createSchema();
+	configurePlugins(schema) {
 
 		const pluginKeys = {};
 
