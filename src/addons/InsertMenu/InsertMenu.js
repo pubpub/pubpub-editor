@@ -74,50 +74,6 @@ class InsertMenu extends Component {
 						emptyLine: currentLine.length === 0,
 						substring: substring,
 					};
-
-					// if (sel.empty && canUse) {
-					// 	const currentNode = editorState.doc.nodeAt(currentPos.pos - 1);
-
-					// 	let isActive;
-					// 	let start;
-					// 	let end;
-					// 	if (currentNode && currentNode.text) {
-					// 		const currentLine = currentNode.text.replace(/\s/g, ' ');
-					// 		let parentOffset = currentPos.parentOffset;
-					// 		// sometimes the parent offset may not be describing the offset into the text node
-					// 		// if so, we need to correct for this.
-					// 		if (currentNode !== currentPos.parent) {
-					// 			const child = currentPos.parent.childAfter(currentPos.parentOffset - 1);
-					// 			if (child.node === currentNode) {
-					// 				parentOffset -= child.offset;
-					// 			}
-					// 		}
-					// 		const nextChIndex = parentOffset;
-					// 		const nextCh = currentLine.length > nextChIndex ? currentLine.charAt(nextChIndex) : ' ';
-					// 		const prevChars = currentLine.substring(0, parentOffset);
-					// 		const startIndex = prevChars.lastIndexOf(' ') + 1;
-					// 		const startLetter = currentLine.charAt(startIndex);
-					// 		isActive = startLetter === '/' && nextCh.charCodeAt(0) === 32;
-					// 		const substring = currentLine.substring(startIndex + 1, nextChIndex) || ' ';
-					// 		start = currentPos.pos - parentOffset + startIndex;
-					// 		end = currentPos.pos - parentOffset + startIndex + 1 + substring.length;
-					// 	}
-
-					// 	return {
-					// 		isActive: isActive,
-					// 		start: start,
-					// 		end: end,
-					// 		positionNumber: currentPos.pos,
-					// 		parentOffset: sel.$to.parentOffset,
-					// 		hasTop: true,
-					// 	};
-					// }
-
-					// return {
-					// 	isActive: false,
-					// 	positionNumber: currentPos.pos,
-					// 	hasTop: false,
-					// };
 				},
 			},
 			props: {

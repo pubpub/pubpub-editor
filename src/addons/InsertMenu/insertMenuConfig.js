@@ -23,6 +23,10 @@ export function getMenuItems(view) {
 			label: nodeSpec.insertMenu.label,
 			run: nodeSpec.insertMenu.onInsert.bind(null, view),
 		};
+	}).sort((foo, bar)=> {
+		if (foo.label < bar.title) { return -1; }
+		if (foo.label > bar.title) { return 1; }
+		return 0;
 	});
 
 	return menuItems;
