@@ -255,7 +255,14 @@ const nodes = {
 		toDOM() { return ['div', ['hr']]; },
 		toReact({ node, index, renderContent }) {
 			return <hr key={index} />;
-		}
+		},
+		insertMenu: {
+			label: 'Insert Horizontal Line',
+			icon: 'pt-icon-minus',
+			onInsert: (view) => {
+				view.dispatch(view.state.tr.replaceSelectionWith(view.state.schema.nodes.horizontal_rule.create()));
+			},
+		},
 	},
 
 	heading: {
@@ -386,21 +393,6 @@ const nodes = {
 			return <div className={'pagebreak'} key={index}></div>;
 		}
 	},
-
-	emoji: {
-		group: 'inline',
-		attrs: {
-			content: { default: '' },
-			markup: { default: '' },
-		},
-		toDOM: function(node) {
-			return ['span', node.attrs.content];
-		},
-		inline: true,
-		toReact({ node, index }) {
-			return <span key={index}>{node.attrs.content}</span>;
-		}
-	}
 
 };
 

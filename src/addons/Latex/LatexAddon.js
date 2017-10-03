@@ -30,7 +30,7 @@ class LatexAddon extends Component {
 					inline: true,
 					insertMenu: {
 						label: 'Insert Latex',
-						icon: 'pt-equation',
+						icon: 'pt-icon-function',
 						onInsert: (view) => {
 							const newNode = view.state.schema.nodes.equation.create({ content: '\\sum_ix^i' });
 							view.dispatch(view.state.tr.replaceSelectionWith(newNode));

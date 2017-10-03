@@ -134,7 +134,7 @@ storiesOf('Editor', module)
 ))
 .add('Images', () => (
 	<div style={{width: "80%", margin: "0 auto"}}>
-		<Editor onChange={onChange} initialContent={imageDoc}>
+		<Editor onChange={onChange} initialContent={imageDoc} placeholder={'Begin writing here...'}>
 			<FormattingMenu />
 			<InsertMenu />
 			<Latex />

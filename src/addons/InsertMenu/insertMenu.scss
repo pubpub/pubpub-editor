@@ -1,0 +1,18 @@
+.insert-menu {
+	position: absolute;
+	z-index: -2;
+	pointer-events: none;
+}
+.insert-popup {
+	position: absolute;
+	z-index: 1;
+	.pt-menu-item {
+		padding: 4px 6px;
+		&.pt-disabled {
+			cursor: default !important;
+		}
+		&::before, &::after {
+			color: #808080;
+		}
+	}
+}
