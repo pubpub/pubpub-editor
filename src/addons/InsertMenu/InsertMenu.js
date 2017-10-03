@@ -1,8 +1,9 @@
 import { Menu, MenuItem, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Plugin, PluginKey } from 'prosemirror-state';
 import getMenuItems, { canUseInsertMenu, insertEmbed, insertReference } from './insertMenuConfig';
-import PropTypes from 'prop-types';
+
 
 const insertMenuKey = new PluginKey('insert-menu');
 
@@ -20,13 +21,12 @@ const defaultProps = {
 	editorState: undefined,
 };
 
-
 class InsertMenu extends Component {
-	static getPlugins(props) {
+	static getPlugins() {
 		return [new Plugin({
 			key: insertMenuKey,
 			state: {
-				init(config) {
+				init() {
 					return {
 						isActive: false,
 						top: 0,
@@ -35,83 +35,93 @@ class InsertMenu extends Component {
 					};
 				},
 				apply(transaction, state, prevEditorState, editorState) {
-					// const { view, containerId } = this.props;
-
-					// const container = document.getElementById(props.containerId);
 					const canUse = canUseInsertMenu(editorState);
 					const sel = editorState.selection;
 					const currentPos = sel.$to;
 
-					if (sel.empty && canUse) {
-						const currentNode = editorState.doc.nodeAt(currentPos.pos - 1);
-
-						let isActive;
-						let start;
-						let end;
-						if (currentNode && currentNode.text) {
-							const currentLine = currentNode.text.replace(/\s/g, ' ');
-							let parentOffset = currentPos.parentOffset;
-							// sometimes the parent offset may not be describing the offset into the text node
-							// if so, we need to correct for this.
-							if (currentNode !== currentPos.parent) {
-								const child = currentPos.parent.childAfter(currentPos.parentOffset - 1);
-								if (child.node === currentNode) {
-									parentOffset -= child.offset;
-								}
-							}
-							const nextChIndex = parentOffset;
-							const nextCh = currentLine.length > nextChIndex ? currentLine.charAt(nextChIndex) : ' ';
-							const prevChars = currentLine.substring(0, parentOffset);
-							const startIndex = prevChars.lastIndexOf(' ') + 1;
-							const startLetter = currentLine.charAt(startIndex);
-							isActive = startLetter === '/' && nextCh.charCodeAt(0) === 32;
-							const substring = currentLine.substring(startIndex + 1, nextChIndex) || ' ';
-							start = currentPos.pos - parentOffset + startIndex;
-							end = currentPos.pos - parentOffset + startIndex + 1 + substring.length;
+					const currentNode = editorState.doc.nodeAt(currentPos.pos - 1);
+					const text = currentNode && currentNode.text ? currentNode.text : '';
+					const currentLine = text.replace(/\s/g, ' ');
+					let parentOffset = currentPos.parentOffset;
+					// sometimes the parent offset may not be describing the offset into the text node
+					// if so, we need to correct for this.
+					if (currentNode !== currentPos.parent) {
+						const child = currentPos.parent.childAfter(currentPos.parentOffset - 1);
+						if (child.node === currentNode) {
+							parentOffset -= child.offset;
 						}
-
-						return {
-							isActive: isActive,
-							start: start,
-							end: end,
-							positionNumber: currentPos.pos,
-							parentOffset: sel.$to.parentOffset,
-							hasTop: true,
-						};
 					}
+					const nextChIndex = parentOffset;
+					const nextCh = currentLine.length > nextChIndex ? currentLine.charAt(nextChIndex) : ' ';
+					const prevChars = currentLine.substring(0, parentOffset);
+					const startIndex = prevChars.lastIndexOf(' ') + 1;
+					const startLetter = currentLine.charAt(startIndex);
+					const charsAreCorrect = startLetter === '/' && nextCh.charCodeAt(0) === 32;
+					const substring = currentLine.substring(startIndex + 1, nextChIndex) || ' ';
+					const start = currentPos.pos - parentOffset + startIndex;
+					const end = currentPos.pos - parentOffset + startIndex + 1 + substring.length;
+
 
 					return {
-						isActive: false,
+						isActive: sel.empty && canUse && charsAreCorrect,
+						start: start,
+						end: end,
 						positionNumber: currentPos.pos,
-						hasTop: false,
+						parentOffset: sel.$to.parentOffset,
 					};
 
+					// if (sel.empty && canUse) {
+					// 	const currentNode = editorState.doc.nodeAt(currentPos.pos - 1);
 
+					// 	let isActive;
+					// 	let start;
+					// 	let end;
+					// 	if (currentNode && currentNode.text) {
+					// 		const currentLine = currentNode.text.replace(/\s/g, ' ');
+					// 		let parentOffset = currentPos.parentOffset;
+					// 		// sometimes the parent offset may not be describing the offset into the text node
+					// 		// if so, we need to correct for this.
+					// 		if (currentNode !== currentPos.parent) {
+					// 			const child = currentPos.parent.childAfter(currentPos.parentOffset - 1);
+					// 			if (child.node === currentNode) {
+					// 				parentOffset -= child.offset;
+					// 			}
+					// 		}
+					// 		const nextChIndex = parentOffset;
+					// 		const nextCh = currentLine.length > nextChIndex ? currentLine.charAt(nextChIndex) : ' ';
+					// 		const prevChars = currentLine.substring(0, parentOffset);
+					// 		const startIndex = prevChars.lastIndexOf(' ') + 1;
+					// 		const startLetter = currentLine.charAt(startIndex);
+					// 		isActive = startLetter === '/' && nextCh.charCodeAt(0) === 32;
+					// 		const substring = currentLine.substring(startIndex + 1, nextChIndex) || ' ';
+					// 		start = currentPos.pos - parentOffset + startIndex;
+					// 		end = currentPos.pos - parentOffset + startIndex + 1 + substring.length;
+					// 	}
 
+					// 	return {
+					// 		isActive: isActive,
+					// 		start: start,
+					// 		end: end,
+					// 		positionNumber: currentPos.pos,
+					// 		parentOffset: sel.$to.parentOffset,
+					// 		hasTop: true,
+					// 	};
+					// }
 
-
-						// this.setState({
-						// 	top: view.coordsAtPos(currentPos.pos).top - container.getBoundingClientRect().top,
-						// 	left: view.coordsAtPos(currentPos.pos).left - container.getBoundingClientRect().left,
-						// 	opacity: sel.$to.parentOffset === 0 ? 0.5 : 0.1,
 					// return {
 					// 	isActive: false,
-					// 	top: 0,
+					// 	positionNumber: currentPos.pos,
+					// 	hasTop: false,
 					// };
 				},
 			},
 			props: {
 				handleDOMEvents: {
 					keydown: (view, evt)=> {
-
 						const state = view.state['insert-menu$'];
-						console.log('Got a formatting key', evt.type);
 						if (state.isActive && evt.type === 'keydown' && (evt.key === 'ArrowUp' || evt.key === 'ArrowDown' || evt.key === 'Enter')) {
-							// const pluginState = getPluginState('mentions', view.state);
-							// if (pluginState.start !== null) {
 							evt.preventDefault();
 							return true;
-							// }
 						}
 						return false;
 					},
@@ -128,8 +138,9 @@ class InsertMenu extends Component {
 			top: null,
 			left: null,
 			expanded: false,
-
 		};
+		this.onChange = this.onChange.bind(this);
+		this.replaceContent = this.replaceContent.bind(this);
 	}
 	componentWillReceiveProps(nextProps) {
 		if (this.props.editorState !== nextProps.editorState) {
@@ -137,24 +148,18 @@ class InsertMenu extends Component {
 		}
 	}
 
-	onChange = () => {
-		const { view, containerId } = this.props;
-
-		console.log('In onchange', insertMenuKey.getState(view.state));
-		const container = document.getElementById(containerId);
-		// const canUse = canUseInsertMenu(view);
-		// const sel = view.state.selection;
-		// const currentPos = sel.$to;
-
-		
-		const viewState = insertMenuKey.getState(view.state);
+	onChange() {
+		const container = document.getElementById(this.props.containerId);
+		const viewState = insertMenuKey.getState(this.props.view.state);
+		const coordsAtPos = this.props.view.coordsAtPos(viewState.positionNumber);
+		const boundRect = container.getBoundingClientRect();
 		this.setState({
 			isActive: viewState.isActive,
 			start: viewState.start,
 			end: viewState.end,
 			opacity: viewState.parentOffset === 0 ? 0.5 : 0.1,
-			top: view.coordsAtPos(viewState.positionNumber).top - container.getBoundingClientRect().top,
-			left: view.coordsAtPos(viewState.positionNumber).left - container.getBoundingClientRect().left,
+			top: coordsAtPos.top - boundRect.top,
+			left: coordsAtPos.left - boundRect.left,
 		});
 
 
@@ -222,69 +227,69 @@ class InsertMenu extends Component {
 		// }
 	}
 
-	openDialog = (dialogType, callback) => {
-		this.setState({
-			openDialog: dialogType,
-			callback: callback
-		});
-	}
+	// openDialog = (dialogType, callback) => {
+	// 	this.setState({
+	// 		openDialog: dialogType,
+	// 		callback: callback
+	// 	});
+	// }
 
-	closeDialog = () => {
-		this.setState({
-			openDialog: undefined,
-			callback: undefined,
-		});
-	}
+	// closeDialog = () => {
+	// 	this.setState({
+	// 		openDialog: undefined,
+	// 		callback: undefined,
+	// 	});
+	// }
 
-	onFileSelect = (evt) => {
-		// Need to upload file
-		// Need to add new file object to file list
-		// Need to insert file content into editor
-		const file = evt.target.files[0];
-		evt.target.value = null;
-		this.props.handleFileUpload(file, (filename, url)=>{
-			// insertEmbed(filename);
-			this.state.callback(filename, url); // This shouldn't use the callback - it should import the function rom insertMenu and call it.
+	// onFileSelect = (evt) => {
+	// 	// Need to upload file
+	// 	// Need to add new file object to file list
+	// 	// Need to insert file content into editor
+	// 	const file = evt.target.files[0];
+	// 	evt.target.value = null;
+	// 	this.props.handleFileUpload(file, (filename, url)=>{
+	// 		// insertEmbed(filename);
+	// 		this.state.callback(filename, url); // This shouldn't use the callback - it should import the function rom insertMenu and call it.
 
-			this.setState({
-				openDialog: undefined,
-				callback: undefined,
-			});
-		});
-	}
+	// 		this.setState({
+	// 			openDialog: undefined,
+	// 			callback: undefined,
+	// 		});
+	// 	});
+	// }
 
-	onReferenceAdd = (item) => {
-		// Need to update or create bibtex file
-		// Need to make sure that updated file is sent to editor props
-		// Need to call inserReference function
+	// onReferenceAdd = (item) => {
+	// 	// Need to update or create bibtex file
+	// 	// Need to make sure that updated file is sent to editor props
+	// 	// Need to call inserReference function
 
-		const existingReference = this.props.allReferences.find((reference) => {
-			if (reference.id === item.id) {
-				return true;
-			}
-			return false;
-		});
+	// 	const existingReference = this.props.allReferences.find((reference) => {
+	// 		if (reference.id === item.id) {
+	// 			return true;
+	// 		}
+	// 		return false;
+	// 	});
 
 
-		if (existingReference) {
-			this.state.callback(item);
-			this.setState({
-				openDialog: undefined,
-				callback: undefined,
-			});
-			return;
-		}
+	// 	if (existingReference) {
+	// 		this.state.callback(item);
+	// 		this.setState({
+	// 			openDialog: undefined,
+	// 			callback: undefined,
+	// 		});
+	// 		return;
+	// 	}
 
-		this.props.handleReferenceAdd(item, (itemToAdd)=> {
-			this.setState({
-				openDialog: undefined,
-				callback: undefined,
-			});
-			this.state.callback(itemToAdd);
-		});
+	// 	this.props.handleReferenceAdd(item, (itemToAdd)=> {
+	// 		this.setState({
+	// 			openDialog: undefined,
+	// 			callback: undefined,
+	// 		});
+	// 		this.state.callback(itemToAdd);
+	// 	});
 
-	}
-	replaceContent = ()=> {
+	// }
+	replaceContent() {
 		const transaction = this.props.view.state.tr.replaceRangeWith(this.state.start, this.state.end, 'yo');
 		return this.props.view.dispatch(transaction);
 	}
@@ -333,6 +338,8 @@ class InsertMenu extends Component {
 
 }
 
+InsertMenu.propTypes = propTypes;
+InsertMenu.defaultProps = defaultProps;
 export default InsertMenu;
 
 styles = {
