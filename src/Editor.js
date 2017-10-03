@@ -118,7 +118,7 @@ class Editor extends Component {
 				}
 			});
 		}
-
+		console.log(plugins, pluginKeys);
 		return { plugins, pluginKeys };
 	}
 

@@ -59,8 +59,7 @@ function insertEmbed(view, filename, url) {
 	view.dispatch(transaction);
 }
 
-function canUseInsertMenu(view) {
-	const state = view.state;
+function canUseInsertMenu(state) {
 	const nodeType = state.schema.nodes.paragraph;
 	const attrs = {};
 	let $from = state.selection.$from
