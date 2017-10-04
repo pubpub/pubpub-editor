@@ -96,13 +96,12 @@ class FormattingMenu extends Component {
 
 	render() {
 		const menuItems = getMenuItems(this.props.view);
-
 		const width = 315;
 		const wrapperStyle = {
 			display: this.state.top ? 'block' : 'none',
-			top: this.state.top - 40,
+			top: Math.max(this.state.top - 40, 0),
 			width: `${width}px`,
-			left: Math.max(this.state.left - (width / 2), -50),
+			left: Math.max(this.state.left - (width / 2), 0),
 		};
 
 		if (this.state.input === 'text') {

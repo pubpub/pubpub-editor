@@ -35,7 +35,7 @@ class ReactViewWrapper extends Component {
 			this.props.forceSelection();
 		}
 		/* I commented this out because file inputs werent' working. */
-		/* If we get wonder behavior elsewhere, we can revisit */
+		/* If we get weird behavior elsewhere, we can revisit */
 		// evt.preventDefault();
 		evt.stopPropagation();
 	}
