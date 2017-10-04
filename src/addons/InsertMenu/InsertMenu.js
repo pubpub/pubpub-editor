@@ -196,7 +196,7 @@ class InsertMenu extends Component {
 
 		return (
 			<div className={'insert-menu'} style={menuStyle}>
-				<span style={helperStyle} className={'insert-helper'}>Type / to insert...</span>
+				<p style={helperStyle} className={'insert-helper'}>Type / to insert...</p>
 			</div>
 		);
 	}

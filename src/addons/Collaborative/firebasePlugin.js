@@ -122,9 +122,12 @@ class FirebasePlugin extends Plugin {
 		if (meta.addToHistory) {
 			delete meta.addToHistory;
 		}
-		if (meta.history$) {
-			delete meta.history$;
-		}
+		/* Don't send any keys with '$' in it to firebase */
+		Object.keys(meta).forEach((key)=> {
+			if (key.indexOf('$') > -1) {
+				delete meta[key];
+			}
+		});
 
 		/*
 		const trackPlugin = getPlugin('track', editorView.state);
@@ -264,13 +267,19 @@ class FirebasePlugin extends Plugin {
 			if (from === to) {
 				const toPos = selection.$to.pos;
 				if (!toPos) { return null; }
-				const cursorCoords = this.view.coordsAtPos(toPos);
+				let cursorCoords;
+				try {
+					cursorCoords = this.view.coordsAtPos(toPos);
+				} catch(err) {
+					return null;
+				}
+
 				const rootElem = document.getElementById(`cursor-container-${this.editorKey}`);
 				if (!rootElem) { return null; }
 				const rootElemCoords = rootElem.getBoundingClientRect();
 				const existingCursor = document.getElementById(`cursor-${clientId}`);
 				const currentCursor = existingCursor || document.createElement('span');
-				
+
 				/* If no cursor yet - create it and its children */
 				if (!existingCursor) {
 					currentCursor.id = `cursor-${clientId}`;

@@ -199,7 +199,7 @@ class DocumentRef {
 		for (const clientId in this.selections) {
 			const originalClientData = this.selections[clientId].data || {};
 			const expirationTime = (1000 * 60 * 10); // 10 Minutes
-			if (!originalClientData.lastActive  || 
+			if (!originalClientData.lastActive  ||
 				(originalClientData.lastActive + expirationTime) < new Date().getTime()
 			) {
 				const selectionsRef = this.ref.child('selections');

@@ -7,10 +7,10 @@ require('./imageAddon.scss');
 const propTypes = {
 	// node: PropTypes.object,
 	// view: PropTypes.object,
-	caption: PropTypes.string,
+	caption: PropTypes.string.isRequired,
 	url: PropTypes.string,
-	align: PropTypes.oneOf(['full', 'left', 'right', 'center']),
-	size: PropTypes.number, // Number as percentage width
+	align: PropTypes.oneOf(['full', 'left', 'right', 'center']).isRequired,
+	size: PropTypes.number.isRequired, // Number as percentage width
 	isSelected: PropTypes.bool,
 	onFileUpload: PropTypes.func.isRequired,
 	updateAttrs: PropTypes.func.isRequired,
@@ -18,10 +18,7 @@ const propTypes = {
 
 const defaultProps = {
 	node: {},
-	caption: '',
 	url: '',
-	align: 'center',
-	size: 50,
 	isSelected: false,
 	view: {},
 };
@@ -47,7 +44,6 @@ class ImageEditable extends Component {
 	}
 
 	onDragMouseDown(evt) {
-		console.log('noway');
 		const handle = evt.target.className.replace('drag-handle ', '');
 		this.setState({ isResizing: handle });
 		document.addEventListener('mousemove', this.onMouseMove);

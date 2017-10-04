@@ -29,7 +29,7 @@ class ReactViewWrapper extends Component {
 		this.setState({ isSelected });
 	}
 
-	forceSelection = () => {
+	forceSelection = (evt) => {
 		if (!this.state.isSelected) {
 			this.setState({ isSelected: true });
 			this.props.forceSelection();
@@ -37,6 +37,7 @@ class ReactViewWrapper extends Component {
 		/* I commented this out because file inputs werent' working. */
 		/* If we get wonder behavior elsewhere, we can revisit */
 		// evt.preventDefault();
+		evt.stopPropagation();
 	}
 
 	focusAndSelect = () => {

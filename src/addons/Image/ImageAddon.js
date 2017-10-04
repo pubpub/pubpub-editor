@@ -24,10 +24,10 @@ class ImageAddon extends Component {
 					atom: true,
 					// content: 'inline*',
 					attrs: {
-						url: { default: undefined },
-						size: { default: undefined }, // number as percentage
-						align: { default: undefined },
-						caption: { default: undefined },
+						url: { default: null },
+						size: { default: 50 }, // number as percentage
+						align: { default: 'center' },
+						caption: { default: '' },
 					},
 					parseDOM: [{ tag: 'img[src]' }],
 					inline: false,
