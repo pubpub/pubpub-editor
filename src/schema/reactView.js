@@ -1,6 +1,5 @@
 /* eslint-disable react/no-render-return-value */
 /* eslint-disable class-methods-use-this */
-
 import { NodeSelection } from 'prosemirror-state';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -24,10 +23,9 @@ class ReactView {
 		this.getPos = getPos;
 		this.renderComponent = (!isReadOnly) ? nodeSpec.toEditable : nodeSpec.toStatic;
 
-		const domChild = (this.block) ? document.createElement('div') : document.createElement('span');
-		const reactElement = this.renderElement(domChild);
+		const domChild = this.block ? document.createElement('div') : document.createElement('span');
+		this.renderElement(domChild);
 		this.dom = domChild;
-		this.reactElement = reactElement;
 	}
 
 	updateAttrs(nodeAttrs) {
@@ -50,8 +48,9 @@ class ReactView {
 
 	// Needs to be override by child classes
 	renderElement(domChild) {
-		return ReactDOM.render(
+		ReactDOM.render(
 			<ReactViewWrapper
+				ref={(elem)=> { this.reactElement = elem; }}
 				node={this.node}
 				view={this.view}
 				decorations={this.decorations}
@@ -62,7 +61,9 @@ class ReactView {
 				renderComponent={this.renderComponent}
 				getPos={this.getPos}
 				isReadOnly={this.isReadOnly}
-			/>, domChild);
+			/>,
+			domChild
+		);
 	}
 
 	update(node, decorations) {
@@ -72,7 +73,7 @@ class ReactView {
 		}
 		this.node = node;
 		this.decorations = decorations;
-		this.reactElement = this.renderElement(this.dom);
+		this.renderElement(this.dom);
 		return true;
 	}
 

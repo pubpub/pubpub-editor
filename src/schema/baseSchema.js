@@ -232,12 +232,12 @@ const nodes = {
 	// 	}
 	// },
 
-	caption: {
-		content: 'inline*',
-		group: 'block',
-		parseDOM: [{ tag: 'p' }],
-		toDOM() { return ['p', 0]; }
-	},
+	// caption: {
+	// 	content: 'inline*',
+	// 	group: 'block',
+	// 	parseDOM: [{ tag: 'p' }],
+	// 	toDOM() { return ['p', 0]; }
+	// },
 
 	blockquote: {
 		content: 'block+',
@@ -376,7 +376,7 @@ const nodes = {
 		parseDOM: [{ tag: 'br' }],
 		toDOM() { return ['br']; },
 		toReact({ node, index }) {
-			return <br key={index}/>;
+			return <br key={index} />;
 		}
 	},
 
@@ -386,13 +386,13 @@ const nodes = {
 		toDOM() { return ['span']; }
 	},
 
-	page_break: {
-		group: 'block',
-		toDOM(node) { return ['div', { class: 'pagebreak' }, 'pagebreak']; },
-		toReact({ node, index }) {
-			return <div className={'pagebreak'} key={index}></div>;
-		}
-	},
+	// page_break: {
+	// 	group: 'block',
+	// 	toDOM(node) { return ['div', { class: 'pagebreak' }, 'pagebreak']; },
+	// 	toReact({ node, index }) {
+	// 		return <div className={'pagebreak'} key={index}></div>;
+	// 	}
+	// },
 
 };
 

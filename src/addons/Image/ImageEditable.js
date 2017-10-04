@@ -1,282 +1,207 @@
-import { EditableText, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
-import { Fragment, Slice } from 'prosemirror-model';
 import React, { Component } from 'react';
-
-import ImageFileUploader from './ImageFileUploader';
-import ImageMenu from './ImageMenu';
-import { NodeSelection } from 'prosemirror-state';
 import PropTypes from 'prop-types';
-import ReactDOM from 'react-dom';
-import Resizable from 're-resizable';
+import { AnchorButton } from '@blueprintjs/core';
 
-let styles = {};
+require('./imageAddon.scss');
 
 const propTypes = {
+	// node: PropTypes.object,
+	// view: PropTypes.object,
+	caption: PropTypes.string,
 	url: PropTypes.string,
-	align: PropTypes.oneOf(['inline', 'full', 'left', 'right', 'inline-word', 'max']),
-	size: PropTypes.string,
-	updateAttrs: PropTypes.func,
+	align: PropTypes.oneOf(['full', 'left', 'right', 'center']),
+	size: PropTypes.number, // Number as percentage width
+	isSelected: PropTypes.bool,
+	onFileUpload: PropTypes.func.isRequired,
+	updateAttrs: PropTypes.func.isRequired,
+};
+
+const defaultProps = {
+	node: {},
+	caption: '',
+	url: '',
+	align: 'center',
+	size: 50,
+	isSelected: false,
+	view: {},
 };
 
 class ImageEditable extends Component {
-
-
 	constructor(props) {
 		super(props);
 		this.state = {
-			openDialog: false
+			openDialog: false,
+			isResizing: false,
+			uploading: false,
+			imageBlob: null,
 		};
+		this.randKey = Math.round(Math.random() * 99999);
+		this.onDragMouseDown = this.onDragMouseDown.bind(this);
+		this.onDragMouseUp = this.onDragMouseUp.bind(this);
+		this.onMouseMove = this.onMouseMove.bind(this);
+		this.updateCaption = this.updateCaption.bind(this);
+		this.updateAlign = this.updateAlign.bind(this);
+		this.handleImageSelect = this.handleImageSelect.bind(this);
+		this.setBlob = this.setBlob.bind(this);
+		this.onUploadFinish = this.onUploadFinish.bind(this);
 	}
 
-	getSize = () => {
-		const elem = ReactDOM.findDOMNode(this.refs.menupointer);
-		return {
-			width: elem.clientWidth,
-			left: elem.offsetLeft,
-			top: elem.offsetTop,
-		};
+	onDragMouseDown(evt) {
+		console.log('noway');
+		const handle = evt.target.className.replace('drag-handle ', '');
+		this.setState({ isResizing: handle });
+		document.addEventListener('mousemove', this.onMouseMove);
+		document.addEventListener('mouseup', this.onDragMouseUp);
 	}
-
-	setCiteCount = (citeCount) => {
-		this.setState({citeCount});
-		this.forceUpdate();
+	onDragMouseUp() {
+		this.setState({ isResizing: false });
+		document.removeEventListener('mousemove', this.onMouseMove);
+		document.removeEventListener('mouseup', this.onDragMouseUp);
 	}
-
-	updateAttrs = (newAttrs) => {
-		this.props.updateAttrs(newAttrs);
+	onMouseMove(evt) {
+		const imgBounding = this.imgElem.getBoundingClientRect();
+		const delta = this.state.isResizing === 'left'
+			? imgBounding.left - evt.clientX
+			: evt.clientX - imgBounding.right;
+		const maxWidth = this.rootElem.clientWidth;
+		const currentWidth = imgBounding.width;
+		const nextSize = Math.min(
+			Math.max(
+				Math.round(((currentWidth + delta) / maxWidth) * 100),
+				20
+			),
+			100
+		);
+		this.props.updateAttrs({ size: nextSize });
 	}
-
-	updateCaption = (val) => {
-		if (!val) {
-			this.props.removeCaption();
-			return;
-		}
-		this.props.updateCaption(val);
+	updateCaption(evt) {
+		this.props.updateAttrs({ caption: evt.target.value });
 	}
-
-	forceSelection = (evt) => {
-		if (!this.state.selected) {
-			this.props.forceSelection();
-		}
-		evt.preventDefault();
+	updateAlign(val) {
+		this.props.updateAttrs({ align: val });
 	}
-
-	createCaption = () => {
-		// Need to check if caption already exists?
-		const view = this.props.view;
-		const from = this.props.getPos() + 1;
-		const textnode = view.state.schema.text('Enter caption');
-		const captionNode = view.state.schema.nodes.caption.create({}, textnode);
-		const transaction = view.state.tr.insert(from, captionNode);
-		view.dispatch(transaction);
-	}
-
-	removeCaption = () => {
-		const view = this.props.view;
-
-		let textNode = this.getTextNode();
-		if (!textNode) {
-			console.log('could not find textNode');
-			return;
-		}
-		const from = textNode.from - 1;
-		const to = textNode.to;
-		const checkSlice = view.state.doc.slice(from, to);
-		const transaction = view.state.tr.deleteRange(from, to);
-		view.dispatch(transaction);
-	}
-
-	getTextNode = () => {
-		// let textNode = findNodesWithIndex(this.node, 'text');
-		const contentNode = this.props.node.content;
-		const hasCaption = (contentNode && contentNode.content && contentNode.content.length > 0);
-		const textNode = (hasCaption) ? contentNode.content[0].content.content[0] : null;
-		if (!textNode) {
-			console.log('could not find textnode', this.node);
-			return null;
-		}
-		const from = this.props.getPos() + 3;
-		const to = from + textNode.nodeSize;
-		return {from, to};
-	}
-
-	updateCaption = (txt) => {
-		const view = this.props.view;
-		let textNode = this.getTextNode();
-
-		if (!textNode) {
-			console.log('could not find textNode');
-			return;
-		}
-
-		const slice = new Slice(Fragment.from(view.state.schema.text(txt)), 0, 0);
-		const transaction = view.state.tr.replaceRange(textNode.from, textNode.to, slice);
-		view.dispatch(transaction);
-	}
-
-	openFileDialog = () => {
-		this.setState({ openDialog: true });
-	}
-
-	closeFileDialog = () => {
-		this.setState({ openDialog: false });
-	}
-
-	onFileSelect = (evt) => {
-		// Need to upload file
-		// Need to add new file object to file list
-		// Need to insert file content into editor
-		const file = evt.target.files[0];
-		evt.target.value = null;
-		this.props.handleFileUpload(file, ()=> {}, ({ filename, url })=>{
-			this.props.updateAttrs({ url });
+	handleImageSelect(evt) {
+		if (evt.target.files.length) {
+			this.props.onFileUpload(evt.target.files[0], ()=>{}, this.onUploadFinish, 0);
 			this.setState({
-				openDialog: false,
-				callback: undefined,
+				uploading: true,
 			});
-		});
+			this.setBlob(evt.target.files[0]);
+		}
 	}
-
+	setBlob(image) {
+		const reader = new FileReader();
+		reader.onload = (imageBlob)=> {
+			this.setState({ imageBlob: imageBlob.target.result });
+		};
+		reader.readAsDataURL(image);
+	}
+	onUploadFinish(evt, index, type, filename) {
+		this.setState({ uploading: false });
+		this.props.updateAttrs({ url: `https://assets.pubpub.org/${filename}` });
+	}
 	render() {
-		const { size, align, selected, url, caption } = this.props;
+		const alignOptions = [
+			{ key: 'left', icon: 'pt-icon-align-left' },
+			{ key: 'center', icon: 'pt-icon-align-center' },
+			{ key: 'right', icon: 'pt-icon-align-right' },
+			{ key: 'full', icon: 'pt-icon-vertical-distribution' },
+		];
+		const figFloat = this.props.align === 'left' || this.props.align === 'right' ? this.props.align : 'none';
+		const figMargin = this.props.align === 'left' || this.props.align === 'right' ? '10px' : '0em auto 1em';
+		const figWidth = this.props.align === 'full' ? '100%' : `${this.props.size}%`;
+		const figStyle = {
+			width: figWidth,
+			margin: figMargin,
+			float: figFloat,
+		};
 
-		const popoverContent = (<ImageMenu align={align} createCaption={this.createCaption} removeCaption={this.removeCaption} embedAttrs={this.props} updateParams={this.updateAttrs}/>);
-
-		const maxImageWidth = document.querySelector(".pubpub-editor").clientWidth;
-		// const maxImageWidth = 600;
 		return (
-			<div
-				draggable="false"
-				className="pub-embed"
-				ref="embedroot"
-				>
-
-				<ImageFileUploader
-					isOpen={!!this.state.openDialog}
-					onClose={this.closeFileDialog}
-					onFileSelect={this.onFileSelect} />
-
-				<figure style={styles.figure({size, align, selected: false})}>
-
-					<div style={styles.row({size, align})}>
-						<Popover content={popoverContent}
-							interactionKind={PopoverInteractionKind.CLICK}
-							popoverClassName="pt-popover-content-sizing pt-minimal pt-dark"
-							position={Position.BOTTOM}
-							autoFocus={false}
-							popoverWillOpen={(evt) => {
-								this.refs.embedroot.focus();
-							}}
-							useSmartPositioning={false}>
-
-							{ (!!url) ?
-								(align !== 'max') ?
-								<Resizable
-									height="auto"
-									ref={c => { this.resizable = c; }}
-									maxWidth={maxImageWidth}
-									style={styles.outline({selected})}
-									minWidth={(align === 'max') ? '100%' : undefined}
-									onResizeStop={(event, direction, ref, delta) => {
-										const docWidth = document.querySelector(".pubpub-editor").clientWidth;
-										const clientWidth = this.resizable.state.width;
-										const ratio = ((clientWidth / docWidth ) * 100).toFixed(1);
-										this.props.updateAttrs({size: ratio + '%' });
-									}}>
-									<img onDoubleClick={this.openFileDialog} style={styles.image({selected})} src={url}/>
-								</Resizable>
-								:
-								<img onDoubleClick={this.openFileDialog} style={styles.image({selected})}  src={url}/>
-								:
-								<div onDoubleClick={this.openFileDialog}  style={styles.container({selected})}>
-								</div>
-							}
-						</Popover>
-					</div>
-					<figcaption style={styles.caption({size, align})}>
-						{(this.props.caption) ?
-							<EditableText
-								className="pub-caption"
-								ref="captionArea"
-								maxLines={5}
-								minLines={1}
-								multiline
-								confirmOnEnterKey
-								placeholder="Edit caption"
-								defaultValue={caption}
-								onConfirm={this.updateCaption}
+			<div className={'figure-wrapper'} ref={(rootElem)=> { this.rootElem = rootElem; }}>
+				<figure className={`image ${this.props.isSelected ? 'isSelected' : ''}`} style={figStyle}>
+					{this.props.isSelected && this.props.url &&
+						<div>
+							<div className={'drag-handle left'} onMouseDown={this.onDragMouseDown} role={'button'} tabIndex={-1} />
+							<div className={'drag-handle right'} onMouseDown={this.onDragMouseDown} role={'button'} tabIndex={-1} />
+						</div>
+					}
+					{this.props.url &&
+						<img
+							ref={(imgElem)=> { this.imgElem = imgElem; }}
+							src={this.state.imageBlob || this.props.url}
+							alt={this.props.caption}
+							style={{ opacity: this.state.uploading ? 0 : 1 }}
+						/>
+					}
+					{!this.props.url &&
+						<label htmlFor={`new-${this.randKey}`} className={'empty-image pt-elevation-0'}>
+							<AnchorButton
+								className={'pt-button pt-large pt-icon-media pt-minimal'}
+								text={'Click to Upload image'}
+								loading={this.state.uploading}
 							/>
-							: null}
+							<input
+								id={`new-${this.randKey}`}
+								name={'image'}
+								type="file"
+								className={'file-input'}
+								accept="image/png, image/jpeg, image/gif"
+								onChange={this.handleImageSelect}
+							/>
+						</label>
+					}
+					{!this.props.isSelected &&
+						<figcaption>
+							{this.props.caption}
 						</figcaption>
-					</figure>
-				</div>
-			);
-		}
+					}
+					{this.props.isSelected && this.props.url &&
+						<div className={'options-wrapper'}>
+							<div className={'top-row'}>
+								<div className={'pt-button-group pt-minimal'}>
+									{alignOptions.map((item)=> {
+										return (
+											<button
+												key={`align-option-${item.key}`}
+												className={`pt-button ${item.icon} ${this.props.align === item.key ? 'pt-active' : ''}`}
+												onClick={()=> { this.updateAlign(item.key); }}
+											/>
+										);
+									})}
+								</div>
+								<div className={'right-wrapper'}>
+									<label htmlFor={this.randKey} className={'file-select'}>
+										<AnchorButton
+											className={'pt-button'}
+											text={'Choose new image'}
+											loading={this.state.uploading}
+										/>
+										<input
+											id={this.randKey}
+											name={'image'}
+											type="file"
+											accept="image/png, image/jpeg, image/gif"
+											onChange={this.handleImageSelect}
+											className={'file-input'}
+										/>
+									</label>
+								</div>
+							</div>
+							<input
+								type={'text'}
+								placeholder={'Add Caption'}
+								className={'pt-input pt-fill'}
+								value={this.props.caption}
+								onChange={this.updateCaption}
+							/>
+						</div>
+					}
+				</figure>
+			</div>
+		);
 	}
+}
 
-	styles = {
-		row: function ({ size, align }) {
-			return {
-				width: (align !== 'max') ? size : '100%',
-				position: 'relative',
-				display: 'table-row'
-			};
-		},
-		container: function({ selected }) {
-			return {
-				minHeight: '250',
-				minWidth: '250',
-				width: '100%',
-				outline: (selected) ? '3px dashed #BBBDC0' : '1px dashed #BBBDC0',
-				transition: 'outline-color 0.15s ease-in',
-			};
-		},
-		image: function({ selected }) {
-			return {
-				width: '100%',
-				outline: (selected) ? '3px solid #BBBDC0' : '3px solid transparent',
-				transition: 'outline-color 0.15s ease-in',
-			};
-		},
-		outline: function({selected}) {
-			return {
-				outline: (selected) ? '3px solid #BBBDC0' : '3px solid transparent',
-				transition: 'outline-color 0.15s ease-in',
-				paddingTop: '10px',
-
-			};
-		},
-		figure: function({ size, align, selected }) {
-			const style = {
-				width: (!!size) ? size : 'auto',
-				display: 'table',
-				outline: (selected) ? '3px solid #BBBDC0' : '3px solid transparent',
-				transition: 'outline-color 0.15s ease-in',
-				paddingTop: '10px',
-				marginRight: (align === 'left') ? '20px' : null,
-				marginLeft: (align === 'right') ? '20px' : null,
-			};
-			if (align === 'max') {
-				style.width = 'calc(100% + 30px)';
-				style.margin = '0 0 0 -15px';
-			} else if (align === 'left') {
-				style.float = 'left';
-			} else if (align === 'right') {
-				style.float = 'right';
-			} else if (align === 'full' || !align) {
-				style.margin = '0 auto';
-			}
-			return style;
-		},
-		caption: function({size, align}) {
-			const style = {
-				lineHeight: '30px',
-				fontSize: '1em',
-				width: size,
-				display: 'table-row',
-			};
-			return style;
-		}
-	};
-
-	export default ImageEditable;
+ImageEditable.propTypes = propTypes;
+ImageEditable.defaultProps = defaultProps;
+export default ImageEditable;

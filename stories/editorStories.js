@@ -10,7 +10,7 @@ import InsertMenu from 'addons/InsertMenu/InsertMenu';
 import Latex from 'addons/Latex/LatexAddon';
 import TrackChanges from 'addons/TrackChanges/TrackChangesAddon';
 import { storiesOf } from '@storybook/react';
-import uploadFile from './utils/uploadFile';
+import { s3Upload } from './utils/uploadFile';
 
 require('@blueprintjs/core/dist/blueprint.css');
 
@@ -90,7 +90,7 @@ class ForkStory extends Component {
 					<InsertMenu />
 					{(inFork) ? <TrackChanges /> : null }
 					<Latex />
-					<Image handleFileUpload={uploadFile}/>
+					<Image handleFileUpload={s3Upload}/>
 					<Collaborative
 						ref={(collab) => { this.collab = collab; }}
 						onForksUpdate={this.updateForks}
@@ -138,7 +138,7 @@ storiesOf('Editor', module)
 			<FormattingMenu />
 			<InsertMenu />
 			<Latex />
-			<Image handleFileUpload={uploadFile}/>
+			<Image handleFileUpload={s3Upload}/>
 		</Editor>
 	</div>
 ))
@@ -149,7 +149,7 @@ storiesOf('Editor', module)
 			<InsertMenu />
 			<TrackChanges />
 			<Latex />
-			<Image handleFileUpload={uploadFile}/>
+			<Image handleFileUpload={s3Upload}/>
 		</Editor>
 	</div>
 ))
@@ -160,7 +160,7 @@ storiesOf('Editor', module)
 			<InsertMenu />
 			<TrackChanges />
 			<Latex />
-			<Image handleFileUpload={uploadFile}/>
+			<Image handleFileUpload={s3Upload}/>
 			<Collaborative
 				// ref={(collab) => { this.collab = collab; }}
 				firebaseConfig={firebaseConfig}
@@ -185,7 +185,7 @@ storiesOf('Editor', module)
 		<Editor>
 			<FormattingMenu />
 			<InsertMenu />
-			<Image handleFileUpload={uploadFile}/>
+			<Image handleFileUpload={s3Upload}/>
 			<Collaborative
 				// ref={(collab) => { this.collab = collab; }}
 				firebaseConfig={firebaseConfig}

@@ -29,12 +29,14 @@ class ReactViewWrapper extends Component {
 		this.setState({ isSelected });
 	}
 
-	forceSelection = (evt) => {
-		if (!this.state.selected) {
+	forceSelection = () => {
+		if (!this.state.isSelected) {
 			this.setState({ isSelected: true });
 			this.props.forceSelection();
 		}
-		evt.preventDefault();
+		/* I commented this out because file inputs werent' working. */
+		/* If we get wonder behavior elsewhere, we can revisit */
+		// evt.preventDefault();
 	}
 
 	focusAndSelect = () => {
@@ -55,6 +57,7 @@ class ReactViewWrapper extends Component {
 				ref={(elem) => { this.rootElem = elem; }}
 				draggable="false"
 				onClick={this.forceSelection}
+				/* These following parameters mess with the cursor behavior over nodeviews */
 				// role={'textbox'}
 				// tabIndex={-1}
 			>

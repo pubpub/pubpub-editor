@@ -20,15 +20,15 @@ class ImageStatic extends Component {
 		return (
 			<div ref="embedroot" className={'pub-embed ' + (this.props.className) ? this.props.className : null }>
 				<figure style={styles.figure({size, align, selected: false})}>
-  				<div style={styles.row({size, align})}>
+					<div style={styles.row({size, align})}>
 						<img style={styles.image} src={url}/>
-          </div>
-          <figcaption style={styles.caption({size, align})}>
-            <div style={styles.captionInput} ref="captioninsert">
-              {caption}
-            </div>
-          </figcaption>
-        </figure>
+					</div>
+					<figcaption style={styles.caption({size, align})}>
+						<div style={styles.captionInput} ref="captioninsert">
+							{caption}
+						</div>
+					</figcaption>
+				</figure>
 			</div>
 		);
 	}
@@ -71,7 +71,7 @@ styles = {
 		} else if (align === 'full') {
 			style.margin = '0 auto';
 		}
- 		return style;
+		return style;
 	},
 	caption: function({size, align}) {
 		const style = {

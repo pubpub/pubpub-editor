@@ -118,7 +118,6 @@ class Editor extends Component {
 				}
 			});
 		}
-		console.log(plugins, pluginKeys);
 		return { plugins, pluginKeys };
 	}
 
@@ -230,14 +229,14 @@ class Editor extends Component {
 			// viewHandlers: {
 			// 	updafteMentions: this.updateMentions,
 			// },
-			// handleDOMEvents: {
-			// 	onselectionchange: (view, evt)=> {
-			// 		console.log(view, evt);
-			// 	},
-			// 	select: (view, evt)=> {
-			// 		console.log(view, evt);
-			// 	}
-			// },
+			handleDOMEvents: {
+				onselect: (view, evt)=> {
+					console.log(view, evt);
+				},
+				// select: (view, evt)=> {
+				// 	console.log(view, evt);
+				// }
+			},
 			editable: () => (!this.props.isReadOnly),
 			nodeViews: nodeViews,
 		});

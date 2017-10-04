@@ -36,8 +36,7 @@
     "prosemirror-schema-table": "^0.22.0",
     "prosemirror-state": "^0.24.0",
     "prosemirror-transform": "^0.24.0",
-    "prosemirror-view": "^0.24.0",
-    "re-resizable": "^4.0.0"
+    "prosemirror-view": "^0.24.0"
   },
   "peerDependencies": {
     "@blueprintjs/core": "^1.29.0",

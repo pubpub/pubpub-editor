@@ -1,7 +1,7 @@
 const imageDoc = {
 	type: 'doc',
 	attrs: {
-		'meta': {}
+		meta: {}
 	},
 	content: [
 		{
@@ -10,7 +10,7 @@ const imageDoc = {
 				{
 					type: 'equation',
 					attrs: {
-					  content: '\\sum_ix^i'
+						content: '\\sum_ix^i'
 					}
 				},
 				{
@@ -19,26 +19,13 @@ const imageDoc = {
 				}
 			]
 		},
-    {
-      type: 'image',
-      attrs: {
-        url: "https://i.imgur.com/4jIx7oE.gif",
-        caption: "hey",
-        align: "full",
-        size: "35%"
-      },
-      content: [
-        {
-          type: 'caption',
-          content: [
-            {
-              type: 'text',
-              text: ' and hello.'
-            }
-          ]
-        }
-      ]
-    },
+		{
+			type: 'image',
+			attrs: {
+				url: 'https://i.imgur.com/4jIx7oE.gif',
+				caption: 'Hello there!',
+			},
+		},
 	]
 };
 
