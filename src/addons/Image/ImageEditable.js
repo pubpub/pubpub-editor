@@ -108,7 +108,9 @@ class ImageEditable extends Component {
 			{ key: 'full', icon: 'pt-icon-vertical-distribution' },
 		];
 		const figFloat = this.props.align === 'left' || this.props.align === 'right' ? this.props.align : 'none';
-		const figMargin = this.props.align === 'left' || this.props.align === 'right' ? '10px' : '0em auto 1em';
+		let figMargin = '0em auto 1em';
+		if (this.props.align === 'left') { figMargin = '1em 1em 1em 0px'; }
+		if (this.props.align === 'right') { figMargin = '1em 0px 1em 1em'; }
 		const figWidth = this.props.align === 'full' ? '100%' : `${this.props.size}%`;
 		const figStyle = {
 			width: figWidth,
@@ -119,7 +121,7 @@ class ImageEditable extends Component {
 		return (
 			<div className={'figure-wrapper'} ref={(rootElem)=> { this.rootElem = rootElem; }}>
 				<figure className={`image ${this.props.isSelected ? 'isSelected' : ''}`} style={figStyle}>
-					{this.props.isSelected && this.props.url &&
+					{this.props.isSelected && this.props.url && this.props.align !== 'full' &&
 						<div>
 							<div className={'drag-handle left'} onMouseDown={this.onDragMouseDown} role={'button'} tabIndex={-1} />
 							<div className={'drag-handle right'} onMouseDown={this.onDragMouseDown} role={'button'} tabIndex={-1} />
