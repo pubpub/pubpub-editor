@@ -58,7 +58,6 @@ class FormattingMenu extends Component {
 		if (currentPos === 0) { return null; }
 		const currentNode = view.state.doc.nodeAt(currentPos - 1);
 		const container = document.getElementById(containerId);
-		console.log('In on change');
 		if (!view.state.selection.$cursor && currentNode && currentNode.text) {
 			const currentFromPos = view.state.selection.$from.pos;
 			const currentToPos = view.state.selection.$to.pos;
@@ -66,7 +65,6 @@ class FormattingMenu extends Component {
 			const right = view.coordsAtPos(currentToPos).right - container.getBoundingClientRect().left;
 			const inlineCenter = left + ((right - left) / 2);
 			const inlineTop = view.coordsAtPos(currentFromPos).top - container.getBoundingClientRect().top;
-			console.log('got a selection');
 			return this.setState({
 				left: inlineCenter,
 				top: inlineTop,
@@ -82,7 +80,6 @@ class FormattingMenu extends Component {
 
 	startInput(type, run) {
 		this.setState({ input: 'text', run });
-		console.log(run);
 	}
 
 	submitInput(evt) {
@@ -90,7 +87,6 @@ class FormattingMenu extends Component {
 			const link = this.textInput.value;
 			this.state.run({ href: link });
 			this.setState({ input: null, run: null, top: 0, });
-			// console.log('view', this.props.view);
 			this.props.view.focus();
 		}
 	}
