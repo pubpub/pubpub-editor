@@ -37,7 +37,7 @@ const IframeStatic = function(props) {
 				<iframe
 					title={`iFrame of ${props.url}`}
 					src={props.url}
-					height={`${this.props.height}px`}
+					height={`${props.height}px`}
 					allowFullScreen
 					frameBorder={'0'}
 				/>

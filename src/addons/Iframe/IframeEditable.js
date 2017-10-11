@@ -137,8 +137,10 @@ class IframeEditable extends Component {
 						<div>
 							<div className={'drag-handle left'} onMouseDown={this.onDragMouseDown} role={'button'} tabIndex={-1} />
 							<div className={'drag-handle right'} onMouseDown={this.onDragMouseDown} role={'button'} tabIndex={-1} />
-							<div className={'drag-handle bottom'} onMouseDown={this.onDragMouseDown} role={'button'} tabIndex={-1} ref={(bottomDragElem)=> { this.bottomDragElem = bottomDragElem; }} />
 						</div>
+					}
+					{this.props.isSelected && this.props.url &&
+						<div className={'drag-handle bottom'} onMouseDown={this.onDragMouseDown} role={'button'} tabIndex={-1} ref={(bottomDragElem)=> { this.bottomDragElem = bottomDragElem; }} />
 					}
 					{this.props.url &&
 						<iframe
