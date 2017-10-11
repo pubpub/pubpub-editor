@@ -110,7 +110,8 @@ class ForkStory extends Component {
 
 storiesOf('Editor', module)
 .add('Default', () => (
-	<div style={editorWrapper} onClick={focusEditor}>
+	// <div style={editorWrapper} onClick={focusEditor}>
+	<div style={editorWrapper}>
 		<style>{`
 			.pubpub-editor { font-family: serif; }	
 		`}</style>

@@ -58,6 +58,7 @@ class FormattingMenu extends Component {
 		if (currentPos === 0) { return null; }
 		const currentNode = view.state.doc.nodeAt(currentPos - 1);
 		const container = document.getElementById(containerId);
+		console.log('In on change');
 		if (!view.state.selection.$cursor && currentNode && currentNode.text) {
 			const currentFromPos = view.state.selection.$from.pos;
 			const currentToPos = view.state.selection.$to.pos;
@@ -65,6 +66,7 @@ class FormattingMenu extends Component {
 			const right = view.coordsAtPos(currentToPos).right - container.getBoundingClientRect().left;
 			const inlineCenter = left + ((right - left) / 2);
 			const inlineTop = view.coordsAtPos(currentFromPos).top - container.getBoundingClientRect().top;
+			console.log('got a selection');
 			return this.setState({
 				left: inlineCenter,
 				top: inlineTop,
@@ -74,18 +76,22 @@ class FormattingMenu extends Component {
 		return this.setState({
 			left: 0,
 			top: 0,
+			input: null,
 		});
 	}
 
 	startInput(type, run) {
 		this.setState({ input: 'text', run });
+		console.log(run);
 	}
 
 	submitInput(evt) {
 		if (evt.key === 'Enter') {
 			const link = this.textInput.value;
 			this.state.run({ href: link });
-			this.setState({ input: null, run: null });
+			this.setState({ input: null, run: null, top: 0, });
+			// console.log('view', this.props.view);
+			this.props.view.focus();
 		}
 	}
 
@@ -96,7 +102,7 @@ class FormattingMenu extends Component {
 
 	render() {
 		const menuItems = getMenuItems(this.props.view);
-		const width = 315;
+		const width = 327;
 		const wrapperStyle = {
 			display: this.state.top ? 'block' : 'none',
 			top: Math.max(this.state.top - 40, 0),
@@ -110,12 +116,14 @@ class FormattingMenu extends Component {
 					role={'button'}
 					tabIndex={-1}
 					onKeyPress={this.submitInput}
-					className={'formatting-menu'}
+					className={'formatting-menu input'}
+					style={wrapperStyle}
 				>
 					<input
-						ref={(input) => { this.textInput = input; }}
+						ref={(input) => { this.textInput = input; if (input) { input.focus(); } }}
 						type="text"
-						placeholder="link"
+						placeholder={'Enter URL...'}
+						className={'pt-input'}
 						dir="auto"
 					/>
 				</div>

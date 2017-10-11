@@ -15,6 +15,22 @@
 	position: absolute;
 	pointer-events: none;
 }
+.prosemirror-link-url {
+	position: absolute;
+	transform: translateY(1.5em);
+	background-color: white;
+	padding: 2px 5px;
+	box-shadow: 0px 2px 4px rgba(50, 50, 50, 0.2);
+	border-radius: 1px;
+	border: 1px solid #CCC;
+	&:after {
+		font-family: 'Courier', monospace;
+		font-size: 14px;
+		opacity: 0.75;
+	}
+	
+}
+
 .ProseMirror:focus {
 	outline: 0px;
 }

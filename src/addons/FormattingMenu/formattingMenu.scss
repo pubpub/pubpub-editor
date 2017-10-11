@@ -11,6 +11,9 @@
 	box-shadow: 0px 2px 4px rgba(50, 50, 50, 0.2);
 	background-color: white;
 	z-index: 10;
+	&.input {
+		padding: 0px;
+	}
 	.button {
 		display: inline-block;
 		padding: 0px 5px;
@@ -37,6 +40,16 @@
 	}
 	.button.icon-h2::before {
 		font-size: 14px;
+	}
+	.pt-input {
+		width: 100%;
+		display: block;
+		height: 100%;
+		border: 0px solid transparent;
+		font-family: 'Courier', monospace;
+		&:focus {
+			box-shadow: 0px 0px 0px black;	
+		}
 	}
 }
 
