@@ -31,7 +31,7 @@ class ReactView {
 	updateAttrs(nodeAttrs) {
 		const start = this.getPos();
 		const oldNodeAttrs = this.node.attrs;
-		const transaction = this.view.state.tr.setNodeType(
+		const transaction = this.view.state.tr.setNodeMarkup(
 			start,
 			null,
 			{ ...oldNodeAttrs, ...nodeAttrs }
@@ -42,7 +42,7 @@ class ReactView {
 	updateContent(content) {
 		const start = this.getPos();
 		const nodeType = this.node.type;
-		const transaction = this.view.state.tr.setNodeType(start, nodeType, { content });
+		const transaction = this.view.state.tr.setNodeMarkup(start, nodeType, { content });
 		this.view.dispatch(transaction);
 	}
 

@@ -27,6 +27,8 @@ const VideoStatic = function(props) {
 		float: figFloat,
 	};
 
+	if (!props.url) { return null; }
+
 	return (
 		<div className={'figure-wrapper'}>
 			<figure className={'video'} style={figStyle}>

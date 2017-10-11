@@ -1,12 +1,13 @@
 /* eslint-disable */
 import React, { Component } from 'react';
-import { equationDoc, imageDoc, videoDoc } from './data';
+import { equationDoc, imageDoc, videoDoc, iframeDoc } from './data';
 
 import Collaborative from 'addons/Collaborative/Collaborative';
 import { Editor } from 'index';
 import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
 import Image from 'addons/Image/ImageAddon';
 import Video from 'addons/Video/VideoAddon';
+import Iframe from 'addons/Iframe/IframeAddon';
 import InsertMenu from 'addons/InsertMenu/InsertMenu';
 import Latex from 'addons/Latex/LatexAddon';
 import TrackChanges from 'addons/TrackChanges/TrackChangesAddon';
@@ -151,6 +152,16 @@ storiesOf('Editor', module)
 			<InsertMenu />
 			<Latex />
 			<Video handleFileUpload={s3Upload}/>
+		</Editor>
+	</div>
+))
+.add('Iframes', () => (
+	<div style={{width: "80%", margin: "0 auto"}}>
+		<Editor onChange={onChange} initialContent={iframeDoc} placeholder={'Begin writing here...'}>
+			<FormattingMenu />
+			<InsertMenu />
+			<Latex />
+			<Iframe />
 		</Editor>
 	</div>
 ))
