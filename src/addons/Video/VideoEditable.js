@@ -136,7 +136,7 @@ class VideoEditable extends Component {
 					{!this.props.url &&
 						<label htmlFor={`new-${this.randKey}`} className={'empty-video pt-elevation-0'}>
 							<AnchorButton
-								className={'pt-button pt-large pt-icon-media pt-minimal'}
+								className={'pt-large pt-icon-video pt-minimal'}
 								text={'Click to Upload video'}
 								loading={this.state.uploading}
 							/>
@@ -172,7 +172,6 @@ class VideoEditable extends Component {
 								<div className={'right-wrapper'}>
 									<label htmlFor={this.randKey} className={'file-select'}>
 										<AnchorButton
-											className={'pt-button'}
 											text={'Choose new video'}
 											loading={this.state.uploading}
 										/>
