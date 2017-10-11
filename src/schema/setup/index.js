@@ -42,7 +42,8 @@ function linkPlugin() {
 		props: {
 			decorations(state) {
 				const type = state.schema.marks.link;
-				const { from, $from, to, empty } = state.selection;
+				// const { from, $from, to, empty } = state.selection;
+				const { from, $from, empty } = state.selection;
 				let isLink = false;
 				if (empty) {
 					isLink = type.isInSet(state.storedMarks || $from.marks());
