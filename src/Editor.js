@@ -229,14 +229,14 @@ class Editor extends Component {
 			// viewHandlers: {
 			// 	updafteMentions: this.updateMentions,
 			// },
-			handleDOMEvents: {
-				onselect: (view, evt)=> {
-					console.log(view, evt);
-				},
-				// select: (view, evt)=> {
-				// 	console.log(view, evt);
-				// }
-			},
+			// handleDOMEvents: {
+			// 	onselect: (view, evt)=> {
+			// 		console.log(view, evt);
+			// 	},
+			// 	select: (view, evt)=> {
+			// 		console.log(view, evt);
+			// 	}
+			// },
 			editable: () => (!this.props.isReadOnly),
 			nodeViews: nodeViews,
 		});
@@ -317,7 +317,6 @@ class Editor extends Component {
 			const newState = this.view.state.apply(transaction);
 			this.view.updateState(newState);
 			this.setState({ editorState: newState, transaction: transaction });
-			console.log(JSON.stringify(this.view.state.doc.toJSON(), null, 2));
 			if (this.props.onChange) {
 				this.props.onChange(this.view.state.doc.toJSON());
 			}
