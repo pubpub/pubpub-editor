@@ -31,7 +31,7 @@ class LatexAddon extends Component {
 					draggable: false,
 					selectable: true,
 					insertMenu: {
-						label: 'Insert Latex',
+						label: 'Insert Latex Math',
 						icon: 'pt-icon-function',
 						onInsert: (view) => {
 							const newNode = view.state.schema.nodes.equation.create({ value: '\\sum_ix^i' });

@@ -2,7 +2,7 @@ import { baseKeymap } from 'prosemirror-commands';
 import { history } from 'prosemirror-history';
 import { keymap } from 'prosemirror-keymap';
 import { Plugin } from 'prosemirror-state';
-import { gapCursor } from 'prosemirror-gapcursor';
+// import { gapCursor } from 'prosemirror-gapcursor';
 import { DecorationSet, Decoration } from 'prosemirror-view';
 import { buildKeymap } from './keymap';
 import { buildInputRules } from './inputRules';
@@ -91,7 +91,7 @@ function getBasePlugins(options) {
 	if (!options.isReadOnly) { deps.push(SelectPlugin); }
 	if (options.placeholder) { deps.push(placeholderPlugin(options.placeholder)); }
 	if (options.history !== false) { deps.push(history()); }
-	deps.push(gapCursor());
+	// deps.push(gapCursor());
 
 	return deps;
 }
