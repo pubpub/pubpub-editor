@@ -83,7 +83,6 @@ class ReactView {
 
 		const start = this.getPos();
 		const end = start + this.node.nodeSize;
-		console.log(start, end);
 		const transaction = this.view.state.tr.replaceWith(start, end, newNode);
 		this.view.dispatch(transaction);
 	}
