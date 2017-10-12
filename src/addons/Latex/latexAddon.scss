@@ -1,0 +1,40 @@
+@import "~katex/dist/katex.css";
+
+.latex-wrapper {
+	font-size: 0.9em;
+	display: inline-block;
+	vertical-align: top;
+	max-width: 100%;
+	&.block {
+		font-size: 20px;
+		display: block;
+		text-align: center;
+	}
+	&.selected {
+		.render-wrapper {
+			outline: 3px solid #BBBDC0;	
+		}
+	}
+	.render-wrapper {
+		display: inline-block;
+		max-width: 100%;
+	}
+	.editable-render {
+		user-select: none;
+	}
+	.options-wrapper {
+		min-width: 150px;
+		width: 100%;
+		border-top: 1px solid #CCC;
+		background-color: #F9F9F9;
+		padding: 5px;
+		overflow: hidden;
+		.top-row {
+			display: flex;	
+		}
+		.pt-input {
+			margin: 5px 0px 0px;
+			max-width: 100%;
+		}
+	}
+}

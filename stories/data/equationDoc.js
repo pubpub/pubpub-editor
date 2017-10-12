@@ -10,7 +10,7 @@ const equationDoc = {
 				{
 					type: 'equation',
 					attrs: {
-					  content: '\\sum_ix^i'
+						value: '\\sum_ix^i'
 					}
 				},
 				{

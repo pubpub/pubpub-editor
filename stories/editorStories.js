@@ -125,6 +125,7 @@ storiesOf('Editor', module)
 .add('Latex', () => (
 	<Editor onChange={onChange} initialContent={equationDoc}>
 		<FormattingMenu />
+		<InsertMenu />
 		<Latex />
 	</Editor>
 ))

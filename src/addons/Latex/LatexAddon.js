@@ -25,42 +25,32 @@ class LatexAddon extends Component {
 					group: 'inline',
 					content: 'inline*',
 					attrs: {
-						content: { default: '' },
+						value: { default: '' },
 					},
 					inline: true,
+					draggable: false,
+					selectable: true,
 					insertMenu: {
 						label: 'Insert Latex',
 						icon: 'pt-icon-function',
 						onInsert: (view) => {
-							const newNode = view.state.schema.nodes.equation.create({ content: '\\sum_ix^i' });
+							const newNode = view.state.schema.nodes.equation.create({ value: '\\sum_ix^i' });
 							view.dispatch(view.state.tr.replaceSelectionWith(newNode));
 						},
 					},
 					toEditable(node, view, decorations, isSelected, helperFunctions) {
-						let equationText;
-						if (node.content && node.content.length >= 1) {
-							equationText = node.content[0].text;
-						} else if (node.attrs.content) {
-							equationText = node.attrs.content;
-						}
 						return (
 							<LatexEditable
-								value={equationText}
+								value={node.attrs.value}
 								isBlock={false}
 								isSelected={isSelected}
 								view={view}
-								helperFunctions={helperFunctions}
+								{...helperFunctions}
 							/>
 						);
 					},
-					toStatic(node, view, decorations) {
-						let equationText;
-						if (node.content && node.content.length >= 1) {
-							equationText = node.content[0].text;
-						} else if (node.attrs.content) {
-							equationText = node.attrs.content;
-						}
-						return <LatexStatic value={equationText} block={false} />;
+					toStatic(node) {
+						return <LatexStatic value={node.attrs.value} isBlock={false} />;
 					},
 				},
 
@@ -69,34 +59,24 @@ class LatexAddon extends Component {
 					atom: true,
 					group: 'block',
 					content: 'inline*',
+					draggable: false,
+					selectable: true,
 					attrs: {
-						content: { default: '' },
+						value: { default: '' },
 					},
 					toEditable(node, view, decorations, isSelected, helperFunctions) {
-						let equationText;
-						if (node.content && node.content.length >= 1) {
-							equationText = node.content[0].text;
-						} else if (node.attrs.content) {
-							equationText = node.attrs.content;
-						}
 						return (
 							<LatexEditable
-								value={equationText}
+								value={node.attrs.value}
 								isBlock={true}
 								isSelected={isSelected}
 								view={view}
-								helperFunctions={helperFunctions}
+								{...helperFunctions}
 							/>
 						);
 					},
-					toStatic({ node }) {
-						let equationText;
-						if (node.content && node.content.length >= 1) {
-							equationText = node.content[0].text;
-						} else if (node.attrs.content) {
-							equationText = node.attrs.content;
-						}
-						return <LatexStatic value={equationText} block={true} />;
+					toStatic(node) {
+						return <LatexStatic value={node.attrs.value} isBlock={true} />;
 					}
 				},
 			}

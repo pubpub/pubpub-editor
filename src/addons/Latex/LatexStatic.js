@@ -2,26 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import katex from 'katex';
 
-require('./latex.scss');
+require('./latexAddon.scss');
 
 const propTypes = {
 	value: PropTypes.string,
-	block: PropTypes.bool,
+	isBlock: PropTypes.bool,
 };
 
 const defaultProps = {
 	value: '',
-	block: false,
+	isBlock: false,
 };
 
 const LatexEditor = function(props) {
 	const displayHTML = katex.renderToString(props.value, {
-		displayMode: props.block,
+		displayMode: props.isBlock,
 		throwOnError: false
 	});
 	return (
-		<span
-			className={`latex-wrapper ${props.block ? 'block' : ''}`}
+		<div
+			className={`latex-wrapper ${props.isBlock ? 'block' : ''}`}
 			dangerouslySetInnerHTML={{ __html: displayHTML }}
 		/>
 	);
