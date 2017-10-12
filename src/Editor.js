@@ -21,7 +21,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-	initialContent: undefined,
+	initialContent: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] },
 	onChange: undefined,
 	children: undefined,
 	placeholder: undefined,
@@ -317,6 +317,7 @@ class Editor extends Component {
 			const newState = this.view.state.apply(transaction);
 			this.view.updateState(newState);
 			this.setState({ editorState: newState, transaction: transaction });
+			console.log(JSON.stringify(this.view.state.doc.toJSON(), null, 2));
 			if (this.props.onChange) {
 				this.props.onChange(this.view.state.doc.toJSON());
 			}
