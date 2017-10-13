@@ -25,6 +25,7 @@
 	border-radius: 1px;
 	border: 1px solid #CCC;
 	z-index: 2;
+	word-break: break-all;
 	&:after {
 		font-family: 'Courier', monospace;
 		font-size: 14px;
