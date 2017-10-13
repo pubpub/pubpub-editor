@@ -6,12 +6,14 @@ import getMenuItems from './formattingMenuConfig';
 require('./formattingMenu.scss');
 
 const propTypes = {
+	include: PropTypes.array,
 	containerId: PropTypes.string,
 	view: PropTypes.object,
 	editorState: PropTypes.object,
 };
 
 const defaultProps = {
+	include: [],
 	containerId: undefined,
 	view: undefined,
 	editorState: undefined,
@@ -37,7 +39,7 @@ class FormattingMenu extends Component {
 		super(props);
 		this.state = {
 			input: null,
-			top: 0,
+			top: null,
 			left: 0,
 		};
 		this.onChange = this.onChange.bind(this);
@@ -73,7 +75,7 @@ class FormattingMenu extends Component {
 
 		return this.setState({
 			left: 0,
-			top: 0,
+			top: null,
 			input: null,
 		});
 	}
@@ -86,7 +88,7 @@ class FormattingMenu extends Component {
 		if (evt.key === 'Enter') {
 			const link = this.textInput.value;
 			this.state.run({ href: link });
-			this.setState({ input: null, run: null, top: 0, });
+			this.setState({ input: null, run: null, top: null, });
 			this.props.view.focus();
 		}
 	}
@@ -97,13 +99,20 @@ class FormattingMenu extends Component {
 	}
 
 	render() {
-		const menuItems = getMenuItems(this.props.view);
-		const width = 327;
+		const menuItems = getMenuItems(this.props.view).filter((item)=> {
+			if (this.props.include.length === 0) { return true; }
+			return this.props.include.indexOf(item.title) > -1;
+		});
+
+		const padding = 5;
+		const width = 2 + (2 * padding) + (menuItems.length * 28);
+		// const width = 327;
 		const wrapperStyle = {
-			display: this.state.top ? 'block' : 'none',
+			display: this.state.top !== null ? 'block' : 'none',
 			top: Math.max(this.state.top - 40, 0),
 			width: `${width}px`,
 			left: Math.max(this.state.left - (width / 2), 0),
+			padding: `0px ${padding}px`
 		};
 
 		if (this.state.input === 'text') {
