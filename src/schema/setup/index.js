@@ -86,9 +86,11 @@ function getBasePlugins(options) {
 		buildInputRules(options.schema),
 		keymap(buildKeymap(options.schema, options.mapKeys)),
 		keymap(baseKeymap),
-		linkPlugin(),
 	];
-	if (!options.isReadOnly) { deps.push(SelectPlugin); }
+	if (!options.isReadOnly) { 
+		deps.push(SelectPlugin); 
+		deps.push(linkPlugin());
+	}
 	if (options.placeholder) { deps.push(placeholderPlugin(options.placeholder)); }
 	if (options.history !== false) { deps.push(history()); }
 	// deps.push(gapCursor());

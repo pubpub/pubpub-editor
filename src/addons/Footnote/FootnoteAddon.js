@@ -75,9 +75,7 @@ class FootnoteAddon extends Component {
 						for (let nodeIndex = 0; nodeIndex < view.state.doc.nodeSize - 1; nodeIndex++) {
 							const curr = view.state.doc.nodeAt(nodeIndex);
 							if (curr && curr.type.name === 'footnote') {
-								console.log('We got a footnote', nodeIndex, curr.attrs);
 								if (curr.attrs.count !== footnoteCount) {
-									console.log('Gunna update that footnote to ', footnoteCount);
 									const transaction = view.state.tr.setNodeMarkup(
 										nodeIndex,
 										null,
