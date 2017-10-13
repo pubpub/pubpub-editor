@@ -105,7 +105,10 @@ class FormattingMenu extends Component {
 		});
 
 		const padding = 5;
-		const width = 2 + (2 * padding) + (menuItems.length * 28);
+		const neededWidth = 2 + (2 * padding) + (menuItems.length * 28);
+		const width = this.state.input === 'text'
+			? Math.max(neededWidth, 300)
+			: neededWidth;
 		// const width = 327;
 		const wrapperStyle = {
 			display: this.state.top !== null ? 'block' : 'none',
