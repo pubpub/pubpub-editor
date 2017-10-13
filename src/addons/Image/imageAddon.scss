@@ -2,6 +2,9 @@
 	text-align: center;
 	user-select: none;
 	pointer-events: none;
+	a {
+		text-decoration: none !important;
+	}
 	figure.image {
 		pointer-events: auto;
 		position: relative;

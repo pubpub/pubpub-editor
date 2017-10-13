@@ -2,6 +2,9 @@
 	text-align: center;
 	user-select: none;
 	pointer-events: none;
+	a {
+		text-decoration: none !important;
+	}
 	figure.video {
 		pointer-events: auto;
 		position: relative;
@@ -56,9 +59,6 @@
 					flex-shrink: 1;
 					text-align: right;
 					white-space: nowrap;
-					.pt-button {
-						text-decoration: none;
-					}
 				}
 			}
 			.pt-input {

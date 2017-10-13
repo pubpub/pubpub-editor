@@ -2,14 +2,19 @@
 
 .file-figure-wrapper {
 	text-align: center;
-	user-select: none;
-	pointer-events: none;
+	&.editable {
+		user-select: none;
+		pointer-events: none;
+	}
+	a {
+		text-decoration: none !important;
+	}
 	.file {
 		pointer-events: auto;
 		position: relative;
 		text-align: center;
 		display: inline-block;
-		width: 50%;		
+		width: 65%;		
 		&.isSelected {
 			outline: 3px solid #BBBDC0;
 			background-color: #F0F0F0;
@@ -37,6 +42,13 @@
 				flex-grow: 1;
 				flex-shrink: 1;
 				margin: 0em 1em;
+				a {
+					color: inherit;
+					&:hover {
+						cursor: pointer;
+						text-decoration: underline !important;
+					}	
+				}
 			}
 			.file-size {
 				margin: 0em 1em;
@@ -44,6 +56,7 @@
 		}
 		figcaption {
 			opacity: 0.75;
+			padding-top: 5px;
 		}
 		.options-wrapper {
 			width: 100%;

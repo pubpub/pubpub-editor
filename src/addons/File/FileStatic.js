@@ -25,8 +25,10 @@ const ImageStatic = function(props) {
 			<div className={'file pt-card pt-elevation-2'}>
 				<div className={'details'}>
 					<div className={'file-icon file-icon-default'} data-type={extension} />
-					<div className={'file-name'} contentEditable={false}>{props.fileName}</div>
-					<div className={'file-size'} contentEditable={false}>{props.fileSize}</div>
+					<div className={'file-name'}>
+						<a href={props.url} target={'_blank'}>{props.fileName}</a>
+					</div>
+					<div className={'file-size'} >{props.fileSize}</div>
 					<a className={'pt-button pt-icon-download'} href={props.url} target={'_blank'} />
 				</div>
 			</div>

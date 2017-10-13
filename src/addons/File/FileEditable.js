@@ -67,12 +67,14 @@ class FileEditable extends Component {
 	render() {
 		const extension = this.props.fileName ? this.props.fileName.split('.').pop() : '';
 		return (
-			<div className={'file-figure-wrapper'} ref={(rootElem)=> { this.rootElem = rootElem; }}>
+			<div className={'file-figure-wrapper editable'} ref={(rootElem)=> { this.rootElem = rootElem; }}>
 				<div className={`file ${this.props.isSelected ? 'isSelected' : ''}`}>
 					{this.props.url &&
 						<div className={'pt-card pt-elevation-2 details'}>
 							<div className={'file-icon file-icon-default'} data-type={extension.substring(0, 4)} />
-							<div className={'file-name'} contentEditable={false}>{this.props.fileName}</div>
+							<div className={'file-name'}>
+								<a href={this.props.url} target={'_blank'}>{this.props.fileName}</a>
+							</div>
 							<div className={'file-size'} contentEditable={false}>{this.props.fileSize}</div>
 							<a className={'pt-button pt-icon-download'} href={this.props.url} target={'_blank'} />
 						</div>
