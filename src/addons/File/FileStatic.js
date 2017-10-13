@@ -22,8 +22,8 @@ const ImageStatic = function(props) {
 	const extension = props.fileName.split('.').pop();
 	return (
 		<div className={'file-figure-wrapper'}>
-			<div className={'file pt-card pt-elevation-2'}>
-				<div className={'details'}>
+			<div className={'file'}>
+				<div className={'pt-card pt-elevation-2 details'}>
 					<div className={'file-icon file-icon-default'} data-type={extension} />
 					<div className={'file-name'}>
 						<a href={props.url} target={'_blank'}>{props.fileName}</a>
