@@ -5,6 +5,7 @@
 	position: relative;
 	sup.footnote {
 		font-weight: bold;
+		cursor: pointer;
 	}
 	&.selected {
 		.render-wrapper {
@@ -19,7 +20,7 @@
 		user-select: none;
 	}
 	.options-wrapper {
-		width: 300px;
+		width: 400px;
 		z-index: 3;
 		// border: 2px solid #CCC;
 		background-color: #F9F9F9;
@@ -32,6 +33,17 @@
 			width: 100%;
 			min-height: 56px;
 			box-shadow: none;
+			resize: vertical;
 		}
+	}
+}
+.footnote-popover {
+	.footnote-text {
+		max-width: 400px;
+		padding: 15px;
+		.empty-footnote-text {
+			font-style: italic;
+			opacity: 0.75;
+		}	
 	}
 }

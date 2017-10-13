@@ -177,7 +177,11 @@ class InsertMenu extends Component {
 			return (
 				<div className={'pt-menu pt-elevation-1 insert-popup'} style={menuStyle}>
 					<div className={'pt-menu-item pt-disabled'}>Type to filter</div>
-					{this.state.activeMenuItems.map((item, index)=> {
+					{this.state.activeMenuItems.sort((foo, bar)=> {
+						if (foo.label < bar.label) { return -1; }
+						if (foo.label > bar.label) { return 1; }
+						return 0;
+					}).map((item, index)=> {
 						return (
 							<div
 								className={`pt-menu-item ${this.state.activeMenuItem === index ? 'pt-active' : ''} ${item.icon || ''}`}

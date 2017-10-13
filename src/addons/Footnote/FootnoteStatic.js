@@ -1,29 +1,53 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import katex from 'katex';
+import linkifyStr from 'linkifyjs/string';
+import { Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 
 require('./footnoteAddon.scss');
 
 const propTypes = {
-	value: PropTypes.string,
-	isBlock: PropTypes.bool,
-};
-
-const defaultProps = {
-	value: '',
-	isBlock: false,
+	value: PropTypes.string.isRequired,
+	count: PropTypes.number.isRequired,
 };
 
 const FootnoteStatic = function(props) {
-	const displayHTML = katex.renderToString(props.value, {
-		displayMode: props.isBlock,
-		throwOnError: false
-	});
 	return (
-		<sup className={'footnote editable-render'}>{this.props.count}</sup>
+		<div className={'footnote-wrapper'}>
+			<Popover
+				content={
+					<div className={'footnote-text pt-card pt-elevation-2'}>
+						{props.value &&
+							<div
+								dangerouslySetInnerHTML={{
+									__html: linkifyStr(props.value, {
+										defaultProtocol: 'https',
+										className: ''
+									})
+								}}
+							/>
+						}
+						{!props.value &&
+							<div className={'empty-footnote-text'}>
+								No Footnote text entered...
+							</div>
+						}
+					</div>
+				}
+				interactionKind={PopoverInteractionKind.CLICK}
+				position={Position.TOP_LEFT}
+				popoverClassName={'pt-minimal footnote-popover'}
+				transitionDuration={-1}
+				inheritDarkTheme={false}
+				tetherOptions={{
+					constraints: [{ attachment: 'together', to: 'window' }]
+				}}
+
+			>
+				<sup className={'footnote editable-render'}>{props.count}</sup>
+			</Popover>
+		</div>
 	);
 };
 
 FootnoteStatic.propTypes = propTypes;
-FootnoteStatic.defaultProps = defaultProps;
 export default FootnoteStatic;

@@ -41,6 +41,7 @@
   },
   "peerDependencies": {
     "@blueprintjs/core": "^1.29.0",
+    "linkifyjs": "^2.1.5",
     "react": "^16.0.0",
     "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^16.0.0"
@@ -73,6 +74,7 @@
     "jsdoc-react-proptypes": "^1.0.3",
     "jsdoc-theme": "^0.1.4",
     "jsdonk": "^0.7.0",
+    "linkifyjs": "^2.1.5",
     "node-sass": "^4.5.2",
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
