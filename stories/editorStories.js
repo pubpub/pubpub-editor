@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { Component } from 'react';
-import { equationDoc, imageDoc, videoDoc, iframeDoc, fileDoc } from './data';
+import { equationDoc, imageDoc, videoDoc, iframeDoc, fileDoc, footnoteDoc } from './data';
 
 import Collaborative from 'addons/Collaborative/Collaborative';
 import { Editor } from 'index';
@@ -9,6 +9,7 @@ import Image from 'addons/Image/ImageAddon';
 import Video from 'addons/Video/VideoAddon';
 import Iframe from 'addons/Iframe/IframeAddon';
 import File from 'addons/File/FileAddon';
+import Footnote from 'addons/Footnote/FootnoteAddon';
 import InsertMenu from 'addons/InsertMenu/InsertMenu';
 import Latex from 'addons/Latex/LatexAddon';
 import TrackChanges from 'addons/TrackChanges/TrackChangesAddon';
@@ -176,6 +177,13 @@ storiesOf('Editor', module)
 			<File handleFileUpload={s3Upload}/>
 		</Editor>
 	</div>
+))
+.add('Footnote', () => (
+	<Editor onChange={onChange} initialContent={footnoteDoc}>
+		<FormattingMenu />
+		<InsertMenu />
+		<Footnote />
+	</Editor>
 ))
 .add('Track Changes', () => (
 	<div style={{width: "80%", margin: "0 auto"}}>

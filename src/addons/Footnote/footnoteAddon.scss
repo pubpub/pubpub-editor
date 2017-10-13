@@ -1,0 +1,37 @@
+.footnote-wrapper {
+	display: inline-block;
+	max-width: 100%;
+	vertical-align: top;
+	position: relative;
+	sup.footnote {
+		font-weight: bold;
+	}
+	&.selected {
+		.render-wrapper {
+			outline: 3px solid #BBBDC0;	
+		}
+	}
+	.render-wrapper {
+		display: inline-block;
+		max-width: 100%;
+	}
+	.editable-render {
+		user-select: none;
+	}
+	.options-wrapper {
+		width: 300px;
+		z-index: 3;
+		// border: 2px solid #CCC;
+		background-color: #F9F9F9;
+		overflow: hidden;
+		position: absolute;
+		left: -2px;
+		top: calc(100% + 3px);
+		padding: 0;
+		.pt-input {
+			width: 100%;
+			min-height: 56px;
+			box-shadow: none;
+		}
+	}
+}

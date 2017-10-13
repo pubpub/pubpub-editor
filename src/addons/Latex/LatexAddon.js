@@ -16,7 +16,6 @@ but certain schema-based addons may not need them
 // };
 
 class LatexAddon extends Component {
-	static fish = 12;
 	static schema = ()=> {
 		return {
 			nodes: {

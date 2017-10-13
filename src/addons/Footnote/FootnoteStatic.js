@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import katex from 'katex';
 
-require('./latexAddon.scss');
+require('./footnoteAddon.scss');
 
 const propTypes = {
 	value: PropTypes.string,
@@ -14,19 +14,16 @@ const defaultProps = {
 	isBlock: false,
 };
 
-const LatexStatic = function(props) {
+const FootnoteStatic = function(props) {
 	const displayHTML = katex.renderToString(props.value, {
 		displayMode: props.isBlock,
 		throwOnError: false
 	});
 	return (
-		<div
-			className={`latex-wrapper ${props.isBlock ? 'block' : ''}`}
-			dangerouslySetInnerHTML={{ __html: displayHTML }}
-		/>
+		<sup className={'footnote editable-render'}>{this.props.count}</sup>
 	);
 };
 
-LatexStatic.propTypes = propTypes;
-LatexStatic.defaultProps = defaultProps;
-export default LatexStatic;
+FootnoteStatic.propTypes = propTypes;
+FootnoteStatic.defaultProps = defaultProps;
+export default FootnoteStatic;
