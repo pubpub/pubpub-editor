@@ -27,7 +27,6 @@ class ImageEditable extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			openDialog: false,
 			isResizing: false,
 			uploading: false,
 			imageBlob: null,

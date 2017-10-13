@@ -29,10 +29,7 @@ class IframeEditable extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			// openDialog: false,
 			isResizing: false,
-			// uploading: false,
-			// localURL: null,
 		};
 		this.randKey = Math.round(Math.random() * 99999);
 		this.onDragMouseDown = this.onDragMouseDown.bind(this);
@@ -41,9 +38,6 @@ class IframeEditable extends Component {
 		this.updateUrl = this.updateUrl.bind(this);
 		this.updateCaption = this.updateCaption.bind(this);
 		this.updateAlign = this.updateAlign.bind(this);
-		// this.handleVideoSelect = this.handleVideoSelect.bind(this);
-		// this.setBlob = this.setBlob.bind(this);
-		// this.onUploadFinish = this.onUploadFinish.bind(this);
 	}
 
 	onDragMouseDown(evt) {
@@ -64,7 +58,6 @@ class IframeEditable extends Component {
 			const delta = evt.clientY - bottomDragBounding.bottom;
 			const currentHeight = iframeBounding.height;
 			const nextSize = Math.max(Math.round(currentHeight + delta), 100);
-			console.log(delta, currentHeight, nextSize);
 			this.props.updateAttrs({ height: nextSize });
 		} else {
 			const delta = this.state.isResizing === 'left'
@@ -91,27 +84,6 @@ class IframeEditable extends Component {
 	updateAlign(val) {
 		this.props.updateAttrs({ align: val });
 	}
-	// handleVideoSelect(evt) {
-	// 	if (evt.target.files.length) {
-	// 		this.props.onFileUpload(evt.target.files[0], ()=>{}, this.onUploadFinish, 0);
-	// 		this.setState({
-	// 			uploading: true,
-	// 		});
-	// 		this.setBlob(evt.target.files[0]);
-	// 	}
-	// }
-	// setBlob(iframe) {
-	// 	// const reader = new FileReader();
-	// 	// reader.onload = (localURL)=> {
-	// 		// this.setState({ localURL: localURL.target.result });
-	// 	// };
-	// 	// reader.readAsDataURL(image);
-	// 	this.setState({ localURL: URL.createObjectURL(iframe) });
-	// }
-	// onUploadFinish(evt, index, type, filename) {
-	// 	this.setState({ uploading: false });
-	// 	this.props.updateAttrs({ url: `https://assets.pubpub.org/${filename}` });
-	// }
 	render() {
 		const alignOptions = [
 			{ key: 'left', icon: 'pt-icon-align-left' },

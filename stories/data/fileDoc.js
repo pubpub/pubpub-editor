@@ -1,4 +1,4 @@
-const imageDoc = {
+const fileDoc = {
 	type: 'doc',
 	attrs: {
 		meta: {}
@@ -20,13 +20,15 @@ const imageDoc = {
 			]
 		},
 		{
-			type: 'image',
+			type: 'file',
 			attrs: {
 				url: 'https://i.imgur.com/4jIx7oE.gif',
+				fileName: 'myGreatFile.gif',
+				fileSize: '29kb',
 				caption: 'Hello there!',
 			},
 		},
 	]
 };
 
-export default imageDoc;
+export default fileDoc;
