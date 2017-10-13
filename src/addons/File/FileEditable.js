@@ -71,9 +71,9 @@ class FileEditable extends Component {
 				<div className={`file ${this.props.isSelected ? 'isSelected' : ''}`}>
 					{this.props.url &&
 						<div className={'pt-card pt-elevation-2 details'}>
-							<div className={'extension'}>{extension}</div>
-							<div className={'file-name'}>{this.props.fileName}</div>
-							<div className={'file-size'}>{this.props.fileSize}</div>
+							<div className={'file-icon file-icon-default'} data-type={extension.substring(0, 4)} />
+							<div className={'file-name'} contentEditable={false}>{this.props.fileName}</div>
+							<div className={'file-size'} contentEditable={false}>{this.props.fileSize}</div>
 							<a className={'pt-button pt-icon-download'} href={this.props.url} target={'_blank'} />
 						</div>
 					}
