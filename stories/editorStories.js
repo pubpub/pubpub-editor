@@ -241,6 +241,7 @@ storiesOf('Editor', module)
 			<FormattingMenu />
 			<InsertMenu />
 			<Image handleFileUpload={s3Upload}/>
+			<Footnote />
 			<Collaborative
 				// ref={(collab) => { this.collab = collab; }}
 				firebaseConfig={firebaseConfig}

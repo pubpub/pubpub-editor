@@ -110,7 +110,7 @@ class FirebasePlugin extends Plugin {
 		// 	debugger;
 		// }
 
-		if (meta.collab$ || meta.rebase) {
+		if (meta.collab$ || meta.rebase || meta.footnote) {
 			return;
 		}
 		if (meta.pointer) {
