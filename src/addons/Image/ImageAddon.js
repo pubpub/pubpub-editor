@@ -5,7 +5,7 @@ import ImageStatic from './ImageStatic';
 
 const propTypes = {
 	handleFileUpload: PropTypes.func,
-
+	handleResizeUrl: PropTypes.func, // Should take a url and return a url to a resized image
 	/* All addons get the following props,
 	but certain schema-based addons may not need them */
 	// containerId: PropTypes.string.isRequired,
@@ -14,6 +14,7 @@ const propTypes = {
 };
 const defaultProps = {
 	handleFileUpload: ()=>{},
+	handleResizeUrl: undefined,
 };
 
 class ImageAddon extends Component {
@@ -55,6 +56,7 @@ class ImageAddon extends Component {
 								view={view}
 								{...helperFunctions}
 								onFileUpload={props.handleFileUpload}
+								handleResizeUrl={props.handleResizeUrl}
 							/>
 						);
 					},
@@ -65,6 +67,7 @@ class ImageAddon extends Component {
 								url={node.attrs.url}
 								size={node.attrs.size}
 								caption={node.attrs.caption}
+								handleResizeUrl={props.handleResizeUrl}
 							/>
 						);
 					},

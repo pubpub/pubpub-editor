@@ -14,6 +14,7 @@ const propTypes = {
 	isSelected: PropTypes.bool,
 	onFileUpload: PropTypes.func.isRequired,
 	updateAttrs: PropTypes.func.isRequired,
+	handleResizeUrl: PropTypes.func
 };
 
 const defaultProps = {
@@ -21,6 +22,7 @@ const defaultProps = {
 	url: '',
 	isSelected: false,
 	view: {},
+	handleResizeUrl: undefined,
 };
 
 class ImageEditable extends Component {
@@ -113,6 +115,7 @@ class ImageEditable extends Component {
 			float: figFloat,
 		};
 
+		const imageUrl = this.props.url && this.props.handleResizeUrl ? this.props.handleResizeUrl(this.props.url) : this.props.url;
 		return (
 			<div className={'figure-wrapper'} ref={(rootElem)=> { this.rootElem = rootElem; }}>
 				<figure className={`image ${this.props.isSelected ? 'isSelected' : ''}`} style={figStyle}>
@@ -125,7 +128,7 @@ class ImageEditable extends Component {
 					{this.props.url &&
 						<img
 							ref={(imgElem)=> { this.imgElem = imgElem; }}
-							src={this.state.imageBlob || this.props.url}
+							src={this.state.imageBlob || imageUrl}
 							alt={this.props.caption}
 							style={{ opacity: this.state.uploading ? 0 : 1 }}
 						/>

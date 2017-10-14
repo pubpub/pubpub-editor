@@ -8,6 +8,7 @@ const propTypes = {
 	url: PropTypes.string,
 	align: PropTypes.oneOf(['full', 'left', 'right', 'center']),
 	size: PropTypes.number, // Number as percentage width
+	handleResizeUrl: PropTypes.func
 };
 
 const defaultProps = {
@@ -15,6 +16,7 @@ const defaultProps = {
 	url: '',
 	align: 'center',
 	size: 50,
+	handleResizeUrl: undefined,
 };
 
 const ImageStatic = function(props) {
@@ -28,12 +30,12 @@ const ImageStatic = function(props) {
 	};
 
 	if (!props.url) { return null; }
-
+	const imageUrl = props.handleResizeUrl ? props.handleResizeUrl(props.url) : props.url;
 	return (
 		<div className={'figure-wrapper'}>
 			<figure className={'image'} style={figStyle}>
 				<img
-					src={props.url}
+					src={imageUrl}
 					alt={props.caption}
 				/>
 				<figcaption>
