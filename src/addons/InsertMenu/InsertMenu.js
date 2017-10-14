@@ -80,7 +80,7 @@ class InsertMenu extends Component {
 			props: {
 				handleDOMEvents: {
 					keydown: (view, evt)=> {
-						const state = view.state['insert-menu$'];
+						const state = pluginKey.getState(view.state);
 						if (state && state.isActive && evt.type === 'keydown' && (evt.key === 'ArrowUp' || evt.key === 'ArrowDown' || evt.key === 'Enter')) {
 							evt.preventDefault();
 							return true;
