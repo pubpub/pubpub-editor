@@ -109,8 +109,9 @@ class FirebasePlugin extends Plugin {
 		// 	console.log('FREAK OUT AABOUT STATE');
 		// 	debugger;
 		// }
-
+		console.log('In sendCollabChanges', transaction);
 		if (meta.collab$ || meta.rebase || meta.footnote) {
+			console.log('Not going to send that one');
 			return;
 		}
 		if (meta.pointer) {

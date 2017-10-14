@@ -85,6 +85,7 @@ class FootnoteAddon extends Component {
 										}
 									);
 									transaction.setMeta('footnote', true);
+									console.log('Dispatching footnote');
 									view.dispatch(transaction);
 								}
 								footnoteCount += 1;
