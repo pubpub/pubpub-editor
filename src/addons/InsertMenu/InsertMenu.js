@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Plugin, PluginKey } from 'prosemirror-state';
+import { Plugin } from 'prosemirror-state';
 import fuzzysearch from 'fuzzysearch';
 import { getMenuItems, canUseInsertMenu } from './insertMenuConfig';
-
-const insertMenuKey = new PluginKey('insert-menu');
 
 require('./insertMenu.scss');
 
@@ -12,18 +10,21 @@ const propTypes = {
 	containerId: PropTypes.string,
 	view: PropTypes.object,
 	editorState: PropTypes.object,
+	pluginKey: PropTypes.object,
 };
 
 const defaultProps = {
 	containerId: undefined,
 	view: undefined,
 	editorState: undefined,
+	pluginKey: undefined,
 };
 
 class InsertMenu extends Component {
-	static getPlugins() {
+	static pluginName = 'InsertMenu';
+	static getPlugins({ pluginKey }) {
 		return [new Plugin({
-			key: insertMenuKey,
+			key: pluginKey,
 			state: {
 				init() {
 					return {
@@ -137,7 +138,7 @@ class InsertMenu extends Component {
 
 	onChange() {
 		const container = document.getElementById(this.props.containerId);
-		const viewState = insertMenuKey.getState(this.props.view.state);
+		const viewState = this.props.pluginKey.getState(this.props.view.state);
 		if (!viewState) { return null; }
 		const coordsAtPos = this.props.view.coordsAtPos(viewState.positionNumber);
 		const boundRect = container.getBoundingClientRect();

@@ -1,7 +1,6 @@
 import { Button, Menu, MenuItem, Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 import React, { Component } from 'react';
 
-import { PluginKey } from 'prosemirror-state';
 import PropTypes from 'prop-types';
 import TrackChangesPlugin from './TrackChangesPlugin';
 
@@ -23,7 +22,7 @@ const defaultProps = {
 };
 
 class TrackAddon extends Component {
-
+	static pluginName = 'TrackChanges';
 	static getPlugins({ getPlugin, pluginKey }) {
 		return [TrackChangesPlugin(pluginKey, getPlugin)];
 	}

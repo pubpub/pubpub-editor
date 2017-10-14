@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
-import { PluginKey } from 'prosemirror-state';
 import PropTypes from 'prop-types';
 import { collab } from 'prosemirror-collab';
 import FirebasePlugin from './firebasePlugin';
 
 require('./collaborative.scss');
 
-const firebaseKey = new PluginKey('firebase');
-
 const propTypes = {
 	view: PropTypes.object,
 	editorState: PropTypes.object,
 	onClientChange: PropTypes.func,
 	onForksUpdate: PropTypes.func,
+	pluginKey: PropTypes.object,
+	editorKey: PropTypes.string,
 };
 
 const defaultProps = {
@@ -20,9 +19,12 @@ const defaultProps = {
 	editorState: undefined,
 	onClientChange: ()=>{},
 	onForksUpdate: ()=>{},
+	pluginKey: undefined,
+	editorKey: '',
 };
 
 class Collaborative extends Component {
+	static pluginName = 'Collaborative';
 	static getPlugins({ firebaseConfig, clientData, editorKey, onClientChange, pluginKey, onForksUpdate }) {
 		// need to add a random client ID number to account for sessions with the same client
 		const possible = 'abcdefghijklmnopqrstuvwxyz0123456789';

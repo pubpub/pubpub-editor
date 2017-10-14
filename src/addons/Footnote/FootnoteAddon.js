@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 // import PropTypes from 'prop-types';
-import { Plugin, PluginKey } from 'prosemirror-state';
+import { Plugin } from 'prosemirror-state';
 import FootnoteEditable from './FootnoteEditable';
 import FootnoteStatic from './FootnoteStatic';
-
-const footnoteKey = new PluginKey('footnote');
 
 /*
 All addons get the following props,
@@ -65,9 +63,10 @@ class FootnoteAddon extends Component {
 		};
 	};
 
-	static getPlugins() {
+	static pluginName = 'Footnote';
+	static getPlugins({ pluginKey }) {
 		return [new Plugin({
-			key: footnoteKey,
+			key: pluginKey,
 			view: function() {
 				return {
 					update: function(view) {
@@ -85,7 +84,6 @@ class FootnoteAddon extends Component {
 										}
 									);
 									transaction.setMeta('footnote', true);
-									console.log('Dispatching footnote');
 									view.dispatch(transaction);
 								}
 								footnoteCount += 1;

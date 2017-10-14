@@ -107,8 +107,8 @@ class Editor extends Component {
 		if (this.props.children) {
 			React.Children.forEach(this.props.children, (child) => {
 				if (child && child.type.getPlugins) {
-					const key = new PluginKey(child.type.name);
-					pluginKeys[child.type.name] = key;
+					const key = new PluginKey(child.type.pluginName);
+					pluginKeys[child.type.pluginName] = key;
 					const addonPlugins = child.type.getPlugins({
 						...child.props,
 						pluginKey: key,
@@ -336,7 +336,7 @@ class Editor extends Component {
 							editorState: this.state.editorState,
 							transaction: this.state.transaction,
 							containerId: this.containerId,
-							pluginKey: this.state.pluginKeys[child.type.name]
+							pluginKey: this.state.pluginKeys[child.type.pluginName]
 						});
 					})
 					: null
