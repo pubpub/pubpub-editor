@@ -202,7 +202,11 @@ storiesOf('Editor', module)
 	<Editor onChange={onChange} initialContent={citationDoc}>
 		<FormattingMenu />
 		<InsertMenu />
-		<Citation />
+		<Citation formatFunction={(val, callback)=> {
+			setTimeout(()=> {
+				callback(`html: ${val}`);
+			}, 500);
+		}}/>
 	</Editor>
 ))
 .add('Track Changes', () => (
