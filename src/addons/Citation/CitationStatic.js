@@ -15,7 +15,7 @@ const CitationStatic = function(props) {
 		<div className={'citation-wrapper'}>
 			<Popover
 				content={
-					<div className={'citation-text pt-card pt-elevation-2'}>
+					<div className={'rendered-citation pt-card pt-elevation-2'}>
 						{props.value &&
 							<div
 								dangerouslySetInnerHTML={{ __html: props.html }}
