@@ -41,9 +41,9 @@ const nodes = {
 		group: 'block',
 		parseDOM: [{ tag: 'p' }],
 		toDOM() { return ['p', 0]; },
-		toReact({ node, renderContent, meta, index }) {
-			return <div className={'p-block'} key={index}>{renderContent(node.content, meta)}</div>;
-		}
+		// toReact({ node, renderContent, meta, index }) {
+		// 	return <div className={'p-block'} key={index}>{renderContent(node.content, meta)}</div>;
+		// }
 	},
 
 	// highlight: {
@@ -244,18 +244,18 @@ const nodes = {
 		group: 'block',
 		parseDOM: [{ tag: 'blockquote' }],
 		toDOM() { return ['blockquote', 0]; },
-		toReact({ node, index, renderContent }) {
-			return <blockquote key={index}>{renderContent(node.content, meta)}</blockquote>;
-		}
+		// toReact({ node, index, renderContent }) {
+		// 	return <blockquote key={index}>{renderContent(node.content, meta)}</blockquote>;
+		// }
 	},
 
 	horizontal_rule: {
 		group: 'block',
 		parseDOM: [{ tag: 'hr' }],
 		toDOM() { return ['div', ['hr']]; },
-		toReact({ node, index, renderContent }) {
-			return <hr key={index} />;
-		},
+		// toReact({ node, index, renderContent }) {
+		// 	return <hr key={index} />;
+		// },
 		insertMenu: {
 			label: 'Insert Horizontal Line',
 			icon: 'pt-icon-minus',
@@ -278,11 +278,11 @@ const nodes = {
 			{ tag: 'h6', attrs: { level: 6 } }
 		],
 		toDOM(node) { return ['h' + node.attrs.level, 0]; },
-		toReact({ node, index, renderContent }) {
-			if (!node.content) { return null; }
-			const id = node.content[0] && node.content[0].text && node.content[0].text.trim().replace(/[^A-Za-z0-9 ]/g, '').replace(/\s/g, '-').toLowerCase();
-			return React.createElement('h' + node.attrs.level, {key: index, id: id}, renderContent(node.content, meta));
-		}
+		// toReact({ node, index, renderContent }) {
+		// 	if (!node.content) { return null; }
+		// 	const id = node.content[0] && node.content[0].text && node.content[0].text.trim().replace(/[^A-Za-z0-9 ]/g, '').replace(/\s/g, '-').toLowerCase();
+		// 	return React.createElement('h' + node.attrs.level, {key: index, id: id}, renderContent(node.content, meta));
+		// }
 	},
 
 	code_block: {
@@ -291,9 +291,16 @@ const nodes = {
 		code: true,
 		parseDOM: [{ tag: 'pre', preserveWhitespace: true }],
 		toDOM() { return ['pre', ['code', 0]]; },
-		toReact({ node, index, renderContent }) {
-			return <pre key={index}><code>{renderContent(node.content, meta)}</code></pre>;
-		}
+		// toReact({ node, index, renderContent }) {
+		// 	return <pre key={index}><code>{renderContent(node.content, meta)}</code></pre>;
+		// },
+		insertMenu: {
+			label: 'Insert Code Block',
+			icon: 'pt-icon-code',
+			onInsert: (view) => {
+				view.dispatch(view.state.tr.replaceSelectionWith(view.state.schema.nodes.code_block.create()));
+			},
+		},
 	},
 
 	// html_block: {
@@ -375,9 +382,9 @@ const nodes = {
 		selectable: false,
 		parseDOM: [{ tag: 'br' }],
 		toDOM() { return ['br']; },
-		toReact({ node, index }) {
-			return <br key={index} />;
-		}
+		// toReact({ node, index }) {
+		// 	return <br key={index} />;
+		// }
 	},
 
 	// empty schema block
