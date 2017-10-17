@@ -37,6 +37,7 @@ const CitationList = function(props) {
 					<li key={`citation-list-item-${item.count}`} className={'citation-list-item'}>
 						<span className={'count'}>[{item.count}]</span>
 						<span
+							className={'rendered-citation'}
 							dangerouslySetInnerHTML={{ __html: item.html }}
 						/>
 					</li>

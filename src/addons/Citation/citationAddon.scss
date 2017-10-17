@@ -35,6 +35,9 @@
 			padding: 8px;
 			background-color: white;
 			user-select: none;
+			div {
+				display: inline;
+			}
 		}
 		.input-wrapper {
 			padding: 8px;
@@ -56,6 +59,11 @@
 	list-style: none;
 	padding: 0 !important;
 	margin: 0 !important;
+	.rendered-citation {
+		div {
+			display: inline;
+		}
+	}
 	&.selected {
 		outline: 3px solid #BBBDC0;	
 	}
@@ -72,7 +80,7 @@
 	}
 }
 .citation-popover {
-	.citation-text {
+	.rendered-citation {
 		max-width: 400px;
 		padding: 15px;
 		.empty-citation-text {

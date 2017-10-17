@@ -78,7 +78,7 @@ class CitationAddon extends Component {
 					selectable: true,
 					insertMenu: {
 						label: 'Insert Citation List',
-						icon: 'pt-icon-media',
+						icon: 'pt-icon-numbered-list',
 						onInsert: (view) => {
 							const citationListNode = view.state.schema.nodes.citationList.create();
 							const transaction = view.state.tr.replaceSelectionWith(citationListNode);

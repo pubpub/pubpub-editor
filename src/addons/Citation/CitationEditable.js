@@ -23,12 +23,13 @@ class CitationEditable extends Component {
 	}
 	handleValueChange(evt) {
 		this.props.updateAttrs({ value: evt.target.value });
-		this.props.formatFunction(evt.target.value, this.handleHTMLChange);
 		this.refocusNode();
+		this.props.formatFunction(evt.target.value, this.handleHTMLChange);
 	}
 	handleHTMLChange(html) {
 		this.props.updateAttrs({ html: html });
 		this.refocusNode();
+		this.inputElem.focus();
 	}
 	refocusNode() {
 		const view = this.props.view;
@@ -51,7 +52,8 @@ class CitationEditable extends Component {
 							<div className={'input-wrapper'}>
 								<div className={'input-title'}>Input</div>
 								<textarea
-									placeholder={'Enter bibtex, wikidata url, or bibjson...'}
+									ref={(refElem)=> { this.inputElem = refElem; }}
+									placeholder={'Enter bibtex, DOI, wikidata url, or bibjson...'}
 									className={'pt-input pt-fill'}
 									value={this.props.value}
 									onChange={this.handleValueChange}
