@@ -168,9 +168,9 @@ class FirebasePlugin extends Plugin {
 		}
 		const trans = receiveTransaction(this.view.state, receivedSteps, recievedClientIDs);
 		if (meta) {
-			for (let metaKey in meta) {
+			Object.keys(meta).forEach((metaKey)=> {
 				trans.setMeta(metaKey, meta[metaKey]);
-			}
+			});
 		}
 		trans.setMeta('receiveDoc', true);
 		this.view.dispatch(trans);

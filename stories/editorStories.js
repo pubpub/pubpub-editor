@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { Component } from 'react';
-import { equationDoc, imageDoc, videoDoc, iframeDoc, fileDoc, footnoteDoc } from './data';
+import { equationDoc, imageDoc, videoDoc, iframeDoc, fileDoc, footnoteDoc, citationDoc } from './data';
 
 import Collaborative from 'addons/Collaborative/Collaborative';
 import { Editor } from 'index';
@@ -10,6 +10,7 @@ import Video from 'addons/Video/VideoAddon';
 import Iframe from 'addons/Iframe/IframeAddon';
 import File from 'addons/File/FileAddon';
 import Footnote from 'addons/Footnote/FootnoteAddon';
+import Citation from 'addons/Citation/CitationAddon';
 import InsertMenu from 'addons/InsertMenu/InsertMenu';
 import Latex from 'addons/Latex/LatexAddon';
 import TrackChanges from 'addons/TrackChanges/TrackChangesAddon';
@@ -195,6 +196,13 @@ storiesOf('Editor', module)
 		<FormattingMenu />
 		<InsertMenu />
 		<Footnote />
+	</Editor>
+))
+.add('Citation', () => (
+	<Editor onChange={onChange} initialContent={citationDoc}>
+		<FormattingMenu />
+		<InsertMenu />
+		<Citation />
 	</Editor>
 ))
 .add('Track Changes', () => (

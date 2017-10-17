@@ -23,7 +23,6 @@ class FootnoteAddon extends Component {
 					atom: true,
 					group: 'inline',
 					attrs: {
-						id: { default: '' },
 						value: { default: '' },
 						count: { default: 0 },
 					},
@@ -34,13 +33,7 @@ class FootnoteAddon extends Component {
 						label: 'Insert Footnote',
 						icon: 'pt-icon-asterisk',
 						onInsert: (view) => {
-							let uniqueHash = '';
-							const possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
-							for (let index = 0; index < 16; index++) {
-								uniqueHash += possible.charAt(Math.floor(Math.random() * possible.length));
-							}
-
-							const newNode = view.state.schema.nodes.footnote.create({ id: uniqueHash });
+							const newNode = view.state.schema.nodes.footnote.create();
 							view.dispatch(view.state.tr.replaceSelectionWith(newNode));
 						},
 					},
