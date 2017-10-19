@@ -155,7 +155,7 @@ class FirebasePlugin extends Plugin {
 		}
 	}
 
-	onRemoteChange = ({ steps, stepClientIDs, changeKey, meta, isLocal }) => {
+	onRemoteChange = ({ steps, stepClientIDs, changeKey, meta, isLocal })=> {
 		let receivedSteps;
 		let recievedClientIDs;
 
@@ -166,15 +166,23 @@ class FirebasePlugin extends Plugin {
 			receivedSteps = steps;
 			recievedClientIDs = stepClientIDs;
 		}
-		const trans = receiveTransaction(this.view.state, receivedSteps, recievedClientIDs);
-		if (meta) {
-			Object.keys(meta).forEach((metaKey)=> {
-				trans.setMeta(metaKey, meta[metaKey]);
-			});
+		/* receiveTransaction sometimes throws a 'Position out of Range' */
+		/* error on sync. Not sure why out of range positions are syncing */
+		/* in the first place - but it doesn't seem to crash the editor. */
+		/* So, let's just catch it instead and move on. */
+		try {
+			const trans = receiveTransaction(this.view.state, receivedSteps, recievedClientIDs);
+			if (meta) {
+				Object.keys(meta).forEach((metaKey)=> {
+					trans.setMeta(metaKey, meta[metaKey]);
+				});
+			}
+			trans.setMeta('receiveDoc', true);
+			this.view.dispatch(trans);
+			delete this.selfChanges[changeKey];
+		} catch (err) {
+			return null;
 		}
-		trans.setMeta('receiveDoc', true);
-		this.view.dispatch(trans);
-		delete this.selfChanges[changeKey];
 	}
 
 	apply = (transaction, state, prevEditorState, editorState) => {
