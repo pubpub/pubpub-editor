@@ -259,17 +259,18 @@ class FirebasePlugin extends Plugin {
 				return null;
 			}
 			const { from, to } = selection;
-
 			if (clientId === this.localClientId) {
 				return null;
 			}
 			if (from === to) {
-				const toPos = selection.$to.pos;
-				if (!toPos) { return null; }
+				// const toPos = selection.$to.pos;
+				// if (!toPos) { return null; }
+				if (!to) { return null; }
 				let cursorCoords;
 				try {
-					cursorCoords = this.view.coordsAtPos(toPos);
-				} catch(err) {
+					// cursorCoords = this.view.coordsAtPos(toPos);
+					cursorCoords = this.view.coordsAtPos(to);
+				} catch (err) {
 					return null;
 				}
 

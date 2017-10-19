@@ -62,7 +62,7 @@ function linkPlugin() {
 						}
 					}
 
-					const href = $from.nodeBefore.marks.reduce((prev, curr)=> {
+					const href = $from.nodeBefore && $from.nodeBefore.marks.reduce((prev, curr)=> {
 						if (curr.type.name === 'link') { return curr.attrs.href; }
 						return prev;
 					}, '');

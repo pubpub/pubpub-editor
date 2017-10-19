@@ -84,7 +84,8 @@ class DocumentRef {
 					};
 				}
 			},
-			(error, committed, { key })=> {
+			(error, committed, dataSnapshot)=> {
+				const key = dataSnapshot ? dataSnapshot.key : undefined;
 				if (error) {
 					console.error('updateCollab', error, steps, clientID, key);
 				} else if (committed && key % SAVE_EVERY_N_STEPS === 0 && key > 0) {
@@ -147,7 +148,14 @@ class DocumentRef {
 			const compressedSelection = snapshot.val();
 			if (compressedSelection) {
 				try {
-					this.selections[clientID] = Selection.fromJSON(this.view.state.doc, uncompressSelectionJSON(compressedSelection));
+					/* Sometimes, because the selection syncs before the doc, the */
+					/* selection location is larger than the doc size. */
+					/* Math.min the anchor and head to prevent this from being an issue */
+					const docSize = this.view.state.doc.content.size;
+					const correctedSelection = uncompressSelectionJSON(compressedSelection);
+					correctedSelection.anchor = Math.min(docSize, correctedSelection.anchor);
+					correctedSelection.head = Math.min(docSize, correctedSelection.head);
+					this.selections[clientID] = Selection.fromJSON(this.view.state.doc, correctedSelection);
 					this.selections[clientID].data = compressedSelection.data;
 				} catch (error) {
 					console.warn('updateClientSelection', error);
