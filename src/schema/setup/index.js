@@ -87,8 +87,8 @@ function getBasePlugins(options) {
 		keymap(buildKeymap(options.schema, options.mapKeys)),
 		keymap(baseKeymap),
 	];
-	if (!options.isReadOnly) { 
-		deps.push(SelectPlugin); 
+	if (!options.isReadOnly) {
+		deps.push(SelectPlugin);
 		deps.push(linkPlugin());
 	}
 	if (options.placeholder) { deps.push(placeholderPlugin(options.placeholder)); }
