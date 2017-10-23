@@ -31,22 +31,22 @@ class ImageAddon extends Component {
 						caption: { default: '' },
 					},
 					parseDOM: [{
-						tag: 'img[src]',
+						tag: 'img',
 						getAttrs: (node)=> {
 							return {
-								url: node.getAttribute('src'),
+								url: node.getAttribute('src') || null,
+								size: Number(node.getAttribute('data-size')) || 50,
+								align: node.getAttribute('data-align') || 'center',
 								caption: node.getAttribute('alt') || '',
-								size: Number(node.getAttribute('data-size')) || undefined,
-								align: node.getAttribute('data-align') || undefined,
 							};
 						}
 					}],
 					toDOM: (node)=> {
 						return ['img', {
 							src: node.attrs.url,
-							alt: node.attrs.caption,
 							'data-size': node.attrs.size,
-							'data-align': node.attrs.align
+							'data-align': node.attrs.align,
+							alt: node.attrs.caption,
 						}];
 					},
 					inline: false,

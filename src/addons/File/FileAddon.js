@@ -28,6 +28,25 @@ class FileAddon extends Component {
 						fileSize: { default: null },
 						caption: { default: '' },
 					},
+					parseDOM: [{
+						tag: 'file',
+						getAttrs: (node)=> {
+							return {
+								url: node.getAttribute('data-url') || null,
+								fileName: node.getAttribute('data-fileName') || null,
+								fileSize: Number(node.getAttribute('data-fileSize')) || null,
+								caption: Number(node.getAttribute('data-caption')) || '',
+							};
+						}
+					}],
+					toDOM: (node)=> {
+						return ['file', {
+							'data-url': node.attrs.url,
+							'data-fileName': node.attrs.fileName,
+							'data-fileSize': node.attrs.fileSize,
+							'data-caption': node.attrs.caption,
+						}];
+					},
 					inline: false,
 					group: 'block',
 					draggable: false,

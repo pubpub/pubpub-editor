@@ -26,6 +26,19 @@ class LatexAddon extends Component {
 					attrs: {
 						value: { default: '' },
 					},
+					parseDOM: [{
+						tag: 'math',
+						getAttrs: (node)=> {
+							return {
+								value: node.getAttribute('value') || '',
+							};
+						}
+					}],
+					toDOM: (node)=> {
+						return ['math', {
+							value: node.attrs.value,
+						}];
+					},
 					inline: true,
 					draggable: false,
 					selectable: true,

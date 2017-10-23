@@ -33,6 +33,23 @@ class CitationAddon extends Component {
 						html: { default: '' },
 						count: { default: 0 },
 					},
+					parseDOM: [{
+						tag: 'citation',
+						getAttrs: (node)=> {
+							return {
+								value: node.getAttribute('data-value') || '',
+								html: node.getAttribute('data-html') || '',
+								count: Number(node.getAttribute('data-count')) || undefined,
+							};
+						}
+					}],
+					toDOM: (node)=> {
+						return ['citation', {
+							'data-value': node.attrs.value,
+							'data-html': node.attrs.html,
+							'data-count': node.attrs.count
+						}];
+					},
 					inline: true,
 					draggable: false,
 					selectable: true,
@@ -71,6 +88,10 @@ class CitationAddon extends Component {
 					atom: true,
 					attrs: {
 						key: { default: Math.random() }
+					},
+					parseDOM: [{ tag: 'citationlist' }],
+					toDOM: ()=> {
+						return ['citationlist'];
 					},
 					inline: false,
 					group: 'block',
