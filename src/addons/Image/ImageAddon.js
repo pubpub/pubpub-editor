@@ -30,7 +30,25 @@ class ImageAddon extends Component {
 						align: { default: 'center' },
 						caption: { default: '' },
 					},
-					parseDOM: [{ tag: 'img[src]' }],
+					parseDOM: [{
+						tag: 'img[src]',
+						getAttrs: (node)=> {
+							return {
+								url: node.getAttribute('src'),
+								caption: node.getAttribute('alt') || '',
+								size: Number(node.getAttribute('data-size')) || undefined,
+								align: node.getAttribute('data-align') || undefined,
+							};
+						}
+					}],
+					toDOM: (node)=> {
+						return ['img', {
+							src: node.attrs.url,
+							alt: node.attrs.caption,
+							'data-size': node.attrs.size,
+							'data-align': node.attrs.align
+						}];
+					},
 					inline: false,
 					group: 'block',
 					draggable: false,

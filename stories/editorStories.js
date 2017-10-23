@@ -5,6 +5,7 @@ import { equationDoc, imageDoc, videoDoc, iframeDoc, fileDoc, footnoteDoc, citat
 import Collaborative from 'addons/Collaborative/Collaborative';
 import { Editor } from 'index';
 import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
+import SelectionCite from 'addons/SelectionCite/SelectionCite';
 import Image from 'addons/Image/ImageAddon';
 import Video from 'addons/Video/VideoAddon';
 import Iframe from 'addons/Iframe/IframeAddon';
@@ -132,6 +133,19 @@ storiesOf('Editor', module)
 			`}</style>
 			<Editor onChange={onChange} ref={(ref)=> { editorRef = ref; }} placeholder={'Begin writing...'}>
 				<FormattingMenu include={['link', 'bold', 'italic']}/>
+			</Editor>
+		</div>
+	</div>
+	
+))
+.add('SelectionCite', () => (
+	<div>
+		<div style={editorWrapper}>
+			<style>{`
+				.pubpub-editor { font-family: serif; }	
+			`}</style>
+			<Editor onChange={onChange} ref={(ref)=> { editorRef = ref; }} placeholder={'Begin writing...'}>
+				<SelectionCite />
 			</Editor>
 		</div>
 	</div>
