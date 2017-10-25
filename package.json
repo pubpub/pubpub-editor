@@ -1,6 +1,6 @@
 {
   "name": "@pubpub/editor",
-  "version": "4.0.0-beta.62",
+  "version": "4.0.0-beta.63",
   "description": "Collaborative Community Editor",
   "main": "dist/index.js",
   "author": "PubPub Team <pubpub@media.mit.edu>",
@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "cuid": "^1.3.8",
+    "dom-anchor-text-quote": "^4.0.2",
     "filesize": "^3.5.10",
     "firebase": "^4.4.0",
     "fuzzysearch": "^1.0.3",
@@ -38,7 +39,8 @@
     "prosemirror-schema-table": "^0.22.0",
     "prosemirror-state": "^0.24.0",
     "prosemirror-transform": "^0.24.0",
-    "prosemirror-view": "^0.24.0"
+    "prosemirror-view": "^0.24.0",
+    "string-hash": "^1.1.3"
   },
   "peerDependencies": {
     "@blueprintjs/core": "^1.29.0",

@@ -1,7 +1,6 @@
 /* eslint-disable */
 import React, { Component } from 'react';
-import { equationDoc, imageDoc, videoDoc, iframeDoc, fileDoc, footnoteDoc, citationDoc } from './data';
-
+import { plainDoc, equationDoc, imageDoc, videoDoc, iframeDoc, fileDoc, footnoteDoc, citationDoc } from './data';
 import Collaborative from 'addons/Collaborative/Collaborative';
 import { Editor } from 'index';
 import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
@@ -140,14 +139,33 @@ storiesOf('Editor', module)
 ))
 .add('SelectionCite', () => (
 	<div>
-		<div style={editorWrapper}>
+		<div style={editorWrapper} className={'selection-cite-wrapper'}>
 			<style>{`
 				.pubpub-editor { font-family: serif; }	
 			`}</style>
-			<Editor onChange={onChange} ref={(ref)=> { editorRef = ref; }} placeholder={'Begin writing...'}>
-				<SelectionCite />
+			<Editor onChange={onChange} ref={(ref)=> { editorRef = ref; }} placeholder={'Begin writing...'} initialContent={plainDoc}>
+				<SelectionCite
+					highlights={[
+						{
+							exact: 'is a new',
+							prefix: 'hello this',
+							suffix: 'sentence.',
+							id: 'h75gbre4',
+						}
+					]}
+					// versionId={'1233-asd3-as23-asf3'}
+				/>
+				<InsertMenu />
+				<Latex />
+				<Image handleFileUpload={s3Upload}/>
 			</Editor>
 		</div>
+		{/*<button className={'pt-button'} onClick={()=>{
+			const container = document.getElementsByClassName('selection-cite-wrapper')[0];
+			const highlightObject = ;
+			const textQuoteRange = textQuote.toRange(container, highlightObject);
+			console.log(textQuoteRange);
+		}}>Click</button>*/}
 	</div>
 	
 ))

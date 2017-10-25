@@ -26,15 +26,28 @@ class FootnoteAddon extends Component {
 						value: { default: '' },
 						count: { default: 0 },
 					},
-					parseDOM: [{
-						tag: 'footnote',
-						getAttrs: (node)=> {
-							return {
-								value: node.getAttribute('data-value') || '',
-								count: Number(node.getAttribute('data-count')) || 0,
-							};
-						}
-					}],
+					parseDOM: [
+						{
+							tag: 'footnote',
+							getAttrs: (node)=> {
+								return {
+									value: node.getAttribute('data-value') || '',
+									count: Number(node.getAttribute('data-count')) || 0,
+								};
+							}
+						},
+						// {
+						// 	style: 'mso-special-character',
+						// 	priority: 60,
+						// 	getAttrs: (node)=> {
+						// 		console.log('node', node);
+						// 		return {
+						// 			value: 'wppr' || node.getAttribute('data-value') || '',
+						// 			count: 99 || Number(node.getAttribute('data-count')) || 0,
+						// 		};
+						// 	}
+						// }
+					],
 					toDOM: (node)=> {
 						return ['footnote', {
 							'data-value': node.attrs.value,

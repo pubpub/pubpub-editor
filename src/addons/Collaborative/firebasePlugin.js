@@ -109,7 +109,7 @@ class FirebasePlugin extends Plugin {
 		// 	console.log('FREAK OUT AABOUT STATE');
 		// 	debugger;
 		// }
-		if (meta.collab$ || meta.rebase || meta.footnote) {
+		if (meta.collab$ || meta.rebase || meta.footnote || meta.newSelection) {
 			return;
 		}
 		if (meta.pointer) {
