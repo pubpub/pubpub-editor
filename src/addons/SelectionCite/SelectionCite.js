@@ -5,6 +5,7 @@ import { Decoration, DecorationSet } from 'prosemirror-view';
 import { Slice, Fragment } from 'prosemirror-model';
 import * as textQuote from 'dom-anchor-text-quote';
 import stringHash from 'string-hash';
+import { Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 
 require('./selectionCite.scss');
 
@@ -193,26 +194,40 @@ class SelectionCite extends Component {
 	}
 
 	render() {
-		const padding = 5;
-		const width = 50;
+		// const padding = 5;
+		// const width = 50;
 		// const width = 327;
 		const wrapperStyle = {
 			display: this.state.top !== null ? 'block' : 'none',
-			top: Math.max(this.state.top - 40, 0),
-			width: `${width}px`,
-			left: Math.max(this.state.left - (width / 2), 0),
-			padding: `0px ${padding}px`
+			// transform: `translateY(${Math.max(this.state.top - 40, 0)}px)`,
+			transform: `translateY(${Math.max(this.state.top, 0)}px)`,
+			// top: Math.max(this.state.top - 40, 0),
+			top: 0,
+			// width: `${width}px`,
+			// left: Math.max(this.state.left - (width / 2), 0),
+			right: 0,
+			// padding: `0px ${padding}px`
 		};
 		return (
 			<div className={'selection-cite'} style={wrapperStyle} onMouseDown={this.handleMouseDown}>
-				<div
-					role={'button'}
-					tabIndex={-1}
-					className={'button pt-icon-bookmark'}
-					onClick={this.handleClick}
+				<Popover
+					content={
+						<div className={'rendered-citation pt-card pt-elevation-2'}>
+							{window.location.origin}{window.location.pathname}?from={this.state.from}&to={this.state.to}&{this.props.versionId ? 'version' : 'hash'}={this.props.versionId || this.state.hash}
+						</div>
+					}
+					interactionKind={PopoverInteractionKind.CLICK}
+					position={Position.BOTTOM_RIGHT}
+					popoverClassName={'pt-minimal'}
+					transitionDuration={-1}
+					inheritDarkTheme={false}
+					tetherOptions={{
+						constraints: [{ attachment: 'together', to: 'window' }]
+					}}
 				>
-					{window.location.origin}{window.location.pathname}?from={this.state.from}&to={this.state.to}&{this.props.versionId ? 'version' : 'hash'}={this.props.versionId || this.state.hash}
-				</div>
+					<button className={'pt-button pt-minimal pt-icon-highlight'} />
+				</Popover>
+				
 			</div>
 		);
 	}
