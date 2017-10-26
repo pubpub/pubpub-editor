@@ -1,0 +1,14 @@
+.highlight-quote {
+	font-style: italic;
+	margin-bottom: 1em;
+	&.pt-card {
+		padding: 10px;
+	}
+	.highlight-text {
+		background-color: rgba(56, 111, 241, 0.3);
+	}
+	&.isSelected {
+		outline: 3px solid #BBBDC0;
+		background-color: #F0F0F0;
+	}
+}

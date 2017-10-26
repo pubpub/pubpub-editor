@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Plugin, Selection } from 'prosemirror-state';
+import { Plugin, TextSelection } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 import { Slice, Fragment } from 'prosemirror-model';
 import * as textQuote from 'dom-anchor-text-quote';
 import stringHash from 'string-hash';
 import { Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 
-require('./highlight.scss');
+require('./highlightMenu.scss');
 
 const propTypes = {
 	highlights: PropTypes.array,
@@ -33,8 +33,8 @@ const defaultProps = {
 	editorState: undefined,
 };
 
-class Highlight extends Component {
-	static pluginName = 'Highlight';
+class HighlightMenu extends Component {
+	static pluginName = 'HighlightMenu';
 	static getPlugins({ pluginKey, primaryEditorState, primaryEditorClassName }) {
 		return [new Plugin({
 			key: pluginKey,
@@ -64,14 +64,18 @@ class Highlight extends Component {
 							prefix: transaction.meta.newSelectionData.prefix,
 							suffix: transaction.meta.newSelectionData.suffix,
 						});
-						console.log('Doing it this way', range);
+						// console.log(transaction.meta.newSelectionData);
+						// console.log('Doing it this way', range);
+						// debugger;
 						if (!range) {
 							newDecoSet = decoSet;
 						} else {
-
 							const from = editorState.doc.resolve(range.commonAncestorContainer.pmViewDesc.posAtStart + range.startOffset).pos;
 							const to = editorState.doc.resolve(range.commonAncestorContainer.pmViewDesc.posAtStart + range.endOffset).pos;
+							// const from = editorState.doc.resolve(range.endContainer.pmViewDesc.posAtStart - range.startContainer.length).pos;
+							// const to = editorState.doc.resolve(range.endContainer.pmViewDesc.posAtStart).pos;
 							console.log(from, to);
+							// debugger;
 							newDecoSet = decoSet.add(editorState.doc, [Decoration.inline(from, to, {
 								class: `cite-deco ${transaction.meta.newSelectionData.id}`,
 							})]);
@@ -102,7 +106,7 @@ class Highlight extends Component {
 						primaryEditorState.doc.slice(Math.max(0, from - 10), Math.max(0, from)).content.forEach((sliceNode)=>{ prefix += sliceNode.textContent; });
 						let suffix = '';
 						primaryEditorState.doc.slice(Math.min(primaryEditorState.doc.nodeSize - 2, to), Math.min(primaryEditorState.doc.nodeSize - 2, to + 10)).content.forEach((sliceNode)=>{ suffix += sliceNode.textContent; });
-						return new Slice(Fragment.fromArray([node.type.schema.nodes.highlight.create({
+						return new Slice(Fragment.fromArray([node.type.schema.nodes.highlightQuote.create({
 							exact: exact,
 							prefix: prefix,
 							suffix: suffix,
@@ -217,7 +221,8 @@ class Highlight extends Component {
 	// 	this.props.view.dispatch(transaction);
 	// }
 	handleNewDiscussion() {
-		this.setState({ top: null });
+		const clearSelectionTransaction = this.props.view.state.tr.setSelection(new TextSelection(this.props.view.state.selection.$to));
+		this.props.view.dispatch(clearSelectionTransaction);
 		this.props.onNewDiscussion({
 			from: this.state.from,
 			to: this.state.to,
@@ -241,7 +246,11 @@ class Highlight extends Component {
 			this.completeNewDiscussion({
 				from: this.state.from,
 				to: this.state.to,
-				id: 'fakeid'
+				id: 'fakeid',
+				version: this.props.versionId,
+				exact: this.state.exact,
+				prefix: this.state.prefix,
+				suffix: this.state.suffix,
 			});
 		}, 1000);
 	}
@@ -283,7 +292,10 @@ class Highlight extends Component {
 			top: 0,
 			right: 0,
 		};
-		const decos = this.props.editorState.Highlight$.formattedHighlights;
+		/* I think this will cause a problem if a single window has more */
+		/* than one HighlightMenu in the globalscope */
+		/* Don't know the right way to get pluginKey here */
+		const decos = this.props.editorState.HighlightMenu$.formattedHighlights;
 		let things;
 		if (decos) {
 			things = decos.find().filter((item)=> {
@@ -300,7 +312,7 @@ class Highlight extends Component {
 			});
 		}
 		return (
-			<div className={'highlight'} onMouseDown={this.handleMouseDown}>
+			<div className={'highlight-menu'} onMouseDown={this.handleMouseDown}>
 				<div className={'popover-wrapper'} style={wrapperStyle}>
 					<Popover
 						content={
@@ -362,6 +374,6 @@ class Highlight extends Component {
 	}
 }
 
-Highlight.propTypes = propTypes;
-Highlight.defaultProps = defaultProps;
-export default Highlight;
+HighlightMenu.propTypes = propTypes;
+HighlightMenu.defaultProps = defaultProps;
+export default HighlightMenu;

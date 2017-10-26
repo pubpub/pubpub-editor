@@ -1,10 +1,11 @@
 /* eslint-disable */
 import React, { Component } from 'react';
-import { plainDoc, equationDoc, imageDoc, videoDoc, iframeDoc, fileDoc, footnoteDoc, citationDoc } from './data';
+import { plainDoc, highlightDoc, equationDoc, imageDoc, videoDoc, iframeDoc, fileDoc, footnoteDoc, citationDoc } from './data';
 import Collaborative from 'addons/Collaborative/Collaborative';
 import { Editor } from 'index';
 import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
-import Highlight from 'addons/Highlight/Highlight';
+import HighlightMenu from 'addons/HighlightMenu/HighlightMenu';
+import HighlightQuote from 'addons/HighlightQuote/HighlightQuoteAddon';
 import Image from 'addons/Image/ImageAddon';
 import Video from 'addons/Video/VideoAddon';
 import Iframe from 'addons/Iframe/IframeAddon';
@@ -137,14 +138,14 @@ storiesOf('Editor', module)
 	</div>
 	
 ))
-.add('Highlight', () => (
+.add('HighlightMenu', () => (
 	<div>
 		<div style={editorWrapper} className={'selection-cite-wrapper'}>
 			<style>{`
 				.pubpub-editor { font-family: serif; }	
 			`}</style>
 			<Editor onChange={onChange} ref={(ref)=> { editorRef = ref; }} placeholder={'Begin writing...'} initialContent={plainDoc}>
-				<Highlight
+				<HighlightMenu
 					highlights={[
 						// {
 						// 	exact: 'is a new',
@@ -170,13 +171,39 @@ storiesOf('Editor', module)
 							exact: 'is a new',
 							prefix: 'hello this ',
 							suffix: ' sentence.',
-						}
+						},
+						// {
+						// 	exact: "t we are typing. We have lots",
+						// 	from: 168,
+						// 	hash: undefined,
+						// 	id: "fakei3d",
+						// 	prefix: " thing tha",
+						// 	suffix: " of words ",
+						// 	to: 197,
+						// 	version: undefined,
+						// }
 					]}
 					primaryEditorClassName={'selection-cite-wrapper'}
 					onNewDiscussion={(data)=>{ console.log('New discussion', data); }}
 					onSelectionClick={(thing)=> { console.log('Clicked selection ', thing); }}
 					// versionId={'1233-asd3-as23-asf3'}
 				/>
+				<InsertMenu />
+				<Latex />
+				<Image handleFileUpload={s3Upload}/>
+			</Editor>
+		</div>
+	</div>
+	
+))
+.add('HighlightQuote', () => (
+	<div>
+		<div style={editorWrapper}>
+			<style>{`
+				.pubpub-editor { font-family: serif; }	
+			`}</style>
+			<Editor onChange={onChange} ref={(ref)=> { editorRef = ref; }} placeholder={'Begin writing...'} initialContent={highlightDoc}>
+				<HighlightQuote />
 				<InsertMenu />
 				<Latex />
 				<Image handleFileUpload={s3Upload}/>
