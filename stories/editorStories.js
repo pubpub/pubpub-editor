@@ -146,13 +146,21 @@ storiesOf('Editor', module)
 			<Editor onChange={onChange} ref={(ref)=> { editorRef = ref; }} placeholder={'Begin writing...'} initialContent={plainDoc}>
 				<SelectionCite
 					highlights={[
+						// {
+						// 	exact: 'is a new',
+						// 	prefix: 'hello this',
+						// 	suffix: 'sentence.',
+						// 	id: 'h75gbre4',
+						// }
 						{
-							exact: 'is a new',
-							prefix: 'hello this',
-							suffix: 'sentence.',
-							id: 'h75gbre4',
+							from: 277,
+							to: 289,
+							id: 'initfakeid',
+							hash: 'whateverhash',
 						}
 					]}
+					onNewDiscussion={()=>{}}
+					onSelectionClick={(thing)=> { console.log('Clicked selection ', thing); }}
 					// versionId={'1233-asd3-as23-asf3'}
 				/>
 				<InsertMenu />
@@ -160,12 +168,6 @@ storiesOf('Editor', module)
 				<Image handleFileUpload={s3Upload}/>
 			</Editor>
 		</div>
-		{/*<button className={'pt-button'} onClick={()=>{
-			const container = document.getElementsByClassName('selection-cite-wrapper')[0];
-			const highlightObject = ;
-			const textQuoteRange = textQuote.toRange(container, highlightObject);
-			console.log(textQuoteRange);
-		}}>Click</button>*/}
 	</div>
 	
 ))
