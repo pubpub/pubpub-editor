@@ -114,6 +114,117 @@ class ForkStory extends Component {
 	}
 }
 
+class Highlighting extends Component {
+
+	constructor(props) {
+		super(props);
+		// this.state = {
+		// 	primaryEditorState: undefined
+		// };
+		this.editor = undefined;
+	}
+
+	// setRef = (ref)=> {
+	// 	console.log(ref)
+	// 	const thing = ref;
+	// 	debugger;
+		
+	// 	this.editorRef = ref;
+	// }
+	// onChange = (thing)=> {
+	// 	console.log(this.editor.state.editorState);
+	// 	if (!this.state.primaryEditorState) {
+	// 		this.setState({ primaryEditorState: this.editor.state.editorState });
+	// 	}
+	// }
+	getHighlightContent = (from, to)=> {
+		const primaryEditorState = this.editor.state.editorState;
+		let exact = '';
+		primaryEditorState.doc.slice(from, to).content.forEach((sliceNode)=>{ exact += sliceNode.textContent; });
+		let prefix = '';
+		primaryEditorState.doc.slice(Math.max(0, from - 10), Math.max(0, from)).content.forEach((sliceNode)=>{ prefix += sliceNode.textContent; });
+		let suffix = '';
+		primaryEditorState.doc.slice(Math.min(primaryEditorState.doc.nodeSize - 2, to), Math.min(primaryEditorState.doc.nodeSize - 2, to + 10)).content.forEach((sliceNode)=>{ suffix += sliceNode.textContent; });
+		return {
+			exact: exact,
+			prefix: prefix,
+			suffix: suffix,
+		};
+	}
+	render() {
+		return (
+			<div>
+				<div style={editorWrapper} className={'selection-cite-wrapper'}>
+					<style>{`
+						.pubpub-editor { font-family: serif; }	
+					`}</style>
+					<Editor onChange={this.onChange} ref={(ref)=> { this.editor = ref; }} placeholder={'Begin writing...'} initialContent={plainDoc}>
+						<HighlightMenu
+							highlights={[
+								// {
+								// 	exact: 'is a new',
+								// 	prefix: 'hello this',
+								// 	suffix: 'sentence.',
+								// 	id: 'h75gbre4',
+								// }
+								{
+									from: 277,
+									to: 289,
+									id: 'initfakeid1',
+									hash: 'whateverhash',
+									exact: 'is a new',
+									prefix: 'hello this ',
+									suffix: ' sentence.',
+									version: 'asd-asd-asd',
+								},
+								{
+									from: 277,
+									to: 289,
+									id: 'initfakeid2',
+									hash: 'whateverhash',
+									exact: 'is a new',
+									prefix: 'hello this ',
+									suffix: ' sentence.',
+								},
+								// {
+								// 	exact: "t we are typing. We have lots",
+								// 	from: 168,
+								// 	hash: undefined,
+								// 	id: "fakei3d",
+								// 	prefix: " thing tha",
+								// 	suffix: " of words ",
+								// 	to: 197,
+								// 	version: undefined,
+								// }
+							]}
+							primaryEditorClassName={'selection-cite-wrapper'}
+							onNewDiscussion={(data)=>{ console.log('New discussion', data); }}
+							onSelectionClick={(thing)=> { console.log('Clicked selection ', thing); }}
+							// versionId={'1233-asd3-as23-asf3'}
+						/>
+						<InsertMenu />
+						<Latex />
+						<Image handleFileUpload={s3Upload}/>
+					</Editor>
+				</div>
+				<div style={editorWrapper}>
+					<style>{`
+						.pubpub-editor { font-family: serif; }	
+					`}</style>
+					<Editor onChange={onChange} placeholder={'Begin writing...'} initialContent={highlightDoc}>
+						<HighlightQuote getHighlightContent={this.getHighlightContent} />
+						<InsertMenu />
+						<Latex />
+						<Image handleFileUpload={s3Upload}/>
+					</Editor>
+				</div>
+
+
+			</div>
+		);
+	}
+}
+// https://localhost:9002/iframe.html/pub/huh?from=382&to=405&hash=2805056428
 storiesOf('Editor', module)
 .add('Default', () => (
 	// <div style={editorWrapper} onClick={focusEditor}>
@@ -144,7 +255,7 @@ storiesOf('Editor', module)
 			<style>{`
 				.pubpub-editor { font-family: serif; }	
 			`}</style>
-			<Editor onChange={onChange} ref={(ref)=> { editorRef = ref; }} placeholder={'Begin writing...'} initialContent={plainDoc}>
+			<Editor onChange={onChange} ref={(ref)=> { console.log(ref); editorRef = ref; }} placeholder={'Begin writing...'} initialContent={plainDoc}>
 				<HighlightMenu
 					highlights={[
 						// {
@@ -210,7 +321,9 @@ storiesOf('Editor', module)
 			</Editor>
 		</div>
 	</div>
-	
+))
+.add('Highlighting', () => (
+	<Highlighting />
 ))
 .add('Latex', () => (
 	<Editor onChange={onChange} initialContent={equationDoc}>

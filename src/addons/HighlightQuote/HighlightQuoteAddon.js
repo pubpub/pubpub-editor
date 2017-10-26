@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
+import { Plugin } from 'prosemirror-state';
+import { Slice, Fragment } from 'prosemirror-model';
 import HighlightQuote from './HighlightQuote';
 
 require('./highlightQuote.scss');
 
-// const propTypes = {
-// 	/* All addons get the following props,
-// 	but certain schema-based addons may not need them */
-// 	// containerId: PropTypes.string.isRequired,
-// 	// view: PropTypes.object.isRequired,
-// 	// editorState: PropTypes.object.isRequired,
-// };
-// const defaultProps = {
-// };
+const propTypes = {
+	getHighlightContent: PropTypes.func,
+	/* All addons get the following props,
+	but certain schema-based addons may not need them */
+	// containerId: PropTypes.string.isRequired,
+	// view: PropTypes.object.isRequired,
+	// editorState: PropTypes.object.isRequired,
+};
+const defaultProps = {
+	getHighlightContent: undefined,
+};
 
 class HighlightQuoteAddon extends Component {
 	static schema = ()=> {
@@ -89,12 +93,46 @@ class HighlightQuoteAddon extends Component {
 			}
 		};
 	};
+	static pluginName = 'HighlightQuote';
+	static getPlugins({ pluginKey, getHighlightContent }) {
+		return [new Plugin({
+			key: pluginKey,
+			props: {
+				transformPasted(slice) {
+					const node = slice.content.content[0];
+					const singleChild = slice.content.childCount === 1;
+					const matchesString = /^(https:\/\/){1}(.+)(\/pub\/)(.+)(?=(.*to=[0-9]+))(?=(.*from=[0-9]+))(?=(.*((hash=[0-9]+)|(version=[0-9a-z-]+))))/.test(node.textContent.trim());
+					// const primaryEditorState = primaryEditorRef.state.editorState;
+					// console.log(getHighlightContent, singleChild)
+					if (getHighlightContent
+						&& singleChild
+						&& matchesString
+					) {
+						const to = Number(node.textContent.match(/.*to=([0-9]+)/)[1]);
+						const from = Number(node.textContent.match(/.*from=([0-9]+)/)[1]);
+						const newNodeData = getHighlightContent(from, to);
+						// let exact = '';
+						// primaryEditorState.doc.slice(from, to).content.forEach((sliceNode)=>{ exact += sliceNode.textContent; });
+						// let prefix = '';
+						// primaryEditorState.doc.slice(Math.max(0, from - 10), Math.max(0, from)).content.forEach((sliceNode)=>{ prefix += sliceNode.textContent; });
+						// let suffix = '';
+						// primaryEditorState.doc.slice(Math.min(primaryEditorState.doc.nodeSize - 2, to), Math.min(primaryEditorState.doc.nodeSize - 2, to + 10)).content.forEach((sliceNode)=>{ suffix += sliceNode.textContent; });
+						// console.log(to, from, exact, prefix, suffix);
+						const newNode = node.type.schema.nodes.highlightQuote.create(newNodeData);
+						/* TODO: this doesn't paste correctly inline */
+						return new Slice(Fragment.fromArray([newNode]), slice.openStart, slice.openEnd);
+					}
+					return slice;
+				},
+			},
+		})];
+	}
 
 	render() {
 		return null;
 	}
 }
 
-// HighlightQuoteAddon.propTypes = propTypes;
-// HighlightQuoteAddon.defaultProps = defaultProps;
+HighlightQuoteAddon.propTypes = propTypes;
+HighlightQuoteAddon.defaultProps = defaultProps;
 export default HighlightQuoteAddon;

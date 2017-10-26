@@ -14,7 +14,6 @@ const propTypes = {
 	versionId: PropTypes.string,
 	onNewDiscussion: PropTypes.func,
 	onSelectionClick: PropTypes.func,
-	primaryEditorState: PropTypes.object,
 	primaryEditorClassName: PropTypes.string,
 	containerId: PropTypes.string,
 	view: PropTypes.object,
@@ -26,7 +25,6 @@ const defaultProps = {
 	versionId: undefined,
 	onNewDiscussion: undefined,
 	onSelectionClick: undefined,
-	primaryEditorState: undefined,
 	primaryEditorClassName: undefined,
 	containerId: undefined,
 	view: undefined,
@@ -35,7 +33,7 @@ const defaultProps = {
 
 class HighlightMenu extends Component {
 	static pluginName = 'HighlightMenu';
-	static getPlugins({ pluginKey, primaryEditorState, primaryEditorClassName }) {
+	static getPlugins({ pluginKey, primaryEditorClassName }) {
 		return [new Plugin({
 			key: pluginKey,
 			state: {
@@ -74,7 +72,6 @@ class HighlightMenu extends Component {
 							const to = editorState.doc.resolve(range.commonAncestorContainer.pmViewDesc.posAtStart + range.endOffset).pos;
 							// const from = editorState.doc.resolve(range.endContainer.pmViewDesc.posAtStart - range.startContainer.length).pos;
 							// const to = editorState.doc.resolve(range.endContainer.pmViewDesc.posAtStart).pos;
-							console.log(from, to);
 							// debugger;
 							newDecoSet = decoSet.add(editorState.doc, [Decoration.inline(from, to, {
 								class: `cite-deco ${transaction.meta.newSelectionData.id}`,
@@ -88,32 +85,6 @@ class HighlightMenu extends Component {
 				}
 			},
 			props: {
-				transformPasted(slice) {
-					const node = slice.content.content[0];
-					const singleChild = slice.content.childCount === 1;
-					const matchesString = /^(https:\/\/){1}(.+)(\/pub\/)(.+)(?=(.*to=[0-9]+))(?=(.*from=[0-9]+))(?=(.*((hash=[0-9]+)|(version=[0-9a-z-]+))))/.test(node.textContent);
-					if (node.type.schema.nodes.highlight
-						&& primaryEditorState
-						&& singleChild
-						&& matchesString
-					) {
-						// const container = document.getElementsByClassName(primaryEditorClassName)[0];
-						const to = node.textContent.match(/.*to=([0-9]+)/)[1];
-						const from = node.textContent.match(/.*from=([0-9]+)/)[1];
-						let exact = '';
-						primaryEditorState.doc.slice(to, from).content.forEach((sliceNode)=>{ exact += sliceNode.textContent; });
-						let prefix = '';
-						primaryEditorState.doc.slice(Math.max(0, from - 10), Math.max(0, from)).content.forEach((sliceNode)=>{ prefix += sliceNode.textContent; });
-						let suffix = '';
-						primaryEditorState.doc.slice(Math.min(primaryEditorState.doc.nodeSize - 2, to), Math.min(primaryEditorState.doc.nodeSize - 2, to + 10)).content.forEach((sliceNode)=>{ suffix += sliceNode.textContent; });
-						return new Slice(Fragment.fromArray([node.type.schema.nodes.highlightQuote.create({
-							exact: exact,
-							prefix: prefix,
-							suffix: suffix,
-						})]), slice.openStart, slice.openEnd);
-					}
-					return slice;
-				},
 				decorations(editorState) {
 					return pluginKey.getState(editorState).formattedHighlights;
 				}
@@ -242,17 +213,17 @@ class HighlightMenu extends Component {
 		// 	id: 'temp-selection',
 		// });
 		// this.props.view.dispatch(transaction);
-		setTimeout(()=> {
-			this.completeNewDiscussion({
-				from: this.state.from,
-				to: this.state.to,
-				id: 'fakeid',
-				version: this.props.versionId,
-				exact: this.state.exact,
-				prefix: this.state.prefix,
-				suffix: this.state.suffix,
-			});
-		}, 1000);
+		// setTimeout(()=> {
+		// 	this.completeNewDiscussion({
+		// 		from: this.state.from,
+		// 		to: this.state.to,
+		// 		id: 'fakeid',
+		// 		version: this.props.versionId,
+		// 		exact: this.state.exact,
+		// 		prefix: this.state.prefix,
+		// 		suffix: this.state.suffix,
+		// 	});
+		// }, 1000);
 	}
 	completeNewDiscussion({ from, to, id, hash, version, exact, prefix, suffix }) {
 		const transaction = this.props.view.state.tr;
