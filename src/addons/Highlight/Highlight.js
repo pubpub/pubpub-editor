@@ -7,13 +7,15 @@ import * as textQuote from 'dom-anchor-text-quote';
 import stringHash from 'string-hash';
 import { Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 
-require('./selectionCite.scss');
+require('./highlight.scss');
 
 const propTypes = {
 	highlights: PropTypes.array,
 	versionId: PropTypes.string,
 	onNewDiscussion: PropTypes.func,
 	onSelectionClick: PropTypes.func,
+	primaryEditorState: PropTypes.object,
+	primaryEditorClassName: PropTypes.string,
 	containerId: PropTypes.string,
 	view: PropTypes.object,
 	editorState: PropTypes.object,
@@ -24,14 +26,16 @@ const defaultProps = {
 	versionId: undefined,
 	onNewDiscussion: undefined,
 	onSelectionClick: undefined,
+	primaryEditorState: undefined,
+	primaryEditorClassName: undefined,
 	containerId: undefined,
 	view: undefined,
 	editorState: undefined,
 };
 
-class SelectionCite extends Component {
-	static pluginName = 'SelectionCite';
-	static getPlugins({ pluginKey, highlights, onSelectionClick }) {
+class Highlight extends Component {
+	static pluginName = 'Highlight';
+	static getPlugins({ pluginKey, primaryEditorState, primaryEditorClassName }) {
 		return [new Plugin({
 			key: pluginKey,
 			state: {
@@ -41,67 +45,39 @@ class SelectionCite extends Component {
 					};
 				},
 				apply(transaction, state, prevEditorState, editorState) {
-					const decoSet = state.formattedHighlights
-					// let decoSet;
-
-					// if (!state.formattedHighlights) {
-					// 	const container = document.getElementsByClassName('selection-cite-wrapper')[0];
-					// 	const newFormattedHighlights = highlights.filter((item)=> {
-					// 		return !item.alreadyFormatted;
-					// 	}).map((highlight)=> {
-					// 		return {
-					// 			range: textQuote.toRange(container, highlight),
-					// 			id: highlight.id,
-					// 		};
-					// 	}).filter((item)=> {
-					// 		return !!item.range;
-					// 	}).map((item)=> {
-					// 		return {
-					// 			from: editorState.doc.resolve(item.range.commonAncestorContainer.pmViewDesc.posAtStart + item.range.startOffset),
-					// 			to: editorState.doc.resolve(item.range.commonAncestorContainer.pmViewDesc.posAtStart + item.range.endOffset),
-					// 			id: item.id,
-					// 		};
-					// 	});
-
-					// 	decoSet = DecorationSet.create(editorState.doc, newFormattedHighlights.map((item)=> {
-					// 		if (onSelectionClick) {
-					// 			setTimeout(()=> {
-					// 				const newElems = document.getElementsByClassName(item.id);
-					// 				Array.from(newElems).forEach(function(element) {
-					// 			    	element.addEventListener('click', ()=> { onSelectionClick(item.id); });
-					// 				});
-					// 			}, 100);
-					// 		}
-					// 		return Decoration.inline(item.from.pos, item.to.pos, {
-					// 			class: `cite-deco ${item.id}`,
-					// 		});
-					// 	}))
-					// } else {
-					// 	decoSet = state.formattedHighlights;
-					// }
-
+					const decoSet = state.formattedHighlights;
 					let newDecoSet;
 					if (transaction.meta.clearTempSelection) {
 						const tempSelections = decoSet.find().filter((item)=>{ return item.type.attrs.class.indexOf('temp-selection') > -1; });
 						newDecoSet = decoSet.remove(tempSelections);
-					} else if (transaction.meta.newSelection) {
-						console.log(transaction);
-						const from = transaction.meta.newSelectionFrom;
-						const to = transaction.meta.newSelectionTo;
+					} else if (transaction.meta.newSelection && transaction.meta.newSelectionData.version) {
+						const from = transaction.meta.newSelectionData.from;
+						const to = transaction.meta.newSelectionData.to;
 						const tempSelections = decoSet.find().filter((item)=>{ return item.type.attrs.class.indexOf('temp-selection') > -1; });
 						newDecoSet = decoSet.remove(tempSelections).add(editorState.doc, [Decoration.inline(from, to, {
-							class: `cite-deco ${transaction.meta.newSelectionId}`,
+							class: `cite-deco ${transaction.meta.newSelectionData.id}`,
 						})]);
-						// if (onSelectionClick && transaction.meta.newSelectionId !== 'temp-selection') {
-						// 	setTimeout(()=> {
-						// 		const newElems = document.getElementsByClassName(transaction.meta.newSelectionId);
-						// 		Array.from(newElems).forEach(function(element) {
-						// 	    	element.addEventListener('click', ()=> { onSelectionClick(transaction.meta.newSelectionId); });
-						// 		});
-						// 	}, 100);
-						// }
+					} else if (transaction.meta.newSelection && !transaction.meta.newSelectionData.version) {
+						const container = document.getElementsByClassName(primaryEditorClassName)[0];
+						const range = textQuote.toRange(container, {
+							exact: transaction.meta.newSelectionData.exact,
+							prefix: transaction.meta.newSelectionData.prefix,
+							suffix: transaction.meta.newSelectionData.suffix,
+						});
+						console.log('Doing it this way', range);
+						if (!range) {
+							newDecoSet = decoSet;
+						} else {
+
+							const from = editorState.doc.resolve(range.commonAncestorContainer.pmViewDesc.posAtStart + range.startOffset).pos;
+							const to = editorState.doc.resolve(range.commonAncestorContainer.pmViewDesc.posAtStart + range.endOffset).pos;
+							console.log(from, to);
+							newDecoSet = decoSet.add(editorState.doc, [Decoration.inline(from, to, {
+								class: `cite-deco ${transaction.meta.newSelectionData.id}`,
+							})]);
+						}
 					} else {
-						newDecoSet = decoSet.map(transaction.mapping, transaction.doc);	
+						newDecoSet = decoSet.map(transaction.mapping, transaction.doc);
 					}
 
 					return { formattedHighlights: newDecoSet };
@@ -112,11 +88,27 @@ class SelectionCite extends Component {
 					const node = slice.content.content[0];
 					const singleChild = slice.content.childCount === 1;
 					const matchesString = /^(https:\/\/){1}(.+)(\/pub\/)(.+)(?=(.*to=[0-9]+))(?=(.*from=[0-9]+))(?=(.*((hash=[0-9]+)|(version=[0-9a-z-]+))))/.test(node.textContent);
-					if (singleChild && matchesString) {
-						return new Slice(Fragment.fromArray([node.type.schema.nodes.horizontal_rule.create()]), slice.openStart, slice.openEnd);
+					if (node.type.schema.nodes.highlight
+						&& primaryEditorState
+						&& singleChild
+						&& matchesString
+					) {
+						// const container = document.getElementsByClassName(primaryEditorClassName)[0];
+						const to = node.textContent.match(/.*to=([0-9]+)/)[1];
+						const from = node.textContent.match(/.*from=([0-9]+)/)[1];
+						let exact = '';
+						primaryEditorState.doc.slice(to, from).content.forEach((sliceNode)=>{ exact += sliceNode.textContent; });
+						let prefix = '';
+						primaryEditorState.doc.slice(Math.max(0, from - 10), Math.max(0, from)).content.forEach((sliceNode)=>{ prefix += sliceNode.textContent; });
+						let suffix = '';
+						primaryEditorState.doc.slice(Math.min(primaryEditorState.doc.nodeSize - 2, to), Math.min(primaryEditorState.doc.nodeSize - 2, to + 10)).content.forEach((sliceNode)=>{ suffix += sliceNode.textContent; });
+						return new Slice(Fragment.fromArray([node.type.schema.nodes.highlight.create({
+							exact: exact,
+							prefix: prefix,
+							suffix: suffix,
+						})]), slice.openStart, slice.openEnd);
 					}
 					return slice;
-					
 				},
 				decorations(editorState) {
 					return pluginKey.getState(editorState).formattedHighlights;
@@ -136,9 +128,9 @@ class SelectionCite extends Component {
 		};
 		this.onChange = this.onChange.bind(this);
 		this.handleMouseDown = this.handleMouseDown.bind(this);
-		this.handleClick = this.handleClick.bind(this);
+		// this.handleClick = this.handleClick.bind(this);
 		this.completeNewDiscussion = this.completeNewDiscussion.bind(this);
-		this.cancelNewDiscussion = this.cancelNewDiscussion.bind(this);
+		// this.cancelNewDiscussion = this.cancelNewDiscussion.bind(this);
 		this.handleNewDiscussion = this.handleNewDiscussion.bind(this);
 		this.handleMouseEnter = this.handleMouseEnter.bind(this);
 		this.handleMouseLeave = this.handleMouseLeave.bind(this);
@@ -158,12 +150,20 @@ class SelectionCite extends Component {
 		nextProps.highlights.filter((item)=> {
 			return createdHighlightIds.indexOf(item.id) === -1;
 		}).forEach((item)=> {
-			this.completeNewDiscussion(item.from, item.to, item.id)
+			this.completeNewDiscussion({
+				from: item.from,
+				to: item.to,
+				id: item.id,
+				exact: item.exact,
+				prefix: item.prefix,
+				suffix: item.suffix,
+				version: item.version,
+			});
 		});
 	}
 
 	onChange() {
-		const { view, containerId } = this.props;
+		const { view, containerId, editorState } = this.props;
 		const currentPos = view.state.selection.$to.pos;
 		if (currentPos === 0) { return null; }
 		const currentNode = view.state.doc.nodeAt(currentPos - 1);
@@ -174,12 +174,19 @@ class SelectionCite extends Component {
 			const inlineTop = view.coordsAtPos(currentFromPos).top - container.getBoundingClientRect().top;
 			const sel = view.state.selection;
 			let string = '';
-			sel.content().content.forEach((node)=>{ string += node.textContent; })
+			sel.content().content.forEach((node)=>{ string += node.textContent; });
+			let prefix = '';
+			editorState.doc.slice(Math.max(0, currentFromPos - 10), Math.max(0, currentFromPos)).content.forEach((node)=>{ prefix += node.textContent; });
+			let suffix = '';
+			editorState.doc.slice(Math.min(editorState.doc.nodeSize - 2, currentToPos), Math.min(editorState.doc.nodeSize - 2, currentToPos + 10)).content.forEach((node)=>{ suffix += node.textContent; });
 			const output = {
 				top: inlineTop,
 				to: currentToPos,
 				from: currentFromPos,
 				hash: stringHash(string),
+				exact: string,
+				prefix: prefix,
+				suffix: suffix,
 			};
 			return this.setState(output);
 		}
@@ -194,35 +201,21 @@ class SelectionCite extends Component {
 		evt.preventDefault();
 	}
 
-	handleClick() {
-		console.log('Clicked it');
-		this.props.view.focus();
+	// handleClick() {
+	// 	console.log('Clicked it');
+	// 	this.props.view.focus();
 
-		const transaction = this.props.view.state.tr;
-		transaction.setMeta('newSelection', true);
+	// 	const transaction = this.props.view.state.tr;
+	// 	transaction.setMeta('newSelection', true);
 		
-		const possible = 'abcdefghijklmnopqrstuvwxyz';
-		let hash = '';
-		for (let index = 0; index < 8; index++) {
-			hash += possible.charAt(Math.floor(Math.random() * possible.length));
-		}
-		transaction.setMeta('newSelectionId', hash);
-		this.props.view.dispatch(transaction);
-		// call props function with text content, pre, suffix, and id
-		// setState to hide selection
-
-
-		/* 
-			the props function gets the object, creates a new discussion passes it
-			to an editor which instanties a quote block.
-			Maybe another function which is exposed that allows 'add new selection'
-			so that we only draw selection on completion.
-			Maybe the first callback can be given an 'onSelectionCreated' and 'onSelectionCancelled'
-			callback to be used. which triggers  drawing or undrawing.
-
-			How does any of this work from copy/pasting a link?
-		*/
-	}
+	// 	const possible = 'abcdefghijklmnopqrstuvwxyz';
+	// 	let hash = '';
+	// 	for (let index = 0; index < 8; index++) {
+	// 		hash += possible.charAt(Math.floor(Math.random() * possible.length));
+	// 	}
+	// 	transaction.setMeta('newSelectionId', hash);
+	// 	this.props.view.dispatch(transaction);
+	// }
 	handleNewDiscussion() {
 		this.setState({ top: null });
 		this.props.onNewDiscussion({
@@ -230,49 +223,57 @@ class SelectionCite extends Component {
 			to: this.state.to,
 			hash: this.props.versionId ? undefined : this.state.hash,
 			version: this.props.versionId,
-			onComplete: this.completeNewDiscussion,
-			onCancel: this.cancelNewDiscussion,
+			exact: this.state.exact,
+			prefix: this.state.prefix,
+			suffix: this.state.suffix,
+			// onComplete: this.completeNewDiscussion,
+			// onCancel: this.cancelNewDiscussion,
 		});
-		const transaction = this.props.view.state.tr;
-		transaction.setMeta('newSelection', true);
-		transaction.setMeta('newSelectionFrom', this.state.from);
-		transaction.setMeta('newSelectionTo', this.state.to);
-		transaction.setMeta('newSelectionId', 'temp-selection');
-		this.props.view.dispatch(transaction);
+		// const transaction = this.props.view.state.tr;
+		// transaction.setMeta('newSelection', true);
+		// transaction.setMeta('newSelectionData', {
+		// 	from: this.state.from,
+		// 	to: this.state.to,
+		// 	id: 'temp-selection',
+		// });
+		// this.props.view.dispatch(transaction);
 		setTimeout(()=> {
-			this.completeNewDiscussion(this.state.from, this.state.to, 'fakeid');
+			this.completeNewDiscussion({
+				from: this.state.from,
+				to: this.state.to,
+				id: 'fakeid'
+			});
 		}, 1000);
 	}
-	completeNewDiscussion(from, to, id) {
-		console.log(from, to, id);
+	completeNewDiscussion({ from, to, id, hash, version, exact, prefix, suffix }) {
 		const transaction = this.props.view.state.tr;
 		transaction.setMeta('newSelection', true);
-		transaction.setMeta('newSelectionFrom', from);
-		transaction.setMeta('newSelectionTo', to);
-		transaction.setMeta('newSelectionId', id);
+		transaction.setMeta('newSelectionData', {
+			from: from,
+			to: to,
+			id: id,
+			hash: hash,
+			version: version,
+			exact: exact,
+			prefix: prefix,
+			suffix: suffix,
+		});
+		// transaction.setMeta('newSelectionFrom', from);
+		// transaction.setMeta('newSelectionTo', to);
+		// transaction.setMeta('newSelectionId', id);
 		this.props.view.dispatch(transaction);
 		this.setState({ top: null });
 	}
-	cancelNewDiscussion() {
-		const transaction = this.props.view.state.tr;
-		transaction.setMeta('clearTempSelection', true);
-		this.props.view.dispatch(transaction);
-	}
+	// cancelNewDiscussion() {
+	// 	const transaction = this.props.view.state.tr;
+	// 	transaction.setMeta('clearTempSelection', true);
+	// 	this.props.view.dispatch(transaction);
+	// }
 	handleMouseEnter(className) {
 		this.setState({ activeHover: className });
-		// console.log('in mouse enter');
-		// const elems = document.getElementsByClassName(className);
-		// Array.from(elems).forEach(function(element) {
-	 //    	element.className += ' active';
-		// });
 	}
-	handleMouseLeave(className) {
+	handleMouseLeave() {
 		this.setState({ activeHover: undefined });
-	// 	console.log('in mouse leave');
-	// 	const elems = document.getElementsByClassName(className);
-	// 	Array.from(elems).forEach(function(element) {
-	//     	element.className = element.className.replace(' active', '');
-	// 	});
 	}
 
 	render() {
@@ -282,7 +283,7 @@ class SelectionCite extends Component {
 			top: 0,
 			right: 0,
 		};
-		const decos = this.props.editorState['SelectionCite$'].formattedHighlights;
+		const decos = this.props.editorState.Highlight$.formattedHighlights;
 		let things;
 		if (decos) {
 			things = decos.find().filter((item)=> {
@@ -299,7 +300,7 @@ class SelectionCite extends Component {
 			});
 		}
 		return (
-			<div className={'selection-cite'} onMouseDown={this.handleMouseDown}>
+			<div className={'highlight'} onMouseDown={this.handleMouseDown}>
 				<div className={'popover-wrapper'} style={wrapperStyle}>
 					<Popover
 						content={
@@ -318,12 +319,11 @@ class SelectionCite extends Component {
 									value={`${window.location.origin}${window.location.pathname}?from=${this.state.from}&to=${this.state.to}&${this.props.versionId ? 'version' : 'hash'}=${this.props.versionId || this.state.hash}`}
 									onChange={()=>{}}
 								/>
-								
 							</div>
 						}
 						interactionKind={PopoverInteractionKind.CLICK}
 						position={Position.BOTTOM_RIGHT}
-						popoverClassName={'selection-cite-menu-wrapper pt-minimal'}
+						popoverClassName={'highlight-menu-wrapper pt-minimal'}
 						transitionDuration={-1}
 						inheritDarkTheme={false}
 						tetherOptions={{
@@ -335,12 +335,14 @@ class SelectionCite extends Component {
 				</div>
 				{things && !!things.length &&
 					<div className={'things-wrapper'}>
-						{things.map((item, index)=> {
+						{things.map((item)=> {
 							return (
 								<div
-									key={`thing-${index}`}
+									role={'button'}
+									tabIndex={-1}
+									key={`thing-${item.id}`}
 									className={'thing'}
-									style={{ top: item.top }}
+									style={{ top: (item.top - 5) + ((stringHash(item.id) % 10) - 5) }}
 									onMouseEnter={()=> { this.handleMouseEnter(item.id); }}
 									onMouseLeave={()=> { this.handleMouseLeave(item.id); }}
 									onClick={()=> {
@@ -360,6 +362,6 @@ class SelectionCite extends Component {
 	}
 }
 
-SelectionCite.propTypes = propTypes;
-SelectionCite.defaultProps = defaultProps;
-export default SelectionCite;
+Highlight.propTypes = propTypes;
+Highlight.defaultProps = defaultProps;
+export default Highlight;

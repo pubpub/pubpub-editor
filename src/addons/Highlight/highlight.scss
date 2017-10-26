@@ -1,4 +1,4 @@
-.selection-cite {
+.highlight {
 	height: 0px;
 	z-index: 10;
 	position: relative;
@@ -56,10 +56,11 @@
 	background-color: rgba(56, 111, 241, 1.0);
 	border-radius: 15px;
 	cursor: pointer;
+	border: 1px solid rgba(255, 255, 255, 0.75);
 }
 
 
-.selection-cite-menu-wrapper {
+.highlight-menu-wrapper {
 	.selection-menu {
 		padding: 3px;
 	}

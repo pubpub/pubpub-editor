@@ -4,7 +4,7 @@ import { plainDoc, equationDoc, imageDoc, videoDoc, iframeDoc, fileDoc, footnote
 import Collaborative from 'addons/Collaborative/Collaborative';
 import { Editor } from 'index';
 import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
-import SelectionCite from 'addons/SelectionCite/SelectionCite';
+import Highlight from 'addons/Highlight/Highlight';
 import Image from 'addons/Image/ImageAddon';
 import Video from 'addons/Video/VideoAddon';
 import Iframe from 'addons/Iframe/IframeAddon';
@@ -137,14 +137,14 @@ storiesOf('Editor', module)
 	</div>
 	
 ))
-.add('SelectionCite', () => (
+.add('Highlight', () => (
 	<div>
 		<div style={editorWrapper} className={'selection-cite-wrapper'}>
 			<style>{`
 				.pubpub-editor { font-family: serif; }	
 			`}</style>
 			<Editor onChange={onChange} ref={(ref)=> { editorRef = ref; }} placeholder={'Begin writing...'} initialContent={plainDoc}>
-				<SelectionCite
+				<Highlight
 					highlights={[
 						// {
 						// 	exact: 'is a new',
@@ -155,11 +155,25 @@ storiesOf('Editor', module)
 						{
 							from: 277,
 							to: 289,
-							id: 'initfakeid',
+							id: 'initfakeid1',
 							hash: 'whateverhash',
+							exact: 'is a new',
+							prefix: 'hello this ',
+							suffix: ' sentence.',
+							version: 'asd-asd-asd',
+						},
+						{
+							from: 277,
+							to: 289,
+							id: 'initfakeid2',
+							hash: 'whateverhash',
+							exact: 'is a new',
+							prefix: 'hello this ',
+							suffix: ' sentence.',
 						}
 					]}
-					onNewDiscussion={()=>{}}
+					primaryEditorClassName={'selection-cite-wrapper'}
+					onNewDiscussion={(data)=>{ console.log('New discussion', data); }}
 					onSelectionClick={(thing)=> { console.log('Clicked selection ', thing); }}
 					// versionId={'1233-asd3-as23-asf3'}
 				/>
