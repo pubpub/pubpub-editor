@@ -58,7 +58,7 @@ class HighlightMenu extends Component {
 						stillInTact = posBasedExact === newData.exact;
 					}
 					
-					console.log(posBasedExact, stillInTact);
+					// console.log(posBasedExact, stillInTact);
 
 					if (transaction.meta.clearTempSelection) {
 						const tempSelections = decoSet.find().filter((item)=>{ return item.type.attrs.class.indexOf('temp-selection') > -1; });
@@ -98,13 +98,17 @@ class HighlightMenu extends Component {
 
 
 					} else if (transaction.meta.newSelection && (transaction.meta.newSelectionData.version || stillInTact)) {
+						// console.log('is permanent', transaction.meta.newSelectionData.permanent);
 						const from = transaction.meta.newSelectionData.from;
 						const to = transaction.meta.newSelectionData.to;
 						const tempSelections = decoSet.find().filter((item)=>{ return item.type.attrs.class.indexOf('temp-selection') > -1; });
+						const classString = `cite-deco ${transaction.meta.newSelectionData.id} ${transaction.meta.newSelectionData.permanent ? 'permanent' : ''}`.trim();
+						// console.log('classString', classString)
 						newDecoSet = decoSet.remove(tempSelections).add(editorState.doc, [Decoration.inline(from, to, {
-							class: `cite-deco ${transaction.meta.newSelectionData.id}`,
+							class: classString,
 						})]);
 					} else if (transaction.meta.newSelection && !transaction.meta.newSelectionData.version) {
+						// console.log('is permanent', transaction.meta.newSelectionData.permanent);
 						const container = document.getElementsByClassName(primaryEditorClassName)[0];
 						const range = textQuote.toRange(container, {
 							exact: transaction.meta.newSelectionData.exact,
@@ -114,7 +118,7 @@ class HighlightMenu extends Component {
 						// console.log(transaction.meta.newSelectionData);
 						// console.log('Doing it this way', range);
 						// debugger;
-						if (!range || !range.commonAncestorContainer.pmViewDesc) {
+						if (true || !range || !range.commonAncestorContainer.pmViewDesc) {
 							newDecoSet = decoSet;
 						} else {
 							const from = editorState.doc.resolve(range.commonAncestorContainer.pmViewDesc.posAtStart + range.startOffset).pos;
@@ -122,8 +126,10 @@ class HighlightMenu extends Component {
 							// const from = editorState.doc.resolve(range.endContainer.pmViewDesc.posAtStart - range.startContainer.length).pos;
 							// const to = editorState.doc.resolve(range.endContainer.pmViewDesc.posAtStart).pos;
 							// debugger;
+							const classString = `cite-deco ${transaction.meta.newSelectionData.id} ${transaction.meta.newSelectionData.permanent ? 'permanent' : ''}`.trim();
+							// console.log('classString', classString)
 							newDecoSet = decoSet.add(editorState.doc, [Decoration.inline(from, to, {
-								class: `cite-deco ${transaction.meta.newSelectionData.id}`,
+								class: classString,
 							})]);
 						}
 					} else {
@@ -181,6 +187,7 @@ class HighlightMenu extends Component {
 				prefix: item.prefix,
 				suffix: item.suffix,
 				version: item.version,
+				permanent: item.permanent
 			});
 		});
 	}
@@ -273,7 +280,7 @@ class HighlightMenu extends Component {
 		// 	});
 		// }, 1000);
 	}
-	completeNewDiscussion({ from, to, id, hash, version, exact, prefix, suffix }) {
+	completeNewDiscussion({ from, to, id, hash, version, exact, prefix, suffix, permanent }) {
 		const transaction = this.props.view.state.tr;
 		transaction.setMeta('newSelection', true);
 		transaction.setMeta('newSelectionData', {
@@ -285,6 +292,7 @@ class HighlightMenu extends Component {
 			exact: exact,
 			prefix: prefix,
 			suffix: suffix,
+			permanent: permanent,
 		});
 		// transaction.setMeta('newSelectionFrom', from);
 		// transaction.setMeta('newSelectionTo', to);
@@ -326,12 +334,17 @@ class HighlightMenu extends Component {
 			things = decos.find().filter((item)=> {
 				return item.type.attrs.class.indexOf('temp-selection') === -1;
 			}).map((item)=> {
-				const className = item.type.attrs.class.replace('cite-deco ', '');
+				const className = item.type.attrs.class.replace('cite-deco ', '').replace(' permanent', '');
+				const isPermanent = item.type.attrs.class.indexOf('permanent') > -1;
 				const elem = document.getElementsByClassName(className)[0];
 				// const wrapper = document.getElementsByClassName(this.props.primaryEditorClassName)[0];
 				const wrapper = document.getElementsByClassName('things-wrapper')[0];
 				const output = elem
-					? { top: elem.getBoundingClientRect().top - wrapper.getBoundingClientRect().top, id: className }
+					? {
+						top: elem.getBoundingClientRect().top - wrapper.getBoundingClientRect().top,
+						id: className,
+						isPermanent: isPermanent,
+					}
 					: undefined;
 				return output;
 			}).filter((item)=> {
@@ -359,7 +372,7 @@ class HighlightMenu extends Component {
 									<textarea
 										type={'text'}
 										className={'pt-input'}
-										value={`${window.location.origin}${window.location.pathname}?from=${this.state.from}&to=${this.state.to}&${this.props.versionId ? 'version' : 'hash'}=${this.props.versionId || this.state.hash}`}
+										value={`${window.location.origin}${window.location.pathname}?from=${this.state.from}&to=${this.state.to}${this.props.versionId ? `&version=${this.props.versionId}` : ''}`}
 										onChange={()=>{}}
 									/>
 								</div>
@@ -378,7 +391,9 @@ class HighlightMenu extends Component {
 					</Popover>
 				</div>
 				<div className={'things-wrapper'}>
-					{things && !!things.length && things.map((item)=> {
+					{things && !!things.length && things.filter((item)=> {
+						return !item.isPermanent;
+					}).map((item)=> {
 						return (
 							<div
 								role={'button'}
@@ -392,8 +407,8 @@ class HighlightMenu extends Component {
 									this.props.onSelectionClick(item.id);
 								}}
 							>
-								{this.state.activeHover === item.id &&
-									<style>{`.${item.id}:before { opacity: 1; }`}</style>
+								{this.state.activeHover !== item.id &&
+									<style>{`.${item.id} { background-color: transparent; }`}</style>
 								}
 							</div>
 						);

@@ -8,6 +8,7 @@ require('./highlightQuote.scss');
 
 const propTypes = {
 	getHighlightContent: PropTypes.func,
+	hoverBackgroundColor: PropTypes.string,
 	/* All addons get the following props,
 	but certain schema-based addons may not need them */
 	// containerId: PropTypes.string.isRequired,
@@ -16,10 +17,11 @@ const propTypes = {
 };
 const defaultProps = {
 	getHighlightContent: undefined,
+	hoverBackgroundColor: 'red',
 };
 
 class HighlightQuoteAddon extends Component {
-	static schema = ()=> {
+	static schema = (props)=> {
 		return {
 			nodes: {
 				highlightQuote: {
@@ -74,6 +76,7 @@ class HighlightQuoteAddon extends Component {
 								version={node.attrs.version}
 								isSelected={isSelected}
 								isEditable={true}
+								hoverBackgroundColor={props.hoverBackgroundColor}
 							/>
 						);
 					},
@@ -87,6 +90,7 @@ class HighlightQuoteAddon extends Component {
 								suffix={node.attrs.suffix}
 								prefix={node.attrs.prefix}
 								version={node.attrs.version}
+								hoverBackgroundColor={props.hoverBackgroundColor}
 							/>
 						);
 					},

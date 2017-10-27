@@ -37,22 +37,25 @@
 .cite-deco {
 	// background-color: transparent;
 	position: relative;
-	// background-color: rgba(56, 111, 241, 0.3);
+	background-color: rgba(56, 111, 241, 0.3);
 	z-index: 1;
-	&:before {
-		z-index: -1;
-		content: "";
-		position: absolute;
-		display: block;
-		opacity: 0;
-		height: 100%;
-		width: 100%;
-		background-color: rgba(56, 111, 241, 0.3);
-		top: 0;
-		left: 0;
-	}
+	// &:before {
+	// 	z-index: -1;
+	// 	content: "";
+	// 	position: absolute;
+	// 	display: block;
+	// 	opacity: 0;
+	// 	height: 100%;
+	// 	width: 100%;
+	// 	background-color: rgba(56, 111, 241, 0.3);
+	// 	top: 0;
+	// 	left: 0;
+	// }
 	&.temp-selection {
 		background-color: rgba(90, 90, 90, 0.3);
+	}
+	&.permanent {
+		background-color: #f5e61c;
 	}
 	&.active {
 		// background-color: rgba(56, 111, 241, 0.3);

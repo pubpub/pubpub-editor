@@ -13,6 +13,7 @@ const propTypes = {
 	version: PropTypes.string,
 	isSelected: PropTypes.bool,
 	isEditable: PropTypes.bool,
+	hoverBackgroundColor: PropTypes.string.isRequired,
 };
 
 const defaultProps = {
@@ -61,7 +62,7 @@ class Highlight extends Component {
 					/>
 				}
 				{this.state.active &&
-					<style>{`.${this.props.id}:before { opacity: 1; }`}</style>
+					<style>{`.${this.props.id} { background-color: ${this.props.hoverBackgroundColor} !important; }`}</style>
 				}
 				<div className={'quote-text'}>
 					{this.props.prefix}

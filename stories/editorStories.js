@@ -186,6 +186,7 @@ class Highlighting extends Component {
 									exact: 'is a new',
 									prefix: 'hello this ',
 									suffix: ' sentence.',
+									// permanent: true,
 								},
 								// {
 								// 	exact: "t we are typing. We have lots",
@@ -213,7 +214,10 @@ class Highlighting extends Component {
 						.pubpub-editor { font-family: serif; }	
 					`}</style>
 					<Editor onChange={onChange} placeholder={'Begin writing...'} initialContent={highlightDoc}>
-						<HighlightQuote getHighlightContent={this.getHighlightContent} />
+						<HighlightQuote
+							getHighlightContent={this.getHighlightContent}
+							hoverBackgroundColor={'red'}
+						/>
 						<InsertMenu />
 						<Latex />
 						<Image handleFileUpload={s3Upload}/>
