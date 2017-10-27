@@ -33,6 +33,7 @@ class Highlight extends Component {
 		super(props);
 		this.state = {
 			active: false,
+			removed: false,
 		};
 		this.handleMouseEnter = this.handleMouseEnter.bind(this);
 		this.handleMouseLeave = this.handleMouseLeave.bind(this);
@@ -48,18 +49,26 @@ class Highlight extends Component {
 		const scrollToClicked = ()=> {
 			// console.log(this.props.id);
 			const thing = document.getElementsByClassName(this.props.id)[0];
-			// console.log(this.props.id, thing);
-			thing.scrollIntoView({ behavior: 'smooth' });
+			if (thing) {
+				thing.scrollIntoView({ behavior: 'smooth' });
+			} else {
+				this.setState({ removed: true });
+			}
 		};
 		return (
 			<div className={`pt-card pt-elevation-2 highlight-quote ${this.props.isSelected ? 'isSelected' : ''}`}>
-				{(true || !this.props.isEditable) &&
+				{!this.props.isEditable && !this.state.removed &&
 					<button
 						className={'scroll-to-button pt-button pt-small pt-icon-highlight'}
 						onClick={scrollToClicked}
 						onMouseEnter={this.handleMouseEnter}
 						onMouseLeave={this.handleMouseLeave}
 					/>
+				}
+				{!this.props.isEditable && this.state.removed &&
+					<button className={'scroll-to-button pt-button pt-small'} disabled>
+						Original Highlight Removed
+					</button>
 				}
 				{this.state.active &&
 					<style>{`.${this.props.id} { background-color: ${this.props.hoverBackgroundColor} !important; }`}</style>
