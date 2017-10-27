@@ -19,6 +19,7 @@ const highlightDoc = {
 				prefix: 'Well then that is it. ',
 				exact: 'This is my highlight.',
 				suffix: ' Surely this comes after.',
+				id: 'initfakeid2',
 			}
 		},
 		{

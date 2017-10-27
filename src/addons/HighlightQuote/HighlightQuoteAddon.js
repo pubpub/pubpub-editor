@@ -73,6 +73,7 @@ class HighlightQuoteAddon extends Component {
 								prefix={node.attrs.prefix}
 								version={node.attrs.version}
 								isSelected={isSelected}
+								isEditable={true}
 							/>
 						);
 					},
@@ -120,7 +121,7 @@ class HighlightQuoteAddon extends Component {
 						// console.log(to, from, exact, prefix, suffix);
 						const newNode = node.type.schema.nodes.highlightQuote.create(newNodeData);
 						/* TODO: this doesn't paste correctly inline */
-						return new Slice(Fragment.fromArray([newNode]), slice.openStart, slice.openEnd);
+						return new Slice(Fragment.fromArray([newNode, node.type.schema.nodes.paragraph.create()]), slice.openStart, slice.openEnd);
 					}
 					return slice;
 				},

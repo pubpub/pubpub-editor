@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Plugin, TextSelection } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
-import { Slice, Fragment } from 'prosemirror-model';
+// import { Slice, Fragment } from 'prosemirror-model';
 import * as textQuote from 'dom-anchor-text-quote';
 import stringHash from 'string-hash';
 import { Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
@@ -45,10 +45,59 @@ class HighlightMenu extends Component {
 				apply(transaction, state, prevEditorState, editorState) {
 					const decoSet = state.formattedHighlights;
 					let newDecoSet;
+
+					
+					let posBasedExact = '';
+					let stillInTact = false;
+					if (transaction.meta.newSelectionData) {
+						const newData = transaction.meta.newSelectionData;
+						const datafrom = newData.from;
+						const datato = newData.to;
+					
+						editorState.doc.slice(datafrom, datato).content.forEach((sliceNode)=>{ posBasedExact += sliceNode.textContent; });
+						stillInTact = posBasedExact === newData.exact;
+					}
+					
+					console.log(posBasedExact, stillInTact);
+
 					if (transaction.meta.clearTempSelection) {
 						const tempSelections = decoSet.find().filter((item)=>{ return item.type.attrs.class.indexOf('temp-selection') > -1; });
 						newDecoSet = decoSet.remove(tempSelections);
-					} else if (transaction.meta.newSelection && transaction.meta.newSelectionData.version) {
+					// } else if (transaction.meta.newSelection) {
+					// 	const from = transaction.meta.newSelectionData.from;
+					// 	const to = transaction.meta.newSelectionData.to;
+					// 	let exact = '';
+					// 	editorState.doc.slice(from, to).content.forEach((sliceNode)=>{ exact += sliceNode.textContent; });
+					// 	console.log('exact is', exact, 'transactionexact is', transaction.meta.newSelectionData.exact);
+					// 	if (exact === transaction.meta.newSelectionData.exact) {
+					// 		newDecoSet = decoSet.add(editorState.doc, [Decoration.inline(from, to, {
+					// 			class: `cite-deco ${transaction.meta.newSelectionData.id}`,
+					// 		})]);
+					// 	} else {
+					// 		const container = document.getElementsByClassName(primaryEditorClassName)[0];
+					// 		const range = textQuote.toRange(container, {
+					// 			exact: transaction.meta.newSelectionData.exact,
+					// 			prefix: transaction.meta.newSelectionData.prefix,
+					// 			suffix: transaction.meta.newSelectionData.suffix,
+					// 		});
+					// 		if (!range) {
+					// 			newDecoSet = decoSet;
+					// 		} else {
+					// 			const from = editorState.doc.resolve(range.commonAncestorContainer.pmViewDesc.posAtStart + range.startOffset).pos;
+					// 			const to = editorState.doc.resolve(range.commonAncestorContainer.pmViewDesc.posAtStart + range.endOffset).pos;
+					// 			// const from = editorState.doc.resolve(range.endContainer.pmViewDesc.posAtStart - range.startContainer.length).pos;
+					// 			// const to = editorState.doc.resolve(range.endContainer.pmViewDesc.posAtStart).pos;
+					// 			// debugger;
+					// 			newDecoSet = decoSet.add(editorState.doc, [Decoration.inline(from, to, {
+					// 				class: `cite-deco ${transaction.meta.newSelectionData.id}`,
+					// 			})]);
+					// 		}
+					// 	}
+					// }
+
+
+
+					} else if (transaction.meta.newSelection && (transaction.meta.newSelectionData.version || stillInTact)) {
 						const from = transaction.meta.newSelectionData.from;
 						const to = transaction.meta.newSelectionData.to;
 						const tempSelections = decoSet.find().filter((item)=>{ return item.type.attrs.class.indexOf('temp-selection') > -1; });
@@ -65,7 +114,7 @@ class HighlightMenu extends Component {
 						// console.log(transaction.meta.newSelectionData);
 						// console.log('Doing it this way', range);
 						// debugger;
-						if (!range) {
+						if (!range || !range.commonAncestorContainer.pmViewDesc) {
 							newDecoSet = decoSet;
 						} else {
 							const from = editorState.doc.resolve(range.commonAncestorContainer.pmViewDesc.posAtStart + range.startOffset).pos;
@@ -109,7 +158,6 @@ class HighlightMenu extends Component {
 		this.handleNewDiscussion = this.handleNewDiscussion.bind(this);
 		this.handleMouseEnter = this.handleMouseEnter.bind(this);
 		this.handleMouseLeave = this.handleMouseLeave.bind(this);
-		
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -121,7 +169,7 @@ class HighlightMenu extends Component {
 		const createdHighlightIds = this.state.createdHighlights.map((item)=> {
 			return item.id;
 		});
-		this.setState({ createdHighlights: nextProps.highlights });	
+		this.setState({ createdHighlights: nextProps.highlights });
 		nextProps.highlights.filter((item)=> {
 			return createdHighlightIds.indexOf(item.id) === -1;
 		}).forEach((item)=> {
@@ -261,12 +309,18 @@ class HighlightMenu extends Component {
 			display: this.state.top !== null ? 'block' : 'none',
 			transform: `translateY(${Math.max(this.state.top, 0)}px)`,
 			top: 0,
-			right: 0,
+			right: -20,
 		};
 		/* I think this will cause a problem if a single window has more */
 		/* than one HighlightMenu in the globalscope */
 		/* Don't know the right way to get pluginKey here */
-		const decos = this.props.editorState.HighlightMenu$.formattedHighlights;
+		const pluginKeyString = this.props.editorState.plugins.reduce((prev, curr)=> {
+			if (curr.key.indexOf('HighlightMenu') !== -1) {
+				return curr.key;
+			}
+			return prev;
+		}, undefined);
+		const decos = this.props.editorState[pluginKeyString].formattedHighlights;
 		let things;
 		if (decos) {
 			things = decos.find().filter((item)=> {
@@ -274,8 +328,10 @@ class HighlightMenu extends Component {
 			}).map((item)=> {
 				const className = item.type.attrs.class.replace('cite-deco ', '');
 				const elem = document.getElementsByClassName(className)[0];
+				// const wrapper = document.getElementsByClassName(this.props.primaryEditorClassName)[0];
+				const wrapper = document.getElementsByClassName('things-wrapper')[0];
 				const output = elem
-					? { top: elem.getBoundingClientRect().top, id: className }
+					? { top: elem.getBoundingClientRect().top - wrapper.getBoundingClientRect().top, id: className }
 					: undefined;
 				return output;
 			}).filter((item)=> {
@@ -289,19 +345,24 @@ class HighlightMenu extends Component {
 						content={
 							<div className={'selection-menu pt-card pt-elevation-2'}>
 								{this.props.onNewDiscussion &&
-									<button
-										onClick={this.handleNewDiscussion}
-										className={'pt-button pt-small pt-fill pt-popover-dismiss'}
-									>
-										New Discussion
-									</button>
+									<div className={'button-wrapper'}>
+										<button
+											onClick={this.handleNewDiscussion}
+											className={'pt-button pt-small pt-popover-dismiss'}
+										>
+											Create Discussion
+										</button>
+									</div>
 								}
-								<input
-									type={'text'}
-									className={'pt-input'}
-									value={`${window.location.origin}${window.location.pathname}?from=${this.state.from}&to=${this.state.to}&${this.props.versionId ? 'version' : 'hash'}=${this.props.versionId || this.state.hash}`}
-									onChange={()=>{}}
-								/>
+								<div className={'input-wrapper'}>
+									<div>Link to Selection</div>
+									<textarea
+										type={'text'}
+										className={'pt-input'}
+										value={`${window.location.origin}${window.location.pathname}?from=${this.state.from}&to=${this.state.to}&${this.props.versionId ? 'version' : 'hash'}=${this.props.versionId || this.state.hash}`}
+										onChange={()=>{}}
+									/>
+								</div>
 							</div>
 						}
 						interactionKind={PopoverInteractionKind.CLICK}
@@ -316,30 +377,28 @@ class HighlightMenu extends Component {
 						<button className={'pt-button pt-minimal pt-icon-highlight'} />
 					</Popover>
 				</div>
-				{things && !!things.length &&
-					<div className={'things-wrapper'}>
-						{things.map((item)=> {
-							return (
-								<div
-									role={'button'}
-									tabIndex={-1}
-									key={`thing-${item.id}`}
-									className={'thing'}
-									style={{ top: (item.top - 5) + ((stringHash(item.id) % 10) - 5) }}
-									onMouseEnter={()=> { this.handleMouseEnter(item.id); }}
-									onMouseLeave={()=> { this.handleMouseLeave(item.id); }}
-									onClick={()=> {
-										this.props.onSelectionClick(item.id);
-									}}
-								>
-									{this.state.activeHover !== item.id &&
-										<style>{`.${item.id} { background-color: transparent; }`}</style>
-									}
-								</div>
-							);
-						})}
-					</div>
-				}
+				<div className={'things-wrapper'}>
+					{things && !!things.length && things.map((item)=> {
+						return (
+							<div
+								role={'button'}
+								tabIndex={-1}
+								key={`thing-${item.id}`}
+								className={'thing'}
+								style={{ top: item.top + ((stringHash(item.id) % 10)) }}
+								onMouseEnter={()=> { this.handleMouseEnter(item.id); }}
+								onMouseLeave={()=> { this.handleMouseLeave(item.id); }}
+								onClick={()=> {
+									this.props.onSelectionClick(item.id);
+								}}
+							>
+								{this.state.activeHover === item.id &&
+									<style>{`.${item.id}:before { opacity: 1; }`}</style>
+								}
+							</div>
+						);
+					})}
+				</div>
 			</div>
 		);
 	}

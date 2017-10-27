@@ -35,6 +35,7 @@ const editorWrapper = {
 	maxWidth: '600px',
 	minHeight: '250px',
 	cursor: 'text',
+	padding: '20px',
 };
 let editorRef = undefined;
 

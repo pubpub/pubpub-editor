@@ -1,8 +1,9 @@
 .highlight-quote {
 	font-style: italic;
-	margin-bottom: 1em;
+	margin: 2px 2px 1em 2px;
 	&.pt-card {
 		padding: 10px;
+		// min-height: 44px;
 	}
 	.highlight-text {
 		background-color: rgba(56, 111, 241, 0.3);
@@ -10,5 +11,15 @@
 	&.isSelected {
 		outline: 3px solid #BBBDC0;
 		background-color: #F0F0F0;
+	}
+	.quote-text {
+		// padding-top: 10px;
+	}
+	.scroll-to-button {
+		float: right;
+		margin: 0em 0em 1em 1em;
+		position: relative;
+		top: -3px;
+		right: -3px;
 	}
 }
