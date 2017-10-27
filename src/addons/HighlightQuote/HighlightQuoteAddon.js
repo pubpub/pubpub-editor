@@ -106,7 +106,7 @@ class HighlightQuoteAddon extends Component {
 				transformPasted(slice) {
 					const node = slice.content.content[0];
 					const singleChild = slice.content.childCount === 1;
-					const matchesString = /^(https:\/\/){1}(.+)(\/pub\/)(.+)(?=(.*to=[0-9]+))(?=(.*from=[0-9]+))(?=(.*((hash=[0-9]+)|(version=[0-9a-z-]+))))/.test(node.textContent.trim());
+					const matchesString = /^(https:\/\/){1}(.+)(\/pub\/)(.+)(?=(.*to=[0-9]+))(?=(.*from=[0-9]+))/.test(node.textContent.trim());
 					// const primaryEditorState = primaryEditorRef.state.editorState;
 					// console.log(getHighlightContent, singleChild)
 					if (getHighlightContent
