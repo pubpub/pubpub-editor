@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { NodeSelection } from 'prosemirror-state';
-// import katex from 'katex';
 
 require('./latexAddon.scss');
 
@@ -20,7 +19,6 @@ class LatexEditable extends Component {
 	constructor(props) {
 		super(props);
 		this.state = { html: props.html };
-		// this.generateHTML = this.generateHTML.bind(this);
 		this.handleValueChange = this.handleValueChange.bind(this);
 		this.handleHTMLChange = this.handleHTMLChange.bind(this);
 		this.changeToInline = this.changeToInline.bind(this);
@@ -28,27 +26,12 @@ class LatexEditable extends Component {
 		this.refocusNode = this.refocusNode.bind(this);
 	}
 
-	// componentWillReceiveProps(nextProps) {
-	// 	if (this.props.value !== nextProps.value) {
-	// 		const text = nextProps.value;
-	// 		const displayHTML = this.generateHTML(text);
-	// 		this.setState({ displayHTML });
-	// 	}
-	// }
 	componentWillReceiveProps(nextProps) {
 		if (this.props.isSelected && !nextProps.isSelected) {
 			this.props.updateAttrs({ html: this.state.html });
 		}
 	}
 
-	// generateHTML(text) {
-	// 	this.props.renderFunction(text, this.props.isBlock);
-	// 	// try {
-	// 	// 	return katex.renderToString(text, { displayMode: this.props.isBlock });
-	// 	// } catch (err) {
-	// 	// 	return '<div class="pub-latex-error">Error rendering equation</div>';
-	// 	// }
-	// }
 	changeToInline() {
 		this.props.changeNode(this.props.view.state.schema.nodes.equation, {
 			value: this.props.value
