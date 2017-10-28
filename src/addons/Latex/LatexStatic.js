@@ -1,28 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import katex from 'katex';
+// import katex from 'katex';
 
 require('./latexAddon.scss');
 
 const propTypes = {
-	value: PropTypes.string,
+	// value: PropTypes.string,
+	html: PropTypes.string.isRequired,
 	isBlock: PropTypes.bool,
 };
 
 const defaultProps = {
-	value: '',
+	// value: '',
 	isBlock: false,
 };
 
 const LatexStatic = function(props) {
-	const displayHTML = katex.renderToString(props.value, {
-		displayMode: props.isBlock,
-		throwOnError: false
-	});
+	// const displayHTML = katex.renderToString(props.value, {
+	// 	displayMode: props.isBlock,
+	// 	throwOnError: false
+	// });
 	return (
 		<div
 			className={`latex-wrapper ${props.isBlock ? 'block' : ''}`}
-			dangerouslySetInnerHTML={{ __html: displayHTML }}
+			dangerouslySetInnerHTML={{ __html: props.html }}
 		/>
 	);
 };

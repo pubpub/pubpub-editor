@@ -319,6 +319,8 @@ class HighlightMenu extends Component {
 									this.props.onSelectionClick(item.id);
 								}}
 							>
+								{/* This isn't great. Overlapping highlights will conflict with tranparent */}
+								{/* Gotta do what we do in Highlightquote and pass in the color we want. */}
 								{this.state.activeHover !== item.id &&
 									<style>{`.${item.id} { background-color: transparent; }`}</style>
 								}

@@ -15,6 +15,7 @@ import Citation from 'addons/Citation/CitationAddon';
 import InsertMenu from 'addons/InsertMenu/InsertMenu';
 import Latex from 'addons/Latex/LatexAddon';
 import TrackChanges from 'addons/TrackChanges/TrackChangesAddon';
+import katex from 'katex';
 import { storiesOf } from '@storybook/react';
 import { s3Upload } from './utils/uploadFile';
 
@@ -50,6 +51,20 @@ const onClientChange = (evt)=> {
 	console.log('Clients', evt);
 };
 
+const renderLatex = (val, isBlock, callback)=> {
+	// Toss this in a timeout eventually to test async
+	setTimeout(()=> {
+		try {
+			const displayHTML = katex.renderToString(val, {
+				displayMode: isBlock,
+				throwOnError: false
+			});
+			callback(displayHTML);
+		} catch (err) {
+			callback('<div class="pub-latex-error">Error rendering equation</div>');
+		}
+	}, 500);
+};
 
 class ForkStory extends Component {
 
@@ -96,7 +111,7 @@ class ForkStory extends Component {
 					<FormattingMenu />
 					<InsertMenu />
 					{(inFork) ? <TrackChanges /> : null }
-					<Latex />
+					<Latex renderFunction={renderLatex}/>
 					<Image handleFileUpload={s3Upload}/>
 					<Collaborative
 						ref={(collab) => { this.collab = collab; }}
@@ -205,7 +220,7 @@ class Highlighting extends Component {
 							// versionId={'1233-asd3-as23-asf3'}
 						/>
 						<InsertMenu />
-						<Latex />
+						<Latex renderFunction={renderLatex}/>
 						<Image handleFileUpload={s3Upload}/>
 					</Editor>
 				</div>
@@ -219,7 +234,7 @@ class Highlighting extends Component {
 							hoverBackgroundColor={'red'}
 						/>
 						<InsertMenu />
-						<Latex />
+						<Latex renderFunction={renderLatex}/>
 						<Image handleFileUpload={s3Upload}/>
 					</Editor>
 				</div>
@@ -294,7 +309,7 @@ storiesOf('Editor', module)
 					// versionId={'1233-asd3-as23-asf3'}
 				/>
 				<InsertMenu />
-				<Latex />
+				<Latex renderFunction={renderLatex}/>
 				<Image handleFileUpload={s3Upload}/>
 			</Editor>
 		</div>
@@ -310,7 +325,7 @@ storiesOf('Editor', module)
 			<Editor onChange={onChange} ref={(ref)=> { editorRef = ref; }} placeholder={'Begin writing...'} initialContent={highlightDoc}>
 				<HighlightQuote />
 				<InsertMenu />
-				<Latex />
+				<Latex renderFunction={renderLatex}/>
 				<Image handleFileUpload={s3Upload}/>
 			</Editor>
 		</div>
@@ -323,14 +338,14 @@ storiesOf('Editor', module)
 	<Editor onChange={onChange} initialContent={equationDoc}>
 		<FormattingMenu />
 		<InsertMenu />
-		<Latex />
+		<Latex renderFunction={renderLatex}/>
 	</Editor>
 ))
 .add('ReadOnly', () => (
 	<Editor isReadOnly={true} initialContent={imageDoc}>
 		<FormattingMenu />
 		<Image />
-		<Latex />
+		<Latex renderFunction={renderLatex}/>
 	</Editor>
 ))
 .add('Images', () => (
@@ -338,7 +353,7 @@ storiesOf('Editor', module)
 		<Editor onChange={onChange} initialContent={imageDoc} placeholder={'Begin writing here...'}>
 			<FormattingMenu />
 			<InsertMenu />
-			<Latex />
+			<Latex renderFunction={renderLatex}/>
 			<Image handleFileUpload={s3Upload}/>
 		</Editor>
 	</div>
@@ -348,7 +363,7 @@ storiesOf('Editor', module)
 		<Editor onChange={onChange} initialContent={videoDoc} placeholder={'Begin writing here...'}>
 			<FormattingMenu />
 			<InsertMenu />
-			<Latex />
+			<Latex renderFunction={renderLatex}/>
 			<Video handleFileUpload={s3Upload}/>
 		</Editor>
 	</div>
@@ -358,7 +373,7 @@ storiesOf('Editor', module)
 		<Editor onChange={onChange} initialContent={iframeDoc} placeholder={'Begin writing here...'}>
 			<FormattingMenu />
 			<InsertMenu />
-			<Latex />
+			<Latex renderFunction={renderLatex}/>
 			<Iframe />
 		</Editor>
 	</div>
@@ -368,7 +383,7 @@ storiesOf('Editor', module)
 		<Editor onChange={onChange} initialContent={fileDoc} placeholder={'Begin writing here...'}>
 			<FormattingMenu />
 			<InsertMenu />
-			<Latex />
+			<Latex renderFunction={renderLatex}/>
 			<File handleFileUpload={s3Upload}/>
 		</Editor>
 	</div>
@@ -397,7 +412,7 @@ storiesOf('Editor', module)
 			<FormattingMenu />
 			<InsertMenu />
 			<TrackChanges />
-			<Latex />
+			<Latex renderFunction={renderLatex}/>
 			<Image handleFileUpload={s3Upload}/>
 		</Editor>
 	</div>
@@ -408,7 +423,7 @@ storiesOf('Editor', module)
 			<FormattingMenu />
 			<InsertMenu />
 			<TrackChanges />
-			<Latex />
+			<Latex renderFunction={renderLatex}/>
 			<Image handleFileUpload={s3Upload}/>
 			<Collaborative
 				// ref={(collab) => { this.collab = collab; }}
@@ -459,13 +474,13 @@ storiesOf('Editor', module)
 		<div className={'1'}>
 			<Editor>
 				<FormattingMenu />
-				<Latex />
+				<Latex renderFunction={renderLatex}/>
 			</Editor>
 		</div>
 		<div className={'2'}>
 			<Editor>
 				<FormattingMenu />
-				<Latex />
+				<Latex renderFunction={renderLatex}/>
 			</Editor>
 		</div>
 	</div>
