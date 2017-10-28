@@ -263,41 +263,30 @@ storiesOf('Editor', module)
 			<Editor onChange={onChange} ref={(ref)=> { console.log(ref); editorRef = ref; }} placeholder={'Begin writing...'} initialContent={plainDoc}>
 				<HighlightMenu
 					highlights={[
-						// {
-						// 	exact: 'is a new',
-						// 	prefix: 'hello this',
-						// 	suffix: 'sentence.',
-						// 	id: 'h75gbre4',
-						// }
 						{
-							from: 277,
-							to: 289,
-							id: 'initfakeid1',
-							hash: 'whateverhash',
-							exact: 'is a new',
-							prefix: 'hello this ',
-							suffix: ' sentence.',
-							version: 'asd-asd-asd',
+							"from": 126,
+							"to": 145,
+							"id": "asdh71j",
+							"exact": "Hello, this is some",
+							"prefix": " though.",
+							"suffix": " text abou"
 						},
 						{
-							from: 277,
-							to: 289,
-							id: 'initfakeid2',
-							hash: 'whateverhash',
-							exact: 'is a new',
-							prefix: 'hello this ',
-							suffix: ' sentence.',
+							"from": 257,
+							"to": 274,
+							"id": "asd81k9l",
+							"exact": "things talk about",
+							"prefix": "h.Other ",
+							"suffix": " earthworm"
 						},
-						// {
-						// 	exact: "t we are typing. We have lots",
-						// 	from: 168,
-						// 	hash: undefined,
-						// 	id: "fakei3d",
-						// 	prefix: " thing tha",
-						// 	suffix: " of words ",
-						// 	to: 197,
-						// 	version: undefined,
-						// }
+						{
+							"from": 26,
+							"to": 45,
+							"id": "nausd52",
+							"exact": "about a thing that ",
+							"prefix": "some text ",
+							"suffix": "we are typ"
+						}
 					]}
 					primaryEditorClassName={'selection-cite-wrapper'}
 					onNewDiscussion={(data)=>{ console.log('New discussion', data); }}

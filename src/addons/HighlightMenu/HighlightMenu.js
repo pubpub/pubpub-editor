@@ -47,19 +47,18 @@ class HighlightMenu extends Component {
 					let newDecoSet;
 
 					
-					let posBasedExact = '';
+					let posBasedExact;
 					let stillInTact = false;
 					if (transaction.meta.newSelectionData) {
 						const newData = transaction.meta.newSelectionData;
 						const datafrom = newData.from;
 						const datato = newData.to;
-					
-						editorState.doc.slice(datafrom, datato).content.forEach((sliceNode)=>{ posBasedExact += sliceNode.textContent; });
+						posBasedExact = editorState.doc.textBetween(datafrom, datato);
+						// editorState.doc.slice(datafrom, datato).content.forEach((sliceNode)=>{ posBasedExact += sliceNode.textContent; });
 						stillInTact = posBasedExact === newData.exact;
 					}
-					
+					// debugger;
 					// console.log(posBasedExact, stillInTact);
-
 					if (transaction.meta.clearTempSelection) {
 						const tempSelections = decoSet.find().filter((item)=>{ return item.type.attrs.class.indexOf('temp-selection') > -1; });
 						newDecoSet = decoSet.remove(tempSelections);
@@ -118,11 +117,31 @@ class HighlightMenu extends Component {
 						// console.log(transaction.meta.newSelectionData);
 						// console.log('Doing it this way', range);
 						// debugger;
-						if (true || !range || !range.commonAncestorContainer.pmViewDesc) {
+
+						if (!range.startContainer.pmViewDesc || !range.endContainer.pmViewDesc) {
+							console.log('Couldnt get pmview');
+							debugger;
+						}
+						let resolvedStartContainer = range.startContainer;
+						while (!resolvedStartContainer.pmViewDesc && resolvedStartContainer.className !== 'ProseMirror' && resolvedStartContainer !== null) {
+							console.log('start', transaction.meta.newSelectionData.exact);
+							resolvedStartContainer = resolvedStartContainer.parentElement;
+						}
+						let resolvedEndContainer = range.endContainer;
+						while (!resolvedEndContainer.pmViewDesc && resolvedEndContainer.className !== 'ProseMirror' && resolvedEndContainer !== null) {
+							console.log('end', transaction.meta.newSelectionData.exact);
+							resolvedEndContainer = resolvedEndContainer.parentElement;
+						}
+
+						if (!resolvedStartContainer.pmViewDesc || !resolvedEndContainer.pmViewDesc) {
+							console.log('Couldnt get pmview');
+							debugger;
+						}
+						if (!range || !resolvedStartContainer.pmViewDesc || !resolvedEndContainer.pmViewDesc) {
 							newDecoSet = decoSet;
 						} else {
-							const from = editorState.doc.resolve(range.commonAncestorContainer.pmViewDesc.posAtStart + range.startOffset).pos;
-							const to = editorState.doc.resolve(range.commonAncestorContainer.pmViewDesc.posAtStart + range.endOffset).pos;
+							const from = editorState.doc.resolve(resolvedStartContainer.pmViewDesc.posAtStart + range.startOffset).pos;
+							const to = editorState.doc.resolve(resolvedEndContainer.pmViewDesc.posAtStart + range.endOffset).pos;
 							// const from = editorState.doc.resolve(range.endContainer.pmViewDesc.posAtStart - range.startContainer.length).pos;
 							// const to = editorState.doc.resolve(range.endContainer.pmViewDesc.posAtStart).pos;
 							// debugger;
@@ -171,24 +190,27 @@ class HighlightMenu extends Component {
 			this.onChange();
 		}
 
-
 		const createdHighlightIds = this.state.createdHighlights.map((item)=> {
 			return item.id;
 		});
+
 		this.setState({ createdHighlights: nextProps.highlights });
 		nextProps.highlights.filter((item)=> {
 			return createdHighlightIds.indexOf(item.id) === -1;
 		}).forEach((item)=> {
-			this.completeNewDiscussion({
-				from: item.from,
-				to: item.to,
-				id: item.id,
-				exact: item.exact,
-				prefix: item.prefix,
-				suffix: item.suffix,
-				version: item.version,
-				permanent: item.permanent
-			});
+			setTimeout(()=> {
+				this.completeNewDiscussion({
+					from: item.from,
+					to: item.to,
+					id: item.id,
+					exact: item.exact,
+					prefix: item.prefix,
+					suffix: item.suffix,
+					version: item.version,
+					permanent: item.permanent
+				});
+			}, 1);
+			
 		});
 	}
 
@@ -202,19 +224,22 @@ class HighlightMenu extends Component {
 			const currentFromPos = view.state.selection.$from.pos;
 			const currentToPos = view.state.selection.$to.pos;
 			const inlineTop = view.coordsAtPos(currentFromPos).top - container.getBoundingClientRect().top;
-			const sel = view.state.selection;
-			let string = '';
-			sel.content().content.forEach((node)=>{ string += node.textContent; });
-			let prefix = '';
-			editorState.doc.slice(Math.max(0, currentFromPos - 10), Math.max(0, currentFromPos)).content.forEach((node)=>{ prefix += node.textContent; });
-			let suffix = '';
-			editorState.doc.slice(Math.min(editorState.doc.nodeSize - 2, currentToPos), Math.min(editorState.doc.nodeSize - 2, currentToPos + 10)).content.forEach((node)=>{ suffix += node.textContent; });
+			// const sel = view.state.selection;
+			const exact = editorState.doc.textBetween(currentFromPos, currentToPos);
+			// let string = '';
+			// sel.content().content.forEach((node)=>{ string += node.textContent; });
+			const prefix = editorState.doc.textBetween(Math.max(0, currentFromPos - 10), Math.max(0, currentFromPos));
+			const suffix = editorState.doc.textBetween(Math.min(editorState.doc.nodeSize - 2, currentToPos), Math.min(editorState.doc.nodeSize - 2, currentToPos + 10));
+			// let prefix = '';
+			// editorState.doc.slice(Math.max(0, currentFromPos - 10), Math.max(0, currentFromPos)).content.forEach((node)=>{ prefix += node.textContent; });
+			// let suffix = '';
+			// editorState.doc.slice(Math.min(editorState.doc.nodeSize - 2, currentToPos), Math.min(editorState.doc.nodeSize - 2, currentToPos + 10)).content.forEach((node)=>{ suffix += node.textContent; });
 			const output = {
 				top: inlineTop,
 				to: currentToPos,
 				from: currentFromPos,
-				hash: stringHash(string),
-				exact: string,
+				// hash: stringHash(exact),
+				exact: exact,
 				prefix: prefix,
 				suffix: suffix,
 			};
@@ -294,6 +319,7 @@ class HighlightMenu extends Component {
 			suffix: suffix,
 			permanent: permanent,
 		});
+		// console.log(JSON.stringify(transaction.meta.newSelectionData, null, 2));
 		// transaction.setMeta('newSelectionFrom', from);
 		// transaction.setMeta('newSelectionTo', to);
 		// transaction.setMeta('newSelectionId', id);

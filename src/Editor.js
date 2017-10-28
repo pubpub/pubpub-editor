@@ -328,9 +328,8 @@ class Editor extends Component {
 			<div style={{ position: 'relative' }} id={this.containerId}>
 				{this.state.view
 					? React.Children.map(this.props.children, (child) => {
-						if (!child) {
-							return null;
-						}
+						if (!child) { return null; }
+
 						return React.cloneElement(child, {
 							view: this.state.view,
 							editorState: this.state.editorState,
