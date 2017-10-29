@@ -72,13 +72,17 @@ class HighlightMenu extends Component {
 							prefix: transaction.meta.newSelectionData.prefix,
 							suffix: transaction.meta.newSelectionData.suffix,
 						});
-						let resolvedStartContainer = range.startContainer;
-						while (!resolvedStartContainer.pmViewDesc && resolvedStartContainer.className !== 'ProseMirror' && resolvedStartContainer !== null) {
-							resolvedStartContainer = resolvedStartContainer.parentElement;
-						}
-						let resolvedEndContainer = range.endContainer;
-						while (!resolvedEndContainer.pmViewDesc && resolvedEndContainer.className !== 'ProseMirror' && resolvedEndContainer !== null) {
-							resolvedEndContainer = resolvedEndContainer.parentElement;
+						let resolvedStartContainer;
+						let resolvedEndContainer;
+						if (range) {
+							resolvedStartContainer = range.startContainer;
+							while (!resolvedStartContainer.pmViewDesc && resolvedStartContainer.className !== 'ProseMirror' && resolvedStartContainer !== null) {
+								resolvedStartContainer = resolvedStartContainer.parentElement;
+							}
+							resolvedEndContainer = range.endContainer;
+							while (!resolvedEndContainer.pmViewDesc && resolvedEndContainer.className !== 'ProseMirror' && resolvedEndContainer !== null) {
+								resolvedEndContainer = resolvedEndContainer.parentElement;
+							}
 						}
 						if (!range || !resolvedStartContainer.pmViewDesc || !resolvedEndContainer.pmViewDesc) {
 							newDecoSet = decoSet;
