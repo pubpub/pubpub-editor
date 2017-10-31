@@ -1,5 +1,6 @@
 import { compressSelectionJSON, compressStateJSON, compressStepJSON, compressStepsLossy, uncompressSelectionJSON, uncompressStateJSON, uncompressStepJSON } from 'prosemirror-compress';
 
+
 import { Node } from 'prosemirror-model';
 import { Selection } from 'prosemirror-state';
 import { Step } from 'prosemirror-transform';
@@ -7,6 +8,17 @@ import { receiveTransaction } from 'prosemirror-collab';
 
 const TIMESTAMP = { '.sv': 'timestamp' };
 const SAVE_EVERY_N_STEPS = 100;
+
+/* prosemirror-compress requires some polyfill, which at the moment has a bug */
+Object.entries = function( obj ){
+  var ownProps = Object.keys( obj ),
+      i = ownProps.length,
+      resArray = new Array(i); // preallocate the Array
+  while (i--)
+    resArray[i] = [ownProps[i], obj[ownProps[i]]];
+  
+  return resArray;
+};
 
 class DocumentRef {
 	constructor(firebaseRef, view, localClientId, localClientData) {
