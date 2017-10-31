@@ -81,7 +81,7 @@ class InsertMenu extends Component {
 				handleDOMEvents: {
 					keydown: (view, evt)=> {
 						const state = pluginKey.getState(view.state);
-						if (state && state.isActive && evt.type === 'keydown' && (evt.key === 'ArrowUp' || evt.key === 'ArrowDown' || evt.key === 'Enter')) {
+						if (state && state.isActive && evt.type === 'keydown' && (evt.keyCode === 38 || evt.keyCode === 40  || evt.keyCode === 13)) {
 							evt.preventDefault();
 							return true;
 						}
@@ -123,14 +123,13 @@ class InsertMenu extends Component {
 
 	onKeyEvents(evt) {
 		if (!this.state.isActive) { return null; }
-
-		if (evt.key === 'ArrowUp') {
+		if (evt.keyCode === 38) { // ArrowUp
 			return this.setState({ activeMenuItem: Math.max(this.state.activeMenuItem - 1, 0) });
 		}
-		if (evt.key === 'ArrowDown') {
+		if (evt.keyCode === 40) { // ArrowDown
 			return this.setState({ activeMenuItem: Math.min(this.state.activeMenuItem + 1, this.state.activeMenuItems.length - 1) });
 		}
-		if (evt.key === 'Enter') {
+		if (evt.keyCode === 13) { // Enter
 			return this.replaceContent(this.state.activeMenuItems[this.state.activeMenuItem].run);
 		}
 		return null;
