@@ -52,7 +52,9 @@ class HighlightMenu extends Component {
 						const newData = transaction.meta.newSelectionData;
 						const datafrom = newData.from;
 						const datato = newData.to;
-						posBasedExact = editorState.doc.textBetween(datafrom, datato);
+						if (editorState.doc.nodeSize >= datafrom && editorState.doc.nodeSize >= datato) {
+							posBasedExact = editorState.doc.textBetween(datafrom, datato);
+						}
 						stillInTact = posBasedExact === newData.exact;
 					}
 					if (transaction.meta.clearTempSelection) {
