@@ -9,20 +9,6 @@ import { receiveTransaction } from 'prosemirror-collab';
 const TIMESTAMP = { '.sv': 'timestamp' };
 const SAVE_EVERY_N_STEPS = 100;
 
-/* Polyfill for Object.entries which prosemirror-compress requires */
-/* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries */
-Object.entries = function(obj) {
-	const ownProps = Object.keys(obj);
-	let i = ownProps.length;
-	const resArray = new Array(i); // preallocate the Array
-	while (i--) {
-		resArray[i] = [ownProps[i], obj[ownProps[i]]];
-	}
-
-	return resArray;
-};
-/* ---------- */
-
 class DocumentRef {
 	constructor(firebaseRef, view, localClientId, localClientData) {
 		this.ref = firebaseRef;
