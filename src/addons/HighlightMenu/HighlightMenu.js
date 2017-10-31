@@ -155,8 +155,8 @@ class HighlightMenu extends Component {
 	onChange() {
 		const { view, containerId, editorState } = this.props;
 		const currentPos = view.state.selection.$to.pos;
-		if (currentPos === 0) { return null; }
-		const currentNode = view.state.doc.nodeAt(currentPos - 1);
+		if (currentPos === 0 || !editorState || !editorState.doc) { return null; }
+		const currentNode = editorState.doc.nodeAt(currentPos - 1);
 		const container = document.getElementById(containerId);
 		if (!view.state.selection.$cursor && currentNode && currentNode.text) {
 			const currentFromPos = view.state.selection.$from.pos;

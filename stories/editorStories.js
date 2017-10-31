@@ -275,7 +275,7 @@ storiesOf('Editor', module)
 			<style>{`
 				.pubpub-editor { font-family: serif; }	
 			`}</style>
-			<Editor onChange={onChange} ref={(ref)=> { console.log(ref); editorRef = ref; }} placeholder={'Begin writing...'} initialContent={plainDoc}>
+			<Editor onChange={onChange} ref={(ref)=> { editorRef = ref; }} placeholder={'Begin writing...'} initialContent={plainDoc}>
 				<HighlightMenu
 					highlights={[
 						{
