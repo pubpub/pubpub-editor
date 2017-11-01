@@ -306,7 +306,7 @@ class HighlightMenu extends Component {
 							constraints: [{ attachment: 'together', to: 'window' }]
 						}}
 					>
-						<button className={'pt-button pt-minimal pt-icon-highlight'} />
+						<button className={`pt-button pt-minimal ${this.props.onDotClick ? 'pt-icon-highlight' : 'pt-icon-link'}`} />
 					</Popover>
 				</div>
 				{this.props.onDotClick &&
