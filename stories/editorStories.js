@@ -216,7 +216,7 @@ class Highlighting extends Component {
 							]}
 							primaryEditorClassName={'selection-cite-wrapper'}
 							onNewDiscussion={(data)=>{ console.log('New discussion', data); }}
-							onSelectionClick={(thing)=> { console.log('Clicked selection ', thing); }}
+							onDotClick={(thing)=> { console.log('Clicked selection ', thing); }}
 							// versionId={'1233-asd3-as23-asf3'}
 						/>
 						<InsertMenu />
@@ -305,7 +305,7 @@ storiesOf('Editor', module)
 					]}
 					primaryEditorClassName={'selection-cite-wrapper'}
 					onNewDiscussion={(data)=>{ console.log('New discussion', data); }}
-					onSelectionClick={(thing)=> { console.log('Clicked selection ', thing); }}
+					onDotClick={(thing)=> { console.log('Clicked selection ', thing); }}
 					// versionId={'1233-asd3-as23-asf3'}
 				/>
 				<InsertMenu />

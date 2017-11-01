@@ -12,7 +12,7 @@ const propTypes = {
 	highlights: PropTypes.array,
 	versionId: PropTypes.string,
 	onNewDiscussion: PropTypes.func,
-	onSelectionClick: PropTypes.func,
+	onDotClick: PropTypes.func,
 	primaryEditorClassName: PropTypes.string,
 	hoverBackgroundColor: PropTypes.string.isRequired,
 	containerId: PropTypes.string,
@@ -24,7 +24,7 @@ const defaultProps = {
 	highlights: [],
 	versionId: undefined,
 	onNewDiscussion: undefined,
-	onSelectionClick: undefined,
+	onDotClick: undefined,
 	primaryEditorClassName: undefined,
 	containerId: undefined,
 	view: undefined,
@@ -309,30 +309,32 @@ class HighlightMenu extends Component {
 						<button className={'pt-button pt-minimal pt-icon-highlight'} />
 					</Popover>
 				</div>
-				<div className={'highlight-dot-wrapper'}>
-					{things && !!things.length && things.filter((item)=> {
-						return !item.isPermanent;
-					}).map((item)=> {
-						return (
-							<div
-								role={'button'}
-								tabIndex={-1}
-								key={`thing-${item.id}`}
-								className={'highlight-dot'}
-								style={{ top: item.top + ((stringHash(item.id) % 10)) }}
-								onMouseEnter={()=> { this.handleMouseEnter(item.id); }}
-								onMouseLeave={()=> { this.handleMouseLeave(item.id); }}
-								onClick={()=> {
-									this.props.onSelectionClick(item.id);
-								}}
-							>
-								{this.state.activeHover === item.id &&
-									<style>{`.${item.id} { background-color: ${this.props.hoverBackgroundColor} !important; }`}</style>
-								}
-							</div>
-						);
-					})}
-				</div>
+				{this.props.onDotClick &&
+					<div className={'highlight-dot-wrapper'}>
+						{things && !!things.length && things.filter((item)=> {
+							return !item.isPermanent;
+						}).map((item)=> {
+							return (
+								<div
+									role={'button'}
+									tabIndex={-1}
+									key={`thing-${item.id}`}
+									className={'highlight-dot'}
+									style={{ top: item.top + ((stringHash(item.id) % 10)) }}
+									onMouseEnter={()=> { this.handleMouseEnter(item.id); }}
+									onMouseLeave={()=> { this.handleMouseLeave(item.id); }}
+									onClick={()=> {
+										this.props.onDotClick(item.id);
+									}}
+								>
+									{this.state.activeHover === item.id &&
+										<style>{`.${item.id} { background-color: ${this.props.hoverBackgroundColor} !important; }`}</style>
+									}
+								</div>
+							);
+						})}
+					</div>
+				}
 			</div>
 		);
 	}

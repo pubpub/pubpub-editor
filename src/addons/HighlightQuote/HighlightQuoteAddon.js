@@ -9,6 +9,7 @@ require('./highlightQuote.scss');
 const propTypes = {
 	getHighlightContent: PropTypes.func,
 	hoverBackgroundColor: PropTypes.string,
+	hideScrollButton: PropTypes.bool,
 	/* All addons get the following props,
 	but certain schema-based addons may not need them */
 	// containerId: PropTypes.string.isRequired,
@@ -18,6 +19,7 @@ const propTypes = {
 const defaultProps = {
 	getHighlightContent: undefined,
 	hoverBackgroundColor: 'red',
+	hideScrollButton: false,
 };
 
 class HighlightQuoteAddon extends Component {
@@ -77,6 +79,7 @@ class HighlightQuoteAddon extends Component {
 								isSelected={isSelected}
 								isEditable={true}
 								hoverBackgroundColor={props.hoverBackgroundColor}
+								hideScrollButton={props.hideScrollButton}
 							/>
 						);
 					},
@@ -91,6 +94,7 @@ class HighlightQuoteAddon extends Component {
 								prefix={node.attrs.prefix}
 								version={node.attrs.version}
 								hoverBackgroundColor={props.hoverBackgroundColor}
+								hideScrollButton={props.hideScrollButton}
 							/>
 						);
 					},

@@ -14,6 +14,7 @@ const propTypes = {
 	isSelected: PropTypes.bool,
 	isEditable: PropTypes.bool,
 	hoverBackgroundColor: PropTypes.string.isRequired,
+	hideScrollButton: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -26,6 +27,7 @@ const defaultProps = {
 	version: undefined,
 	isSelected: false,
 	isEditable: false,
+	hideScrollButton: false,
 };
 
 class Highlight extends Component {
@@ -57,7 +59,8 @@ class Highlight extends Component {
 		};
 		return (
 			<div className={`pt-card pt-elevation-2 highlight-quote ${this.props.isSelected ? 'isSelected' : ''}`}>
-				{!this.props.isEditable && !this.state.removed &&
+				
+				{!this.props.isEditable && !this.state.removed && !this.props.hideScrollButton &&
 					<button
 						className={'scroll-to-button pt-button pt-small pt-icon-highlight'}
 						onClick={scrollToClicked}
@@ -67,7 +70,7 @@ class Highlight extends Component {
 				}
 				{!this.props.isEditable && this.state.removed &&
 					<button className={'scroll-to-button pt-button pt-small'} disabled>
-						Original Highlight Removed
+						Highlight Not Found
 					</button>
 				}
 				{this.state.active &&
