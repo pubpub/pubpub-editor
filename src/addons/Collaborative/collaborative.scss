@@ -1,4 +1,6 @@
 .cursor-container {
+	z-index: 2;
+	position: relative;
 	.left-cursor {
 		display: block;
 		height: 20px;
