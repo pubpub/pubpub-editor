@@ -186,6 +186,8 @@ class FirebasePlugin extends Plugin {
 	}
 
 	apply = (transaction, state, prevEditorState, editorState) => {
+		this.document.removeStaleSelections();
+
 		if (transaction.docChanged) {
 			this.document.mapSelection(transaction, editorState);
 		}

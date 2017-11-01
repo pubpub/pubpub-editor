@@ -204,7 +204,7 @@ class DocumentRef {
 		return selfSelectionRef.set(compressed);
 	}
 
-	mapSelection = (transaction, editorState) => {
+	removeStaleSelections = ()=> {
 		for (const clientId in this.selections) {
 			const originalClientData = this.selections[clientId].data || {};
 			const expirationTime = (1000 * 60 * 10); // 10 Minutes
@@ -214,10 +214,15 @@ class DocumentRef {
 				const selectionsRef = this.ref.child('selections');
 				const clientSelectionRef = selectionsRef.child(clientId);
 				clientSelectionRef.remove();
-			} else {
-				this.selections[clientId] = this.selections[clientId].map(editorState.doc, transaction.mapping);
-				this.selections[clientId].data = originalClientData;
 			}
+		}
+	}
+
+	mapSelection = (transaction, editorState) => {
+		for (const clientId in this.selections) {
+			const originalClientData = this.selections[clientId].data || {};
+			this.selections[clientId] = this.selections[clientId].map(editorState.doc, transaction.mapping);
+			this.selections[clientId].data = originalClientData;
 		}
 	}
 
