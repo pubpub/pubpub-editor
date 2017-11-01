@@ -9,10 +9,13 @@ but certain schema-based addons may not need them
 */
 
 const propTypes = {
-	renderFunction: PropTypes.func.isRequired,
+	renderFunction: PropTypes.func,
 	// containerId: PropTypes.string.isRequired,
 	// view: PropTypes.object.isRequired,
 	// editorState: PropTypes.object.isRequired,
+};
+const defaultProps = {
+	renderFunction: undefined,
 };
 
 class LatexAddon extends Component {
@@ -115,4 +118,5 @@ class LatexAddon extends Component {
 }
 
 LatexAddon.propTypes = propTypes;
+LatexAddon.defaultProps = defaultProps;
 export default LatexAddon;
