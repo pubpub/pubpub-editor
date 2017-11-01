@@ -249,9 +249,9 @@ class HighlightMenu extends Component {
 			return prev;
 		}, undefined);
 		const decos = this.props.editorState[pluginKeyString].formattedHighlights;
-		let things;
-		if (decos) {
-			things = decos.find().filter((item)=> {
+		let dots;
+		if (decos && this.props.onDotClick) {
+			dots = decos.find().filter((item)=> {
 				return item.type.attrs.class.indexOf('temp-selection') === -1;
 			}).map((item)=> {
 				const className = item.type.attrs.class.replace('highlight-background ', '').replace(' permanent', '');
@@ -311,14 +311,14 @@ class HighlightMenu extends Component {
 				</div>
 				{this.props.onDotClick &&
 					<div className={'highlight-dot-wrapper'}>
-						{things && !!things.length && things.filter((item)=> {
+						{dots && !!dots.length && dots.filter((item)=> {
 							return !item.isPermanent;
 						}).map((item)=> {
 							return (
 								<div
 									role={'button'}
 									tabIndex={-1}
-									key={`thing-${item.id}`}
+									key={`dot-${item.id}`}
 									className={'highlight-dot'}
 									style={{ top: item.top + ((stringHash(item.id) % 10)) }}
 									onMouseEnter={()=> { this.handleMouseEnter(item.id); }}
