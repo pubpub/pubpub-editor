@@ -65,7 +65,7 @@ class HighlightMenu extends Component {
 						const to = transaction.meta.newSelectionData.to;
 						const tempSelections = decoSet.find().filter((item)=>{ return item.type.attrs.class.indexOf('temp-selection') > -1; });
 						newDecoSet = decoSet.remove(tempSelections).add(editorState.doc, [Decoration.inline(from, to, {
-							class: `cite-deco ${transaction.meta.newSelectionData.id} ${transaction.meta.newSelectionData.permanent ? 'permanent' : ''}`.trim(),
+							class: `highlight-background ${transaction.meta.newSelectionData.id} ${transaction.meta.newSelectionData.permanent ? 'permanent' : ''}`.trim(),
 						})]);
 					} else if (transaction.meta.newSelection && !transaction.meta.newSelectionData.version) {
 						const container = document.getElementsByClassName(primaryEditorClassName)[0];
@@ -92,7 +92,7 @@ class HighlightMenu extends Component {
 							const from = editorState.doc.resolve(resolvedStartContainer.pmViewDesc.posAtStart + range.startOffset).pos;
 							const to = editorState.doc.resolve(resolvedEndContainer.pmViewDesc.posAtStart + range.endOffset).pos;
 							newDecoSet = decoSet.add(editorState.doc, [Decoration.inline(from, to, {
-								class: `cite-deco ${transaction.meta.newSelectionData.id} ${transaction.meta.newSelectionData.permanent ? 'permanent' : ''}`.trim(),
+								class: `highlight-background ${transaction.meta.newSelectionData.id} ${transaction.meta.newSelectionData.permanent ? 'permanent' : ''}`.trim(),
 							})]);
 						}
 					} else {
@@ -253,10 +253,10 @@ class HighlightMenu extends Component {
 			things = decos.find().filter((item)=> {
 				return item.type.attrs.class.indexOf('temp-selection') === -1;
 			}).map((item)=> {
-				const className = item.type.attrs.class.replace('cite-deco ', '').replace(' permanent', '');
+				const className = item.type.attrs.class.replace('highlight-background ', '').replace(' permanent', '');
 				const isPermanent = item.type.attrs.class.indexOf('permanent') > -1;
 				const elem = document.getElementsByClassName(className)[0];
-				const wrapper = document.getElementsByClassName('things-wrapper')[0];
+				const wrapper = document.getElementsByClassName('highlight-dot-wrapper')[0];
 				const output = elem
 					? {
 						top: elem.getBoundingClientRect().top - wrapper.getBoundingClientRect().top,
@@ -308,7 +308,7 @@ class HighlightMenu extends Component {
 						<button className={'pt-button pt-minimal pt-icon-highlight'} />
 					</Popover>
 				</div>
-				<div className={'things-wrapper'}>
+				<div className={'highlight-dot-wrapper'}>
 					{things && !!things.length && things.filter((item)=> {
 						return !item.isPermanent;
 					}).map((item)=> {
@@ -317,7 +317,7 @@ class HighlightMenu extends Component {
 								role={'button'}
 								tabIndex={-1}
 								key={`thing-${item.id}`}
-								className={'thing'}
+								className={'highlight-dot'}
 								style={{ top: item.top + ((stringHash(item.id) % 10)) }}
 								onMouseEnter={()=> { this.handleMouseEnter(item.id); }}
 								onMouseLeave={()=> { this.handleMouseLeave(item.id); }}

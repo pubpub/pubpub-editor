@@ -13,7 +13,7 @@
 		background-color: white;
 		z-index: 15;
 	}
-	.things-wrapper {
+	.highlight-dot-wrapper {
 		z-index: 12;
 		width: calc(100% + 20px);
 	    position: relative;
@@ -34,7 +34,7 @@
 	}
 }
 
-.cite-deco {
+.highlight-background {
 	// background-color: transparent;
 	position: relative;
 	background-color: rgba(56, 111, 241, 0.3);
@@ -72,7 +72,7 @@
 	// 	border-radius: 15px;
 	// }
 }
-.thing {
+.highlight-dot {
 	pointer-events: auto;
 	position: absolute;
 	right: 0;
