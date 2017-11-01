@@ -30,13 +30,15 @@ class ReactView {
 
 	updateAttrs(nodeAttrs) {
 		const start = this.getPos();
-		const oldNodeAttrs = this.node.attrs;
-		const transaction = this.view.state.tr.setNodeMarkup(
-			start,
-			null,
-			{ ...oldNodeAttrs, ...nodeAttrs }
-		);
-		this.view.dispatch(transaction);
+		if (start) {
+			const oldNodeAttrs = this.node.attrs;
+			const transaction = this.view.state.tr.setNodeMarkup(
+				start,
+				null,
+				{ ...oldNodeAttrs, ...nodeAttrs }
+			);
+			this.view.dispatch(transaction);
+		}
 	}
 
 	updateContent(content) {

@@ -33,17 +33,23 @@ class LatexEditable extends Component {
 	}
 
 	changeToInline() {
-		this.props.changeNode(this.props.view.state.schema.nodes.equation, {
-			value: this.props.value
-		}, null);
-		this.refocusNode();
+		if (this.props.isBlock) {
+			this.props.changeNode(this.props.view.state.schema.nodes.equation, {
+				value: this.props.value,
+				html: this.state.html,
+			}, null);
+			this.refocusNode();	
+		}
 	}
 
 	changeToBlock() {
-		this.props.changeNode(this.props.view.state.schema.nodes.block_equation, {
-			value: this.props.value
-		}, null);
-		this.refocusNode(1);
+		if (!this.props.isBlock) {
+			this.props.changeNode(this.props.view.state.schema.nodes.block_equation, {
+				value: this.props.value,
+				html: this.state.html,
+			}, null);
+			this.refocusNode(1);
+		}
 	}
 	handleValueChange(evt) {
 		this.props.updateAttrs({ value: evt.target.value, html: this.state.html });
