@@ -79,11 +79,11 @@ class HighlightMenu extends Component {
 						let resolvedEndContainer;
 						if (range) {
 							resolvedStartContainer = range.startContainer;
-							while (resolvedStartContainer && !resolvedStartContainer.pmViewDesc && resolvedStartContainer.className !== 'ProseMirror' && resolvedStartContainer !== null) {
+							while (resolvedStartContainer && !resolvedStartContainer.pmViewDesc && resolvedStartContainer.className !== 'ProseMirror') {
 								resolvedStartContainer = resolvedStartContainer.parentElement;
 							}
 							resolvedEndContainer = range.endContainer;
-							while (resolvedEndContainer && !resolvedEndContainer.pmViewDesc && resolvedEndContainer.className !== 'ProseMirror' && resolvedEndContainer !== null) {
+							while (resolvedEndContainer && !resolvedEndContainer.pmViewDesc && resolvedEndContainer.className !== 'ProseMirror') {
 								resolvedEndContainer = resolvedEndContainer.parentElement;
 							}
 						}
