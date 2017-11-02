@@ -79,15 +79,15 @@ class HighlightMenu extends Component {
 						let resolvedEndContainer;
 						if (range) {
 							resolvedStartContainer = range.startContainer;
-							while (!resolvedStartContainer.pmViewDesc && resolvedStartContainer.className !== 'ProseMirror' && resolvedStartContainer !== null) {
+							while (resolvedStartContainer && !resolvedStartContainer.pmViewDesc && resolvedStartContainer.className !== 'ProseMirror' && resolvedStartContainer !== null) {
 								resolvedStartContainer = resolvedStartContainer.parentElement;
 							}
 							resolvedEndContainer = range.endContainer;
-							while (!resolvedEndContainer.pmViewDesc && resolvedEndContainer.className !== 'ProseMirror' && resolvedEndContainer !== null) {
+							while (resolvedEndContainer && !resolvedEndContainer.pmViewDesc && resolvedEndContainer.className !== 'ProseMirror' && resolvedEndContainer !== null) {
 								resolvedEndContainer = resolvedEndContainer.parentElement;
 							}
 						}
-						if (!range || !resolvedStartContainer.pmViewDesc || !resolvedEndContainer.pmViewDesc) {
+						if (!range || !resolvedStartContainer || !resolvedStartContainer.pmViewDesc || !resolvedEndContainer || !resolvedEndContainer.pmViewDesc) {
 							newDecoSet = decoSet;
 						} else {
 							const from = editorState.doc.resolve(resolvedStartContainer.pmViewDesc.posAtStart + range.startOffset).pos;
