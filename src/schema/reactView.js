@@ -30,7 +30,7 @@ class ReactView {
 
 	updateAttrs(nodeAttrs) {
 		const start = this.getPos();
-		if (start) {
+		if (start !== undefined) {
 			const oldNodeAttrs = this.node.attrs;
 			const transaction = this.view.state.tr.setNodeMarkup(
 				start,
