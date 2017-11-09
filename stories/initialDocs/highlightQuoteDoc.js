@@ -1,8 +1,6 @@
-const highlightDoc = {
+const doc = {
 	type: 'doc',
-	attrs: {
-		'meta': {}
-	},
+	attrs: { meta: {} },
 	content: [
 		{
 			type: 'paragraph',
@@ -34,4 +32,4 @@ const highlightDoc = {
 	]
 };
 
-export default highlightDoc;
+export default doc;

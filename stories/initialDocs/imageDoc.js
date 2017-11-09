@@ -1,4 +1,4 @@
-const imageDoc = {
+const doc = {
 	type: 'doc',
 	attrs: {
 		meta: {}
@@ -29,4 +29,4 @@ const imageDoc = {
 	]
 };
 
-export default imageDoc;
+export default doc;

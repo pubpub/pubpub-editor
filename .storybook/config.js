@@ -15,3 +15,6 @@ setOptions({
 });
 
 configure(loadStories, module);
+
+/* Require default styles */
+require('./styles.scss');

@@ -12,7 +12,7 @@
 	"settings": {
 		"import/resolver": {
 			"node": {
-				paths: ['./src', './stories']
+				paths: ['src', 'stories']
 			}
 		}
     },

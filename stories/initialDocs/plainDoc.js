@@ -1,4 +1,4 @@
-const plainDoc = {
+const doc = {
 	type: 'doc',
 	attrs: {
 		'meta': {}
@@ -34,4 +34,4 @@ const plainDoc = {
 	]
 };
 
-export default plainDoc;
+export default doc;

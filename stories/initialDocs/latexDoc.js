@@ -1,4 +1,4 @@
-const equationDoc = {
+const doc = {
 	type: 'doc',
 	attrs: {
 		'meta': {}
@@ -23,4 +23,4 @@ const equationDoc = {
 	]
 };
 
-export default equationDoc;
+export default doc;

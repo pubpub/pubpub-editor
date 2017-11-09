@@ -1,4 +1,4 @@
-const fileDoc = {
+const doc = {
 	type: 'doc',
 	attrs: {
 		meta: {}
@@ -20,15 +20,13 @@ const fileDoc = {
 			]
 		},
 		{
-			type: 'file',
+			type: 'video',
 			attrs: {
-				url: 'https://i.imgur.com/4jIx7oE.gif',
-				fileName: 'myGreatFile.gif',
-				fileSize: '29kb',
+				url: 'http://techslides.com/demos/sample-videos/small.mp4',
 				caption: 'Hello there!',
 			},
 		},
 	]
 };
 
-export default fileDoc;
+export default doc;

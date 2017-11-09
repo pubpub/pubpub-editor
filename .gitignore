@@ -7,4 +7,5 @@ npm-debug.log
 stats.json
 webpack-stats.json
 stories/config/secrets.js
+stories/_config.js
 out

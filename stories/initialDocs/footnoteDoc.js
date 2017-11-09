@@ -1,4 +1,4 @@
-const footnoteDoc = {
+const doc = {
 	type: 'doc',
 	attrs: {
 		'meta': {}
@@ -27,4 +27,4 @@ const footnoteDoc = {
 	]
 };
 
-export default footnoteDoc;
+export default doc;
