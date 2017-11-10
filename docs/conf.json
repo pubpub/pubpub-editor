@@ -1,6 +1,6 @@
 {
   	"source": {
-      "include": [ "docs/INTRO.md","docs/JsdocTypes.js", "src" ],
+      "include": [ "README.md","docs/JsdocTypes.js", "src" ],
       "includePattern": ".+jsx?"
   	},
     "plugins": [
