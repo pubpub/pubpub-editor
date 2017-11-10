@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import PropTypes from 'prop-types';
 
 const propTypes = {
@@ -13,7 +12,6 @@ const propTypes = {
 	getPos: PropTypes.func.isRequired,
 	renderComponent: PropTypes.func.isRequired,
 };
-
 
 class ReactViewWrapper extends Component {
 	constructor(props) {

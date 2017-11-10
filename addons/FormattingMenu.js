@@ -1,1 +1,1 @@
-module.exports = require('../dist/addons/FormattingMenu/Formatting').default;
+module.exports = require('../dist/addons/FormattingMenu/FormattingMenu').default;

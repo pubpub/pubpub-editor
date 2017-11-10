@@ -1,4 +1,3 @@
-/* eslint-disable react/no-render-return-value */
 /* eslint-disable class-methods-use-this */
 import { NodeSelection } from 'prosemirror-state';
 import React from 'react';
@@ -80,9 +79,7 @@ class ReactView {
 	}
 
 	changeNode(nodeType, attrs, content) {
-		// const nodeText = this.node.textContent;
 		const newNode = nodeType.create(attrs, content);
-
 		const start = this.getPos();
 		const end = start + this.node.nodeSize;
 		const transaction = this.view.state.tr.replaceWith(start, end, newNode);
@@ -105,30 +102,7 @@ class ReactView {
 		this.reactElement.setSelected(false);
 	}
 
-	/*
-	setSelection() {
-
-		const pos = this.getPos();
-		const sel = NodeSelection.create(this.view.state.doc, pos);
-		const transaction = this.view.state.tr.setSelection(sel);
-		this.view.dispatch(transaction);
-	}
-	*/
-
-	/*
-	setSelection(anchor, head) {
-		console.log('got selection!', anchor, head);
-	}
-	*/
-
-	/*
-	selectNode() {
-		this.cm.focus()
-	}
-	*/
-
 	// Generally avoids 'index out of range' errors
-	// ignoreMutation(mutation) {
 	ignoreMutation() {
 		return true;
 	}

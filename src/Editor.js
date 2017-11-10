@@ -1,12 +1,8 @@
-import { EditorState, PluginKey } from 'prosemirror-state';
 import React, { Component } from 'react';
-
+import { EditorState, PluginKey } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import PropTypes from 'prop-types';
 import ReactView from './schema/reactView';
-// import { configureClipboard } from './schema/setup/clipboard';
-// import configureNodeViews from '../schema/editable/configure';
-// import { createRichMention } from '../addons/Autocomplete/autocompleteConfig';
 import createSchema from './schema';
 import { getBasePlugins } from './schema/setup';
 
@@ -51,20 +47,11 @@ class Editor extends Component {
 		super(props);
 		this.containerId = `pubpub-editor-container-${Math.round(Math.random() * 10000)}`;
 		this.state = {};
-		// this.onChange = this.onChange.bind(this);
 		this.getJSON = this.getJSON.bind(this);
 		this.configureSchema = this.configureSchema.bind(this);
 		this.configurePlugins = this.configurePlugins.bind(this);
 		this.createEditor = this.createEditor.bind(this);
-		// this.updateMentions = this.updateMentions.bind(this);
-		// this.onMentionSelection = this.onMentionSelection.bind(this);
 		this.remove = this.remove.bind(this);
-		// this.getMentionPos = this.getMentionPos.bind(this);
-		// this.getTrackedSteps = this.getTrackedSteps.bind(this);
-		// this.rebaseSteps = this.rebaseSteps.bind(this);
-		// this.rebase = this.rebase.bind(this);
-		// this.rebaseByCommit = this.rebaseByCommit.bind(this);
-		// this.commit = this.commit.bind(this);
 		this._isMounted = false;
 		this._onAction = this._onAction.bind(this);
 	}
@@ -121,23 +108,6 @@ class Editor extends Component {
 		return { plugins, pluginKeys };
 	}
 
-	/*
-	configurePlugins(schema) {
-		// const schema = createSchema();
-
-		let plugins = getBasePlugins({ schema, placeholder: this.props.placeholder });
-		if (this.props.children) {
-			React.Children.forEach(this.props.children, (child)=> {
-				if (child.type.getPlugins) {
-					plugins = plugins.concat(child.type.getPlugins(child.props));
-				}
-			});
-		}
-
-		return plugins;
-	}
-	*/
-
 	configureNodeViews(schema) {
 		const nodeViews = {};
 		const nodes = schema.nodes;
@@ -169,7 +139,6 @@ class Editor extends Component {
 				}
 			});
 		}
-
 		const schema = createSchema(schemaNodes, schemaMarks);
 		return schema;
 	}
@@ -192,51 +161,14 @@ class Editor extends Component {
 			plugins: plugins,
 		};
 
-		// const {
-		// 	clipboardParser,
-		// 	clipboardSerializer,
-		// 	transformPastedHTML
-		// } = configureClipboard({ schema });
-
 		const state = EditorState.create(stateConfig);
 		const editorView = document.createElement('div');
-		// editorView.className = 'pub-body';
 		place.appendChild(editorView);
-
-		// const props = {
-		// 	referencesList: this.props.localFiles,
-		// 	createFile: this.props.handleFileUpload,
-		// 	createReference: this.props.handleReferenceAdd,
-		// 	captureError: this.props.onError,
-		// 	onChange: this.onChange,
-		// 	updateCommits: this.props.updateCommits,
-		// 	updateMentions: this.updateMentions,
-		// };
-
 
 		this.view = new EditorView(editorView, {
 			state: state,
 			dispatchTransaction: this._onAction,
 			spellcheck: true,
-			// clipboardSerializer: clipboardSerializer,
-			// transformPastedHTML: transformPastedHTML,
-			// handleDOMEvents: {
-			// 	dragstart: (view, evt) => {
-			// 		evt.preventDefault();
-			// 		return true;
-			// 	},
-			// },
-			// viewHandlers: {
-			// 	updafteMentions: this.updateMentions,
-			// },
-			// handleDOMEvents: {
-			// 	onselect: (view, evt)=> {
-			// 		console.log(view, evt);
-			// 	},
-			// 	select: (view, evt)=> {
-			// 		console.log(view, evt);
-			// 	}
-			// },
 			editable: () => (!this.props.isReadOnly),
 			nodeViews: nodeViews,
 		});
@@ -244,73 +176,11 @@ class Editor extends Component {
 		this.setState({ view: this.view, editorState: state, pluginKeys });
 	}
 
-	// updateMentions(mentionInput) {
-	// 	if (mentionInput) {
-	// 		setTimeout(()=> {
-	// 			const container = document.getElementById('rich-editor-container');
-	// 			const mark = document.getElementsByClassName('mention-marker')[0];
-	// 			if (!container || !mark) {
-	// 				return this.setState({ visible: false });
-	// 			}
-	// 			const top = mark.getBoundingClientRect().bottom - container.getBoundingClientRect().top;
-	// 			const left = mark.getBoundingClientRect().left - container.getBoundingClientRect().left;
-	// 			return this.setState({
-	// 				visible: true,
-	// 				top: top,
-	// 				left: left,
-	// 				input: mentionInput,
-	// 			});
-	// 		}, 0);
-	// 	} else {
-	// 		this.setState({ visible: false });
-	// 	}
-	// }
-
-	// onMentionSelection(selectedObject) {
-	// 	const mentionPos = this.editor.getMentionPos();
-	// 	createRichMention(this.editor, selectedObject, mentionPos.start, mentionPos.end);
-	// }
-
 	remove() {
 		if (this.view) {
 			this.view.destroy();
 		}
 	}
-
-	// rebaseSteps(steps) {
-	// 	let rebasePlugin;
-	// 	if (rebasePlugin = getPlugin('rebase', this.view.state)) {
-	// 		return rebasePlugin.props.rebaseSteps.bind(rebasePlugin)(this.view, steps);
-	// 	}
-	// 	return Promise.resolve(null);
-	// }
-
-	// rebase(forkID) {
-	// 	let firebasePlugin;
-	// 	if (firebasePlugin = getPlugin('firebase', this.view.state)) {
-	// 		return firebasePlugin.props.rebase.bind(firebasePlugin)(forkID);
-	// 	}
-	// 	return Promise.resolve(null);
-	// }
-
-	// rebaseByCommit(forkID) {
-	// 	let firebasePlugin;
-	// 	if (firebasePlugin = getPlugin('firebase', this.view.state)) {
-	// 		return firebasePlugin.props.rebaseByCommit.bind(firebasePlugin)(forkID);
-	// 	}
-	// 	return Promise.resolve(null);
-	// }
-
-	// commit(msg) {
-	// 	let firebasePlugin;
-	// 	/* ??? Should this be comparative? */
-	// 	/* Doesn't seem like it - but why have the let? Why not just set? */
-	// 	if (firebasePlugin = getPlugin('firebase', this.view.state)) {
-	// 		return firebasePlugin.props.commit.bind(firebasePlugin)(msg);
-	// 	}
-	// 	return Promise.resolve(null);
-	// }
-
 
 	_onAction(transaction) {
 		if (this.view && this.view.state && this._isMounted) {
