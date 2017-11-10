@@ -7,7 +7,7 @@ import DocumentRef from './documentRef';
 
 
 class FirebasePlugin extends Plugin {
-	constructor({ localClientId, localClientData, editorKey, firebaseConfig, rootRef, editorRef, pluginKey, onClientChange, onForksUpdate }) {
+	constructor({ localClientId, localClientData, editorKey, firebaseConfig, rootRef, editorRef, pluginKey, onClientChange, onStatusChange, onForksUpdate }) {
 		super({ key: pluginKey });
 		this.spec = {
 			view: this.updateView,
@@ -23,6 +23,7 @@ class FirebasePlugin extends Plugin {
 
 		this.onForksUpdate = onForksUpdate;
 		this.onClientChange = onClientChange;
+		this.onStatusChange = onStatusChange;
 		this.localClientId = localClientId;
 		this.localClientData = localClientData;
 		this.editorKey = editorKey;
@@ -43,20 +44,29 @@ class FirebasePlugin extends Plugin {
 			this.rootRef = firebase.database(this.firebaseApp);
 			this.rootRef.goOnline();
 			this.firebaseRef = this.rootRef.ref(editorKey);
-		} else if (rootRef) {
-			this.rootRef = rootRef;
-			if (editorKey) {
-				this.firebaseRef = this.rootRef.ref(editorKey);
-			} else if (editorRef) {
-				this.firebaseRef = editorRef;
-			} else {
-				console.error('Did not include a reference to the editor firebase instance or an editor key.');
-				return null;
-			}
+		// } else if (rootRef) {
+		// 	this.rootRef = rootRef;
+		// 	if (editorKey) {
+		// 		this.firebaseRef = this.rootRef.ref(editorKey);
+		// 	} else if (editorRef) {
+		// 		this.firebaseRef = editorRef;
+		// 	} else {
+		// 		console.error('Did not include a reference to the editor firebase instance or an editor key.');
+		// 		return null;
+		// 	}
 		} else {
-			console.error('Did not include a firebase config or root ref.x');
+			// console.error('Did not include a firebase config or root ref.x');
+			console.error('Did not include a firebase config');
 			return null;
 		}
+		const connectedRef = this.rootRef.ref('.info/connected');
+		connectedRef.on('value', (snap)=> {
+			if (snap.val() === true) {
+				this.onStatusChange('connected');
+			} else {
+				this.onStatusChange('disconnected');
+			}
+		});
 	}
 
 
@@ -149,7 +159,8 @@ class FirebasePlugin extends Plugin {
 		if (sendable && sendable.version !== this.sendableVersion) {
 			this.sendableVersion = sendable.version;
 			const { steps, clientID } = sendable;
-			this.document.sendChanges({ steps, clientID, meta, newState });
+			const onStatusChange = this.onStatusChange;
+			this.document.sendChanges({ steps, clientID, meta, newState, onStatusChange });
 			const recievedClientIDs = new Array(steps.length).fill(this.localClientId);
 			this.selfChanges[this.document.latestKey] = steps;
 		}

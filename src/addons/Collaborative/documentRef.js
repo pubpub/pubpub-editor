@@ -66,12 +66,13 @@ class DocumentRef {
 		});
 	}
 
-	sendChanges = ({ steps, clientID, meta, newState }) => {
+	sendChanges = ({ steps, clientID, meta, newState, onStatusChange }) => {
 		const changesRef = this.ref.child('changes');
 		this.latestKey = this.latestKey + 1;
 
 		return changesRef.child(this.latestKey).transaction(
 			(existingBatchedSteps)=> {
+				onStatusChange('saving');
 				if (!existingBatchedSteps) {
 					// selfChanges[latestKey + 1] = steps
 					return {
@@ -86,6 +87,7 @@ class DocumentRef {
 				}
 			},
 			(error, committed, dataSnapshot)=> {
+				if (!error) { onStatusChange('saved'); }
 				const key = dataSnapshot ? dataSnapshot.key : undefined;
 				if (error) {
 					console.error('updateCollab', error, steps, clientID, key);

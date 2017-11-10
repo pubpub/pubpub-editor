@@ -18,6 +18,7 @@ storiesOf('Collaborative', module)
 				firebaseConfig={firebaseConfig}
 				clientData={clientData}
 				// onClientChange={(val)=> { console.log(val); }}
+				// onStatusChange={(val)=> { console.log(val); }}
 				editorKey={'storybook-editorkey-v15'}
 			/>
 		</Editor>

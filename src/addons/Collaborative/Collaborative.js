@@ -10,6 +10,7 @@ const propTypes = {
 	editorState: PropTypes.object,
 	onClientChange: PropTypes.func,
 	onForksUpdate: PropTypes.func,
+	onStatusChange: PropTypes.func,
 	pluginKey: PropTypes.object,
 	editorKey: PropTypes.string,
 };
@@ -19,6 +20,7 @@ const defaultProps = {
 	editorState: undefined,
 	onClientChange: ()=>{},
 	onForksUpdate: ()=>{},
+	onStatusChange: ()=>{},
 	pluginKey: undefined,
 	editorKey: '',
 };
@@ -36,6 +38,7 @@ const defaultProps = {
 * @prop {object} clientData An object containing data about the local user
 * @prop {string} editorKey A unique string to identify the given collaborative document instance
 * @prop {function} [onClientChange] A function that will be called each time a user connects or disconnects to the collaborative server
+* @prop {function} [onStatusChange] A function that will be called each time a user's document status changes. The function will be called with one of the following strings: 'connected', 'saving', 'saved', 'disconnected'
 *
 * @example
 return (
@@ -58,6 +61,7 @@ return (
 				image: 'https://www.fake.com/my-image.jpg',
 			}}
 			onClientChange={myClientChangeFunc}
+			onStatusChange={myStatusChangeFunc}
 			editorKey={'document-num-57'}
 		/>
 	</Editor>
@@ -65,7 +69,7 @@ return (
 */
 class Collaborative extends Component {
 	static pluginName = 'Collaborative';
-	static getPlugins({ firebaseConfig, clientData, editorKey, onClientChange, pluginKey, onForksUpdate }) {
+	static getPlugins({ firebaseConfig, clientData, editorKey, onClientChange, onStatusChange, pluginKey, onForksUpdate }) {
 		// need to add a random client ID number to account for sessions with the same client
 		const possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
 		let clientHash = '';
@@ -83,7 +87,8 @@ class Collaborative extends Component {
 				firebaseConfig,
 				pluginKey: pluginKey,
 				onClientChange,
-				onForksUpdate
+				onStatusChange,
+				onForksUpdate,
 			}),
 			collab({
 				clientID: selfClientId
