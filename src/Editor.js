@@ -34,18 +34,18 @@ const defaultProps = {
  */
 
 /**
- * @component
- *
- * The main Editor component, by itself it acts largely as plain textEditor. Nesting plugins enables greater functionality.
- *
- * @example
- * return <Editor placeholder="Please start typing"/>
- * @prop {object} initialContent A JSON document representing the initial content. This JSON should be of the form that comes from the 'toJSON' function
- * @prop {func} onChange Fired whenever the document is changed.
- * @prop {String} placeholder A placeholder string that will appear if there is no content.
- * @prop {bool} isReadOnly Set to true to disallow editing, both in text and modifying or inserting add ons.
-
- */
+* @component
+*
+* The main Editor component, by itself it acts largely as plain textEditor. Nesting plugins enables greater functionality.
+*
+* @prop {object} initialContent A JSON document representing the initial content. This JSON should be of the form that comes from the 'toJSON' function
+* @prop {func} onChange Fired whenever the document is changed.
+* @prop {String} placeholder A placeholder string that will appear if there is no content.
+* @prop {bool} isReadOnly Set to true to disallow editing, both in text and modifying or inserting add ons.
+*
+* @example
+return <Editor />
+*/
 class Editor extends Component {
 	constructor(props) {
 		super(props);

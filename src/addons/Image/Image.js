@@ -13,17 +13,19 @@ const defaultProps = {
 };
 
 /**
- * @module Addons
- */
+* @module Addons
+*/
 
 /**
- * @component
- *
- * Embed videos in your document. Supports .jpeg, .png, and .gif
- * @prop {function} handleFileUpload(file,onProgressCallback,onFinishCallback,index) A function that uploads the given file and is expected to call onFinishCallback with a new URL where the file is accessible.
- * @prop {function} handleResizeUrl(url) A function that takes a URL and returns a new URL that will be rendered. Allows you to use a resizing service.
- * @example
- * return (
+* @component
+*
+* Embed images in your document. Supports .jpeg, .png, and .gif
+*
+* @prop {function} handleFileUpload(file,onProgressCallback,onFinishCallback,index) A function that uploads the given file and is expected to call onFinishCallback with a new URL where the file is accessible.
+* @prop {function} handleResizeUrl(url) A function that takes a URL and returns a new URL that will be rendered. Allows you to use a resizing service.
+*
+* @example
+return (
 	<Editor>
  		<Image
  			handleFileUpload={myUploadFunc}

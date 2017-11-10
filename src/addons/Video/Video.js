@@ -11,18 +11,20 @@ const defaultProps = {
 };
 
 /**
- * @module Addons
- */
+* @module Addons
+*/
 
 /**
- * @component
- *
- * Embed videos in your document. Supports .webm and .mp4 files.
- * @prop {function} handleFileUpload(file,onProgressCallback,onFinishCallback,index) A function that uploads the given file and is expected to call onFinishCallback with a new URL where the file is accessible.
- * @example
- * return (
+* @component
+*
+* Embed videos in your document. Supports .webm and .mp4 files.
+*
+* @prop {function} handleFileUpload(file,onProgressCallback,onFinishCallback,index) A function that uploads the given file and is expected to call onFinishCallback with a new URL where the file is accessible.
+*
+* @example
+return (
 	<Editor>
- 		<Video handleFileUpload={myUploadFunc} />
+		<Video handleFileUpload={myUploadFunc} />
 	</Editor>
 );
 */
