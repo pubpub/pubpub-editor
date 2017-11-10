@@ -16,19 +16,21 @@ but certain schema-based addons may not need them
 // };
 
 /**
- * @module Addons
- */
+* @module Addons
+*/
 
 /**
- * @component
- *
- * Footnotes functionality
- * @example
- * return <Editor placeholder="Please start typing">
- 		<Footnote />
+* @component
+*
+* Enable footnotes in your document
+*
+* @example
+return (
+	<Editor>
+		<Footnote />
 	</Editor>
- */
-
+);
+*/
 class Footnote extends Component {
 	static schema = ()=> {
 		return {

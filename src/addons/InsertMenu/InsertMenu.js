@@ -20,6 +20,22 @@ const defaultProps = {
 	pluginKey: undefined,
 };
 
+/**
+* @module Addons
+*/
+
+/**
+* @component
+*
+* Adds an Insert Menu to your document that allows users to insert other addons elements such as Images and Videos.
+*
+* @example
+return (
+	<Editor>
+		<InsertMenu />
+	</Editor>
+);
+*/
 class InsertMenu extends Component {
 	static pluginName = 'InsertMenu';
 	static getPlugins({ pluginKey }) {

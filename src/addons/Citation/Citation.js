@@ -5,22 +5,32 @@ import CitationEditable from './CitationEditable';
 import CitationStatic from './CitationStatic';
 import CitationList from './CitationList';
 
-/*
-All addons get the following props,
-but certain schema-based addons may not need them
-*/
-
 const propTypes = {
 	formatFunction: PropTypes.func
-// 	containerId: PropTypes.string.isRequired,
-// 	view: PropTypes.object.isRequired,
-// 	editorState: PropTypes.object.isRequired,
 };
 
 const defaultProps = {
 	formatFunction: (item, callback)=> { callback(`html:${item}`); }
 };
 
+/**
+* @module Addons
+*/
+
+/**
+* @component
+*
+* Adds Citation and CitationList to the document schema. Citation embeds a single citation item in your document. CitationList will produce a list of all used citations in the order they appear in the document.
+*
+* @prop {function} formatFunction(item,callback) A function that converts item (a string) into formatted properly formatted HTML.
+*
+* @example
+return (
+	<Editor>
+		<Citation formatFunction={myFormatFunc} />
+	</Editor>
+);
+*/
 class Citation extends Component {
 	static schema = (props)=> {
 		return {

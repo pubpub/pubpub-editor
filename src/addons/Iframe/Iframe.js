@@ -2,6 +2,22 @@ import React, { Component } from 'react';
 import IframeEditable from './IframeEditable';
 import IframeStatic from './IframeStatic';
 
+/**
+* @module Addons
+*/
+
+/**
+* @component
+*
+* Enable iFrames in your document
+*
+* @example
+return (
+	<Editor>
+		<Iframe />
+	</Editor>
+);
+*/
 class Iframe extends Component {
 	static schema = ()=> {
 		return {

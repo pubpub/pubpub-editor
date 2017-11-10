@@ -3,21 +3,31 @@ import PropTypes from 'prop-types';
 import LatexEditable from './LatexEditable';
 import LatexStatic from './LatexStatic';
 
-/*
-All addons get the following props,
-but certain schema-based addons may not need them
-*/
-
 const propTypes = {
 	renderFunction: PropTypes.func,
-	// containerId: PropTypes.string.isRequired,
-	// view: PropTypes.object.isRequired,
-	// editorState: PropTypes.object.isRequired,
 };
 const defaultProps = {
 	renderFunction: undefined,
 };
 
+/**
+* @module Addons
+*/
+
+/**
+* @component
+*
+* Adds Latex Math support to the document.
+*
+* @prop {function} renderFunction(val,isBlock,callback) A function that converts val (a string) into formatted properly latex math HTML. 
+*
+* @example
+return (
+	<Editor>
+		<Latex renderFunction={myRenderFunc} />
+	</Editor>
+);
+*/
 class Latex extends Component {
 	static schema = (props)=> {
 		return {

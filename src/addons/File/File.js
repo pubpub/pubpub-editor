@@ -5,17 +5,29 @@ import FileStatic from './FileStatic';
 
 const propTypes = {
 	handleFileUpload: PropTypes.func,
-
-	/* All addons get the following props,
-	but certain schema-based addons may not need them */
-	// containerId: PropTypes.string.isRequired,
-	// view: PropTypes.object.isRequired,
-	// editorState: PropTypes.object.isRequired,
 };
 const defaultProps = {
 	handleFileUpload: ()=>{},
 };
 
+/**
+* @module Addons
+*/
+
+/**
+* @component
+*
+* Embed files in your document. Supports any file type.
+*
+* @prop {function} handleFileUpload(file,onProgressCallback,onFinishCallback,index) A function that uploads the given file and is expected to call onFinishCallback with a new URL where the file is accessible.
+*
+* @example
+return (
+	<Editor>
+		<File handleFileUpload={myUploadFunc} />
+	</Editor>
+);
+*/
 class File extends Component {
 	static schema = (props)=> {
 		return {

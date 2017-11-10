@@ -23,6 +23,46 @@ const defaultProps = {
 	editorKey: '',
 };
 
+/**
+* @module Addons
+*/
+
+/**
+* @component
+*
+* Enable collaborative editing using Firebase.
+*
+* @prop {object} firebaseConfig A Firebase configuration object
+* @prop {object} clientData An object containing data about the local user
+* @prop {string} editorKey A unique string to identify the given collaborative document instance
+* @prop {function} [onClientChange] A function that will be called each time a user connects or disconnects to the collaborative server
+*
+* @example
+return (
+	<Editor>
+		<Collaborative
+			firebaseConfig={{
+				apiKey: 'my-firebase-api-key',
+				authDomain: 'my-auth-domain',
+				databaseURL: 'my-database-url',
+				projectId: 'my-project-id',
+				storageBucket: 'my-storage-bucket',
+				messagingSenderId: 'my-sender-id',
+			}}
+			clientData={{
+				id: 'unique-user-id',
+				name: 'Jane Doe',
+				initials: 'JD',
+				backgroundColor: 'rgba(0, 0, 250, 0.2)',
+				cursorColor: 'rgba(0, 0, 250, 1.0)',
+				image: 'https://www.fake.com/my-image.jpg',
+			}}
+			onClientChange={myClientChangeFunc}
+			editorKey={'document-num-57'}
+		/>
+	</Editor>
+);
+*/
 class Collaborative extends Component {
 	static pluginName = 'Collaborative';
 	static getPlugins({ firebaseConfig, clientData, editorKey, onClientChange, pluginKey, onForksUpdate }) {

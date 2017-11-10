@@ -21,19 +21,23 @@ const defaultProps = {
 
 
 /**
- * @module Addons
- */
+* @module Addons
+*/
 
 /**
- * @component
- *
- * Displays a formatting menu for inline operation such as bold, italics, etc. when a user selects some text.
- * The options are not currently configurable by other add-ons in the way that the InsertMenu addon is.
- * @example
- * return <Editor placeholder="Please start typing">
- 		<FormattingMenu/>
+* @component
+*
+* Displays a formatting menu for inline operation such as bold, italics, etc. when a user selects some text.
+*
+* @prop {array} [include] An array of the menu items that should be included in the menu. Allowed options are: 'header1', 'header2', 'bold', 'italic', 'code', 'subscript', 'superscript', 'strikethrough', 'blockquote', 'bullet-list', 'numbered-list', and 'link'
+*
+* @example
+return (
+	<Editor>
+ 		<FormattingMenu include={['bold', 'link']}/>
 	</Editor>
- */
+);
+*/
 class FormattingMenu extends Component {
 	constructor(props) {
 		super(props);
