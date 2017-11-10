@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-require('./videoAddon.scss');
+require('./video.scss');
 
 const propTypes = {
 	caption: PropTypes.string,

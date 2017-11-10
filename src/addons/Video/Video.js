@@ -1,27 +1,36 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ImageEditable from './ImageEditable';
-import ImageStatic from './ImageStatic';
+import VideoEditable from './VideoEditable';
+import VideoStatic from './VideoStatic';
 
 const propTypes = {
 	handleFileUpload: PropTypes.func,
-	handleResizeUrl: PropTypes.func, // Should take a url and return a url to a resized image
-	/* All addons get the following props,
-	but certain schema-based addons may not need them */
-	// containerId: PropTypes.string.isRequired,
-	// view: PropTypes.object.isRequired,
-	// editorState: PropTypes.object.isRequired,
 };
 const defaultProps = {
 	handleFileUpload: ()=>{},
-	handleResizeUrl: undefined,
 };
 
-class ImageAddon extends Component {
+/**
+ * @module Addons
+ */
+
+/**
+ * @component
+ *
+ * Embed videos in your document. Supports .webm and .mp4 files.
+ * @prop {function} handleFileUpload(file,onProgressCallback,onFinishCallback,index) A function that uploads the given file and is expected to call onFinishCallback with a new URL where the file is accessible.
+ * @example
+ * return (
+	<Editor>
+ 		<Video handleFileUpload={myUploadFunc} />
+	</Editor>
+);
+*/
+class Video extends Component {
 	static schema = (props)=> {
 		return {
 			nodes: {
-				image: {
+				video: {
 					atom: true,
 					// content: 'inline*',
 					attrs: {
@@ -31,7 +40,7 @@ class ImageAddon extends Component {
 						caption: { default: '' },
 					},
 					parseDOM: [{
-						tag: 'img',
+						tag: 'video',
 						getAttrs: (node)=> {
 							return {
 								url: node.getAttribute('src') || null,
@@ -42,7 +51,7 @@ class ImageAddon extends Component {
 						}
 					}],
 					toDOM: (node)=> {
-						return ['img', {
+						return ['video', {
 							src: node.attrs.url,
 							'data-size': node.attrs.size,
 							'data-align': node.attrs.align,
@@ -54,17 +63,17 @@ class ImageAddon extends Component {
 					draggable: false,
 					selectable: true,
 					insertMenu: {
-						label: 'Insert Image',
-						icon: 'pt-icon-media',
+						label: 'Insert Video',
+						icon: 'pt-icon-video',
 						onInsert: (view) => {
-							const imageNode = view.state.schema.nodes.image.create();
-							const transaction = view.state.tr.replaceSelectionWith(imageNode);
+							const videoNode = view.state.schema.nodes.video.create();
+							const transaction = view.state.tr.replaceSelectionWith(videoNode);
 							view.dispatch(transaction);
 						},
 					},
 					toEditable(node, view, decorations, isSelected, helperFunctions) {
 						return (
-							<ImageEditable
+							<VideoEditable
 								node={node}
 								caption={node.attrs.caption}
 								url={node.attrs.url}
@@ -74,18 +83,16 @@ class ImageAddon extends Component {
 								view={view}
 								{...helperFunctions}
 								onFileUpload={props.handleFileUpload}
-								handleResizeUrl={props.handleResizeUrl}
 							/>
 						);
 					},
 					toStatic(node) {
 						return (
-							<ImageStatic
+							<VideoStatic
 								align={node.attrs.align}
 								url={node.attrs.url}
 								size={node.attrs.size}
 								caption={node.attrs.caption}
-								handleResizeUrl={props.handleResizeUrl}
 							/>
 						);
 					},
@@ -99,6 +106,6 @@ class ImageAddon extends Component {
 	}
 }
 
-ImageAddon.propTypes = propTypes;
-ImageAddon.defaultProps = defaultProps;
-export default ImageAddon;
+Video.propTypes = propTypes;
+Video.defaultProps = defaultProps;
+export default Video;

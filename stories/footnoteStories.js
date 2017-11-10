@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { Editor } from 'index';
 import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
-import Footnote from 'addons/Footnote/FootnoteAddon';
+import Footnote from 'addons/Footnote/Footnote';
 import InsertMenu from 'addons/InsertMenu/InsertMenu';
 import { editorWrapperStyle } from './_utilities';
 import initialContent from './initialDocs/footnoteDoc';

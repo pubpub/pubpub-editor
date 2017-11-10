@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-require('./imageAddon.scss');
+require('./image.scss');
 
 const propTypes = {
 	caption: PropTypes.string,

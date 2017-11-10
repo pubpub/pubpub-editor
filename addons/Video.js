@@ -1,1 +1,1 @@
-module.exports = require('../dist/addons/Video/VideoAddon').default;
+module.exports = require('../dist/addons/Video/Video').default;

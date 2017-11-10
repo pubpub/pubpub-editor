@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-require('./latexAddon.scss');
+require('./latex.scss');
 
 const propTypes = {
 	html: PropTypes.string.isRequired,

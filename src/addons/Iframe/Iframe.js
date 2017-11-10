@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import IframeEditable from './IframeEditable';
 import IframeStatic from './IframeStatic';
 
-class IframeAddon extends Component {
+class Iframe extends Component {
 	static schema = ()=> {
 		return {
 			nodes: {
@@ -86,4 +86,4 @@ class IframeAddon extends Component {
 	}
 }
 
-export default IframeAddon;
+export default Iframe;

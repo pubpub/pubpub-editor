@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-require('./fileAddon.scss');
+require('./file.scss');
 
 const propTypes = {
 	url: PropTypes.string,

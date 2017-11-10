@@ -21,7 +21,7 @@ const defaultProps = {
 	formatFunction: (item, callback)=> { callback(`html:${item}`); }
 };
 
-class CitationAddon extends Component {
+class Citation extends Component {
 	static schema = (props)=> {
 		return {
 			nodes: {
@@ -206,6 +206,6 @@ class CitationAddon extends Component {
 	}
 }
 
-CitationAddon.propTypes = propTypes;
-CitationAddon.defaultProps = defaultProps;
-export default CitationAddon;
+Citation.propTypes = propTypes;
+Citation.defaultProps = defaultProps;
+export default Citation;

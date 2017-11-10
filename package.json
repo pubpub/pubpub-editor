@@ -71,6 +71,7 @@
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.3.0",
     "file-loader": "^0.11.2",
+    "gh-pages": "^1.0.0",
     "jsdoc": "^3.5.5",
     "jsdoc-babel": "^0.3.0",
     "jsdoc-react-proptypes": "^1.0.3",

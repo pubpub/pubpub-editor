@@ -1,1 +1,1 @@
-module.exports = require('../dist/addons/Image/ImageAddon').default;
+module.exports = require('../dist/addons/Image/Image').default;

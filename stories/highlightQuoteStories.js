@@ -1,10 +1,10 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { Editor } from 'index';
-import HighlightQuote from 'addons/HighlightQuote/HighlightQuoteAddon';
-import Image from 'addons/Image/ImageAddon';
+import HighlightQuote from 'addons/HighlightQuote/HighlightQuote';
+import Image from 'addons/Image/Image';
 import InsertMenu from 'addons/InsertMenu/InsertMenu';
-import Latex from 'addons/Latex/LatexAddon';
+import Latex from 'addons/Latex/Latex';
 import { editorWrapperStyle, s3Upload, renderLatex } from './_utilities';
 import initialContent from './initialDocs/highlightQuoteDoc';
 

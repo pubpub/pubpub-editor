@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 import { Editor } from 'index';
 import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
 import InsertMenu from 'addons/InsertMenu/InsertMenu';
-import Latex from 'addons/Latex/LatexAddon';
+import Latex from 'addons/Latex/Latex';
 import { editorWrapperStyle, renderLatex } from './_utilities';
 import initialContent from './initialDocs/latexDoc';
 

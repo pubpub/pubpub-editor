@@ -4,8 +4,8 @@ import { Editor } from 'index';
 import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
 import Collaborative from 'addons/Collaborative/Collaborative';
 import TrackChanges from 'addons/TrackChanges/TrackChangesAddon';
-import Latex from 'addons/Latex/LatexAddon';
-import Image from 'addons/Image/ImageAddon';
+import Latex from 'addons/Latex/Latex';
+import Image from 'addons/Image/Image';
 import InsertMenu from 'addons/InsertMenu/InsertMenu';
 import { editorWrapperStyle, s3Upload, renderLatex, firebaseConfig, clientData } from './_utilities';
 

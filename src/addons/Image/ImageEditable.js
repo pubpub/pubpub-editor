@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { AnchorButton } from '@blueprintjs/core';
 
-require('./imageAddon.scss');
+require('./image.scss');
 
 const propTypes = {
 	// node: PropTypes.object,

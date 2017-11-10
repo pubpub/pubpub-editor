@@ -26,9 +26,6 @@ npm install
 npm start
 ```
 
-Navigate to `localhost:9002`
-
-
 
 ## Addons
 The PubPub Editor uses a system of Addons to extend functionality of the editor beyond basic text. Addons enable everything from interactive menus, to custom document elements, to custom editor behavior.
@@ -52,6 +49,9 @@ const component = (props)=> {
     );
 }
 ```
+
+A list of available addons can be found in the [documentation](https://pubpub.github.io/pubpub-editor/);
+
 ### Writing New Addons
 New addons for the PubPub editor can be written and submitted as pull-requests to the main repo, or created within your local app for personal use. 
 
@@ -67,7 +67,7 @@ Addons are written simply as React components. All addons are passed the followi
 ```
 
 #### ProseMirror Plugin System
-Addons can take advantage of [ProseMirror's Plugin System](https://prosemirror.net/docs/ref/#state.Plugin_System) by including a plugin name: `static PluginName = 'string';` and getPlugin function: `static getPlugins() { }` as static variables on the addon component. For example: 
+Addons can take advantage of [ProseMirror's Plugin System](https://prosemirror.net/docs/ref/#state.Plugin_System) by including a plugin name: `static PluginName = 'string';` and getPlugins function: `static getPlugins() { }` as static variables on the addon component. For example: 
 
 ```javascript
 import React, { Component } from 'react';

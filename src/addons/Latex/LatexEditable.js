@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { NodeSelection } from 'prosemirror-state';
 
-require('./latexAddon.scss');
+require('./latex.scss');
 
 const propTypes = {
 	value: PropTypes.string.isRequired,

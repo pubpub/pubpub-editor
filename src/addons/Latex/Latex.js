@@ -18,7 +18,7 @@ const defaultProps = {
 	renderFunction: undefined,
 };
 
-class LatexAddon extends Component {
+class Latex extends Component {
 	static schema = (props)=> {
 		return {
 			nodes: {
@@ -139,6 +139,6 @@ class LatexAddon extends Component {
 	}
 }
 
-LatexAddon.propTypes = propTypes;
-LatexAddon.defaultProps = defaultProps;
-export default LatexAddon;
+Latex.propTypes = propTypes;
+Latex.defaultProps = defaultProps;
+export default Latex;

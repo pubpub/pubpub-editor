@@ -16,7 +16,7 @@ const defaultProps = {
 	handleFileUpload: ()=>{},
 };
 
-class FileAddon extends Component {
+class File extends Component {
 	static schema = (props)=> {
 		return {
 			nodes: {
@@ -95,6 +95,6 @@ class FileAddon extends Component {
 	}
 }
 
-FileAddon.propTypes = propTypes;
-FileAddon.defaultProps = defaultProps;
-export default FileAddon;
+File.propTypes = propTypes;
+File.defaultProps = defaultProps;
+export default File;

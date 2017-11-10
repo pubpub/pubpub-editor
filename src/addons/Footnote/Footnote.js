@@ -29,7 +29,7 @@ but certain schema-based addons may not need them
 	</Editor>
  */
 
-class FootnoteAddon extends Component {
+class Footnote extends Component {
 	static schema = ()=> {
 		return {
 			nodes: {
@@ -135,5 +135,5 @@ class FootnoteAddon extends Component {
 	}
 }
 
-// FootnoteAddon.propTypes = propTypes;
-export default FootnoteAddon;
+// Footnote.propTypes = propTypes;
+export default Footnote;

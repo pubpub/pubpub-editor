@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-require('./iframeAddon.scss');
+require('./iframe.scss');
 
 const propTypes = {
 	caption: PropTypes.string,

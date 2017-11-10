@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 
-require('./citationAddon.scss');
+require('./citation.scss');
 
 const propTypes = {
 	value: PropTypes.string.isRequired,

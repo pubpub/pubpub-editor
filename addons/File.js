@@ -1,1 +1,1 @@
-module.exports = require('../dist/addons/File/FileAddon').default;
+module.exports = require('../dist/addons/File/File').default;

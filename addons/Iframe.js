@@ -1,1 +1,1 @@
-module.exports = require('../dist/addons/Iframe/IframeAddon').default;
+module.exports = require('../dist/addons/Iframe/Iframe').default;

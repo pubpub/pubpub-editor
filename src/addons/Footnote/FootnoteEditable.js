@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { NodeSelection } from 'prosemirror-state';
 
-require('./footnoteAddon.scss');
+require('./footnote.scss');
 
 const propTypes = {
 	value: PropTypes.string.isRequired,

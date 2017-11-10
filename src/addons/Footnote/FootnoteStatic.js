@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import linkifyStr from 'linkifyjs/string';
 import { Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 
-require('./footnoteAddon.scss');
+require('./footnote.scss');
 
 const propTypes = {
 	value: PropTypes.string.isRequired,

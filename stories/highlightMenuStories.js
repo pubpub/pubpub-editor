@@ -2,9 +2,9 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { Editor } from 'index';
 import HighlightMenu from 'addons/HighlightMenu/HighlightMenu';
-import Image from 'addons/Image/ImageAddon';
+import Image from 'addons/Image/Image';
 import InsertMenu from 'addons/InsertMenu/InsertMenu';
-import Latex from 'addons/Latex/LatexAddon';
+import Latex from 'addons/Latex/Latex';
 import { editorWrapperStyle, s3Upload, renderLatex } from './_utilities';
 import plainDoc from './initialDocs/plainDoc';
 

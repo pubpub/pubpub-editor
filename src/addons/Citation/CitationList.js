@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { NonIdealState } from '@blueprintjs/core';
 
-require('./citationAddon.scss');
+require('./citation.scss');
 
 const propTypes = {
 	view: PropTypes.object.isRequired,

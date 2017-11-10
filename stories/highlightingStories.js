@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { storiesOf } from '@storybook/react';
 import { Editor } from 'index';
-import Latex from 'addons/Latex/LatexAddon';
-import Image from 'addons/Image/ImageAddon';
+import Latex from 'addons/Latex/Latex';
+import Image from 'addons/Image/Image';
 import InsertMenu from 'addons/InsertMenu/InsertMenu';
 import HighlightMenu from 'addons/HighlightMenu/HighlightMenu';
-import HighlightQuote from 'addons/HighlightQuote/HighlightQuoteAddon';
+import HighlightQuote from 'addons/HighlightQuote/HighlightQuote';
 import { editorWrapperStyle, s3Upload, renderLatex } from './_utilities';
 import plainDoc from './initialDocs/plainDoc';
 import highlightQuoteDoc from './initialDocs/highlightQuoteDoc';

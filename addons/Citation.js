@@ -1,1 +1,1 @@
-module.exports = require('../dist/addons/Citation/CitationAddon').default;
+module.exports = require('../dist/addons/Citation/Citation').default;

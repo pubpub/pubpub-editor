@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import filesize from 'filesize';
 import { AnchorButton } from '@blueprintjs/core';
 
-require('./fileAddon.scss');
+require('./file.scss');
 
 const propTypes = {
 	// node: PropTypes.object,
