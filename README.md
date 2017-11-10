@@ -11,9 +11,9 @@ npm install @pubpub/editor
 import { Editor } from '@pubpub/editor';
 
 const component = (props)=> {
-	return (
-		<Editor />
-	);
+   return (
+      <Editor />
+   );
 }
 ```
 
@@ -42,14 +42,14 @@ import Image from '@pubpub/editor/addons/Image';
 import Latex from '@pubpub/editor/addons/Latex';
 
 const component = (props)=> {
-	return (
-		<Editor>
-			<FormattingMenu />
-			<InsertMenu />
-			<Latex renderFunction={renderLatex} />
-			<Image handleFileUpload={uploadFunction} />
-		</Editor>
-	);
+   return (
+      <Editor>
+         <FormattingMenu />
+         <InsertMenu />
+         <Latex renderFunction={renderLatex} />
+         <Image handleFileUpload={uploadFunction} />
+      </Editor>
+   );
 }
 ```
 ### Writing New Addons
@@ -58,11 +58,11 @@ New addons for the PubPub editor can be written and submitted as pull-requests t
 Addons are written simply as React components. All addons are passed the following props, in addition to their original props:
 ```javascript
 {
-	view: object, // ProseMirror view object
-	editorState: object, // Prosemirror editorState object
-	transaction: object, // Most recent ProseMirror transaction
-	containerId: string, // unique ID of the Editor container
-	pluginKey: object, // Prosemirror PluginKey object for this Addon
+   view: object, // ProseMirror view object
+   editorState: object, // Prosemirror editorState object
+   transaction: object, // Most recent ProseMirror transaction
+   containerId: string, // unique ID of the Editor container
+   pluginKey: object, // Prosemirror PluginKey object for this Addon
 }
 ```
 
@@ -74,17 +74,17 @@ import React, { Component } from 'react';
 import { Plugin } from 'prosemirror-state';
 
 class NewAddon extends Component {
-	static pluginName = 'newAddonPlugin';
-	static getPlugins({ pluginKey }) {
-		return [new Plugin({
-			key: pluginKey,
-			view: function() { }
-		})];
-	}
+   static pluginName = 'newAddonPlugin';
+   static getPlugins({ pluginKey }) {
+      return [new Plugin({
+         key: pluginKey,
+         view: function() { }
+      })];
+   }
 
-	render() {
-		return <div>Hello</div>
-	}
+   render() {
+      return <div>Hello</div>
+   }
 }
 ```
 The `getPlugins` function is passed the pluginKey (which can be used to access the plugin - see [ProseMirror docs](https://prosemirror.net/docs/ref/#state.PluginKey)) in addition to any original props passed to the addon component when instantiated.
@@ -99,54 +99,54 @@ import React, { Component } from 'react';
 import { Plugin } from 'prosemirror-state';
 
 class NewAddon extends Component {
-	static schema(props) {
-		return {
-			nodes: {
-				mySchemaItem: {
-					atom: true,
-					group: 'inline',
-					attrs: {
-						value: { default: '' },
-						count: { default: 0 },
-					},
-					inline: true,
-					draggable: false,
-					selectable: true,
-					insertMenu: {
-						label: 'Insert MySchemaItem',
-						icon: 'pt-icon-asterisk',
-						onInsert: (view) => {
-							const newNode = view.state.schema.nodes.mySchemaItem.create();
-							view.dispatch(view.state.tr.replaceSelectionWith(newNode));
-						},
-					},
-					toEditable(node, view, decorations, isSelected, helperFunctions) {
-						return (
-							<EditableComponent
-								value={node.attrs.value}
-								count={node.attrs.count}
-								isSelected={isSelected}
-								view={view}
-								{...helperFunctions}
-							/>
-						);
-					},
-					toStatic(node) {
-						return (
-							<StaticComponent
-								value={node.attrs.value}
-								count={node.attrs.count}
-							/>
-						);
-					},
-				},
-			}
-		}
-	}
+   static schema(props) {
+      return {
+         nodes: {
+            mySchemaItem: {
+               atom: true,
+               group: 'inline',
+               attrs: {
+                  value: { default: '' },
+                  count: { default: 0 },
+               },
+               inline: true,
+               draggable: false,
+               selectable: true,
+               insertMenu: {
+                  label: 'Insert MySchemaItem',
+                  icon: 'pt-icon-asterisk',
+                  onInsert: (view) => {
+                     const newNode = view.state.schema.nodes.mySchemaItem.create();
+                     view.dispatch(view.state.tr.replaceSelectionWith(newNode));
+                  },
+               },
+               toEditable(node, view, decorations, isSelected, helperFunctions) {
+                  return (
+                     <EditableComponent
+                        value={node.attrs.value}
+                        count={node.attrs.count}
+                        isSelected={isSelected}
+                        view={view}
+                        {...helperFunctions}
+                     />
+                  );
+               },
+               toStatic(node) {
+                  return (
+                     <StaticComponent
+                        value={node.attrs.value}
+                        count={node.attrs.count}
+                     />
+                  );
+               },
+            },
+         }
+      }
+   }
 
-	render() {
-		return <div>Hello</div>
-	}
+   render() {
+      return <div>Hello</div>
+   }
 }
 ```
 The `schema()` functions is passed the original props given to the instantiated addon component. Review the documentation for [ProseMirror Schema Nodes](https://prosemirror.net/docs/ref/#model.NodeType) and [ProseMirror Schema Marks](https://prosemirror.net/docs/ref/#model.MarkType) for the full list of default configuration parameters.
@@ -159,10 +159,10 @@ The `toEditable` and `toStatic` functions are passed the following parameters:
 
 ```javascript
 {
-	node: object, // the ProseMirror node of this instance of the addon
-	view: object, // the curent ProseMirror view
-	decorations: object, // the current ProseMirror decorations
-	isSelected: boolean, // whether the node is currently selected or not
-	helperFunctions: object, // an object with the following functions that can be helpful when interacting with ProseMirror: updateAttrs, changeNode, updateContent, getPos
+   node: object, // the ProseMirror node of this instance of the addon
+   view: object, // the curent ProseMirror view
+   decorations: object, // the current ProseMirror decorations
+   isSelected: boolean, // whether the node is currently selected or not
+   helperFunctions: object, // an object with the following functions that can be helpful when interacting with ProseMirror: updateAttrs, changeNode, updateContent, getPos
 }
 ```
