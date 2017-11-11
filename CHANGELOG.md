@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ## [4.1.0] - 2017-11-10
-- New optional prop `onStatusChange` to the `<Collaborative />` addon which is a function that will be called when the collaboration status is changed. Possible values are 'connected', 'saving', 'saved', and 'disconnected'.
+- Added optional prop `onStatusChange` to the `<Collaborative />`. onStatusChange is a function that will be called when the collaboration status is changed. Possible values are 'connected', 'saving', 'saved', and 'disconnected'.
 
 ## [4.0.0] - 2017-11-10
 - Moving the editor out of beta versioning.
