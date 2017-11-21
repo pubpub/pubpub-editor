@@ -62,38 +62,38 @@ const nodes = {
 	text: {
 		group: 'inline',
 		toDOM(node) { return node.text; },
-		toReact({ node, index }) {
-			const marks = node.marks || [];
-			const style = {};
-			return marks.reduce((previous, current) => {
-				switch (current.type) {
-				case 'strong':
-					return <strong key={index}>{previous}</strong>;
-				case 'em':
-					return <em key={index}>{previous}</em>;
-				case 'code':
-					return <code key={index}>{previous}</code>;
-				case 'sub':
-					return <sub key={index}>{previous}</sub>;
-				case 'sup':
-					return <sup key={index}>{previous}</sup>;
-				case 's':
-				case 'strike':
-					return <s key={index}>{previous}</s>;
-				case 'diff_plus':
-					return <span data-commit={current.attrs.commitID} className="diff-marker added" >{previous}</span>;
-				case 'diff_minus':
-					return <span data-commit={current.attrs.commitID} className="diff-marker removed" >{previous}</span>;
-				case 'link':
-					if (current.attrs) {
-						return <a href={current.attrs.href} title={current.attrs.title} key={index} target={'_top'}>{previous}</a>;
-					}
-					return previous;
-				default:
-					return previous;
-				}
-			}, <span style={style}>{node.text}</span>);
-		}
+		// toReact({ node, index }) {
+		// 	const marks = node.marks || [];
+		// 	const style = {};
+		// 	return marks.reduce((previous, current) => {
+		// 		switch (current.type) {
+		// 		case 'strong':
+		// 			return <strong key={index}>{previous}</strong>;
+		// 		case 'em':
+		// 			return <em key={index}>{previous}</em>;
+		// 		case 'code':
+		// 			return <code key={index}>{previous}</code>;
+		// 		case 'sub':
+		// 			return <sub key={index}>{previous}</sub>;
+		// 		case 'sup':
+		// 			return <sup key={index}>{previous}</sup>;
+		// 		case 's':
+		// 		case 'strike':
+		// 			return <s key={index}>{previous}</s>;
+		// 		case 'diff_plus':
+		// 			return <span data-commit={current.attrs.commitID} className="diff-marker added" >{previous}</span>;
+		// 		case 'diff_minus':
+		// 			return <span data-commit={current.attrs.commitID} className="diff-marker removed" >{previous}</span>;
+		// 		case 'link':
+		// 			if (current.attrs) {
+		// 				return <a href={current.attrs.href} title={current.attrs.title} key={index} target={'_top'}>{previous}</a>;
+		// 			}
+		// 			return previous;
+		// 		default:
+		// 			return previous;
+		// 		}
+		// 	}, <span style={style}>{node.text}</span>);
+		// }
 	},
 	hard_break: {
 		inline: true,
