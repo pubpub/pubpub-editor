@@ -4,12 +4,8 @@ import GitHubEditable from './GitHubEditable';
 import GitHubStatic from './GitHubStatic';
 
 const propTypes = {
-	handleRepoSelect: PropTypes.func
 };
 const defaultProps = {
-	handleRepoSelect: ()=>{
-
-	}
 };
 
 /**
@@ -21,21 +17,9 @@ const defaultProps = {
 *
 * Embed GitHub repo in your document.
 *
-* @prop {function} handleFileUpload(file,onProgressCallback,onFinishCallback,index) A function that uploads the given file and is expected to call onFinishCallback with a new URL where the file is accessible.
-* @prop {function} handleResizeUrl(url) A function that takes a URL and returns a new URL that will be rendered. Allows you to use a resizing service.
-*
-* @example
-return (
-	<Editor>
- 		<Image
- 			handleFileUpload={myUploadFunc}
- 			handleResizeUrl={myResizeFunc}
- 		/>
-	</Editor>
-);
 */
 class GitHub extends Component {
-	static schema = (props)=> {
+	static schema = ()=> {
 		return {
 			nodes: {
 				github: {

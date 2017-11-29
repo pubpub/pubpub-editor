@@ -13,7 +13,7 @@ storiesOf('GitHub', module)
 	<div style={editorWrapperStyle}>
 		<Editor
 			initialContent={initialContent}
-			placeholder={'Begin writing here...'}
+			placeholder="Begin writing here..."
 		>
 			<FormattingMenu />
 			<InsertMenu />
