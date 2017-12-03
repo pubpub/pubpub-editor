@@ -99,7 +99,6 @@ class HighlightMenu extends Component {
 					} else {
 						newDecoSet = decoSet.map(transaction.mapping, transaction.doc);
 					}
-
 					return { formattedHighlights: newDecoSet };
 				}
 			},
@@ -125,6 +124,11 @@ class HighlightMenu extends Component {
 		this.handleNewDiscussion = this.handleNewDiscussion.bind(this);
 		this.handleMouseEnter = this.handleMouseEnter.bind(this);
 		this.handleMouseLeave = this.handleMouseLeave.bind(this);
+		this.handleNewHighlightProps = this.handleNewHighlightProps.bind(this);
+	}
+
+	componentWillMount() {
+		this.handleNewHighlightProps(this.props);
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -132,27 +136,7 @@ class HighlightMenu extends Component {
 			this.onChange();
 		}
 
-		const createdHighlightIds = this.state.createdHighlights.map((item)=> {
-			return item.id;
-		});
-
-		this.setState({ createdHighlights: nextProps.highlights });
-		nextProps.highlights.filter((item)=> {
-			return createdHighlightIds.indexOf(item.id) === -1;
-		}).forEach((item)=> {
-			setTimeout(()=> {
-				this.completeNewDiscussion({
-					from: item.from,
-					to: item.to,
-					id: item.id,
-					exact: item.exact,
-					prefix: item.prefix,
-					suffix: item.suffix,
-					version: item.version,
-					permanent: item.permanent
-				});
-			}, 1);
-		});
+		this.handleNewHighlightProps(nextProps);
 	}
 
 	onChange() {
@@ -187,6 +171,30 @@ class HighlightMenu extends Component {
 	handleMouseDown(evt) {
 		// This is to prevent losing focus on menu click
 		evt.preventDefault();
+	}
+
+	handleNewHighlightProps(props) {
+		const createdHighlightIds = this.state.createdHighlights.map((item)=> {
+			return item.id;
+		});
+
+		this.setState({ createdHighlights: props.highlights });
+		props.highlights.filter((item)=> {
+			return createdHighlightIds.indexOf(item.id) === -1;
+		}).forEach((item)=> {
+			setTimeout(()=> {
+				this.completeNewDiscussion({
+					from: item.from,
+					to: item.to,
+					id: item.id,
+					exact: item.exact,
+					prefix: item.prefix,
+					suffix: item.suffix,
+					version: item.version,
+					permanent: item.permanent
+				});
+			}, 1);
+		});
 	}
 
 	handleNewDiscussion() {
