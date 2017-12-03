@@ -51,8 +51,8 @@ class HighlightMenu extends Component {
 					let stillInTact = false;
 					if (transaction.meta.newSelectionData) {
 						const newData = transaction.meta.newSelectionData;
-						const datafrom = newData.from;
-						const datato = newData.to;
+						const datafrom = Number(newData.from);
+						const datato = Number(newData.to);
 						if (editorState.doc.nodeSize >= datafrom && editorState.doc.nodeSize >= datato) {
 							posBasedExact = editorState.doc.textBetween(datafrom, datato);
 						}
@@ -62,8 +62,8 @@ class HighlightMenu extends Component {
 						const tempSelections = decoSet.find().filter((item)=>{ return item.type.attrs.class.indexOf('temp-selection') > -1; });
 						newDecoSet = decoSet.remove(tempSelections);
 					} else if (transaction.meta.newSelection && (transaction.meta.newSelectionData.version || stillInTact)) {
-						const from = transaction.meta.newSelectionData.from;
-						const to = transaction.meta.newSelectionData.to;
+						const from = Number(transaction.meta.newSelectionData.from);
+						const to = Number(transaction.meta.newSelectionData.to);
 						const tempSelections = decoSet.find().filter((item)=>{ return item.type.attrs.class.indexOf('temp-selection') > -1; });
 						newDecoSet = decoSet.remove(tempSelections).add(editorState.doc, [Decoration.inline(from, to, {
 							class: `highlight-background ${transaction.meta.newSelectionData.id} ${transaction.meta.newSelectionData.permanent ? 'permanent' : ''}`.trim(),
@@ -99,6 +99,7 @@ class HighlightMenu extends Component {
 					} else {
 						newDecoSet = decoSet.map(transaction.mapping, transaction.doc);
 					}
+
 					return { formattedHighlights: newDecoSet };
 				}
 			},

@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- Fixed bug where highlights passed to HighlightMenu wouldn't render until componentWillReceiveProps was triggered. That is - they wouldn't render on first load even if they were available.
 
 ## [4.1.0] - 2017-11-10
 - Added optional prop `onStatusChange` to the `<Collaborative />`. onStatusChange is a function that will be called when the collaboration status is changed. Possible values are 'connected', 'saving', 'saved', and 'disconnected'.
