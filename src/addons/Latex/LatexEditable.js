@@ -77,6 +77,11 @@ class LatexEditable extends Component {
 	render() {
 		return (
 			<div className={`latex-wrapper ${this.props.isBlock ? 'block' : ''} ${this.props.isSelected ? 'selected' : ''}`}>
+				{this.props.isSelected &&
+					<style>{`
+						.latex-wrapper { vertical-align: top !important; }
+					`}</style>
+				}
 				<div className={'render-wrapper'}>
 					<span
 						className={'editable-render'}

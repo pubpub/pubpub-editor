@@ -60,9 +60,11 @@
 	list-style: none;
 	padding: 0 !important;
 	margin: 0 !important;
+	// white-space: normal;
 	.rendered-citation {
 		div {
 			display: inline;
+			white-space: normal;
 		}
 	}
 	&.selected {

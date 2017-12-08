@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [4.1.2] - 2017-12-08
+- Fix whitespace issues for citations and citation lists
+- Fix latex text-align issue
+
+## [4.1.1] - 2017-12-03
 - Fixed bug where highlights passed to HighlightMenu wouldn't render until componentWillReceiveProps was triggered. That is - they wouldn't render on first load even if they were available.
 
 ## [4.1.0] - 2017-11-10
