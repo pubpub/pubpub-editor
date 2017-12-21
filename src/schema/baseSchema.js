@@ -134,13 +134,18 @@ const marks = {
 	link: {
 		attrs: {
 			href: { default: '' },
-			title: { default: null }
+			title: { default: null },
+			target: { default: null },
 		},
 		parseDOM: [
 			{
 				tag: 'a[href]',
 				getAttrs(dom) {
-					return { href: dom.getAttribute('href'), title: dom.getAttribute('title') };
+					return {
+						href: dom.getAttribute('href'),
+						title: dom.getAttribute('title'),
+						target: dom.getAttribute('target'),
+					};
 				}
 			}
 		],

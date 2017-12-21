@@ -236,6 +236,11 @@ class DocumentRef {
 		const placeholderClientId = `_oldClient${Math.random()}`;
 		const changesRef = this.ref.child('changes');
 
+		if (Raven) {
+			Raven.captureMessage('Attempting to heal database', {
+			  level: 'warning' // one of 'info', 'warning', or 'error'
+			});
+		}
 		console.log('Healing database');
 		for (const step of stepsWithKeys) {
 			try {
