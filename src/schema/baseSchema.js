@@ -8,8 +8,20 @@ const nodes = {
 	paragraph: {
 		content: 'inline*',
 		group: 'block',
-		parseDOM: [{ tag: 'p' }],
-		toDOM() { return ['p', 0]; },
+		attrs: {
+			class: { default: null },
+		},
+		parseDOM: [
+			{
+				tag: 'p',
+				getAttrs(dom) {
+					return {
+						class: dom.getAttribute('class'),
+					};
+				}
+			}
+		],
+		toDOM(node) { return ['p', node.attrs, 0]; }
 	},
 	blockquote: {
 		content: 'block+',
