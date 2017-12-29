@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.1.4] - 2017-12-21
+- Add `class` attribute to paragraph in baseSchema
+
 ## [4.1.3] - 2017-12-21
 - Add `target` attribute to link in baseSchema
 
