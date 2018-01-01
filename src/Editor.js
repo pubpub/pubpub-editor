@@ -218,13 +218,11 @@ class Editor extends Component {
 	// 	}
 	// }
 
-	renderStatic(nodeArray, parentIndex='statics') {
+	renderStatic(nodeArray) {
 		return nodeArray.map((node, index)=> {
-			const currIndex = index;
-			console.log(currIndex);
 			let children;
 			if (node.content) {
-				children = this.renderStatic(node.content, currIndex);
+				children = this.renderStatic(node.content);
 			}
 			if (node.type === 'text') {
 				const marks = node.marks || [];
@@ -239,9 +237,8 @@ class Editor extends Component {
 			/* So - lets just let React assign those keys. Clever alternatives */
 			/* are welcome. */
 			const nodeWithIndex = node;
-			nodeWithIndex.currIndex = currIndex;
+			nodeWithIndex.currIndex = index;
 			const NodeComponent = this.schema.nodes[node.type].spec.toStatic(nodeWithIndex, children);
-			console.log(NodeComponent);
 			return NodeComponent;
 		});
 	}
