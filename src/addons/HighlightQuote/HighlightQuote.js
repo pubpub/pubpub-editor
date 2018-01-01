@@ -86,6 +86,7 @@ class HighlightQuote extends Component {
 					toStatic(node) {
 						return (
 							<HighlightQuoteStatic
+								key={node.currentIndex}
 								to={node.attrs.to}
 								from={node.attrs.from}
 								id={node.attrs.id}

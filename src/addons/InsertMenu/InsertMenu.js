@@ -220,7 +220,6 @@ class InsertMenu extends Component {
 			</div>
 		);
 	}
-
 }
 
 InsertMenu.propTypes = propTypes;

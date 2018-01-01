@@ -1,9 +1,12 @@
+/* eslint-disable react/prop-types */
+import React from 'react';
+
 const nodes = {
 	doc: {
 		content: 'block+',
 		attrs: {
 			meta: { default: {} },
-		}
+		},
 	},
 	paragraph: {
 		content: 'inline*',
@@ -21,13 +24,21 @@ const nodes = {
 				}
 			}
 		],
-		toDOM(node) { return ['p', node.attrs, 0]; }
+		toDOM(node) { return ['p', node.attrs, 0]; },
+		toStatic(node, children) {
+			const attrs = {};
+			if (node.attrs && node.attrs.class) { attrs.className = node.attrs.class; }
+			return <p {...attrs} key={node.currIndex}>{children}</p>;
+		}
 	},
 	blockquote: {
 		content: 'block+',
 		group: 'block',
 		parseDOM: [{ tag: 'blockquote' }],
 		toDOM() { return ['blockquote', 0]; },
+		toStatic(node, children) {
+			return <blockquote key={node.currIndex}>{children}</blockquote>;
+		}
 	},
 	horizontal_rule: {
 		group: 'block',
@@ -40,6 +51,9 @@ const nodes = {
 				view.dispatch(view.state.tr.replaceSelectionWith(view.state.schema.nodes.horizontal_rule.create()));
 			},
 		},
+		toStatic(node) {
+			return <hr key={node.currIndex} />;
+		}
 	},
 	heading: {
 		attrs: { level: { default: 1 } },
@@ -54,6 +68,15 @@ const nodes = {
 			{ tag: 'h6', attrs: { level: 6 } }
 		],
 		toDOM(node) { return [`h${node.attrs.level}`, 0]; },
+		toStatic(node, children) {
+			if (node.attrs.level === 1) { return <h1 key={node.currIndex}>{children}</h1>; }
+			if (node.attrs.level === 2) { return <h2 key={node.currIndex}>{children}</h2>; }
+			if (node.attrs.level === 3) { return <h3 key={node.currIndex}>{children}</h3>; }
+			if (node.attrs.level === 4) { return <h4 key={node.currIndex}>{children}</h4>; }
+			if (node.attrs.level === 5) { return <h5 key={node.currIndex}>{children}</h5>; }
+			if (node.attrs.level === 6) { return <h6 key={node.currIndex}>{children}</h6>; }
+			return null;
+		}
 	},
 	code_block: {
 		content: 'text*',
@@ -68,42 +91,16 @@ const nodes = {
 				view.dispatch(view.state.tr.replaceSelectionWith(view.state.schema.nodes.code_block.create()));
 			},
 		},
+		toStatic(node, children) {
+			return <pre key={node.currIndex}><code>{children}</code></pre>;
+		}
 	},
 	text: {
 		group: 'inline',
 		toDOM(node) { return node.text; },
-		// toReact({ node, index }) {
-		// 	const marks = node.marks || [];
-		// 	const style = {};
-		// 	return marks.reduce((previous, current) => {
-		// 		switch (current.type) {
-		// 		case 'strong':
-		// 			return <strong key={index}>{previous}</strong>;
-		// 		case 'em':
-		// 			return <em key={index}>{previous}</em>;
-		// 		case 'code':
-		// 			return <code key={index}>{previous}</code>;
-		// 		case 'sub':
-		// 			return <sub key={index}>{previous}</sub>;
-		// 		case 'sup':
-		// 			return <sup key={index}>{previous}</sup>;
-		// 		case 's':
-		// 		case 'strike':
-		// 			return <s key={index}>{previous}</s>;
-		// 		case 'diff_plus':
-		// 			return <span data-commit={current.attrs.commitID} className="diff-marker added" >{previous}</span>;
-		// 		case 'diff_minus':
-		// 			return <span data-commit={current.attrs.commitID} className="diff-marker removed" >{previous}</span>;
-		// 		case 'link':
-		// 			if (current.attrs) {
-		// 				return <a href={current.attrs.href} title={current.attrs.title} key={index} target={'_top'}>{previous}</a>;
-		// 			}
-		// 			return previous;
-		// 		default:
-		// 			return previous;
-		// 		}
-		// 	}, <span style={style}>{node.text}</span>);
-		// }
+		toStatic(node, children) {
+			return <span key={node.currIndex}>{children}</span>;
+		}
 	},
 	hard_break: {
 		inline: true,
@@ -111,11 +108,17 @@ const nodes = {
 		selectable: false,
 		parseDOM: [{ tag: 'br' }],
 		toDOM() { return ['br']; },
+		toStatic(node) {
+			return <br key={node.currIndex} />;
+		}
 	},
 	none: {
 		// empty schema block
 		group: 'block',
-		toDOM() { return ['span']; }
+		toDOM() { return ['span']; },
+		toStatic(node, children) {
+			return <span key={node.currIndex}>{children}</span>;
+		}
 	},
 };
 
@@ -129,7 +132,10 @@ const marks = {
 				getAttrs: value => value === 'italic' && null
 			}
 		],
-		toDOM() { return ['em']; }
+		toDOM() { return ['em']; },
+		toStatic(mark, children) {
+			return <em>{children}</em>;
+		}
 	},
 
 	strong: {
@@ -141,7 +147,10 @@ const marks = {
 			{ tag: 'b', getAttrs: node => node.style.fontWeight !== 'normal' && null },
 			{ style: 'font-weight', getAttrs: value => /^(bold(er)?|[5-9]\d{2,})$/.test(value) && null }
 		],
-		toDOM() { return ['strong']; }
+		toDOM() { return ['strong']; },
+		toStatic(mark, children) {
+			return <strong>{children}</strong>;
+		}
 	},
 	link: {
 		attrs: {
@@ -161,23 +170,46 @@ const marks = {
 				}
 			}
 		],
-		toDOM(node) { return ['a', node.attrs]; }
+		toDOM(node) { return ['a', node.attrs]; },
+		toStatic(mark, children) {
+			return (
+				<a
+					href={mark.attrs.href}
+					title={mark.attrs.title}
+					target={mark.attrs.target}
+				>
+					{children}
+				</a>
+			);
+		}
 	},
 	sub: {
 		parseDOM: [{ tag: 'sub' }],
-		toDOM() { return ['sub']; }
+		toDOM() { return ['sub']; },
+		toStatic(mark, children) {
+			return <sub>{children}</sub>;
+		}
 	},
 	sup: {
 		parseDOM: [{ tag: 'sup' }],
-		toDOM() { return ['sup']; }
+		toDOM() { return ['sup']; },
+		toStatic(mark, children) {
+			return <sup>{children}</sup>;
+		}
 	},
 	strike: {
 		parseDOM: [{ tag: 's' }],
-		toDOM() { return ['s']; }
+		toDOM() { return ['s']; },
+		toStatic(mark, children) {
+			return <s>{children}</s>;
+		}
 	},
 	code: {
 		parseDOM: [{ tag: 'code' }],
-		toDOM() { return ['code']; }
+		toDOM() { return ['code']; },
+		toStatic(mark, children) {
+			return <code>{children}</code>;
+		}
 	}
 };
 

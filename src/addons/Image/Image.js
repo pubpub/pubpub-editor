@@ -98,6 +98,7 @@ class Image extends Component {
 					toStatic(node) {
 						return (
 							<ImageStatic
+								key={node.currIndex}
 								align={node.attrs.align}
 								url={node.attrs.url}
 								size={node.attrs.size}

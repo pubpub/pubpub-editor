@@ -93,7 +93,13 @@ class Footnote extends Component {
 						);
 					},
 					toStatic(node) {
-						return <FootnoteStatic value={node.attrs.value} count={node.attrs.count} />;
+						return (
+							<FootnoteStatic
+								key={node.currentIndex}
+								value={node.attrs.value}
+								count={node.attrs.count}
+							/>
+						);
 					},
 				},
 			}

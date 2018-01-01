@@ -84,6 +84,7 @@ class Iframe extends Component {
 					toStatic(node) {
 						return (
 							<IframeStatic
+								key={node.currentIndex}
 								align={node.attrs.align}
 								url={node.attrs.url}
 								size={node.attrs.size}

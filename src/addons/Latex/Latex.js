@@ -85,6 +85,7 @@ class Latex extends Component {
 					toStatic(node) {
 						return (
 							<LatexStatic
+								key={node.currentIndex}
 								html={node.attrs.html}
 								isBlock={false}
 							/>

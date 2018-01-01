@@ -46,19 +46,38 @@ class Editor extends Component {
 	constructor(props) {
 		super(props);
 		this.containerId = `pubpub-editor-container-${Math.round(Math.random() * 10000)}`;
-		this.state = {};
 		this.getJSON = this.getJSON.bind(this);
+		this.getPlugin = this.getPlugin.bind(this);
+
 		this.configureSchema = this.configureSchema.bind(this);
 		this.configurePlugins = this.configurePlugins.bind(this);
 		this.createEditor = this.createEditor.bind(this);
-		this.remove = this.remove.bind(this);
+		this.renderStatic = this.renderStatic.bind(this);
+
 		this._isMounted = false;
 		this._onAction = this._onAction.bind(this);
+
+		console.time('init prose server');
+		this.schema = this.configureSchema();
+		this.pluginsObject = this.configurePlugins(this.schema);
+		this.nodeViews = this.configureNodeViews(this.schema);
+		this.state = {};
+		// this.state = EditorState.create({
+		// 	doc: this.props.initialContent
+		// 		? this.schema.nodeFromJSON(this.props.initialContent)
+		// 		: this.schema.nodes.doc.create(),
+		// 	schema: this.schema,
+		// 	plugins: this.pluginsObject.plugins,
+		// });
+		console.log(this.state);
+		console.timeEnd('init prose server');
 	}
 
 	componentDidMount() {
-		this.createEditor();
-		this._isMounted = true;
+		setTimeout(()=> {
+			this._isMounted = true;
+			this.createEditor();
+		}, 5000);
 	}
 	componentWillUnmount() {
 		this._isMounted = false;
@@ -71,15 +90,15 @@ class Editor extends Component {
 		return this.view.state.doc.toJSON();
 	}
 
-	focus() {
-		this.view.focus();
-	}
-
-	getPlugin = (key) => {
+	getPlugin(key) {
 		if (this.state.pluginKeys[key]) {
 			return this.state.pluginKeys[key].get(this.state.editorState);
 		}
 		return null;
+	}
+
+	focus() {
+		this.view.focus();
 	}
 
 	configurePlugins(schema) {
@@ -144,49 +163,96 @@ class Editor extends Component {
 	}
 
 	createEditor() {
-		if (this.view) {
-			this.remove();
-		}
+		/* I'm not sure why this was needed. It seems like with */
+		/* better render lifecycle management, we wouldn't */
+		// if (this.view) {
+		// 	this.view.destroy();
+		// }
 
-		const schema = this.configureSchema();
-		const place = this.editorElement;
+		// console.log('Here1');
+		// const schema = this.configureSchema();
+		// const place = this.editorElement;
+		// // console.log('Here2');
+		// const contents = this.props.initialContent;
+		// const { plugins, pluginKeys } = this.configurePlugins(schema);
+		// const nodeViews = this.configureNodeViews(schema);
+		// // console.log('Here3');
 
-		const contents = this.props.initialContent;
-		const { plugins, pluginKeys } = this.configurePlugins(schema);
-		const nodeViews = this.configureNodeViews(schema);
+		// const stateConfig = {
+		// 	doc: (contents) ? schema.nodeFromJSON(contents) : schema.nodes.doc.create(),
+		// 	schema: schema,
+		// 	plugins: plugins,
+		// };
 
-		const stateConfig = {
-			doc: (contents) ? schema.nodeFromJSON(contents) : schema.nodes.doc.create(),
-			schema: schema,
-			plugins: plugins,
-		};
+		// console.log(schema);
+		// // console.log('Here4');
+		// const state = EditorState.create(stateConfig);
+		// const editorView = document.createElement('div');
+		// place.appendChild(editorView);
+		// console.log('Here5');
+		this.state = EditorState.create({
+			doc: this.schema.nodeFromJSON(this.props.initialContent),
+			schema: this.schema,
+			plugins: this.pluginsObject.plugins,
+		});
 
-		const state = EditorState.create(stateConfig);
-		const editorView = document.createElement('div');
-		place.appendChild(editorView);
-
-		this.view = new EditorView(editorView, {
-			state: state,
+		this.view = new EditorView(this.editorElement, {
+			state: this.state,
 			dispatchTransaction: this._onAction,
 			spellcheck: true,
 			editable: () => (!this.props.isReadOnly),
-			nodeViews: nodeViews,
+			nodeViews: this.nodeViews,
 		});
-
-		this.setState({ view: this.view, editorState: state, pluginKeys });
+		// console.log('Here6');
+		this.setState({
+			view: this.view,
+			editorState: this.state,
+			pluginKeys: this.pluginsObject.pluginKeys
+		});
+		// console.log('Here7');
 	}
 
-	remove() {
-		if (this.view) {
-			this.view.destroy();
-		}
+	// remove() {
+	// 	if (this.view) {
+	// 		console.log('Huh - we need destroy')
+	// 	}
+	// }
+
+	renderStatic(nodeArray, parentIndex='statics') {
+		return nodeArray.map((node, index)=> {
+			const currIndex = index;
+			console.log(currIndex);
+			let children;
+			if (node.content) {
+				children = this.renderStatic(node.content, currIndex);
+			}
+			if (node.type === 'text') {
+				const marks = node.marks || [];
+				children = marks.reduce((prev, curr)=> {
+					const MarkComponent = this.schema.marks[curr.type].spec.toStatic(curr, prev);
+					return MarkComponent;
+				}, node.text);
+			}
+
+			/* It's a bit messy to append keys here and we don't have a unique id */
+			/* React defaults to using indexes if keys aren't present */
+			/* So - lets just let React assign those keys. Clever alternatives */
+			/* are welcome. */
+			const nodeWithIndex = node;
+			nodeWithIndex.currIndex = currIndex;
+			const NodeComponent = this.schema.nodes[node.type].spec.toStatic(nodeWithIndex, children);
+			console.log(NodeComponent);
+			return NodeComponent;
+		});
 	}
+
 
 	_onAction(transaction) {
 		if (this.view && this.view.state && this._isMounted) {
 			const newState = this.view.state.apply(transaction);
 			this.view.updateState(newState);
 			this.setState({ editorState: newState, transaction: transaction });
+			console.log(this.view.state.doc.toJSON());
 			if (this.props.onChange) {
 				this.props.onChange(this.view.state.doc.toJSON());
 			}
@@ -194,6 +260,8 @@ class Editor extends Component {
 	}
 
 	render() {
+		console.log('In Render', this.schema);
+		// console.log('this.state.view exists: ', !!this.state.view);
 		return (
 			<div style={{ position: 'relative' }} id={this.containerId}>
 				{this.state.view
@@ -211,6 +279,11 @@ class Editor extends Component {
 					: null
 				}
 
+				{!this._isMounted &&
+					<div className={'pubpub-editor'}>
+						{this.renderStatic(this.props.initialContent.content)}
+					</div>
+				}
 				<div ref={(elem)=> { this.editorElement = elem; }} className="pubpub-editor" />
 			</div>
 		);
