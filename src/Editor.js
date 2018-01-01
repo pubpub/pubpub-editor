@@ -57,27 +57,15 @@ class Editor extends Component {
 		this._isMounted = false;
 		this._onAction = this._onAction.bind(this);
 
-		console.time('init prose server');
 		this.schema = this.configureSchema();
 		this.pluginsObject = this.configurePlugins(this.schema);
 		this.nodeViews = this.configureNodeViews(this.schema);
 		this.state = {};
-		// this.state = EditorState.create({
-		// 	doc: this.props.initialContent
-		// 		? this.schema.nodeFromJSON(this.props.initialContent)
-		// 		: this.schema.nodes.doc.create(),
-		// 	schema: this.schema,
-		// 	plugins: this.pluginsObject.plugins,
-		// });
-		console.log(this.state);
-		console.timeEnd('init prose server');
 	}
 
 	componentDidMount() {
-		setTimeout(()=> {
-			this._isMounted = true;
-			this.createEditor();
-		}, 5000);
+		this._isMounted = true;
+		this.createEditor();
 	}
 	componentWillUnmount() {
 		this._isMounted = false;
@@ -169,27 +157,6 @@ class Editor extends Component {
 		// 	this.view.destroy();
 		// }
 
-		// console.log('Here1');
-		// const schema = this.configureSchema();
-		// const place = this.editorElement;
-		// // console.log('Here2');
-		// const contents = this.props.initialContent;
-		// const { plugins, pluginKeys } = this.configurePlugins(schema);
-		// const nodeViews = this.configureNodeViews(schema);
-		// // console.log('Here3');
-
-		// const stateConfig = {
-		// 	doc: (contents) ? schema.nodeFromJSON(contents) : schema.nodes.doc.create(),
-		// 	schema: schema,
-		// 	plugins: plugins,
-		// };
-
-		// console.log(schema);
-		// // console.log('Here4');
-		// const state = EditorState.create(stateConfig);
-		// const editorView = document.createElement('div');
-		// place.appendChild(editorView);
-		// console.log('Here5');
 		this.state = EditorState.create({
 			doc: this.schema.nodeFromJSON(this.props.initialContent),
 			schema: this.schema,
@@ -203,13 +170,11 @@ class Editor extends Component {
 			editable: () => (!this.props.isReadOnly),
 			nodeViews: this.nodeViews,
 		});
-		// console.log('Here6');
 		this.setState({
 			view: this.view,
 			editorState: this.state,
 			pluginKeys: this.pluginsObject.pluginKeys
 		});
-		// console.log('Here7');
 	}
 
 	// remove() {
@@ -217,35 +182,6 @@ class Editor extends Component {
 	// 		console.log('Huh - we need destroy')
 	// 	}
 	// }
-
-	renderStatic(nodeArray) {
-		return nodeArray.map((node, index)=> {
-			let children;
-			if (node.content) {
-				children = this.renderStatic(node.content);
-			}
-			if (node.type === 'text') {
-				const marks = node.marks || [];
-				children = marks.reduce((prev, curr)=> {					
-					const MarkComponent = this.schema.marks[curr.type].spec.toStatic(curr, prev);
-					return MarkComponent;
-				}, node.text);
-			}
-
-			/* It's a bit messy to append keys here and we don't have a unique id */
-			/* React defaults to using indexes if keys aren't present */
-			/* So - lets just let React assign those keys. Clever alternatives */
-			/* are welcome. */
-			const nodeWithIndex = node;
-			nodeWithIndex.currIndex = index;
-			if (typeof this.schema.nodes[node.type].spec.toStatic !== 'function') {
-						console.log(node);
-					}
-			const NodeComponent = this.schema.nodes[node.type].spec.toStatic(nodeWithIndex, children);
-			return NodeComponent;
-		});
-	}
-
 
 	_onAction(transaction) {
 		if (this.view && this.view.state && this._isMounted) {
@@ -256,6 +192,27 @@ class Editor extends Component {
 				this.props.onChange(this.view.state.doc.toJSON());
 			}
 		}
+	}
+
+	renderStatic(nodeArray) {
+		return nodeArray.map((node, index)=> {
+			let children;
+			if (node.content) {
+				children = this.renderStatic(node.content);
+			}
+			if (node.type === 'text') {
+				const marks = node.marks || [];
+				children = marks.reduce((prev, curr)=> {
+					const MarkComponent = this.schema.marks[curr.type].spec.toStatic(curr, prev);
+					return MarkComponent;
+				}, node.text);
+			}
+
+			const nodeWithIndex = node;
+			nodeWithIndex.currIndex = index;
+			const NodeComponent = this.schema.nodes[node.type].spec.toStatic(nodeWithIndex, children);
+			return NodeComponent;
+		});
 	}
 
 	render() {
