@@ -90,7 +90,7 @@ class File extends Component {
 					toStatic(node) {
 						return (
 							<FileStatic
-								key={node.currentIndex}
+								key={node.currIndex}
 								url={node.attrs.url}
 								fileName={node.attrs.fileName}
 								fileSize={node.attrs.fileSize}

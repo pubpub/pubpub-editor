@@ -87,7 +87,7 @@ class Citation extends Component {
 					toStatic(node) {
 						return (
 							<CitationStatic
-								key={node.currentIndex}
+								key={node.currIndex}
 								value={node.attrs.value}
 								html={node.attrs.html}
 								count={node.attrs.count}
@@ -131,7 +131,7 @@ class Citation extends Component {
 					toStatic(node, view) {
 						return (
 							<CitationList
-								key={node.currentIndex}
+								key={node.currIndex}
 								node={node}
 								view={view}
 							/>

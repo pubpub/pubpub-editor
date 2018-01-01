@@ -1,8 +1,11 @@
 .footnote-wrapper {
-	display: inline-block;
+	display: inline;
 	max-width: 100%;
 	vertical-align: top;
 	position: relative;
+	.pt-popover-target {
+		display: inline;
+	}
 	sup.footnote {
 		font-weight: bold;
 		cursor: pointer;

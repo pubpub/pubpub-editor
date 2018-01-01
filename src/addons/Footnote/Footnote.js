@@ -95,7 +95,7 @@ class Footnote extends Component {
 					toStatic(node) {
 						return (
 							<FootnoteStatic
-								key={node.currentIndex}
+								key={node.currIndex}
 								value={node.attrs.value}
 								count={node.attrs.count}
 							/>

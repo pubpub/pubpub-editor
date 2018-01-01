@@ -226,7 +226,7 @@ class Editor extends Component {
 			}
 			if (node.type === 'text') {
 				const marks = node.marks || [];
-				children = marks.reduce((prev, curr)=> {
+				children = marks.reduce((prev, curr)=> {					
 					const MarkComponent = this.schema.marks[curr.type].spec.toStatic(curr, prev);
 					return MarkComponent;
 				}, node.text);
@@ -238,6 +238,9 @@ class Editor extends Component {
 			/* are welcome. */
 			const nodeWithIndex = node;
 			nodeWithIndex.currIndex = index;
+			if (typeof this.schema.nodes[node.type].spec.toStatic !== 'function') {
+						console.log(node);
+					}
 			const NodeComponent = this.schema.nodes[node.type].spec.toStatic(nodeWithIndex, children);
 			return NodeComponent;
 		});
@@ -249,7 +252,6 @@ class Editor extends Component {
 			const newState = this.view.state.apply(transaction);
 			this.view.updateState(newState);
 			this.setState({ editorState: newState, transaction: transaction });
-			console.log(this.view.state.doc.toJSON());
 			if (this.props.onChange) {
 				this.props.onChange(this.view.state.doc.toJSON());
 			}
@@ -257,7 +259,7 @@ class Editor extends Component {
 	}
 
 	render() {
-		console.log('In Render', this.schema);
+		// console.log('In Render', this.schema);
 		// console.log('this.state.view exists: ', !!this.state.view);
 		return (
 			<div style={{ position: 'relative' }} id={this.containerId}>
@@ -277,8 +279,10 @@ class Editor extends Component {
 				}
 
 				{!this._isMounted &&
-					<div className={'pubpub-editor'}>
-						{this.renderStatic(this.props.initialContent.content)}
+					<div className="pubpub-editor">
+						<div className="ProseMirror">
+							{this.renderStatic(this.props.initialContent.content)}
+						</div>
 					</div>
 				}
 				<div ref={(elem)=> { this.editorElement = elem; }} className="pubpub-editor" />

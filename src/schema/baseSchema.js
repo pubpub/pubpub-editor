@@ -78,6 +78,42 @@ const nodes = {
 			return null;
 		}
 	},
+	ordered_list: {
+		content: 'list_item+',
+		group: 'block',
+		attrs: { order: { default: 1 } },
+		parseDOM: [{
+			tag: 'ol',
+			getAttrs(dom) {
+				return { order: dom.hasAttribute('start') ? +dom.getAttribute('start') : 1 };
+			}
+		}],
+		toDOM(node) {
+			return ['ol', { start: node.attrs.order === 1 ? null : node.attrs.order }, 0];
+		},
+		toStatic(node, children) {
+			const attrs = { start: node.attrs.order === 1 ? null : node.attrs.order };
+			return <ol key={node.currIndex} {...attrs}>{children}</ol>;
+		}
+	},
+	bullet_list: {
+		content: 'list_item+',
+		group: 'block',
+		parseDOM: [{ tag: 'ul' }],
+		toDOM() { return ['ul', 0]; },
+		toStatic(node, children) {
+			return <ul key={node.currIndex}>{children}</ul>;
+		}
+	},
+	list_item: {
+		content: 'paragraph block*',
+		parseDOM: [{ tag: 'li' }],
+		toDOM() { return ['li', 0]; },
+		defining: true,
+		toStatic(node, children) {
+			return <li key={node.currIndex}>{children}</li>;
+		}
+	},
 	code_block: {
 		content: 'text*',
 		group: 'block',

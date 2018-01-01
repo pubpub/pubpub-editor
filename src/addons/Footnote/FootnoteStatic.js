@@ -12,7 +12,7 @@ const propTypes = {
 
 const FootnoteStatic = function(props) {
 	return (
-		<div className={'footnote-wrapper'}>
+		<span className={'footnote-wrapper'}>
 			<Popover
 				content={
 					<div className={'footnote-text pt-card pt-elevation-2'}>
@@ -45,7 +45,7 @@ const FootnoteStatic = function(props) {
 			>
 				<sup className={'footnote editable-render'}>{props.count}</sup>
 			</Popover>
-		</div>
+		</span>
 	);
 };
 
