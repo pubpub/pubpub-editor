@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 
 ## [4.2.1] - 2018-01-01
-- Fix highlighting bug with new ssr setup
+- Add support for editorId prop on <Editor>. Important for SSR and client HTML matching.
 
 ## [4.2.0] - 2018-01-01
 - Add support for Server-Side Rendering. Documents will render first as React Tree, and then in the Browser be replaced by the ProseMirror instance of the document. Requires all schema types to have a toStatic() function which returns a React component.

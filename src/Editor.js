@@ -10,6 +10,7 @@ require('./style.scss');
 
 const propTypes = {
 	initialContent: PropTypes.object,
+	editorId: PropTypes.string,
 	onChange: PropTypes.func,
 	children: PropTypes.node,
 	placeholder: PropTypes.string,
@@ -18,6 +19,7 @@ const propTypes = {
 
 const defaultProps = {
 	initialContent: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] },
+	editorId: undefined,
 	onChange: undefined,
 	children: undefined,
 	placeholder: undefined,
@@ -45,7 +47,7 @@ return <Editor />
 class Editor extends Component {
 	constructor(props) {
 		super(props);
-		this.containerId = `pubpub-editor-container-${Math.round(Math.random() * 10000)}`;
+		this.containerId = `pubpub-editor-container-${props.editorId}` || `pubpub-editor-container-${Math.round(Math.random() * 10000)}`;
 		this.getJSON = this.getJSON.bind(this);
 		this.getPlugin = this.getPlugin.bind(this);
 
@@ -177,12 +179,6 @@ class Editor extends Component {
 		});
 	}
 
-	// remove() {
-	// 	if (this.view) {
-	// 		console.log('Huh - we need destroy')
-	// 	}
-	// }
-
 	_onAction(transaction) {
 		if (this.view && this.view.state && this._isMounted) {
 			const newState = this.view.state.apply(transaction);
@@ -216,8 +212,6 @@ class Editor extends Component {
 	}
 
 	render() {
-		// console.log('In Render', this.schema);
-		// console.log('this.state.view exists: ', !!this.state.view);
 		return (
 			<div style={{ position: 'relative' }} id={this.containerId}>
 				{this.state.view

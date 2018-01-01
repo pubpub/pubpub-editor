@@ -8,7 +8,6 @@ const baseSchema = new Schema({
 });
 
 const schemaNodes = baseSchema.spec.nodes;
-// const tableSchema = addTableNodes(listSchema, 'paragraph block*', 'block');
 export default (addonNodes, addonMarks) => {
 	return new Schema({
 		nodes: schemaNodes.append(addonNodes),
