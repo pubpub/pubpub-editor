@@ -28,7 +28,8 @@ const nodes = {
 		toStatic(node, children) {
 			const attrs = {};
 			if (node.attrs && node.attrs.class) { attrs.className = node.attrs.class; }
-			return <p {...attrs} key={node.currIndex}>{children}</p>;
+			const emptyChildren = <br />;
+			return <p {...attrs} key={node.currIndex}>{children || emptyChildren}</p>;
 		}
 	},
 	blockquote: {

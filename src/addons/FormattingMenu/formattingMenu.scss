@@ -32,7 +32,8 @@
 		color: black;
 	}
 	.button[class*="icon-"]::before {
-		line-height: 1;
+		// line-height: 1;
+		line-height: inherit;
 		font-size: inherit;
 		font-weight: 400;
 		font-style: normal;

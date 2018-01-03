@@ -14,7 +14,7 @@ const defaultProps = {
 
 const LatexStatic = function(props) {
 	return (
-		<div
+		<span
 			className={`latex-wrapper ${props.isBlock ? 'block' : ''}`}
 			dangerouslySetInnerHTML={{ __html: props.html }}
 		/>

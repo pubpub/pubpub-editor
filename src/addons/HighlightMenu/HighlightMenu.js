@@ -130,6 +130,12 @@ class HighlightMenu extends Component {
 
 	componentWillMount() {
 		this.handleNewHighlightProps(this.props);
+		/* In some cases we need to be be a bit vigilant about the doc being */
+		/* ready before applying the first batch of highlights. Such as the  */
+		/* collab server taking time to initialize the doc. */
+		// setTimeout(()=> {
+		// 	this.handleNewHighlightProps(this.props);
+		// }, 2000);
 	}
 
 	componentWillReceiveProps(nextProps) {

@@ -12,7 +12,7 @@ const propTypes = {
 
 const CitationStatic = function(props) {
 	return (
-		<div className={'citation-wrapper'}>
+		<span className={'citation-wrapper'}>
 			<Popover
 				content={
 					<div className={'rendered-citation pt-card pt-elevation-2'}>
@@ -40,7 +40,7 @@ const CitationStatic = function(props) {
 			>
 				<span className={'citation'}>[{props.count}]</span>
 			</Popover>
-		</div>
+		</span>
 	);
 };
 

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.2.2] - 2018-01-03
+- Bug fix for server render of empty paragraphs.
+- Fix static render functions to never insert div inside p. It ruins SSR
+
 ## [4.2.1] - 2018-01-01
 - Add support for editorId prop on <Editor>. Important for SSR and client HTML matching.
 
