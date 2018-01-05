@@ -69,6 +69,10 @@ const doc = {
 				},
 			]
 		},
+		{
+			type: 'citationList',
+			attrs: { key: 0.923 }
+		},
 	]
 };
 

@@ -16,6 +16,7 @@ const defaultProps = {
 };
 
 const CitationList = function(props) {
+	if (!props.view) { return null; }
 	const citations = [];
 	const usedIndexes = {};
 	for (let nodeIndex = 0; nodeIndex < props.view.state.doc.nodeSize - 1; nodeIndex++) {
