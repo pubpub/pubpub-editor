@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.2.4] - 2018-01-16
+- Bug fix for database healing
+
+## [4.2.3] - 2018-01-03
+- Quick bug fix for Citation List SSR. Needs more work for proper SSR rendering
+
 ## [4.2.2] - 2018-01-03
 - Bug fix for server render of empty paragraphs.
 - Fix static render functions to never insert div inside p. It ruins SSR

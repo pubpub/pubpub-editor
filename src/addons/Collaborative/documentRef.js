@@ -62,7 +62,7 @@ class DocumentRef {
 				}
 				return { steps, stepClientIDs, stepsWithKeys };
 			}
-			return {steps: null, stepClientIDs: null, stepsWithKeys: null};
+			return { steps: null, stepClientIDs: null, stepsWithKeys: null };
 		});
 	}
 
@@ -210,7 +210,7 @@ class DocumentRef {
 		for (const clientId in this.selections) {
 			const originalClientData = this.selections[clientId].data || {};
 			const expirationTime = (1000 * 60 * 10); // 10 Minutes
-			if (!originalClientData.lastActive  ||
+			if (!originalClientData.lastActive ||
 				(originalClientData.lastActive + expirationTime) < new Date().getTime()
 			) {
 				const selectionsRef = this.ref.child('selections');
@@ -234,27 +234,27 @@ class DocumentRef {
 	healDatabase = ({ stepsWithKeys, view }) => {
 		const stepsToDelete = [];
 		const placeholderClientId = `_oldClient${Math.random()}`;
-		const changesRef = this.ref.child('changes');
+		// const changesRef = this.ref.child('changes');
 
-		if (Raven) {
-			Raven.captureMessage('Attempting to heal database', {
-			  level: 'warning' // one of 'info', 'warning', or 'error'
-			});
-		}
-		console.log('Healing database');
-		for (const step of stepsWithKeys) {
+		console.error('Healing database', stepsWithKeys);
+		stepsWithKeys.forEach((step)=> {
 			try {
 				const trans = receiveTransaction(view.state, step.steps, [placeholderClientId]);
 				trans.setMeta('receiveDoc', true);
 				view.dispatch(trans);
 			} catch (err) {
+				console.log('StepError is ', err);
 				stepsToDelete.push(step.key);
 			}
-		}
+		});
 
-		for (const stepToDelete of stepsToDelete) {
-			changesRef.child(stepToDelete).remove();
-		}
+		stepsToDelete.forEach((stepToDelete)=> {
+			/* Perhaps we can just skip the step rather   */
+			/* than deleting it. That way we can debug it */
+			/* if a document seems to have funky errors   */
+			console.log('Skipping Step ', stepToDelete);
+			// changesRef.child(stepToDelete).remove();
+		});
 	}
 
 	copyDataForFork = (editorKey) => {
@@ -276,7 +276,6 @@ class DocumentRef {
 			fork.checkpoint = { d, k: 0, t: TIMESTAMP };
 
 			return fork;
-
 		});
 	}
 
@@ -297,10 +296,10 @@ class DocumentRef {
 	commit = ({ description, uuid, steps, start, end }) => {
 		const editorRef = this.ref;
 
-		const commitSteps =  {
-			s: compressStepsLossy(steps).map(
-				function (step) {
-					return compressStepJSON(step.toJSON()) } ),
+		const commitSteps = {
+			s: compressStepsLossy(steps).map((step)=> {
+				return compressStepJSON(step.toJSON());
+			}),
 			c: this.localClientId,
 			m: {},
 			t: TIMESTAMP,
@@ -326,10 +325,6 @@ class DocumentRef {
 			});
 		});
 	}
-
-
-
-
 }
 
 export default DocumentRef;
