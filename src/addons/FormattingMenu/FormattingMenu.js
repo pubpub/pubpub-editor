@@ -116,7 +116,8 @@ class FormattingMenu extends Component {
 		// const width = 327;
 		const wrapperStyle = {
 			display: this.state.top !== null ? 'block' : 'none',
-			top: Math.max(this.state.top - 40, 0),
+			// top: Math.max(this.state.top - 40, 0),
+			top: this.state.top - 40,
 			width: `${width}px`,
 			left: Math.max(this.state.left - (width / 2), 0),
 			padding: `0px ${padding}px`

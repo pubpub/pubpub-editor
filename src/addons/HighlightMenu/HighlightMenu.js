@@ -255,7 +255,8 @@ class HighlightMenu extends Component {
 			display: this.state.top !== null ? 'block' : 'none',
 			transform: `translateY(${Math.max(this.state.top, 0)}px)`,
 			top: 0,
-			right: -20,
+			// right: -20,
+			right: -35,
 		};
 		const pluginKeyString = this.props.editorState.plugins.reduce((prev, curr)=> {
 			if (curr.key.indexOf('HighlightMenu') !== -1) {
