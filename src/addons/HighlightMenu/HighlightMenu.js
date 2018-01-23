@@ -4,7 +4,7 @@ import { Plugin, TextSelection } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 import * as textQuote from 'dom-anchor-text-quote';
 import stringHash from 'string-hash';
-import { Popover, PopoverInteractionKind, Position, Tooltip } from '@blueprintjs/core';
+import { Tooltip } from '@blueprintjs/core';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 require('./highlightMenu.scss');
@@ -294,7 +294,6 @@ class HighlightMenu extends Component {
 					{this.props.onNewDiscussion &&
 						<button className="pt-button pt-minimal pt-icon-chat" onClick={this.handleNewDiscussion} />
 					}
-					
 					<Tooltip isOpen={this.state.copied} content={<span><span className="pt-icon-standard pt-icon-tick" /> Copied to Clipboard</span>} tooltipClassName="pt-dark">
 						<CopyToClipboard
 							text={`${window.location.origin}${window.location.pathname}?from=${this.state.from}&to=${this.state.to}${this.props.versionId ? `&version=${this.props.versionId}` : ''}`}
@@ -308,41 +307,6 @@ class HighlightMenu extends Component {
 							<button className="pt-button pt-minimal pt-icon-link" />
 						</CopyToClipboard>
 					</Tooltip>
-					{/*<Popover
-						content={
-							<div className={'selection-menu pt-card pt-elevation-2'}>
-								{this.props.onNewDiscussion &&
-									<div className={'button-wrapper'}>
-										<button
-											onClick={this.handleNewDiscussion}
-											className={'pt-button pt-small pt-popover-dismiss'}
-										>
-											Create Discussion
-										</button>
-									</div>
-								}
-								<div className={'input-wrapper'}>
-									<div>Link to Selection</div>
-									<textarea
-										type={'text'}
-										className={'pt-input'}
-										value={`${window.location.origin}${window.location.pathname}?from=${this.state.from}&to=${this.state.to}${this.props.versionId ? `&version=${this.props.versionId}` : ''}`}
-										onChange={()=>{}}
-									/>
-								</div>
-							</div>
-						}
-						interactionKind={PopoverInteractionKind.CLICK}
-						position={Position.BOTTOM_RIGHT}
-						popoverClassName={'highlight-menu-wrapper pt-minimal'}
-						transitionDuration={-1}
-						inheritDarkTheme={false}
-						tetherOptions={{
-							constraints: [{ attachment: 'together', to: 'window' }]
-						}}
-					>
-						<button className={`pt-button pt-minimal ${this.props.onDotClick ? 'pt-icon-highlight' : 'pt-icon-link'}`} />
-					</Popover>*/}
 				</div>
 				{this.props.onDotClick &&
 					<div className={'highlight-dot-wrapper'}>
