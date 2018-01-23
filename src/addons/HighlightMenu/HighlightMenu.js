@@ -4,7 +4,8 @@ import { Plugin, TextSelection } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 import * as textQuote from 'dom-anchor-text-quote';
 import stringHash from 'string-hash';
-import { Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
+import { Popover, PopoverInteractionKind, Position, Tooltip } from '@blueprintjs/core';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 require('./highlightMenu.scss');
 
@@ -118,6 +119,7 @@ class HighlightMenu extends Component {
 			from: undefined,
 			activeHover: undefined,
 			createdHighlights: [],
+			copied: false,
 		};
 		this.onChange = this.onChange.bind(this);
 		this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -289,7 +291,24 @@ class HighlightMenu extends Component {
 		return (
 			<div className={'highlight-menu'} onMouseDown={this.handleMouseDown}>
 				<div className={'popover-wrapper'} style={wrapperStyle}>
-					<Popover
+					{this.props.onNewDiscussion &&
+						<button className="pt-button pt-minimal pt-icon-chat" onClick={this.handleNewDiscussion} />
+					}
+					
+					<Tooltip isOpen={this.state.copied} content={<span><span className="pt-icon-standard pt-icon-tick" /> Copied to Clipboard</span>} tooltipClassName="pt-dark">
+						<CopyToClipboard
+							text={`${window.location.origin}${window.location.pathname}?from=${this.state.from}&to=${this.state.to}${this.props.versionId ? `&version=${this.props.versionId}` : ''}`}
+							onCopy={() => {
+								this.setState({ copied: true });
+								setTimeout(()=> {
+									this.setState({ copied: false });
+								}, 2500);
+							}}
+						>
+							<button className="pt-button pt-minimal pt-icon-link" />
+						</CopyToClipboard>
+					</Tooltip>
+					{/*<Popover
 						content={
 							<div className={'selection-menu pt-card pt-elevation-2'}>
 								{this.props.onNewDiscussion &&
@@ -323,7 +342,7 @@ class HighlightMenu extends Component {
 						}}
 					>
 						<button className={`pt-button pt-minimal ${this.props.onDotClick ? 'pt-icon-highlight' : 'pt-icon-link'}`} />
-					</Popover>
+					</Popover>*/}
 				</div>
 				{this.props.onDotClick &&
 					<div className={'highlight-dot-wrapper'}>
