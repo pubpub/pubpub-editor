@@ -294,7 +294,7 @@ class HighlightMenu extends Component {
 					{this.props.onNewDiscussion &&
 						<button className="pt-button pt-minimal pt-icon-chat" onClick={this.handleNewDiscussion} />
 					}
-					<Tooltip isOpen={this.state.copied} content={<span><span className="pt-icon-standard pt-icon-tick" /> Copied to Clipboard</span>} tooltipClassName="pt-dark">
+					<Tooltip isOpen={this.state.copied} content={<span><span className="pt-icon-standard pt-icon-tick" /> Permalink copied to clipboard</span>} tooltipClassName="pt-dark">
 						<CopyToClipboard
 							text={`${window.location.origin}${window.location.pathname}?from=${this.state.from}&to=${this.state.to}${this.props.versionId ? `&version=${this.props.versionId}` : ''}`}
 							onCopy={() => {

@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.2.6] - 2018-01-25
+- Change permalink copy button text.
+
 ## [4.2.5] - 2018-01-16
 - Formatting menu no longer maxes out at top = 0. Fixes overlap on first line.
 - HighlightMenu button overlap fix.
