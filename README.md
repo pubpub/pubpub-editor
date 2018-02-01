@@ -21,10 +21,14 @@ const component = (props)=> {
 
 ### To Install and run Storybook
 
+The first step is to create a `stories/_config.js` file. There is a `stories/_sampleConfig.js` file that can be used as a template. The `_config.js` file is necessary to store access keys for external services used by the Editor. Currently, the only external dependency is an Amazon S3 bucket which is used to store uploading files.
+
+After that, the following commands will get you running!
 ```
 npm install
 npm start
 ```
+
 
 
 ## Addons
