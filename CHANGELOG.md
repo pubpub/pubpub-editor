@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.2.7] - 2018-02-03
+- Footnote CSS alignment fix for Firefox.
+
 ## [4.2.6] - 2018-01-25
 - Change permalink copy button text.
 
