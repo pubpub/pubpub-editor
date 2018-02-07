@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.2.10] - 2018-02-07
+- Add support for showHeaderLinks
+- Make headers 'defining'
+
 ## [4.2.9] - 2018-02-07
 - Headers are now assigned ids equal to their content
 

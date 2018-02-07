@@ -12,6 +12,7 @@ storiesOf('ReadOnly', module)
 	<div style={editorWrapperStyle}>
 		<Editor
 			isReadOnly={true}
+			showHeaderLinks={true}
 			initialContent={initialContent}
 		>
 			<FormattingMenu />

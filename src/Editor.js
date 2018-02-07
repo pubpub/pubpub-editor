@@ -15,6 +15,7 @@ const propTypes = {
 	children: PropTypes.node,
 	placeholder: PropTypes.string,
 	isReadOnly: PropTypes.bool,
+	showHeaderLinks: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -24,6 +25,7 @@ const defaultProps = {
 	children: undefined,
 	placeholder: undefined,
 	isReadOnly: false,
+	showHeaderLinks: false,
 };
 
 
@@ -40,6 +42,7 @@ const defaultProps = {
 * @prop {func} onChange Fired whenever the document is changed.
 * @prop {String} placeholder A placeholder string that will appear if there is no content.
 * @prop {bool} isReadOnly Set to true to disallow editing, both in text and modifying or inserting add ons.
+* @prop {bool} showHeaderLinks Set to true to show links next to headers
 *
 * @example
 return <Editor />
@@ -212,6 +215,7 @@ class Editor extends Component {
 	}
 
 	render() {
+		const wrapperClasses = `pubpub-editor ${this.props.showHeaderLinks ? 'show-header-links' : ''}`;
 		return (
 			<div style={{ position: 'relative' }} id={this.containerId}>
 				{this.state.view
@@ -230,13 +234,13 @@ class Editor extends Component {
 				}
 
 				{!this._isMounted &&
-					<div className="pubpub-editor">
+					<div className={wrapperClasses}>
 						<div className="ProseMirror">
 							{this.renderStatic(this.props.initialContent.content)}
 						</div>
 					</div>
 				}
-				<div ref={(elem)=> { this.editorElement = elem; }} className="pubpub-editor" />
+				<div ref={(elem)=> { this.editorElement = elem; }} className={wrapperClasses} />
 			</div>
 		);
 	}

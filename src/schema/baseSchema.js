@@ -63,6 +63,7 @@ const nodes = {
 		},
 		content: 'inline*',
 		group: 'block',
+		defining: true,
 		parseDOM: [
 			{ tag: 'h1', getAttrs(dom) { return { level: 1, id: dom.getAttribute('id') }; } },
 			{ tag: 'h2', getAttrs(dom) { return { level: 2, id: dom.getAttribute('id') }; } },
@@ -71,14 +72,22 @@ const nodes = {
 			{ tag: 'h5', getAttrs(dom) { return { level: 5, id: dom.getAttribute('id') }; } },
 			{ tag: 'h6', getAttrs(dom) { return { level: 6, id: dom.getAttribute('id') }; } },
 		],
-		toDOM(node) { return [`h${node.attrs.level}`, { id: node.attrs.id }, 0]; },
+		toDOM(node) {
+			if (!node.attrs.id) {
+				return [`h${node.attrs.level}`, { id: node.attrs.id }, 0];
+			}
+			return [`h${node.attrs.level}`, { id: node.attrs.id }, ['span', 0], ['a', { href: `#${node.attrs.id}`, contenteditable: 'false', class: 'header-link pt-button pt-minimal pt-icon-link' }]];
+		},
 		toStatic(node, children) {
-			if (node.attrs.level === 1) { return <h1 key={node.currIndex} id={node.attrs.id}>{children}</h1>; }
-			if (node.attrs.level === 2) { return <h2 key={node.currIndex} id={node.attrs.id}>{children}</h2>; }
-			if (node.attrs.level === 3) { return <h3 key={node.currIndex} id={node.attrs.id}>{children}</h3>; }
-			if (node.attrs.level === 4) { return <h4 key={node.currIndex} id={node.attrs.id}>{children}</h4>; }
-			if (node.attrs.level === 5) { return <h5 key={node.currIndex} id={node.attrs.id}>{children}</h5>; }
-			if (node.attrs.level === 6) { return <h6 key={node.currIndex} id={node.attrs.id}>{children}</h6>; }
+			const headerLink = node.attrs.id
+				? <a href={`#${node.attrs.id}`} contentEditable="false" className="header-link pt-button pt-minimal pt-icon-link" />
+				: null;
+			if (node.attrs.level === 1) { return <h1 key={node.currIndex} id={node.attrs.id}>{children}{headerLink}</h1>; }
+			if (node.attrs.level === 2) { return <h2 key={node.currIndex} id={node.attrs.id}>{children}{headerLink}</h2>; }
+			if (node.attrs.level === 3) { return <h3 key={node.currIndex} id={node.attrs.id}>{children}{headerLink}</h3>; }
+			if (node.attrs.level === 4) { return <h4 key={node.currIndex} id={node.attrs.id}>{children}{headerLink}</h4>; }
+			if (node.attrs.level === 5) { return <h5 key={node.currIndex} id={node.attrs.id}>{children}{headerLink}</h5>; }
+			if (node.attrs.level === 6) { return <h6 key={node.currIndex} id={node.attrs.id}>{children}{headerLink}</h6>; }
 			return null;
 		}
 	},
