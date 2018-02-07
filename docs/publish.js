@@ -7,9 +7,9 @@ ghpages.publish(path.resolve(__dirname, '../out/docs'), {
 		console.log(message);
 	}
 }, (err)=> {
-	console.log('published docs!');
 	if (err) {
 		console.error(err);
 		process.exit(1);
 	}
+	console.log('published docs!');
 });
