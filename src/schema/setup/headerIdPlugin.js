@@ -1,4 +1,3 @@
-import { Decoration, DecorationSet } from 'prosemirror-view';
 import { Plugin } from 'prosemirror-state';
 
 const HeaderIdPlugin = new Plugin({
@@ -18,7 +17,7 @@ const HeaderIdPlugin = new Plugin({
 								id: newId,
 							}
 						);
-						editorView.dispatch(transaction);	
+						editorView.dispatch(transaction);
 					}
 				}
 			}

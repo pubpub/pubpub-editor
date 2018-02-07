@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.2.9] - 2018-02-07
+- Headers are now assigned ids equal to their content
+
 ## [4.2.8] - 2018-02-05
 - Latex middle alignment fix
 
