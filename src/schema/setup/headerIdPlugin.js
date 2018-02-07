@@ -4,22 +4,24 @@ const HeaderIdPlugin = new Plugin({
 	view: ()=> {
 		return {
 			update: function(editorView) {
-				const topNode = editorView.state.selection.$from.node(1);
-				if (topNode.type.name === 'heading') {
-					const headingPos = editorView.state.selection.$from.start(1);
-					const newId = topNode.textContent.toLowerCase().replace(/ /gi, '-').replace(/[^a-zA-Z0-9-]/gi, '');
-					if (topNode.attrs.id !== newId) {
-						const transaction = editorView.state.tr.setNodeMarkup(
-							headingPos - 1,
-							topNode.type,
-							{
-								...topNode.attrs,
-								id: newId,
-							}
-						);
-						editorView.dispatch(transaction);
+				const topBlocks = editorView.state.doc.content.content;
+				topBlocks.reduce((prev, curr)=> {
+					if (curr.type.name === 'heading') {
+						const newId = curr.textContent.toLowerCase().replace(/ /gi, '-').replace(/[^a-zA-Z0-9-]/gi, '');
+						if (curr.attrs.id !== newId) {
+							const transaction = editorView.state.tr.setNodeMarkup(
+								prev,
+								curr.type,
+								{
+									...curr.attrs,
+									id: newId,
+								}
+							);
+							editorView.dispatch(transaction);
+						}
 					}
-				}
+					return prev + curr.nodeSize;
+				}, 0);
 			}
 		};
 	},
