@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.2.11] - 2018-02-07
+- Aligning headerLinks to top of header
+
 ## [4.2.10] - 2018-02-07
 - Add support for showHeaderLinks
 - Make headers 'defining'
