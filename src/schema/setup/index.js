@@ -7,6 +7,7 @@ import { DecorationSet, Decoration } from 'prosemirror-view';
 import { buildKeymap } from './keymap';
 import { buildInputRules } from './inputRules';
 import SelectPlugin from './selectPlugin';
+import HeaderIdPlugin from './headerIdPlugin';
 
 exports.buildKeymap = buildKeymap;
 
@@ -86,6 +87,7 @@ function getBasePlugins(options) {
 		buildInputRules(options.schema),
 		keymap(buildKeymap(options.schema, options.mapKeys)),
 		keymap(baseKeymap),
+		HeaderIdPlugin,
 	];
 	if (!options.isReadOnly) {
 		deps.push(SelectPlugin);

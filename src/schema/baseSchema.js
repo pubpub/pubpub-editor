@@ -57,7 +57,10 @@ const nodes = {
 		}
 	},
 	heading: {
-		attrs: { level: { default: 1 } },
+		attrs: {
+			level: { default: 1 },
+			id: { default: '' }
+		},
 		content: 'inline*',
 		group: 'block',
 		parseDOM: [
@@ -68,14 +71,14 @@ const nodes = {
 			{ tag: 'h5', attrs: { level: 5 } },
 			{ tag: 'h6', attrs: { level: 6 } }
 		],
-		toDOM(node) { return [`h${node.attrs.level}`, 0]; },
+		toDOM(node) { return [`h${node.attrs.level}`, { id: node.attrs.id }, 0]; },
 		toStatic(node, children) {
-			if (node.attrs.level === 1) { return <h1 key={node.currIndex}>{children}</h1>; }
-			if (node.attrs.level === 2) { return <h2 key={node.currIndex}>{children}</h2>; }
-			if (node.attrs.level === 3) { return <h3 key={node.currIndex}>{children}</h3>; }
-			if (node.attrs.level === 4) { return <h4 key={node.currIndex}>{children}</h4>; }
-			if (node.attrs.level === 5) { return <h5 key={node.currIndex}>{children}</h5>; }
-			if (node.attrs.level === 6) { return <h6 key={node.currIndex}>{children}</h6>; }
+			if (node.attrs.level === 1) { return <h1 key={node.currIndex} id={node.attrs.id}>{children}</h1>; }
+			if (node.attrs.level === 2) { return <h2 key={node.currIndex} id={node.attrs.id}>{children}</h2>; }
+			if (node.attrs.level === 3) { return <h3 key={node.currIndex} id={node.attrs.id}>{children}</h3>; }
+			if (node.attrs.level === 4) { return <h4 key={node.currIndex} id={node.attrs.id}>{children}</h4>; }
+			if (node.attrs.level === 5) { return <h5 key={node.currIndex} id={node.attrs.id}>{children}</h5>; }
+			if (node.attrs.level === 6) { return <h6 key={node.currIndex} id={node.attrs.id}>{children}</h6>; }
 			return null;
 		}
 	},
