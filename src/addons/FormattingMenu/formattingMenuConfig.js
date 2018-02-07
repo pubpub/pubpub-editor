@@ -37,7 +37,11 @@ function getMenuItems(view) {
 		let currentDepth = $from.depth;
 		while (currentDepth > 0) {
 			const currentNodeAtDepth = $from.node(currentDepth);
-			const isType = currentNodeAtDepth.hasMarkup(type, attrs);
+			const comparisonAttrs = { ...attrs };
+			if (currentNodeAtDepth.attrs.id) {
+				comparisonAttrs.id = currentNodeAtDepth.attrs.id;
+			}
+			const isType = currentNodeAtDepth.hasMarkup(type, comparisonAttrs);
 			if (isType) { wrapperDepth = currentDepth; }
 			currentDepth -= 1;
 		}
