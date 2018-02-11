@@ -69,7 +69,7 @@ class DocumentRef {
 	sendChanges = ({ steps, clientID, meta, newState, onStatusChange }) => {
 		const changesRef = this.ref.child('changes');
 		this.latestKey = this.latestKey + 1;
-
+		console.log('latestKey', this.latestKey);
 		return changesRef.child(this.latestKey).transaction(
 			(existingBatchedSteps)=> {
 				onStatusChange('saving');

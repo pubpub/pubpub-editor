@@ -78,21 +78,29 @@ class FirebasePlugin extends Plugin {
 		if (this.startedLoad) {
 			return null;
 		}
+		let tempNewDoc;
 		this.startedLoad = true;
 		this.document = new DocumentRef(this.firebaseRef, this.view, this.localClientId, this.localClientData);
 		this.document.getCheckpoint(true)
 		.then(({ newDoc, checkpointKey }) => {
-			if (newDoc) {
-				const newState = EditorState.create({
-					doc: newDoc,
-					plugins: this.view.state.plugins,
-				});
-				this.view.updateState(newState);
-			}
-
+			tempNewDoc = newDoc;
+			// if (newDoc) {
+				// const newState = EditorState.create({
+				// tempState = EditorState.create({
+				// 	doc: newDoc,
+				// 	plugins: this.view.state.plugins,
+				// });
+				// this.view.updateState(newState);
+			// }
 			return this.document.getChanges(checkpointKey);
 		})
 		.then(({ steps, stepClientIDs, stepsWithKeys }) => {
+			if (tempNewDoc) {
+				this.view.updateState(EditorState.create({
+					doc: tempNewDoc,
+					plugins: this.view.state.plugins,
+				}));
+			}
 			if (steps) {
 				try {
 					const trans = receiveTransaction(this.view.state, steps, stepClientIDs);
@@ -113,6 +121,7 @@ class FirebasePlugin extends Plugin {
 	}
 
 	sendCollabChanges = (transaction, newState) => {
+		console.log('Sending collab Changes');
 		const { meta } = transaction;
 
 		// if (newState !== this.view.state) {
@@ -167,6 +176,7 @@ class FirebasePlugin extends Plugin {
 	}
 
 	onRemoteChange = ({ steps, stepClientIDs, changeKey, meta, isLocal })=> {
+		console.log('Recieving Remote Steps', steps, isLocal);
 		let receivedSteps;
 		let recievedClientIDs;
 
@@ -192,6 +202,8 @@ class FirebasePlugin extends Plugin {
 			this.view.dispatch(trans);
 			delete this.selfChanges[changeKey];
 		} catch (err) {
+			/* Perhaps if we get here, we need to reload the whole doc - because we're out of sync */
+			console.log('In the recieve error place', err);
 			return null;
 		}
 	}

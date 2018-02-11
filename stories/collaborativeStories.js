@@ -31,7 +31,8 @@ storiesOf('Collaborative', module)
 				clientData={clientData}
 				// onClientChange={(val)=> { console.log(val); }}
 				// onStatusChange={(val)=> { console.log(val); }}
-				editorKey={'sotrybook-editor-v16'}
+				// editorKey={'sotrybook-editor-v18'}
+				editorKey={'pub-fa4a6e01-8d09-4eec-875a-a73c145d22d1'}
 			/>
 		</Editor>
 	</div>
