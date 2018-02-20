@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-prop-types */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { collab } from 'prosemirror-collab';
@@ -9,9 +10,9 @@ const propTypes = {
 	/* Default props */
 	view: PropTypes.object,
 	editorState: PropTypes.object,
+	transaction: PropTypes.object,
 	pluginKey: PropTypes.object,
-	onCollabLoad: PropTypes.func,
-	/* Custom props*/
+	/* Custom props */
 	firebaseConfig: PropTypes.object,
 	clientData: PropTypes.object,
 	editorKey: PropTypes.string,
@@ -22,6 +23,7 @@ const propTypes = {
 const defaultProps = {
 	view: undefined,
 	editorState: undefined,
+	transaction: undefined,
 	pluginKey: undefined,
 	firebaseConfig: undefined,
 	clientData: undefined,
@@ -65,17 +67,18 @@ return (
 				cursorColor: 'rgba(0, 0, 250, 1.0)',
 				image: 'https://www.fake.com/my-image.jpg',
 			}}
+			editorKey={'document-num-57'}
 			onClientChange={myClientChangeFunc}
 			onStatusChange={myStatusChangeFunc}
-			editorKey={'document-num-57'}
 		/>
 	</Editor>
 );
 */
 class Collaborative extends Component {
 	static pluginName = 'Collaborative';
-	static getPlugins({ pluginKey, onCollabLoad, firebaseConfig, clientData, editorKey, onClientChange, onStatusChange }) {
-		/* Need to add a random client ID number to account for sessions with the same client */
+	static getPlugins({ pluginKey, firebaseConfig, clientData, editorKey, onClientChange, onStatusChange }) {
+		/* Need to add a random hash to clientID to  */
+		/* account for sessions with the same client */
 		const possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
 		let clientHash = '';
 		for (let index = 0; index < 6; index += 1) {
@@ -86,7 +89,6 @@ class Collaborative extends Component {
 		return [
 			new CollaborativePlugin({
 				pluginKey: pluginKey,
-				onCollabLoad: onCollabLoad,
 				firebaseConfig: firebaseConfig,
 				localClientData: clientData,
 				localClientId: localClientId,
@@ -100,43 +102,56 @@ class Collaborative extends Component {
 		];
 	}
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			collaborators: []
-		};
-		this.onChange = this.onChange.bind(this);
-		this.getPlugin = this.getPlugin.bind(this);
-		this.commit = this.commit.bind(this);
-	}
+	// constructor(props) {
+	// 	super(props);
+	// 	this.state = {
+	// 		collaborators: []
+	// 	};
+	// 	this.plugin = props.pluginKey.get(props.editorState);
+	// 	this.onChange = this.onChange.bind(this);
+	// 	this.getPlugin = this.getPlugin.bind(this);
+	// 	this.commit = this.commit.bind(this);
+	// }
 
 	componentWillReceiveProps(nextProps) {
-		if (this.props.editorState !== nextProps.editorState) {
-			this.onChange(nextProps);
+		const plugin = nextProps.pluginKey.get(nextProps.editorState);
+		if (this.props.editorState !== nextProps.editorState
+			&& nextProps.editorState
+			&& nextProps.transaction
+			&& plugin
+		) {
+			// this.onChange(nextProps.editorState, nextProps.transaction);
+			plugin.sendCollabChanges(nextProps.transaction, nextProps.editorState);
 		}
 	}
 	componentWillUnmount() {
-		this.getPlugin().disconnect();
+		const plugin = this.props.pluginKey.get(this.props.editorState);
+		plugin.disconnect();
 	}
 
-	onChange(props) {
-		if (!props.editorState || !props.transaction) { return null; }
-		const plugin = this.getPlugin();
-		if (plugin) {
-			return plugin.sendCollabChanges(props.transaction, props.editorState);
-		}
-		return null;
-	}
+	// onChange(editorState, transaction) {
+	// 	if (editorState && transaction && this.plugin) {
+	// 		this.plugin.sendCollabChanges(transaction, editorState);
+	// 	}
+	// 	// if (!editorState || !transaction) { return null; }
+	// 	// const plugin = this.plugin;
+	// 	// if (plugin) {
+	// 	// 	return plugin.sendCollabChanges(transaction, editorState);
+	// 	// }
+	// 	// return null;
+	// }
 
-	getPlugin() {
-		const { pluginKey, editorState } = this.props;
-		return pluginKey.get(editorState);
-	}
+	// getPlugin() {
+	// 	return this.plugin;
+	// 	const { pluginKey, editorState } = this.props;
+	// 	console.log(pluginKey.get(editorState));
+	// 	return pluginKey.get(editorState);
+	// }
 
-	commit({ description, uuid, steps, start, end }) {
-		console.log('Ya were using this!');
-		return this.getPlugin().commit({ description, uuid, steps, start, end });
-	}
+	// commit({ description, uuid, steps, start, end }) {
+	// 	console.log('Ya were using this!');
+	// 	return this.plugin.commit({ description, uuid, steps, start, end });
+	// }
 
 	render() {
 		if (!this.props.view) { return null; }

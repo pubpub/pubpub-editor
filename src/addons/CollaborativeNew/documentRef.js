@@ -24,48 +24,48 @@ class DocumentRef {
 		return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
 	}
 
-	getCheckpoint = (isFirstLoad) => {
-		const checkpointRef = this.ref.child('checkpoint');
-		return checkpointRef.once('value').then((snapshot) => {
-			const { d, k } = snapshot.val() || {};
-			let checkpointKey = k || 0;
-			checkpointKey = Number(checkpointKey);
-			const newDoc = d && Node.fromJSON(this.view.state.schema, uncompressStateJSON({ d }).doc);
-			if (isFirstLoad) {
-				this.latestKey = checkpointKey;
-			}
-			return { newDoc, checkpointKey };
-		});
-	}
+	// getCheckpoint = (isFirstLoad) => {
+	// 	const checkpointRef = this.ref.child('checkpoint');
+	// 	return checkpointRef.once('value').then((snapshot) => {
+	// 		const { d, k } = snapshot.val() || {};
+	// 		let checkpointKey = k || 0;
+	// 		checkpointKey = Number(checkpointKey);
+	// 		const newDoc = d && Node.fromJSON(this.view.state.schema, uncompressStateJSON({ d }).doc);
+	// 		if (isFirstLoad) {
+	// 			this.latestKey = checkpointKey;
+	// 		}
+	// 		return { newDoc, checkpointKey };
+	// 	});
+	// }
 
-	getChanges = (changesKey) => {
-		const changesRef = this.ref.child('changes');
+	// getChanges = (changesKey) => {
+	// 	const changesRef = this.ref.child('changes');
 
-		return changesRef
-		.startAt(null, String(changesKey))
-		// .endAt(null, String(changesKey))
-		.once('value').then((snapshot) => {
-			const changes = snapshot.val();
-			if (changes) {
-				const steps = [];
-				const stepClientIDs = [];
-				const placeholderClientId = `_oldClient${Math.random()}`;
-				const keys = Object.keys(changes);
-				const stepsWithKeys = [];
-				this.latestKey = Math.max(...keys);
+	// 	return changesRef
+	// 	.startAt(null, String(changesKey))
+	// 	// .endAt(null, String(changesKey))
+	// 	.once('value').then((snapshot) => {
+	// 		const changes = snapshot.val();
+	// 		if (changes) {
+	// 			const steps = [];
+	// 			const stepClientIDs = [];
+	// 			const placeholderClientId = `_oldClient${Math.random()}`;
+	// 			const keys = Object.keys(changes);
+	// 			const stepsWithKeys = [];
+	// 			this.latestKey = Math.max(...keys);
 
-				for (const key of keys) {
-					const compressedStepsJSON = changes[key].s;
-					const uncompressedSteps = compressedStepsJSON.map(this.compressedStepJSONToStep);
-					stepsWithKeys.push({ key, steps: uncompressedSteps });
-					steps.push(...compressedStepsJSON.map(this.compressedStepJSONToStep));
-					stepClientIDs.push(...new Array(compressedStepsJSON.length).fill(placeholderClientId));
-				}
-				return { steps, stepClientIDs, stepsWithKeys };
-			}
-			return { steps: null, stepClientIDs: null, stepsWithKeys: null };
-		});
-	}
+	// 			for (const key of keys) {
+	// 				const compressedStepsJSON = changes[key].s;
+	// 				const uncompressedSteps = compressedStepsJSON.map(this.compressedStepJSONToStep);
+	// 				stepsWithKeys.push({ key, steps: uncompressedSteps });
+	// 				steps.push(...compressedStepsJSON.map(this.compressedStepJSONToStep));
+	// 				stepClientIDs.push(...new Array(compressedStepsJSON.length).fill(placeholderClientId));
+	// 			}
+	// 			return { steps, stepClientIDs, stepsWithKeys };
+	// 		}
+	// 		return { steps: null, stepClientIDs: null, stepsWithKeys: null };
+	// 	});
+	// }
 
 	sendChanges = ({ steps, clientID, meta, newState, onStatusChange }) => {
 		const changesRef = this.ref.child('changes');
@@ -232,100 +232,100 @@ class DocumentRef {
 	// healDatabase - In case a step corrupts the document (happens surpsiginly often),
 	// apply each step individually to find errors
 	// and then delete all of those steps
-	healDatabase = ({ stepsWithKeys, view }) => {
-		const stepsToDelete = [];
-		const placeholderClientId = `_oldClient${Math.random()}`;
-		const changesRef = this.ref.child('changes');
+	// healDatabase = ({ stepsWithKeys, view }) => {
+	// 	const stepsToDelete = [];
+	// 	const placeholderClientId = `_oldClient${Math.random()}`;
+	// 	const changesRef = this.ref.child('changes');
 
-		console.error('Healing database', stepsWithKeys);
-		stepsWithKeys.forEach((step)=> {
-			try {
-				const trans = receiveTransaction(view.state, step.steps, [placeholderClientId]);
-				trans.setMeta('receiveDoc', true);
-				view.dispatch(trans);
-			} catch (err) {
-				console.log('StepError is ', err);
-				stepsToDelete.push(step.key);
-			}
-		});
+	// 	console.error('Healing database', stepsWithKeys);
+	// 	stepsWithKeys.forEach((step)=> {
+	// 		try {
+	// 			const trans = receiveTransaction(view.state, step.steps, [placeholderClientId]);
+	// 			trans.setMeta('receiveDoc', true);
+	// 			view.dispatch(trans);
+	// 		} catch (err) {
+	// 			console.log('StepError is ', err);
+	// 			stepsToDelete.push(step.key);
+	// 		}
+	// 	});
 
-		stepsToDelete.forEach((stepToDelete)=> {
-			/* Perhaps we can just skip the step rather   */
-			/* than deleting it. That way we can debug it */
-			/* if a document seems to have funky errors   */
-			console.log('Skipping Step ', stepToDelete);
-			// changesRef.child(stepToDelete).remove();
-		});
-	}
+	// 	stepsToDelete.forEach((stepToDelete)=> {
+	// 		/* Perhaps we can just skip the step rather   */
+	// 		/* than deleting it. That way we can debug it */
+	// 		/* if a document seems to have funky errors   */
+	// 		console.log('Skipping Step ', stepToDelete);
+	// 		// changesRef.child(stepToDelete).remove();
+	// 	});
+	// }
 
-	copyDataForFork = (editorKey) => {
-		const editorRef = this.ref;
-		return editorRef.once('value').then((snapshot) => {
-			const fork = snapshot.val();
-			fork.currentCommit = { commitID: 0 };
-			fork.forkMeta = {
-				merged: false,
-				date: new Date(),
-				parent: editorKey,
-				forkedKey: this.latestKey,
-			};
-			fork.changes = [];
-			fork.forks = [];
-			fork.selections = [];
+	// copyDataForFork = (editorKey) => {
+	// 	const editorRef = this.ref;
+	// 	return editorRef.once('value').then((snapshot) => {
+	// 		const fork = snapshot.val();
+	// 		fork.currentCommit = { commitID: 0 };
+	// 		fork.forkMeta = {
+	// 			merged: false,
+	// 			date: new Date(),
+	// 			parent: editorKey,
+	// 			forkedKey: this.latestKey,
+	// 		};
+	// 		fork.changes = [];
+	// 		fork.forks = [];
+	// 		fork.selections = [];
 
-			const { d } = compressStateJSON(this.view.state.toJSON());
-			fork.checkpoint = { d, k: 0, t: TIMESTAMP };
+	// 		const { d } = compressStateJSON(this.view.state.toJSON());
+	// 		fork.checkpoint = { d, k: 0, t: TIMESTAMP };
 
-			return fork;
-		});
-	}
+	// 		return fork;
+	// 	});
+	// }
 
-	getForks = () => {
-		return this.ref.child('forks').once('value')
-		.then((snapshot) => {
-			const forkList = snapshot.val();
-			if (!forkList) {
-				return [];
-			}
-			const forkNames = Object.keys(forkList);
-			return forkNames.map((forkName) => {
-				return forkName;
-			});
-		});
-	}
+	// getForks = () => {
+	// 	return this.ref.child('forks').once('value')
+	// 	.then((snapshot) => {
+	// 		const forkList = snapshot.val();
+	// 		if (!forkList) {
+	// 			return [];
+	// 		}
+	// 		const forkNames = Object.keys(forkList);
+	// 		return forkNames.map((forkName) => {
+	// 			return forkName;
+	// 		});
+	// 	});
+	// }
 
-	commit = ({ description, uuid, steps, start, end }) => {
-		const editorRef = this.ref;
+	// commit = ({ description, uuid, steps, start, end }) => {
+	// 	const editorRef = this.ref;
 
-		const commitSteps = {
-			s: compressStepsLossy(steps).map((step)=> {
-				return compressStepJSON(step.toJSON());
-			}),
-			c: this.localClientId,
-			m: {},
-			t: TIMESTAMP,
-		};
-		return editorRef.child('currentCommit').once('value').then((snapshot) => {
-			const currentCommit = snapshot.val();
-			const commitID = currentCommit.commitID;
-			const commit = {
-				description,
-				clientID: '',
-				steps: [commitSteps],
-				uuid: uuid,
-				merged: false,
-				commitKey: this.latestKey,
-				start,
-				end
-			};
-			const newCommitID = commitID + 1;
-			return editorRef.child(`commits/${commitID}`).set(commit).then(() => {
-				editorRef.child('currentCommit').set({ commitID: newCommitID });
-				// const { d } = compressStateJSON(editorView.state.toJSON());
-				// checkpointRef.set({ d, k: latestKey, t: TIMESTAMP });
-			});
-		});
-	}
+	// 	const commitSteps = {
+	// 		s: compressStepsLossy(steps).map((step)=> {
+	// 			return compressStepJSON(step.toJSON());
+	// 		}),
+	// 		c: this.localClientId,
+	// 		m: {},
+	// 		t: TIMESTAMP,
+	// 	};
+	// 	return editorRef.child('currentCommit').once('value').then((snapshot) => {
+	// 		const currentCommit = snapshot.val();
+	// 		const commitID = currentCommit.commitID;
+	// 		const commit = {
+	// 			description,
+	// 			clientID: '',
+	// 			steps: [commitSteps],
+	// 			uuid: uuid,
+	// 			merged: false,
+	// 			commitKey: this.latestKey,
+	// 			start,
+	// 			end
+	// 		};
+	// 		const newCommitID = commitID + 1;
+	// 		return editorRef.child(`commits/${commitID}`).set(commit).then(() => {
+	// 			editorRef.child('currentCommit').set({ commitID: newCommitID });
+	// 			// const { d } = compressStateJSON(editorView.state.toJSON());
+	// 			// checkpointRef.set({ d, k: latestKey, t: TIMESTAMP });
+	// 		});
+	// 	});
+	// }
 }
 
 export default DocumentRef;

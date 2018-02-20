@@ -1,51 +1,78 @@
 import { AllSelection, EditorState, Plugin } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 import { receiveTransaction, sendableSteps } from 'prosemirror-collab';
+import { Step } from 'prosemirror-transform';
+import { compressSelectionJSON, compressStateJSON, compressStepJSON, compressStepsLossy, uncompressSelectionJSON, uncompressStateJSON, uncompressStepJSON } from 'prosemirror-compress';
 import firebase from 'firebase';
 // import CursorType from './CursorType';
-import DocumentRef from './documentRef';
+// import DocumentRef from './documentRef';
 
 
-class FirebasePlugin extends Plugin {
-	constructor({ onCollabLoad, localClientId, localClientData, editorKey, firebaseConfig, rootRef, editorRef, pluginKey, onClientChange, onStatusChange, onForksUpdate, startStepIndex }) {
+class CollaborativePlugin extends Plugin {
+	constructor({ pluginKey, firebaseConfig, localClientData, localClientId, editorKey, onClientChange, onStatusChange }) {
 		super({ key: pluginKey });
+		/* Bind plugin functions */
+		// this.init = this.init.bind(this);
+		this.loadDocument = this.loadDocument.bind(this);
+		this.sendCollabChanges = this.sendCollabChanges.bind(this);
+		this.onRemoteChange = this.onRemoteChange.bind(this);
+		this.apply = this.apply.bind(this);
+		this.updateView = this.updateView.bind(this);
+		this.disconnect = this.disconnect.bind(this);
+		this.decorations = this.decorations.bind(this);
+		this.compressedStepJSONToStep = this.compressedStepJSONToStep.bind(this);
+
+		/* Setup Prosemirror plugin values */
 		this.spec = {
 			view: this.updateView,
 			state: {
-				init: this.init,
+				init: ()=>{},
 				apply: this.apply
 			},
 		};
-
 		this.props = {
 			decorations: this.decorations
 		};
 
-		this.onForksUpdate = onForksUpdate;
+		/* Make passed props accessible */
+		
+		this.localClientData = localClientData;
+		this.localClientId = localClientId;
+		this.editorKey = editorKey;
 		this.onClientChange = onClientChange;
 		this.onStatusChange = onStatusChange;
-		this.localClientId = localClientId;
-		this.localClientData = localClientData;
-		this.editorKey = editorKey;
-		this.selfChanges = {};
-		this.startStepIndex = startStepIndex;
-		this.onCollabLoad = onCollabLoad;
+		// this.onForksUpdate = onForksUpdate;
 
+
+		/* Init plugin variables object */
+		this.selfChanges = {};
+		this.startedLoad = false;
+
+		/* Vars from DocumentRef */
+		this.latestKey = null;
+
+		// this.startStepIndex = startStepIndex;
+		// if (!existingApp) {
+		// 	this.firebaseApp = firebase.initializeApp(firebaseConfig, editorKey);
+		// } else {
+		// 	this.firebaseApp = existingApp;
+		// }
+
+		/* Check for firebaseConfig */
+		if (!firebaseConfig) {
+			console.error('Did not include a firebase config');
+			return null;
+		}
+
+		/* Connect to firebase app */
 		const existingApp = firebase.apps.reduce((prev, curr)=> {
 			if (curr.name === editorKey) { return curr; }
 			return prev;
 		}, undefined);
-
-		if (!existingApp) {
-			this.firebaseApp = firebase.initializeApp(firebaseConfig, editorKey);
-		} else {
-			this.firebaseApp = existingApp;
-		}
-
-		if (firebaseConfig) {
-			this.rootRef = firebase.database(this.firebaseApp);
-			this.rootRef.goOnline();
-			this.firebaseRef = this.rootRef.ref(editorKey);
+		this.firebaseApp = existingApp || firebase.initializeApp(firebaseConfig, editorKey);
+		this.rootRef = firebase.database(this.firebaseApp);
+		this.rootRef.goOnline();
+		this.firebaseRef = this.rootRef.ref(editorKey);
 		// } else if (rootRef) {
 		// 	this.rootRef = rootRef;
 		// 	if (editorKey) {
@@ -56,14 +83,16 @@ class FirebasePlugin extends Plugin {
 		// 		console.error('Did not include a reference to the editor firebase instance or an editor key.');
 		// 		return null;
 		// 	}
-		} else {
-			// console.error('Did not include a firebase config or root ref.x');
-			console.error('Did not include a firebase config');
-			return null;
-		}
+		// } else {
+		// 	// console.error('Did not include a firebase config or root ref.x');
+		// 	console.error('Did not include a firebase config');
+		// 	return null;
+		// }
+
+		/* Set user status and watch for changes */
 		const connectedRef = this.rootRef.ref('.info/connected');
-		connectedRef.on('value', (snap)=> {
-			if (snap.val() === true) {
+		connectedRef.on('value', (snapshot)=> {
+			if (snapshot.val() === true) {
 				this.onStatusChange('connected');
 			} else {
 				this.onStatusChange('disconnected');
@@ -72,83 +101,188 @@ class FirebasePlugin extends Plugin {
 	}
 
 
-	init = (config, instance) => {
-		return { };
+	// init(config, instance) {
+	// 	return { };
+	// }
+	compressedStepJSONToStep(compressedStepJSON) {
+		return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
 	}
 
-	loadDocument = () => {
+	loadDocument() {
 		if (this.startedLoad) {
 			return null;
 		}
-		let tempNewDoc;
+		// let tempNewDoc;
 		this.startedLoad = true;
-		this.document = new DocumentRef(this.firebaseRef, this.view, this.localClientId, this.localClientData);
-		this.document.getCheckpoint(true)
+		// this.document = new DocumentRef(this.firebaseRef, this.view, this.localClientId, this.localClientData);
+		// this.document.getCheckpoint(true)
+		return this.firebaseRef.child('checkpoint').once('value')
+		.then((snapshot) => {
+			const snapshotVal = snapshot.val || {};
+			const snapshotDoc = snapshotVal.d;
+			const snapshotKey = snapshotVal.k;
+			// const { d, k } = snapshot.val() || {};
+			const checkpointKey = Number(snapshotKey) || 0;
+			// checkpointKey = Number(checkpointKey);
+			const newDoc = snapshotDoc && Node.fromJSON(this.view.state.schema, uncompressStateJSON({ snapshotDoc }).doc);
+			// if (isFirstLoad) {
+			this.latestKey = checkpointKey;
+			// }
+			return { newDoc, checkpointKey };
+		})
 		.then(({ newDoc, checkpointKey }) => {
 			// tempNewDoc = newDoc;
 			// if (newDoc) {
-				// const newState = EditorState.create({
-				// tempState = EditorState.create({
-				// 	doc: newDoc,
-				// 	plugins: this.view.state.plugins,
-				// });
-				// this.view.updateState(newState);
+			// 	const newState = EditorState.create({
+			// 	tempState = EditorState.create({
+			// 		doc: newDoc,
+			// 		plugins: this.view.state.plugins,
+			// 	});
+			// 	this.view.updateState(newState);
 			// }
-			return this.document.getChanges(this.startStepIndex);
+			// return this.document.getChanges(checkpointKey);
+
+
+			// const changesRef = this.firebaseRef.child('changes');
+
+			// return changesRef
+			return this.firebaseRef.child('changes')
+			.startAt(null, String(checkpointKey))
+			.once('value')
+			.then((snapshot)=> {
+				const snapshotVal = snapshot.val();
+				if (!snapshotVal) {
+					return { newDoc: newDoc, steps: null, stepClientIds: null, stepsWithKeys: null };
+				}
+				// if (snapshotVal) {
+				const steps = [];
+				const stepClientIds = [];
+				// const placeholderClientId = `_oldClient${Math.random()}`;
+				const keys = Object.keys(snapshotVal);
+				const stepsWithKeys = [];
+				this.latestKey = Math.max(...keys);
+				keys.forEach((key)=> {
+					const compressedStepsJSON = snapshotVal[key].s;
+					const uncompressedSteps = compressedStepsJSON.map(this.compressedStepJSONToStep);
+					stepsWithKeys.push({ key, steps: uncompressedSteps });
+					steps.push(...compressedStepsJSON.map(this.compressedStepJSONToStep));
+					stepClientIds.push(...new Array(compressedStepsJSON.length).fill('_server'));
+				});
+				// for (const key of keys) {
+				// 	const compressedStepsJSON = snapshotVal[key].s;
+				// 	const uncompressedSteps = compressedStepsJSON.map(this.compressedStepJSONToStep);
+				// 	stepsWithKeys.push({ key, steps: uncompressedSteps });
+				// 	steps.push(...compressedStepsJSON.map(this.compressedStepJSONToStep));
+				// 	stepClientIDs.push(...new Array(compressedStepsJSON.length).fill(placeholderClientId));
+				// }
+				return { newDoc, steps, stepClientIds, stepsWithKeys };
+				// }
+				// return { steps: null, stepClientIDs: null, stepsWithKeys: null };
+			});
 		})
-		.then(({ steps, stepClientIDs, stepsWithKeys }) => {
-			if (tempNewDoc) {
+		.then(({ newDoc, steps, stepClientIds, stepsWithKeys }) => {
+			if (newDoc) {
 				this.view.updateState(EditorState.create({
-					doc: tempNewDoc,
+					doc: newDoc,
 					plugins: this.view.state.plugins,
 				}));
 			}
 			if (steps) {
 				try {
-					const trans = receiveTransaction(this.view.state, steps, stepClientIDs);
+					const trans = receiveTransaction(this.view.state, steps, stepClientIds);
 					trans.setMeta('receiveDoc', true);
 					this.view.dispatch(trans);
 				} catch (err) {
-					this.document.healDatabase({ stepsWithKeys, view: this.view });
+					/* TODO - we really need to find a way to make it so no corrupted step is kept on server */
+					console.error('Healing database', stepsWithKeys);
+					const stepsToDelete = [];
+					stepsWithKeys.forEach((step)=> {
+						try {
+							const trans = receiveTransaction(this.view.state, step.steps, ['_server']);
+							trans.setMeta('receiveDoc', true);
+							this.view.dispatch(trans);
+						} catch (stepError) {
+							console.log('StepError is ', stepError);
+							stepsToDelete.push(step.key);
+						}
+					});
+
+					stepsToDelete.forEach((stepToDelete)=> {
+						/* Perhaps we can just skip the step rather   */
+						/* than deleting it. That way we can debug it */
+						/* if a document seems to have funky errors   */
+						console.log('Skipping Step ', stepToDelete);
+						// this.firebaseRef.child('changes').child(stepToDelete).remove();
+					});
 				}
 			}
-			this.document.listenToSelections(this.onClientChange);
-			this.document.listenToChanges(this.onRemoteChange);
-			setTimeout(()=> {
-				this.onCollabLoad();
-			}, 250);
-			
-			if (this.onForksUpdate) {
-				this.getForks().then((forks) => {
-					this.onForksUpdate(forks);
-				});
-			}
+
+			/* Listen to Selections Change */
+			// const selectionsRef = this.firebaseRef.child('selections');
+			// const selfSelectionRef = selectionsRef.child(this.localClientId);
+			// selfSelectionRef.onDisconnect().remove();
+			// selectionsRef.on('child_added', this.addClientSelection);
+			// selectionsRef.on('child_changed', this.updateClientSelection);
+			// selectionsRef.on('child_removed', this.deleteClientSelection);
+
+			/* Listen to Changes */
+			this.firebaseRef.child('changes')
+			.startAt(null, String(this.latestKey + 1))
+			.on('child_added', (snapshot) => {
+				this.latestKey = Number(snapshot.key);
+				const snapshotVal = snapshot.val();
+				const compressedStepsJSON = snapshotVal.s;
+				const clientId = snapshotVal.c;
+				const meta = snapshotVal.m;
+
+				if (clientId === this.localClientId) {
+					/* If the change was made locally */
+					this.onRemoteChange({
+						isLocal: true,
+						meta: meta,
+						changeKey: this.latestKey
+					});
+				} else {
+					/* If the change was made by another client */
+					const changeSteps = compressedStepsJSON.map(this.compressedStepJSONToStep);
+					const changeStepClientIds = new Array(steps.length).fill(clientId);
+					this.onRemoteChange({
+						steps: changeSteps,
+						stepClientIds: changeStepClientIds,
+						meta: meta,
+						changeKey: this.latestKey
+					});
+				}
+			});
+
+			// this.document.listenToSelections(this.onClientChange);
+			// this.document.listenToChanges(this.onRemoteChange);
+
+			// if (this.onForksUpdate) {
+			// 	this.getForks().then((forks) => {
+			// 		this.onForksUpdate(forks);
+			// 	});
+			// }
 		});
 	}
 
-	sendCollabChanges = (transaction, newState) => {
-		console.log('Sending collab Changes');
-		const { meta } = transaction;
-
-		// if (newState !== this.view.state) {
-		// 	console.log('FREAK OUT AABOUT STATE');
-		// 	debugger;
-		// }
+	sendCollabChanges(transaction, newState) {
+		const meta = transaction.meta;
 		if (meta.collab$ || meta.rebase || meta.footnote || meta.newSelection || meta.clearTempSelection) {
-			return;
+			return null;
 		}
-		if (meta.pointer) {
-			delete meta.pointer;
-		}
-		if (meta.rebase) {
-			delete meta.rebase;
-		}
-		if (meta.addToHistory) {
-			delete meta.addToHistory;
-		}
-		/* Don't send any keys with '$' in it to firebase */
+		// if (meta.pointer) {
+		// 	delete meta.pointer;
+		// }
+		// if (meta.addToHistory) {
+		// 	delete meta.addToHistory;
+		// }
+		/* Don't send certain keys with to firebase */
 		Object.keys(meta).forEach((key)=> {
-			if (key.indexOf('$') > -1) {
+			if (key.indexOf('$') > -1
+				|| key === 'addToHistory'
+				|| key === 'pointer'
+			) {
 				delete meta[key];
 			}
 		});
@@ -171,34 +305,54 @@ class FirebasePlugin extends Plugin {
 		const sendable = sendableSteps(newState);
 
 		// Do not perform if sendable.version is duplicated.
-		if (sendable && sendable.version !== this.sendableVersion) {
-			this.sendableVersion = sendable.version;
-			const { steps, clientID } = sendable;
-			const onStatusChange = this.onStatusChange;
-			this.document.sendChanges({ steps, clientID, meta, newState, onStatusChange });
-			const recievedClientIDs = new Array(steps.length).fill(this.localClientId);
-			this.selfChanges[this.document.latestKey] = steps;
-		}
+		// This seems like a bug. Sendable.version might be wrong becasue of race condition?
+		// ***************
+		// TODO! Pick up here!
+		// It seems that the bug may be because of onreceive race conditions. 
+		// Try setting up a rig where you have big delays, and can test all sorts of race conditions, and how they're handled
+		// There are a few places where we say, 'well it doesnt crash, so just move on'.
+		// Those smell bad and are probably the cause.
+		// Likewise, selection flickering should be properly handled by sending along the localClient versionId,
+		// and not updating unless they are up to date.
+		if (!sendable || sendable.version === this.sendableVersion) { return null; }
+
+		this.sendableVersion = sendable.version;
+		const steps = sendable.steps;
+		const clientId = sendable.clientID;
+		// const { steps, clientID } = sendable;
+		const onStatusChange = this.onStatusChange;
+		this.document.sendChanges({ steps, clientId, meta, newState, onStatusChange });
+		// const recievedClientIds = new Array(steps.length).fill(this.localClientId);
+		this.selfChanges[this.document.latestKey] = steps;
+		return true;
 	}
 
-	onRemoteChange = ({ steps, stepClientIDs, changeKey, meta, isLocal })=> {
+	onRemoteChange({ isLocal, steps, stepClientIds, changeKey, meta }) {
 		console.log('Recieving Remote Steps', steps, isLocal);
-		let receivedSteps;
-		let recievedClientIDs;
+		// let receivedSteps;
+		// let recievedClientIds;
 
-		if (isLocal) {
-			receivedSteps = this.selfChanges[changeKey];
-			recievedClientIDs = new Array(receivedSteps.length).fill(this.localClientId);
-		} else {
-			receivedSteps = steps;
-			recievedClientIDs = stepClientIDs;
-		}
+		// if (isLocal) {
+		// 	receivedSteps = this.selfChanges[changeKey];
+		// 	recievedClientIds = new Array(receivedSteps.length).fill(this.localClientId);
+		// } else {
+		// 	receivedSteps = steps;
+		// 	recievedClientIds = stepClientIds;
+		// }
+
+		const receivedSteps = isLocal
+			? this.selfChanges[changeKey]
+			: steps;
+		const recievedClientIds = isLocal
+			? new Array(receivedSteps.length).fill(this.localClientId)
+			: stepClientIds;
+
 		/* receiveTransaction sometimes throws a 'Position out of Range' */
 		/* error on sync. Not sure why out of range positions are syncing */
 		/* in the first place - but it doesn't seem to crash the editor. */
 		/* So, let's just catch it instead and move on. */
 		try {
-			const trans = receiveTransaction(this.view.state, receivedSteps, recievedClientIDs);
+			const trans = receiveTransaction(this.view.state, receivedSteps, recievedClientIds);
 			if (meta) {
 				Object.keys(meta).forEach((metaKey)=> {
 					trans.setMeta(metaKey, meta[metaKey]);
@@ -246,32 +400,32 @@ class FirebasePlugin extends Plugin {
 		};
 	}
 
-	commit = ({ description, uuid, steps, start, end }) => {
-		return this.document.commit({ description, uuid, steps, start, end });
-	}
+	// commit = ({ description, uuid, steps, start, end }) => {
+	// 	return this.document.commit({ description, uuid, steps, start, end });
+	// }
 
-	fork = () => {
-		const forkID = this.editorKey + Math.round(Math.random() * 1000);
-		return this.document.copyDataForFork(this.editorKey).then((fork) => {
-			return this.rootRef.ref(forkID).set(fork).then(() => {
-				this.document.ref.child('forks').child(forkID).set(true);
-				return forkID;
-			});
-		});
-	}
+	// fork = () => {
+	// 	const forkID = this.editorKey + Math.round(Math.random() * 1000);
+	// 	return this.document.copyDataForFork(this.editorKey).then((fork) => {
+	// 		return this.rootRef.ref(forkID).set(fork).then(() => {
+	// 			this.document.ref.child('forks').child(forkID).set(true);
+	// 			return forkID;
+	// 		});
+	// 	});
+	// }
 
-	getForks = () => {
-		return this.document.getForks().then((forkNames) => {
-			const getForkList = forkNames.map((forkName) => {
-				return this.rootRef.ref(`${forkName}/forkMeta`).once('value').then((snapshot) => {
-					const forkMeta = snapshot.val();
-					forkMeta.name = forkName;
-					return forkMeta;
-				});
-			});
-			return Promise.all(getForkList);
-		});
-	}
+	// getForks = () => {
+	// 	return this.document.getForks().then((forkNames) => {
+	// 		const getForkList = forkNames.map((forkName) => {
+	// 			return this.rootRef.ref(`${forkName}/forkMeta`).once('value').then((snapshot) => {
+	// 				const forkMeta = snapshot.val();
+	// 				forkMeta.name = forkName;
+	// 				return forkMeta;
+	// 			});
+	// 		});
+	// 		return Promise.all(getForkList);
+	// 	});
+	// }
 
 	disconnect = ()=> {
 		this.firebaseApp.delete();
@@ -442,4 +596,4 @@ class FirebasePlugin extends Plugin {
 	}
 }
 
-export default FirebasePlugin;
+export default CollaborativePlugin;
