@@ -10,23 +10,23 @@ export const editorWrapperStyle = {
 	padding: '20px',
 };
 
-export const firebaseConfig = {
-	apiKey: 'AIzaSyDGttY0gbzGUhrrUD9f9bllMxmYWl3WWoc',
-	authDomain: 'pubpub-v4-dev.firebaseapp.com',
-	databaseURL: 'https://pubpub-v4-dev.firebaseio.com',
-	projectId: 'pubpub-v4-dev',
-	storageBucket: 'pubpub-v4-dev.appspot.com',
-	messagingSenderId: '175246944410'
-};
-	
 // export const firebaseConfig = {
-// 	apiKey: 'AIzaSyBpE1sz_-JqtcIm2P4bw4aoMEzwGITfk0U',
-// 	authDomain: 'pubpub-rich.firebaseapp.com',
-// 	databaseURL: 'https://pubpub-rich.firebaseio.com',
-// 	projectId: 'pubpub-rich',
-// 	storageBucket: 'pubpub-rich.appspot.com',
-// 	messagingSenderId: '543714905893',
+// 	apiKey: 'AIzaSyDGttY0gbzGUhrrUD9f9bllMxmYWl3WWoc',
+// 	authDomain: 'pubpub-v4-dev.firebaseapp.com',
+// 	databaseURL: 'https://pubpub-v4-dev.firebaseio.com',
+// 	projectId: 'pubpub-v4-dev',
+// 	storageBucket: 'pubpub-v4-dev.appspot.com',
+// 	messagingSenderId: '175246944410'
 // };
+	
+export const firebaseConfig = {
+	apiKey: 'AIzaSyBpE1sz_-JqtcIm2P4bw4aoMEzwGITfk0U',
+	authDomain: 'pubpub-rich.firebaseapp.com',
+	databaseURL: 'https://pubpub-rich.firebaseio.com',
+	projectId: 'pubpub-rich',
+	storageBucket: 'pubpub-rich.appspot.com',
+	messagingSenderId: '543714905893',
+};
 
 export const clientData = {
 	id: 'storybook-clientid',

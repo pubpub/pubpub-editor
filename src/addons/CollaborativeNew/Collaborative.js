@@ -1,29 +1,33 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { collab } from 'prosemirror-collab';
-import FirebasePlugin from './firebasePlugin';
+import CollaborativePlugin from './collaborativePlugin';
 
 require('./collaborative.scss');
 
 const propTypes = {
+	/* Default props */
 	view: PropTypes.object,
 	editorState: PropTypes.object,
-	onClientChange: PropTypes.func,
-	onForksUpdate: PropTypes.func,
-	onStatusChange: PropTypes.func,
 	pluginKey: PropTypes.object,
+	onCollabLoad: PropTypes.func,
+	/* Custom props*/
+	firebaseConfig: PropTypes.object,
+	clientData: PropTypes.object,
 	editorKey: PropTypes.string,
-	startStepIndex: PropTypes.number,
+	onClientChange: PropTypes.func,
+	onStatusChange: PropTypes.func,
 };
 
 const defaultProps = {
 	view: undefined,
 	editorState: undefined,
-	onClientChange: ()=>{},
-	onForksUpdate: ()=>{},
-	onStatusChange: ()=>{},
 	pluginKey: undefined,
-	editorKey: '',
+	firebaseConfig: undefined,
+	clientData: undefined,
+	editorKey: undefined,
+	onClientChange: ()=>{},
+	onStatusChange: ()=>{},
 };
 
 /**
@@ -70,30 +74,28 @@ return (
 */
 class Collaborative extends Component {
 	static pluginName = 'Collaborative';
-	static getPlugins({ firebaseConfig, clientData, editorKey, onClientChange, onStatusChange, pluginKey, onForksUpdate, startStepIndex }) {
-		// need to add a random client ID number to account for sessions with the same client
+	static getPlugins({ pluginKey, onCollabLoad, firebaseConfig, clientData, editorKey, onClientChange, onStatusChange }) {
+		/* Need to add a random client ID number to account for sessions with the same client */
 		const possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
 		let clientHash = '';
-		for (let index = 0; index < 6; index++) {
+		for (let index = 0; index < 6; index += 1) {
 			clientHash += possible.charAt(Math.floor(Math.random() * possible.length));
 		}
-		const selfClientId = `clientId-${clientData.id}-${clientHash}`;
-		// const selfClientId = `clientId-${clientData.id}`;
+		const localClientId = `clientId-${clientData.id}-${clientHash}`;
 
 		return [
-			new FirebasePlugin({
-				localClientId: selfClientId,
-				localClientData: clientData,
-				editorKey,
-				firebaseConfig,
+			new CollaborativePlugin({
 				pluginKey: pluginKey,
-				onClientChange,
-				onStatusChange,
-				onForksUpdate,
-				startStepIndex
+				onCollabLoad: onCollabLoad,
+				firebaseConfig: firebaseConfig,
+				localClientData: clientData,
+				localClientId: localClientId,
+				editorKey: editorKey,
+				onClientChange: onClientChange,
+				onStatusChange: onStatusChange,
 			}),
 			collab({
-				clientID: selfClientId
+				clientID: localClientId
 			})
 		];
 	}
@@ -103,6 +105,9 @@ class Collaborative extends Component {
 		this.state = {
 			collaborators: []
 		};
+		this.onChange = this.onChange.bind(this);
+		this.getPlugin = this.getPlugin.bind(this);
+		this.commit = this.commit.bind(this);
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -114,13 +119,12 @@ class Collaborative extends Component {
 		this.getPlugin().disconnect();
 	}
 
-	onChange = (props) => {
-		const { editorState, transaction } = props;
-		if (!editorState || !transaction) { return null; }
-		// const firebasePlugin = this.props.pluginKey.get(editorState);
-		// if (firebasePlugin) {
-		// 	return firebasePlugin.sendCollabChanges(transaction, editorState);
-		// }
+	onChange(props) {
+		if (!props.editorState || !props.transaction) { return null; }
+		const plugin = this.getPlugin();
+		if (plugin) {
+			return plugin.sendCollabChanges(props.transaction, props.editorState);
+		}
 		return null;
 	}
 
@@ -129,15 +133,8 @@ class Collaborative extends Component {
 		return pluginKey.get(editorState);
 	}
 
-	getForks = () => {
-		return this.getPlugin().getForks();
-	}
-
-	fork = () => {
-		return this.getPlugin().fork();
-	}
-
-	commit = ({ description, uuid, steps, start, end }) => {
+	commit({ description, uuid, steps, start, end }) {
+		console.log('Ya were using this!');
 		return this.getPlugin().commit({ description, uuid, steps, start, end });
 	}
 

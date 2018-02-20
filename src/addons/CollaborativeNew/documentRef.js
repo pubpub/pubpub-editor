@@ -42,8 +42,8 @@ class DocumentRef {
 		const changesRef = this.ref.child('changes');
 
 		return changesRef
-		// .startAt(null, String(changesKey))
-		.endAt(null, String(changesKey))
+		.startAt(null, String(changesKey))
+		// .endAt(null, String(changesKey))
 		.once('value').then((snapshot) => {
 			const changes = snapshot.val();
 			if (changes) {

@@ -7,7 +7,7 @@ import DocumentRef from './documentRef';
 
 
 class FirebasePlugin extends Plugin {
-	constructor({ localClientId, localClientData, editorKey, firebaseConfig, rootRef, editorRef, pluginKey, onClientChange, onStatusChange, onForksUpdate, startStepIndex }) {
+	constructor({ onCollabLoad, localClientId, localClientData, editorKey, firebaseConfig, rootRef, editorRef, pluginKey, onClientChange, onStatusChange, onForksUpdate, startStepIndex }) {
 		super({ key: pluginKey });
 		this.spec = {
 			view: this.updateView,
@@ -29,6 +29,7 @@ class FirebasePlugin extends Plugin {
 		this.editorKey = editorKey;
 		this.selfChanges = {};
 		this.startStepIndex = startStepIndex;
+		this.onCollabLoad = onCollabLoad;
 
 		const existingApp = firebase.apps.reduce((prev, curr)=> {
 			if (curr.name === editorKey) { return curr; }
@@ -111,8 +112,12 @@ class FirebasePlugin extends Plugin {
 					this.document.healDatabase({ stepsWithKeys, view: this.view });
 				}
 			}
-			// this.document.listenToSelections(this.onClientChange);
-			// this.document.listenToChanges(this.onRemoteChange);
+			this.document.listenToSelections(this.onClientChange);
+			this.document.listenToChanges(this.onRemoteChange);
+			setTimeout(()=> {
+				this.onCollabLoad();
+			}, 250);
+			
 			if (this.onForksUpdate) {
 				this.getForks().then((forks) => {
 					this.onForksUpdate(forks);
@@ -123,7 +128,6 @@ class FirebasePlugin extends Plugin {
 
 	sendCollabChanges = (transaction, newState) => {
 		console.log('Sending collab Changes');
-		return null;
 		const { meta } = transaction;
 
 		// if (newState !== this.view.state) {
