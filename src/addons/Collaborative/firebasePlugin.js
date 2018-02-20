@@ -78,21 +78,21 @@ class FirebasePlugin extends Plugin {
 		if (this.startedLoad) {
 			return null;
 		}
+		let tempNewDoc;
 		this.startedLoad = true;
 		this.document = new DocumentRef(this.firebaseRef, this.view, this.localClientId, this.localClientData);
 		this.document.getCheckpoint(true)
 		.then(({ newDoc, checkpointKey }) => {
-			if (newDoc) {
-				const newState = EditorState.create({
-					doc: newDoc,
-					plugins: this.view.state.plugins,
-				});
-				this.view.updateState(newState);
-			}
-
+			tempNewDoc = newDoc;
 			return this.document.getChanges(checkpointKey);
 		})
 		.then(({ steps, stepClientIDs, stepsWithKeys }) => {
+			if (tempNewDoc) {
+				this.view.updateState(EditorState.create({
+					doc: tempNewDoc,
+					plugins: this.view.state.plugins,
+				}));
+			}
 			if (steps) {
 				try {
 					const trans = receiveTransaction(this.view.state, steps, stepClientIDs);
