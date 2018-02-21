@@ -37,7 +37,7 @@ storiesOf('Collaborative', module)
 				clientData={clientData}
 				// onClientChange={(val)=> { console.log(val); }}
 				// onStatusChange={(val)=> { console.log(val); }}
-				editorKey={'storybook-editor-v19'}
+				editorKey={'storybook-editor-v22'}
 				// startStepIndex={ind}
 			/>
 		</Editor>

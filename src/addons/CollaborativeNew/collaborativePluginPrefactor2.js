@@ -29,6 +29,7 @@ class CollaborativePlugin extends Plugin {
 	constructor({ pluginKey, firebaseConfig, localClientData, localClientId, editorKey, onClientChange, onStatusChange }) {
 		super({ key: pluginKey });
 		/* Bind plugin functions */
+		// this.init = this.init.bind(this);
 		this.loadDocument = this.loadDocument.bind(this);
 		this.sendCollabChanges = this.sendCollabChanges.bind(this);
 		this.onRemoteChange = this.onRemoteChange.bind(this);
@@ -43,18 +44,8 @@ class CollaborativePlugin extends Plugin {
 		this.issueEmptyTransaction = this.issueEmptyTransaction.bind(this);
 		this.restartCollab = this.restartCollab.bind(this);
 		this.listenToChanges = this.listenToChanges.bind(this);
-		this.initalizePluginVariables = this.initalizePluginVariables.bind(this);
-
-		/* Make passed props accessible */
-		this.localClientData = localClientData;
-		this.localClientId = localClientId;
-		this.editorKey = editorKey;
-		this.onClientChange = onClientChange;
-		this.onStatusChange = onStatusChange;
-
-
-		/* Init plugin variables */
-		this.initalizePluginVariables();
+		this.view = null;
+		this.authorityDoc = null;
 
 		/* Setup Prosemirror plugin values */
 		this.spec = {
@@ -68,9 +59,35 @@ class CollaborativePlugin extends Plugin {
 			decorations: this.decorations
 		};
 
+		/* Make passed props accessible */
+
+		this.localClientData = localClientData;
+		this.localClientId = localClientId;
+		this.editorKey = editorKey;
+		this.onClientChange = onClientChange;
+		this.onStatusChange = onStatusChange;
+		// this.onForksUpdate = onForksUpdate;
+
+
+		/* Init plugin variables object */
+		this.selfChanges = {};
+		this.startedLoad = false;
+
+		/* Vars from DocumentRef */
+		this.latestKey = null;
+		this.selections = {};
+
+		// this.startStepIndex = startStepIndex;
+		// if (!existingApp) {
+		// 	this.firebaseApp = firebase.initializeApp(firebaseConfig, editorKey);
+		// } else {
+		// 	this.firebaseApp = existingApp;
+		// }
+
 		/* Check for firebaseConfig */
 		if (!firebaseConfig) {
-			throw new Error('Did not include a firebase config');
+			console.error('Did not include a firebase config');
+			return null;
 		}
 
 		/* Connect to firebase app */
@@ -82,8 +99,23 @@ class CollaborativePlugin extends Plugin {
 		this.rootRef = firebase.database(this.firebaseApp);
 		this.rootRef.goOnline();
 		this.firebaseRef = this.rootRef.ref(editorKey);
+		// } else if (rootRef) {
+		// 	this.rootRef = rootRef;
+		// 	if (editorKey) {
+		// 		this.firebaseRef = this.rootRef.ref(editorKey);
+		// 	} else if (editorRef) {
+		// 		this.firebaseRef = editorRef;
+		// 	} else {
+		// 		console.error('Did not include a reference to the editor firebase instance or an editor key.');
+		// 		return null;
+		// 	}
+		// } else {
+		// 	// console.error('Did not include a firebase config or root ref.x');
+		// 	console.error('Did not include a firebase config');
+		// 	return null;
+		// }
 
-		/* Set user status and watch for status changes */
+		/* Set user status and watch for changes */
 		const connectedRef = this.rootRef.ref('.info/connected');
 		connectedRef.on('value', (snapshot)=> {
 			if (snapshot.val() === true) {
@@ -94,40 +126,41 @@ class CollaborativePlugin extends Plugin {
 		});
 	}
 
-	initalizePluginVariables() {
-		this.selfChanges = {};
-		this.startedLoad = false;
-		this.latestKey = null;
-		this.selections = {};
-		this.view = null;
-		this.authorityDoc = null;
-	}
+
+	// init(config, instance) {
+	// 	return { };
+	// }
 	compressedStepJSONToStep(compressedStepJSON) {
 		return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
 	}
 
 	restartCollab() {
 		console.log('Top of restartCollab');
+		// this.view.updateState(EditorState.create({
+		// 	doc: Node.fromJSON(this.view.state.schema, { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] }),
+		// 	plugins: this.view.state.plugins,
+		// }));
+		// if (!this.restarting) {
+		// 	this.restarting = true;
+			// this.firebaseRef.child('changes').off('child_removed', this.restartCollab);
+			this.firebaseRef.child('changes').off('child_added', this.listenToChanges);
+			const selectionsRef = this.firebaseRef.child('selections');
+			selectionsRef.off('child_added', this.addClientSelection);
+			selectionsRef.off('child_changed', this.updateClientSelection);
+			selectionsRef.off('child_removed', this.deleteClientSelection);
+			
 
-		/* Unbind firebase listening that will be */
-		/* re-initialized in loadDocument */
-		this.firebaseRef.child('changes').off('child_added', this.listenToChanges);
-		const selectionsRef = this.firebaseRef.child('selections');
-		selectionsRef.off('child_added', this.addClientSelection);
-		selectionsRef.off('child_changed', this.updateClientSelection);
-		selectionsRef.off('child_removed', this.deleteClientSelection);
-
-		/* Re-initialize plugin variables and reload */
-		this.initalizePluginVariables();
-		this.loadDocument();
+			this.selfChanges = {};
+			this.selections = {};
+			this.startedLoad = false;
+			this.latestKey = null;
+			this.loadDocument();
+		// }
 	}
-
 	loadDocument() {
 		if (this.startedLoad) { return null; }
 		console.log('Top of loadDocument');
 		this.startedLoad = true;
-
-		/* Listen for remove changes in case we need to restart the doc */
 		this.firebaseRef.child('changes').once('child_removed', this.restartCollab);
 
 		console.log('LoadDoc1');
@@ -147,10 +180,18 @@ class CollaborativePlugin extends Plugin {
 			console.log('LoadDoc2');
 			return Promise.all([newDoc, getChanges]);
 		})
+
+
+		// return this.firebaseRef.child('changes')
+		// .startAt(null, String(checkpointKey))
+		// .once('value')
 		.then(([newDoc, changesSnapshot])=> {
 			console.log('LoadDoc3');
-			console.log('LoadDoc4');
 			const changesSnapshotVal = changesSnapshot.val();
+			if (!changesSnapshotVal) {
+				return { newDoc: newDoc, steps: null, stepClientIds: null, stepsWithKeys: null };
+			}
+			console.log('LoadDoc4');
 			const steps = [];
 			const stepClientIds = [];
 			const keys = Object.keys(changesSnapshotVal);
@@ -163,66 +204,91 @@ class CollaborativePlugin extends Plugin {
 				steps.push(...compressedStepsJSON.map(this.compressedStepJSONToStep));
 				stepClientIds.push(...new Array(compressedStepsJSON.length).fill('_server'));
 			});
-
+			// 		return { newDoc, steps, stepClientIds, stepsWithKeys };
+			// 	});
+			// })
+			// .then(({ newDoc, steps, stepClientIds, stepsWithKeys })=> {
+			// if (newDoc) {
 			const docToUse = newDoc || Node.fromJSON(this.view.state.schema, { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] });
 			this.view.updateState(EditorState.create({
 				doc: docToUse,
 				plugins: this.view.state.plugins,
 			}));
-			this.authorityDoc = docToUse;
-			console.log('LoadDoc5');
-
-			/* Test steps with authority doc. */
-			stepsWithKeys.sort((foo, bar)=> {
-				if (Number(foo.key) < Number(bar.key)) { return -1; }
-				if (Number(foo.key) > Number(bar.key)) { return 1; }
-				return 0;
-			}).forEach((stepObject)=> {
-				try {
-					stepObject.steps.forEach((step)=> {
-						this.authorityDoc = step.apply(this.authorityDoc).doc;
-						if (!this.authorityDoc) { throw new Error(`Invalid Authority Doc ${stepObject.key}`); }
-					});
-				} catch (err) {
-					throw new Error(`Invalid Authority Doc ${stepObject.key}`);
-				}
-			});
-			console.log('LoadDoc6');
-			console.log('LoadDoc7');
-			console.log('LoadDoc8');
-			console.log('LoadDoc9');
-			const trans = receiveTransaction(this.view.state, steps, stepClientIds);
-			trans.setMeta('receiveDoc', true);
-			this.view.dispatch(trans);
-			// try {
-			// 	console.log('LoadDoc9');
-			// 	const trans = receiveTransaction(this.view.state, steps, stepClientIds);
-			// 	trans.setMeta('receiveDoc', true);
-			// 	this.view.dispatch(trans);
-			// } catch (err) {
-			console.log('LoadDoc10');
-			// 	/* TODO - we really need to find a way to make it so no corrupted step is kept on server */
-			// 	console.error('Healing database', stepsWithKeys);
-			// 	const stepsToDelete = [];
-			// 	stepsWithKeys.forEach((step)=> {
-			// 		try {
-			// 			const trans = receiveTransaction(this.view.state, step.steps, ['_server']);
-			// 			trans.setMeta('receiveDoc', true);
-			// 			this.view.dispatch(trans);
-			// 		} catch (stepError) {
-			// 			console.log('StepError is ', stepError);
-			// 			stepsToDelete.push(step.key);
-			// 		}
-			// 	});
-
-			// 	stepsToDelete.forEach((stepToDelete)=> {
-			// 		/* Perhaps we can just skip the step rather   */
-			// 		/* than deleting it. That way we can debug it */
-			// 		/* if a document seems to have funky errors   */
-			// 		console.log('Skipping Step ', stepToDelete);
-			// 		// this.firebaseRef.child('changes').child(stepToDelete).remove();
-			// 	});
 			// }
+			// console.log(steps, stepsWithKeys);
+			// this.authorityDoc = newDoc || this.view.state.doc;
+			this.authorityDoc = docToUse;
+			// console.log('authorityDoc', JSON.stringify(this.authorityDoc, null, 2));
+			console.log('LoadDoc5');
+			let didRemove = false;
+			if (steps) {
+				stepsWithKeys.sort((foo, bar)=> {
+					if (Number(foo.key) < Number(bar.key)) { return -1; }
+					if (Number(foo.key) > Number(bar.key)) { return 1; }
+					return 0;
+				}).forEach((stepObject)=> {
+					if (!didRemove) {
+						console.log(stepObject);
+						try {
+							stepObject.steps.forEach((step)=> {
+								this.authorityDoc = step.apply(this.authorityDoc).doc;
+								if (!this.authorityDoc) { throw new Error('Empty Authority Doc'); }
+								// console.log('authorityDoc', JSON.stringify(this.authorityDoc, null, 2));
+							});
+						} catch (err) {
+							didRemove = true;
+							
+							const sortedClientIds = [...this.selections, this.localClientId].sort((foo, bar)=> {
+								if (foo > bar) { return 1; }
+								if (foo < bar) { return -1; }
+								return 0;
+							});
+							console.log(sortedClientIds[0], this.localClientId, sortedClientIds[0] === this.localClientId);
+							if (sortedClientIds[0] === this.localClientId) {
+								console.log('Loading We should delete ', stepObject.key, err);
+								this.firebaseRef.child('changes').child(stepObject.key).remove();
+							}
+							
+						}
+					}
+				});
+			}
+			console.log('LoadDoc6');
+
+			if (didRemove) { return null; }
+			console.log('LoadDoc7');
+			if (steps) {
+				console.log('LoadDoc8');
+				try {
+					console.log('LoadDoc9');
+					const trans = receiveTransaction(this.view.state, steps, stepClientIds);
+					trans.setMeta('receiveDoc', true);
+					this.view.dispatch(trans);
+				} catch (err) {
+					console.log('LoadDoc10');
+					/* TODO - we really need to find a way to make it so no corrupted step is kept on server */
+					console.error('Healing database', stepsWithKeys);
+					const stepsToDelete = [];
+					stepsWithKeys.forEach((step)=> {
+						try {
+							const trans = receiveTransaction(this.view.state, step.steps, ['_server']);
+							trans.setMeta('receiveDoc', true);
+							this.view.dispatch(trans);
+						} catch (stepError) {
+							console.log('StepError is ', stepError);
+							stepsToDelete.push(step.key);
+						}
+					});
+
+					stepsToDelete.forEach((stepToDelete)=> {
+						/* Perhaps we can just skip the step rather   */
+						/* than deleting it. That way we can debug it */
+						/* if a document seems to have funky errors   */
+						console.log('Skipping Step ', stepToDelete);
+						// this.firebaseRef.child('changes').child(stepToDelete).remove();
+					});
+				}
+			}
 
 			// console.log('Finished loading document 1');
 			/* Listen to Selections Change */
@@ -239,6 +305,7 @@ class CollaborativePlugin extends Plugin {
 			console.log('LoadDoc12');
 			// this.restarting = false;
 			// console.log('Finished loading document 2');
+			return true;
 
 			// this.document.listenToSelections(this.onClientChange);
 			// this.document.listenToChanges(this.onRemoteChange);
@@ -248,22 +315,6 @@ class CollaborativePlugin extends Plugin {
 			// 		this.onForksUpdate(forks);
 			// 	});
 			// }
-		})
-		.catch((err)=> {
-			console.log('In catch with ', err, err.message);
-			if (err.message.indexOf('Invalid Authority Doc') > -1 ) {
-				console.log('yep');
-				const stepToDelete = Number(err.message.replace('Invalid Authority Doc ', ''));
-				const sortedClientIds = [...this.selections, this.localClientId].sort((foo, bar)=> {
-					if (foo > bar) { return 1; }
-					if (foo < bar) { return -1; }
-					return 0;
-				});
-				if (sortedClientIds[0] === this.localClientId) {
-					console.log('Loading We should delete ', stepToDelete);
-					this.firebaseRef.child('changes').child(stepToDelete).remove();
-				}
-			}
 		});
 	}
 

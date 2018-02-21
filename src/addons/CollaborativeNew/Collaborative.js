@@ -121,7 +121,11 @@ class Collaborative extends Component {
 			&& plugin
 		) {
 			// this.onChange(nextProps.editorState, nextProps.transaction);
+			// const delay = Math.floor(Math.random() * 2000);
+			// console.log(`Delay is ${delay} for step `, nextProps.transaction);
+			// setTimeout(()=> {
 			plugin.sendCollabChanges(nextProps.transaction, nextProps.editorState);
+			// }, delay);
 		}
 	}
 	componentWillUnmount() {

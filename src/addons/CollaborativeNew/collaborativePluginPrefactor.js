@@ -29,6 +29,7 @@ class CollaborativePlugin extends Plugin {
 	constructor({ pluginKey, firebaseConfig, localClientData, localClientId, editorKey, onClientChange, onStatusChange }) {
 		super({ key: pluginKey });
 		/* Bind plugin functions */
+		// this.init = this.init.bind(this);
 		this.loadDocument = this.loadDocument.bind(this);
 		this.sendCollabChanges = this.sendCollabChanges.bind(this);
 		this.onRemoteChange = this.onRemoteChange.bind(this);
@@ -43,18 +44,8 @@ class CollaborativePlugin extends Plugin {
 		this.issueEmptyTransaction = this.issueEmptyTransaction.bind(this);
 		this.restartCollab = this.restartCollab.bind(this);
 		this.listenToChanges = this.listenToChanges.bind(this);
-		this.initalizePluginVariables = this.initalizePluginVariables.bind(this);
-
-		/* Make passed props accessible */
-		this.localClientData = localClientData;
-		this.localClientId = localClientId;
-		this.editorKey = editorKey;
-		this.onClientChange = onClientChange;
-		this.onStatusChange = onStatusChange;
-
-
-		/* Init plugin variables */
-		this.initalizePluginVariables();
+		this.view = null;
+		this.authorityDoc = null;
 
 		/* Setup Prosemirror plugin values */
 		this.spec = {
@@ -68,9 +59,35 @@ class CollaborativePlugin extends Plugin {
 			decorations: this.decorations
 		};
 
+		/* Make passed props accessible */
+
+		this.localClientData = localClientData;
+		this.localClientId = localClientId;
+		this.editorKey = editorKey;
+		this.onClientChange = onClientChange;
+		this.onStatusChange = onStatusChange;
+		// this.onForksUpdate = onForksUpdate;
+
+
+		/* Init plugin variables object */
+		this.selfChanges = {};
+		this.startedLoad = false;
+
+		/* Vars from DocumentRef */
+		this.latestKey = null;
+		this.selections = {};
+
+		// this.startStepIndex = startStepIndex;
+		// if (!existingApp) {
+		// 	this.firebaseApp = firebase.initializeApp(firebaseConfig, editorKey);
+		// } else {
+		// 	this.firebaseApp = existingApp;
+		// }
+
 		/* Check for firebaseConfig */
 		if (!firebaseConfig) {
-			throw new Error('Did not include a firebase config');
+			console.error('Did not include a firebase config');
+			return null;
 		}
 
 		/* Connect to firebase app */
@@ -82,8 +99,23 @@ class CollaborativePlugin extends Plugin {
 		this.rootRef = firebase.database(this.firebaseApp);
 		this.rootRef.goOnline();
 		this.firebaseRef = this.rootRef.ref(editorKey);
+		// } else if (rootRef) {
+		// 	this.rootRef = rootRef;
+		// 	if (editorKey) {
+		// 		this.firebaseRef = this.rootRef.ref(editorKey);
+		// 	} else if (editorRef) {
+		// 		this.firebaseRef = editorRef;
+		// 	} else {
+		// 		console.error('Did not include a reference to the editor firebase instance or an editor key.');
+		// 		return null;
+		// 	}
+		// } else {
+		// 	// console.error('Did not include a firebase config or root ref.x');
+		// 	console.error('Did not include a firebase config');
+		// 	return null;
+		// }
 
-		/* Set user status and watch for status changes */
+		/* Set user status and watch for changes */
 		const connectedRef = this.rootRef.ref('.info/connected');
 		connectedRef.on('value', (snapshot)=> {
 			if (snapshot.val() === true) {
@@ -94,151 +126,180 @@ class CollaborativePlugin extends Plugin {
 		});
 	}
 
-	initalizePluginVariables() {
-		this.selfChanges = {};
-		this.startedLoad = false;
-		this.latestKey = null;
-		this.selections = {};
-		this.view = null;
-		this.authorityDoc = null;
-	}
+
+	// init(config, instance) {
+	// 	return { };
+	// }
 	compressedStepJSONToStep(compressedStepJSON) {
 		return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
 	}
 
 	restartCollab() {
-		console.log('Top of restartCollab');
-
-		/* Unbind firebase listening that will be */
-		/* re-initialized in loadDocument */
-		this.firebaseRef.child('changes').off('child_added', this.listenToChanges);
+		// this.view.updateState(EditorState.create({
+		// 	doc: Node.fromJSON(this.view.state.schema, { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] }),
+		// 	plugins: this.view.state.plugins,
+		// }));
 		const selectionsRef = this.firebaseRef.child('selections');
-		selectionsRef.off('child_added', this.addClientSelection);
-		selectionsRef.off('child_changed', this.updateClientSelection);
-		selectionsRef.off('child_removed', this.deleteClientSelection);
+		selectionsRef.on('child_added', this.addClientSelection);
+		selectionsRef.on('child_changed', this.updateClientSelection);
+		selectionsRef.on('child_removed', this.deleteClientSelection);
+		this.firebaseRef.child('changes').off('child_added', this.listenToChanges);
 
-		/* Re-initialize plugin variables and reload */
-		this.initalizePluginVariables();
+		this.startedLoad = false;
 		this.loadDocument();
 	}
-
 	loadDocument() {
 		if (this.startedLoad) { return null; }
-		console.log('Top of loadDocument');
+		
 		this.startedLoad = true;
+		// this.document = new DocumentRef(this.firebaseRef, this.view, this.localClientId, this.localClientData);
+		// this.document.getCheckpoint(true)
+		this.firebaseRef.child('changes').on('child_removed', ()=> {
+			console.log('Caught the removal and am goign to restart');
+			this.restartCollab();
+		});
 
-		/* Listen for remove changes in case we need to restart the doc */
-		this.firebaseRef.child('changes').once('child_removed', this.restartCollab);
-
-		console.log('LoadDoc1');
 		return this.firebaseRef.child('checkpoint').once('value')
-		.then((checkpointSnapshot) => {
-			const checkpointSnapshotVal = checkpointSnapshot.val || {};
-			const checkpointSnapshotDoc = checkpointSnapshotVal.d;
-			const checkpointSnapshotKey = checkpointSnapshotVal.k;
-			const checkpointKey = Number(checkpointSnapshotKey) || 0;
-			const newDoc = checkpointSnapshotDoc && Node.fromJSON(this.view.state.schema, uncompressStateJSON({ checkpointSnapshotDoc }).doc);
+		.then((snapshot) => {
+			const snapshotVal = snapshot.val || {};
+			const snapshotDoc = snapshotVal.d;
+			const snapshotKey = snapshotVal.k;
+			// const { d, k } = snapshot.val() || {};
+			const checkpointKey = Number(snapshotKey) || 0;
+			// checkpointKey = Number(checkpointKey);
+			const newDoc = snapshotDoc && Node.fromJSON(this.view.state.schema, uncompressStateJSON({ snapshotDoc }).doc);
+			// if (isFirstLoad) {
 			this.latestKey = checkpointKey;
-
-			const getChanges = this.firebaseRef.child('changes')
-			.startAt(null, String(checkpointKey))
-			.once('value');
-
-			console.log('LoadDoc2');
-			return Promise.all([newDoc, getChanges]);
+			// }
+			return { newDoc, checkpointKey };
 		})
-		.then(([newDoc, changesSnapshot])=> {
-			console.log('LoadDoc3');
-			console.log('LoadDoc4');
-			const changesSnapshotVal = changesSnapshot.val();
-			const steps = [];
-			const stepClientIds = [];
-			const keys = Object.keys(changesSnapshotVal);
-			const stepsWithKeys = [];
-			this.latestKey = Math.max(...keys);
-			keys.forEach((key)=> {
-				const compressedStepsJSON = changesSnapshotVal[key].s;
-				const uncompressedSteps = compressedStepsJSON.map(this.compressedStepJSONToStep);
-				stepsWithKeys.push({ key, steps: uncompressedSteps });
-				steps.push(...compressedStepsJSON.map(this.compressedStepJSONToStep));
-				stepClientIds.push(...new Array(compressedStepsJSON.length).fill('_server'));
-			});
+		.then(({ newDoc, checkpointKey }) => {
+			// tempNewDoc = newDoc;
+			// if (newDoc) {
+			// 	const newState = EditorState.create({
+			// 	tempState = EditorState.create({
+			// 		doc: newDoc,
+			// 		plugins: this.view.state.plugins,
+			// 	});
+			// 	this.view.updateState(newState);
+			// }
+			// return this.document.getChanges(checkpointKey);
 
-			const docToUse = newDoc || Node.fromJSON(this.view.state.schema, { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] });
+
+			// const changesRef = this.firebaseRef.child('changes');
+
+			// return changesRef
+			return this.firebaseRef.child('changes')
+			.startAt(null, String(checkpointKey))
+			.once('value')
+			.then((snapshot)=> {
+				const snapshotVal = snapshot.val();
+				if (!snapshotVal) {
+					return { newDoc: newDoc, steps: null, stepClientIds: null, stepsWithKeys: null };
+				}
+				// if (snapshotVal) {
+				const steps = [];
+				const stepClientIds = [];
+				// const placeholderClientId = `_oldClient${Math.random()}`;
+				const keys = Object.keys(snapshotVal);
+				const stepsWithKeys = [];
+				this.latestKey = Math.max(...keys);
+				keys.forEach((key)=> {
+					const compressedStepsJSON = snapshotVal[key].s;
+					const uncompressedSteps = compressedStepsJSON.map(this.compressedStepJSONToStep);
+					stepsWithKeys.push({ key, steps: uncompressedSteps });
+					steps.push(...compressedStepsJSON.map(this.compressedStepJSONToStep));
+					stepClientIds.push(...new Array(compressedStepsJSON.length).fill('_server'));
+				});
+				// for (const key of keys) {
+				// 	const compressedStepsJSON = snapshotVal[key].s;
+				// 	const uncompressedSteps = compressedStepsJSON.map(this.compressedStepJSONToStep);
+				// 	stepsWithKeys.push({ key, steps: uncompressedSteps });
+				// 	steps.push(...compressedStepsJSON.map(this.compressedStepJSONToStep));
+				// 	stepClientIDs.push(...new Array(compressedStepsJSON.length).fill(placeholderClientId));
+				// }
+				return { newDoc, steps, stepClientIds, stepsWithKeys };
+				// }
+				// return { steps: null, stepClientIDs: null, stepsWithKeys: null };
+			});
+		})
+		.then(({ newDoc, steps, stepClientIds, stepsWithKeys }) => {
+			// if (newDoc) {
+			const docToUse = newDoc || Node.fromJSON(this.view.state.schema, { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] })
 			this.view.updateState(EditorState.create({
 				doc: docToUse,
 				plugins: this.view.state.plugins,
 			}));
-			this.authorityDoc = docToUse;
-			console.log('LoadDoc5');
-
-			/* Test steps with authority doc. */
-			stepsWithKeys.sort((foo, bar)=> {
-				if (Number(foo.key) < Number(bar.key)) { return -1; }
-				if (Number(foo.key) > Number(bar.key)) { return 1; }
-				return 0;
-			}).forEach((stepObject)=> {
-				try {
-					stepObject.steps.forEach((step)=> {
-						this.authorityDoc = step.apply(this.authorityDoc).doc;
-						if (!this.authorityDoc) { throw new Error(`Invalid Authority Doc ${stepObject.key}`); }
-					});
-				} catch (err) {
-					throw new Error(`Invalid Authority Doc ${stepObject.key}`);
-				}
-			});
-			console.log('LoadDoc6');
-			console.log('LoadDoc7');
-			console.log('LoadDoc8');
-			console.log('LoadDoc9');
-			const trans = receiveTransaction(this.view.state, steps, stepClientIds);
-			trans.setMeta('receiveDoc', true);
-			this.view.dispatch(trans);
-			// try {
-			// 	console.log('LoadDoc9');
-			// 	const trans = receiveTransaction(this.view.state, steps, stepClientIds);
-			// 	trans.setMeta('receiveDoc', true);
-			// 	this.view.dispatch(trans);
-			// } catch (err) {
-			console.log('LoadDoc10');
-			// 	/* TODO - we really need to find a way to make it so no corrupted step is kept on server */
-			// 	console.error('Healing database', stepsWithKeys);
-			// 	const stepsToDelete = [];
-			// 	stepsWithKeys.forEach((step)=> {
-			// 		try {
-			// 			const trans = receiveTransaction(this.view.state, step.steps, ['_server']);
-			// 			trans.setMeta('receiveDoc', true);
-			// 			this.view.dispatch(trans);
-			// 		} catch (stepError) {
-			// 			console.log('StepError is ', stepError);
-			// 			stepsToDelete.push(step.key);
-			// 		}
-			// 	});
-
-			// 	stepsToDelete.forEach((stepToDelete)=> {
-			// 		/* Perhaps we can just skip the step rather   */
-			// 		/* than deleting it. That way we can debug it */
-			// 		/* if a document seems to have funky errors   */
-			// 		console.log('Skipping Step ', stepToDelete);
-			// 		// this.firebaseRef.child('changes').child(stepToDelete).remove();
-			// 	});
 			// }
+			// console.log(steps, stepsWithKeys);
+			// this.authorityDoc = newDoc || this.view.state.doc;
+			this.authorityDoc = docToUse;
+			// console.log('authorityDoc', JSON.stringify(this.authorityDoc, null, 2));
+			let didRemove = false;
+			if (steps) {
+				stepsWithKeys.sort((foo, bar)=> {
+					if (Number(foo.key) < Number(bar.key)) { return -1; }
+					if (Number(foo.key) > Number(bar.key)) { return 1; }
+					return 0;
+				}).forEach((stepObject)=> {
+					// console.log(stepObject);
+					try {
+						stepObject.steps.forEach((step)=> {
+							this.authorityDoc = step.apply(this.authorityDoc).doc;
+							// console.log('authorityDoc', JSON.stringify(this.authorityDoc, null, 2));
+						});
+					} catch (err) {
+						console.log('We should delete ', stepObject.key);
+						didRemove = true;
+						this.firebaseRef.child('changes').child(stepObject.key).remove();
+					}
+				});
+			}
 
-			// console.log('Finished loading document 1');
+			if (didRemove) { return null; }
+
+			if (steps) {
+				try {
+					const trans = receiveTransaction(this.view.state, steps, stepClientIds);
+					trans.setMeta('receiveDoc', true);
+					this.view.dispatch(trans);
+				} catch (err) {
+					/* TODO - we really need to find a way to make it so no corrupted step is kept on server */
+					console.error('Healing database', stepsWithKeys);
+					const stepsToDelete = [];
+					stepsWithKeys.forEach((step)=> {
+						try {
+							const trans = receiveTransaction(this.view.state, step.steps, ['_server']);
+							trans.setMeta('receiveDoc', true);
+							this.view.dispatch(trans);
+						} catch (stepError) {
+							console.log('StepError is ', stepError);
+							stepsToDelete.push(step.key);
+						}
+					});
+
+					stepsToDelete.forEach((stepToDelete)=> {
+						/* Perhaps we can just skip the step rather   */
+						/* than deleting it. That way we can debug it */
+						/* if a document seems to have funky errors   */
+						console.log('Skipping Step ', stepToDelete);
+						// this.firebaseRef.child('changes').child(stepToDelete).remove();
+					});
+				}
+			}
+
 			/* Listen to Selections Change */
 			const selectionsRef = this.firebaseRef.child('selections');
 			selectionsRef.child(this.localClientId).onDisconnect().remove();
 			selectionsRef.on('child_added', this.addClientSelection);
 			selectionsRef.on('child_changed', this.updateClientSelection);
 			selectionsRef.on('child_removed', this.deleteClientSelection);
-			console.log('LoadDoc11');
+
 			/* Listen to Changes */
 			this.firebaseRef.child('changes')
 			.startAt(null, String(this.latestKey + 1))
 			.on('child_added', this.listenToChanges);
-			console.log('LoadDoc12');
-			// this.restarting = false;
-			// console.log('Finished loading document 2');
+
 
 			// this.document.listenToSelections(this.onClientChange);
 			// this.document.listenToChanges(this.onRemoteChange);
@@ -248,29 +309,10 @@ class CollaborativePlugin extends Plugin {
 			// 		this.onForksUpdate(forks);
 			// 	});
 			// }
-		})
-		.catch((err)=> {
-			console.log('In catch with ', err, err.message);
-			if (err.message.indexOf('Invalid Authority Doc') > -1 ) {
-				console.log('yep');
-				const stepToDelete = Number(err.message.replace('Invalid Authority Doc ', ''));
-				const sortedClientIds = [...this.selections, this.localClientId].sort((foo, bar)=> {
-					if (foo > bar) { return 1; }
-					if (foo < bar) { return -1; }
-					return 0;
-				});
-				if (sortedClientIds[0] === this.localClientId) {
-					console.log('Loading We should delete ', stepToDelete);
-					this.firebaseRef.child('changes').child(stepToDelete).remove();
-				}
-			}
 		});
 	}
 
 	listenToChanges(snapshot) {
-		// console.log('in listen changes toptop');
-		if (!this.startedLoad) { return null; }
-		// console.log('Top of listenToChanges');
 		this.latestKey = Number(snapshot.key);
 		const snapshotVal = snapshot.val();
 		const compressedStepsJSON = snapshotVal.s;
@@ -281,29 +323,16 @@ class CollaborativePlugin extends Plugin {
 		then dealing with thether they are local by ID? Why would we use the localChanges object at all?
 		Just to save the compress step? */
 		const changeSteps = compressedStepsJSON.map(this.compressedStepJSONToStep);
-		const changeStepClientIds = new Array(changeSteps.length).fill(clientId);
 		let didRemoveChange;
 		try {
 			changeSteps.forEach((step)=> {
 				this.authorityDoc = step.apply(this.authorityDoc).doc;
-				if (!this.authorityDoc) { throw new Error('Empty Authority Doc'); }
 				// console.log('authorityDoc', JSON.stringify(this.authorityDoc, null, 2));
 			});
 		} catch (err) {
-			
+			console.log('We should delete ', snapshot.key);
 			didRemoveChange = true;
-			this.startedLoad = false;
-
-			const sortedClientIds = [...this.selections, this.localClientId].sort((foo, bar)=> {
-				if (foo > bar) { return 1; }
-				if (foo < bar) { return -1; }
-				return 0;
-			});
-			console.log(sortedClientIds[0], this.localClientId, sortedClientIds[0] === this.localClientId);
-			if (sortedClientIds[0] === this.localClientId) {
-				console.log('Listening We should delete ', snapshot.key, err);
-				this.firebaseRef.child('changes').child(snapshot.key).remove();
-			}
+			this.firebaseRef.child('changes').child(snapshot.key).remove();
 		}
 
 		if (didRemoveChange) { return null; }
@@ -311,16 +340,14 @@ class CollaborativePlugin extends Plugin {
 		if (clientId === this.localClientId) {
 			/* If the change was made locally */
 			this.onRemoteChange({
-				// isLocal: true,
-				steps: changeSteps,
-				stepClientIds: changeStepClientIds,
+				isLocal: true,
 				meta: meta,
 				changeKey: this.latestKey
 			});
 		} else {
 			/* If the change was made by another client */
 			// const changeSteps = compressedStepsJSON.map(this.compressedStepJSONToStep);
-			
+			const changeStepClientIds = new Array(changeSteps.length).fill(clientId);
 			this.onRemoteChange({
 				steps: changeSteps,
 				stepClientIds: changeStepClientIds,
@@ -330,9 +357,7 @@ class CollaborativePlugin extends Plugin {
 		}
 	}
 	sendCollabChanges(transaction, newState) {
-		// console.log('in send collab toptop');
-		if (!this.startedLoad) { return null; }
-		// console.log('Top of sendCollabChanges');
+
 		const meta = transaction.meta;
 		if (meta.collab$ || meta.rebase || meta.footnote || meta.newSelection || meta.clearTempSelection) {
 			return null;
@@ -511,7 +536,7 @@ class CollaborativePlugin extends Plugin {
 		// console.log('In apply');
 		// this.document.removeStaleSelections();
 		Object.keys(this.selections).forEach((clientId)=> {
-			const originalClientData = this.selections[clientId] ? this.selections[clientId].data : {};
+			const originalClientData = this.selections[clientId].data || {};
 			const expirationTime = (1000 * 60 * 10); // 10 Minutes
 			if (!originalClientData.lastActive
 				|| (originalClientData.lastActive + expirationTime) < new Date().getTime()
@@ -525,7 +550,7 @@ class CollaborativePlugin extends Plugin {
 		if (transaction.docChanged) {
 			// this.document.mapSelection(transaction, editorState);
 			Object.keys(this.selections).forEach((clientId)=> {
-				const originalClientData = this.selections[clientId] ? this.selections[clientId].data : {};
+				const originalClientData = this.selections[clientId].data || {};
 				this.selections[clientId] = this.selections[clientId].map(editorState.doc, transaction.mapping);
 				this.selections[clientId].data = originalClientData;
 			});
