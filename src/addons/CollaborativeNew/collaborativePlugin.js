@@ -1,12 +1,15 @@
-import { AllSelection, EditorState, Plugin } from 'prosemirror-state';
+import { AllSelection, EditorState, Plugin, Selection } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 import { receiveTransaction, sendableSteps } from 'prosemirror-collab';
 import { Step } from 'prosemirror-transform';
+import { Node } from 'prosemirror-model';
 import { compressSelectionJSON, compressStateJSON, compressStepJSON, compressStepsLossy, uncompressSelectionJSON, uncompressStateJSON, uncompressStepJSON } from 'prosemirror-compress';
 import firebase from 'firebase';
 // import CursorType from './CursorType';
 // import DocumentRef from './documentRef';
 
+const TIMESTAMP = { '.sv': 'timestamp' };
+const SAVE_EVERY_N_STEPS = 100;
 
 class CollaborativePlugin extends Plugin {
 	constructor({ pluginKey, firebaseConfig, localClientData, localClientId, editorKey, onClientChange, onStatusChange }) {
@@ -21,6 +24,11 @@ class CollaborativePlugin extends Plugin {
 		this.disconnect = this.disconnect.bind(this);
 		this.decorations = this.decorations.bind(this);
 		this.compressedStepJSONToStep = this.compressedStepJSONToStep.bind(this);
+		this.addClientSelection = this.addClientSelection.bind(this);
+		this.updateClientSelection = this.updateClientSelection.bind(this);
+		this.deleteClientSelection = this.deleteClientSelection.bind(this);
+		this.issueEmptyTransaction = this.issueEmptyTransaction.bind(this);
+		this.view = null;
 
 		/* Setup Prosemirror plugin values */
 		this.spec = {
@@ -35,7 +43,7 @@ class CollaborativePlugin extends Plugin {
 		};
 
 		/* Make passed props accessible */
-		
+
 		this.localClientData = localClientData;
 		this.localClientId = localClientId;
 		this.editorKey = editorKey;
@@ -50,6 +58,7 @@ class CollaborativePlugin extends Plugin {
 
 		/* Vars from DocumentRef */
 		this.latestKey = null;
+		this.selections = {};
 
 		// this.startStepIndex = startStepIndex;
 		// if (!existingApp) {
@@ -218,12 +227,12 @@ class CollaborativePlugin extends Plugin {
 			}
 
 			/* Listen to Selections Change */
-			// const selectionsRef = this.firebaseRef.child('selections');
-			// const selfSelectionRef = selectionsRef.child(this.localClientId);
-			// selfSelectionRef.onDisconnect().remove();
-			// selectionsRef.on('child_added', this.addClientSelection);
-			// selectionsRef.on('child_changed', this.updateClientSelection);
-			// selectionsRef.on('child_removed', this.deleteClientSelection);
+			const selectionsRef = this.firebaseRef.child('selections');
+			const selfSelectionRef = selectionsRef.child(this.localClientId);
+			selfSelectionRef.onDisconnect().remove();
+			selectionsRef.on('child_added', this.addClientSelection);
+			selectionsRef.on('child_changed', this.updateClientSelection);
+			selectionsRef.on('child_removed', this.deleteClientSelection);
 
 			/* Listen to Changes */
 			this.firebaseRef.child('changes')
@@ -313,18 +322,68 @@ class CollaborativePlugin extends Plugin {
 		// There are a few places where we say, 'well it doesnt crash, so just move on'.
 		// Those smell bad and are probably the cause.
 		// Likewise, selection flickering should be properly handled by sending along the localClient versionId,
-		// and not updating unless they are up to date.
+		// and not updating unless they are up to date. Add cursors rather than circles to test.
+		// - An error was created on the last step of a user. When they came back 10 minutes later, there was a bad step.
+		// - If a single tab creates an error, there is no way to realize if the server has the same or differing structure. The user who creates the error is not notified of the error.
+		// - HealDatabase is only ever called on initialization. Never when the error happens live.
 		if (!sendable || sendable.version === this.sendableVersion) { return null; }
 
 		this.sendableVersion = sendable.version;
 		const steps = sendable.steps;
 		const clientId = sendable.clientID;
 		// const { steps, clientID } = sendable;
-		const onStatusChange = this.onStatusChange;
-		this.document.sendChanges({ steps, clientId, meta, newState, onStatusChange });
+		// const onStatusChange = this.onStatusChange;
+		// this.document.sendChanges({ steps, clientId, meta, newState, onStatusChange });
+
+		// const changesRef = this.ref.child('changes');
+		this.latestKey = this.latestKey + 1; /* TODO - why do we increment here, as opposed to listening on firebase? */
+		// console.log('latestKey', this.latestKey);
+		this.selfChanges[this.latestKey] = steps;
+		return this.firebaseRef.child('changes').child(this.latestKey)
+		.transaction((existingBatchedSteps)=> { /* TODO: what does firebase.transaction do? */
+			this.onStatusChange('saving');
+			if (existingBatchedSteps) { return null; }
+			// if (!existingBatchedSteps) {
+			// selfChanges[latestKey + 1] = steps
+			return {
+				s: compressStepsLossy(steps).map((step) => {
+					return compressStepJSON(step.toJSON());
+				}),
+				c: clientId,
+				m: meta,
+				t: TIMESTAMP,
+			};
+			// }
+		}, (error, committed, dataSnapshot)=> {
+			const key = dataSnapshot ? dataSnapshot.key : undefined;
+			if (error) {
+				console.error('updateCollab', error, steps, clientId, key);
+				return null;
+			}
+			// if (!error) { this.onStatusChange('saved'); }
+			this.onStatusChange('saved');
+			// const key = dataSnapshot ? dataSnapshot.key : undefined;
+			// if (error) {
+			// console.error('updateCollab', error, steps, clientId, key);
+			if (committed && key % SAVE_EVERY_N_STEPS === 0 && key > 0) {
+				// this.updateCheckpoint(newState, key);
+				/* Update Checkpoint */
+				// const checkpointRef = this.firebaseRef.child('checkpoint');
+				// const { d } = compressStateJSON(newState.toJSON());
+				this.firebaseRef.child('checkpoint').set({
+					d: compressStateJSON(newState.toJSON()).d,
+					k: key,
+					t: TIMESTAMP
+				});
+			}
+			return true;
+		}, false);
+
+
 		// const recievedClientIds = new Array(steps.length).fill(this.localClientId);
-		this.selfChanges[this.document.latestKey] = steps;
-		return true;
+		/* I don't know about commenting this out. */
+		// this.selfChanges[this.document.latestKey] = steps;
+		// return true;
 	}
 
 	onRemoteChange({ isLocal, steps, stepClientIds, changeKey, meta }) {
@@ -351,6 +410,11 @@ class CollaborativePlugin extends Plugin {
 		/* error on sync. Not sure why out of range positions are syncing */
 		/* in the first place - but it doesn't seem to crash the editor. */
 		/* So, let's just catch it instead and move on. */
+		/* Well - why could position out of range happen? */
+		/* - Three people and you receive a later sync first */
+		/* - multiple steps sent up, and the first one is slower for some reason than the first */
+		/* - Undo issues? */
+		/* I don't quite understand what happens if two syncs send up the same version number */
 		try {
 			const trans = receiveTransaction(this.view.state, receivedSteps, recievedClientIds);
 			if (meta) {
@@ -361,42 +425,116 @@ class CollaborativePlugin extends Plugin {
 			trans.setMeta('receiveDoc', true);
 			this.view.dispatch(trans);
 			delete this.selfChanges[changeKey];
+			return true;
 		} catch (err) {
 			/* Perhaps if we get here, we need to reload the whole doc - because we're out of sync */
-			console.log('In the recieve error place', err);
+			console.error('In the recieve error place', err);
 			return null;
 		}
 	}
 
-	apply = (transaction, state, prevEditorState, editorState) => {
-		this.document.removeStaleSelections();
+	apply(transaction, state, prevEditorState, editorState) {
+		// this.document.removeStaleSelections();
+		Object.keys(this.selections).forEach((clientId)=> {
+			const originalClientData = this.selections[clientId].data || {};
+			const expirationTime = (1000 * 60 * 10); // 10 Minutes
+			if (!originalClientData.lastActive
+				|| (originalClientData.lastActive + expirationTime) < new Date().getTime()
+			) {
+				this.firebaseRef.child('selections').child(clientId).remove();
+				// const clientSelectionRef = selectionsRef.child(clientId);
+				// clientSelectionRef.remove();
+			}
+		});
 
 		if (transaction.docChanged) {
-			this.document.mapSelection(transaction, editorState);
+			// this.document.mapSelection(transaction, editorState);
+			Object.keys(this.selections).forEach((clientId)=> {
+				const originalClientData = this.selections[clientId].data || {};
+				this.selections[clientId] = this.selections[clientId].map(editorState.doc, transaction.mapping);
+				this.selections[clientId].data = originalClientData;
+			});
 		}
 
 		// console.log(transaction, transaction.meta, transaction.selectionSet);
 		// if (transaction.getMeta('pointer')) {
 		const selection = editorState.selection;
 		if (selection instanceof AllSelection === false) {
-			this.document.setSelection(selection);
+			// this.document.setSelection(selection);
+			// const selectionsRef = this.firebaseRef.child('selections');
+			// const selfSelectionRef = selectionsRef.child(this.localClientId);
+			const compressed = compressSelectionJSON(selection.toJSON());
+			compressed.data = this.localClientData;
+			// compressed.data.lastActive has to be rounded to the nearest minute (or some larger value)
+			// If it is updated every millisecond, firebase will see it as constant changes
+			// And you'll get a loop of updates triggering millisecond updates.
+			// - The lastActive is updated anytime a client makes or receives changes.
+			// A client will be active even if they have a tab open and are 'watching'. 
+			const smoothingTimeFactor = 1000 * 60;
+			compressed.data.lastActive = Math.round(new Date().getTime() / smoothingTimeFactor) * smoothingTimeFactor;
+
+			return this.firebaseRef.child('selections').child(this.localClientId).set(compressed);
 		}
 		// }
 
 		return {};
 	}
 
-	updateView = (view) => {
+	updateClientSelection(snapshot) {
+		const clientID = snapshot.key;
+		if (clientID !== this.localClientId) {
+			const compressedSelection = snapshot.val();
+			if (compressedSelection) {
+				try {
+					/* Sometimes, because the selection syncs before the doc, the */
+					/* selection location is larger than the doc size. */
+					/* Math.min the anchor and head to prevent this from being an issue */
+					const docSize = this.view.state.doc.content.size;
+					const correctedSelection = uncompressSelectionJSON(compressedSelection);
+					correctedSelection.anchor = Math.min(docSize, correctedSelection.anchor);
+					correctedSelection.head = Math.min(docSize, correctedSelection.head);
+					this.selections[clientID] = Selection.fromJSON(this.view.state.doc, correctedSelection);
+					this.selections[clientID].data = compressedSelection.data;
+				} catch (error) {
+					console.error('updateClientSelection', error);
+				}
+			} else {
+				delete this.selections[clientID];
+			}
+			this.issueEmptyTransaction();
+		}
+	}
+
+
+	deleteClientSelection(snapshot) {
+		const clientID = snapshot.key;
+		delete this.selections[clientID];
+		if (this.onClientChange) {
+			this.onClientChange(Object.keys(this.selections).map((key)=> {
+				return this.selections[key].data;
+			}));
+		}
+		this.issueEmptyTransaction();
+	}
+	issueEmptyTransaction() {
+		this.view.dispatch(this.view.state.tr);
+	}
+
+	addClientSelection(snapshot) {
+		this.updateClientSelection(snapshot);
+		if (this.onClientChange) {
+			this.onClientChange(Object.keys(this.selections).map((key)=> {
+				return this.selections[key].data;
+			}));
+		}
+	}
+
+	updateView(view) {
 		this.view = view;
 		this.loadDocument();
 		return {
-			update: (newView, prevState) => {
-				this.view = newView;
-			},
-			destroy: () => {
-				this.view = null;
-				// firebase.app().delete();
-			}
+			update: (newView) => { this.view = newView; },
+			destroy: () => { this.view = null; }
 		};
 	}
 
@@ -427,17 +565,17 @@ class CollaborativePlugin extends Plugin {
 	// 	});
 	// }
 
-	disconnect = ()=> {
+	disconnect() {
 		this.firebaseApp.delete();
 	}
 
-	decorations = (state) => {
-		if (!this.document) { return null; }
+	decorations(state) {
+		// if (!this.document) { return null; }
 
 		/* Remove inactive cursor bubbles */
-		const selectionKeys = Object.keys(this.document.selections);
+		const selectionKeys = Object.keys(this.selections);
 		const existingElements = document.getElementsByClassName('left-cursor');
-		for (let index = 0; index < existingElements.length; index++) {
+		for (let index = 0; index < existingElements.length; index += 1) {
 			const domItemClientId = existingElements[index].id.replace('cursor-', '');
 			const itemIndex = selectionKeys.indexOf(domItemClientId);
 			if (itemIndex === -1) {
@@ -446,7 +584,7 @@ class CollaborativePlugin extends Plugin {
 		}
 
 		return DecorationSet.create(state.doc, selectionKeys.map((clientId)=> {
-			const selection = this.document.selections[clientId];
+			const selection = this.selections[clientId];
 			const data = selection.data || {};
 			if (!selection) {
 				return null;

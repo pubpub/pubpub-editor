@@ -20,9 +20,9 @@ class DocumentRef {
 		this.selections = {};
 	}
 
-	compressedStepJSONToStep = (compressedStepJSON) => {
-		return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
-	}
+	// compressedStepJSONToStep = (compressedStepJSON) => {
+	// 	return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
+	// }
 
 	// getCheckpoint = (isFirstLoad) => {
 	// 	const checkpointRef = this.ref.child('checkpoint');
@@ -67,130 +67,130 @@ class DocumentRef {
 	// 	});
 	// }
 
-	sendChanges = ({ steps, clientID, meta, newState, onStatusChange }) => {
-		const changesRef = this.ref.child('changes');
-		this.latestKey = this.latestKey + 1;
-		console.log('latestKey', this.latestKey);
-		return changesRef.child(this.latestKey).transaction(
-			(existingBatchedSteps)=> {
-				onStatusChange('saving');
-				if (!existingBatchedSteps) {
-					// selfChanges[latestKey + 1] = steps
-					return {
-						s: compressStepsLossy(steps)
-						.map((step) => {
-							return compressStepJSON(step.toJSON());
-						}),
-						c: clientID,
-						m: meta,
-						t: TIMESTAMP,
-					};
-				}
-			},
-			(error, committed, dataSnapshot)=> {
-				if (!error) { onStatusChange('saved'); }
-				const key = dataSnapshot ? dataSnapshot.key : undefined;
-				if (error) {
-					console.error('updateCollab', error, steps, clientID, key);
-				} else if (committed && key % SAVE_EVERY_N_STEPS === 0 && key > 0) {
-					this.updateCheckpoint(newState, key);
-				}
-			},
-			false);
-	}
+	// sendChanges = ({ steps, clientID, meta, newState, onStatusChange }) => {
+	// 	const changesRef = this.ref.child('changes');
+	// 	this.latestKey = this.latestKey + 1;
+	// 	console.log('latestKey', this.latestKey);
+	// 	return changesRef.child(this.latestKey).transaction(
+	// 		(existingBatchedSteps)=> {
+	// 			onStatusChange('saving');
+	// 			if (!existingBatchedSteps) {
+	// 				// selfChanges[latestKey + 1] = steps
+	// 				return {
+	// 					s: compressStepsLossy(steps)
+	// 					.map((step) => {
+	// 						return compressStepJSON(step.toJSON());
+	// 					}),
+	// 					c: clientID,
+	// 					m: meta,
+	// 					t: TIMESTAMP,
+	// 				};
+	// 			}
+	// 		},
+	// 		(error, committed, dataSnapshot)=> {
+	// 			if (!error) { onStatusChange('saved'); }
+	// 			const key = dataSnapshot ? dataSnapshot.key : undefined;
+	// 			if (error) {
+	// 				console.error('updateCollab', error, steps, clientID, key);
+	// 			} else if (committed && key % SAVE_EVERY_N_STEPS === 0 && key > 0) {
+	// 				this.updateCheckpoint(newState, key);
+	// 			}
+	// 		},
+	// 		false);
+	// }
 
-	updateCheckpoint = (newState, key) => {
-		const checkpointRef = this.ref.child('checkpoint');
-		const { d } = compressStateJSON(newState.toJSON());
-		checkpointRef.set({ d, k: key, t: TIMESTAMP });
-	}
+	// updateCheckpoint = (newState, key) => {
+	// 	const checkpointRef = this.ref.child('checkpoint');
+	// 	const { d } = compressStateJSON(newState.toJSON());
+	// 	checkpointRef.set({ d, k: key, t: TIMESTAMP });
+	// }
 
-	listenToChanges = (onRemoteChange) => {
-		const changesRef = this.ref.child('changes');
+	// listenToChanges = (onRemoteChange) => {
+	// 	const changesRef = this.ref.child('changes');
 
-		changesRef.startAt(null, String(this.latestKey + 1))
-		.on('child_added', (snapshot) => {
-			this.latestKey = Number(snapshot.key);
-			const { s: compressedStepsJSON, c: clientID, m: meta } = snapshot.val();
-			const isLocal = (clientID === this.localClientId);
-			if (isLocal) {
-				onRemoteChange({ isLocal, meta, changeKey: this.latestKey });
-			} else {
-				const steps = compressedStepsJSON.map(this.compressedStepJSONToStep);
-				const stepClientIDs = new Array(steps.length).fill(clientID);
-				onRemoteChange({ steps, stepClientIDs, meta, changeKey: this.latestKey });
-			}
-		});
-	}
+	// 	changesRef.startAt(null, String(this.latestKey + 1))
+	// 	.on('child_added', (snapshot) => {
+	// 		this.latestKey = Number(snapshot.key);
+	// 		const { s: compressedStepsJSON, c: clientID, m: meta } = snapshot.val();
+	// 		const isLocal = (clientID === this.localClientId);
+	// 		if (isLocal) {
+	// 			onRemoteChange({ isLocal, meta, changeKey: this.latestKey });
+	// 		} else {
+	// 			const steps = compressedStepsJSON.map(this.compressedStepJSONToStep);
+	// 			const stepClientIDs = new Array(steps.length).fill(clientID);
+	// 			onRemoteChange({ steps, stepClientIDs, meta, changeKey: this.latestKey });
+	// 		}
+	// 	});
+	// }
 
-	removeSelfSelection = ()=> {
-		const selectionsRef = this.ref.child('selections');
-		const selfSelectionRef = selectionsRef.child(this.localClientId);
-		selfSelectionRef.remove();
-	}
+	// removeSelfSelection = ()=> {
+	// 	const selectionsRef = this.ref.child('selections');
+	// 	const selfSelectionRef = selectionsRef.child(this.localClientId);
+	// 	selfSelectionRef.remove();
+	// }
 
-	listenToSelections = (onClientChange) => {
-		const selectionsRef = this.ref.child('selections');
+	// listenToSelections = (onClientChange) => {
+	// 	const selectionsRef = this.ref.child('selections');
 
-		const selfSelectionRef = selectionsRef.child(this.localClientId);
-		selfSelectionRef.onDisconnect().remove();
+	// 	const selfSelectionRef = selectionsRef.child(this.localClientId);
+	// 	selfSelectionRef.onDisconnect().remove();
 
-		this.onClientChange = onClientChange;
-		selectionsRef.on('child_added', this.addClientSelection);
-		selectionsRef.on('child_changed', this.updateClientSelection);
-		selectionsRef.on('child_removed', this.deleteClientSelection);
-	}
+	// 	this.onClientChange = onClientChange;
+	// 	selectionsRef.on('child_added', this.addClientSelection);
+	// 	selectionsRef.on('child_changed', this.updateClientSelection);
+	// 	selectionsRef.on('child_removed', this.deleteClientSelection);
+	// }
 
-	issueEmptyTransaction = () => {
-		this.view.dispatch(this.view.state.tr);
-	}
-
-
-	updateClientSelection = (snapshot) => {
-		const clientID = snapshot.key;
-		if (clientID !== this.localClientId) {
-			const compressedSelection = snapshot.val();
-			if (compressedSelection) {
-				try {
-					/* Sometimes, because the selection syncs before the doc, the */
-					/* selection location is larger than the doc size. */
-					/* Math.min the anchor and head to prevent this from being an issue */
-					const docSize = this.view.state.doc.content.size;
-					const correctedSelection = uncompressSelectionJSON(compressedSelection);
-					correctedSelection.anchor = Math.min(docSize, correctedSelection.anchor);
-					correctedSelection.head = Math.min(docSize, correctedSelection.head);
-					this.selections[clientID] = Selection.fromJSON(this.view.state.doc, correctedSelection);
-					this.selections[clientID].data = compressedSelection.data;
-				} catch (error) {
-					console.warn('updateClientSelection', error);
-				}
-			} else {
-				delete this.selections[clientID];
-			}
-			this.issueEmptyTransaction();
-		}
-	}
+	// issueEmptyTransaction = () => {
+	// 	this.view.dispatch(this.view.state.tr);
+	// }
 
 
-	deleteClientSelection = (snapshot) => {
-		const clientID = snapshot.key;
-		delete this.selections[clientID];
-		if (this.onClientChange) {
-			this.onClientChange(Object.keys(this.selections).map((key)=> {
-				return this.selections[key].data;
-			}));
-		}
-		this.issueEmptyTransaction();
-	}
+	// updateClientSelection = (snapshot) => {
+	// 	const clientID = snapshot.key;
+	// 	if (clientID !== this.localClientId) {
+	// 		const compressedSelection = snapshot.val();
+	// 		if (compressedSelection) {
+	// 			try {
+	// 				/* Sometimes, because the selection syncs before the doc, the */
+	// 				/* selection location is larger than the doc size. */
+	// 				/* Math.min the anchor and head to prevent this from being an issue */
+	// 				const docSize = this.view.state.doc.content.size;
+	// 				const correctedSelection = uncompressSelectionJSON(compressedSelection);
+	// 				correctedSelection.anchor = Math.min(docSize, correctedSelection.anchor);
+	// 				correctedSelection.head = Math.min(docSize, correctedSelection.head);
+	// 				this.selections[clientID] = Selection.fromJSON(this.view.state.doc, correctedSelection);
+	// 				this.selections[clientID].data = compressedSelection.data;
+	// 			} catch (error) {
+	// 				console.warn('updateClientSelection', error);
+	// 			}
+	// 		} else {
+	// 			delete this.selections[clientID];
+	// 		}
+	// 		this.issueEmptyTransaction();
+	// 	}
+	// }
 
-	addClientSelection = (snapshot) => {
-		this.updateClientSelection(snapshot);
-		if (this.onClientChange) {
-			this.onClientChange(Object.keys(this.selections).map((key)=> {
-				return this.selections[key].data;
-			}));
-		}
-	}
+
+	// deleteClientSelection = (snapshot) => {
+	// 	const clientID = snapshot.key;
+	// 	delete this.selections[clientID];
+	// 	if (this.onClientChange) {
+	// 		this.onClientChange(Object.keys(this.selections).map((key)=> {
+	// 			return this.selections[key].data;
+	// 		}));
+	// 	}
+	// 	this.issueEmptyTransaction();
+	// }
+
+	// addClientSelection = (snapshot) => {
+	// 	this.updateClientSelection(snapshot);
+	// 	if (this.onClientChange) {
+	// 		this.onClientChange(Object.keys(this.selections).map((key)=> {
+	// 			return this.selections[key].data;
+	// 		}));
+	// 	}
+	// }
 
 	setSelection = (selection) => {
 		const selectionsRef = this.ref.child('selections');
