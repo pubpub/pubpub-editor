@@ -58,17 +58,14 @@ class CollaborativePlugin extends Plugin {
 		/* Bind plugin functions */
 		this.loadDocument = this.loadDocument.bind(this);
 		this.sendCollabChanges = this.sendCollabChanges.bind(this);
-		this.onRemoteChange = this.onRemoteChange.bind(this);
 		this.apply = this.apply.bind(this);
 		this.updateView = this.updateView.bind(this);
 		this.disconnect = this.disconnect.bind(this);
 		this.decorations = this.decorations.bind(this);
-		// this.compressedStepJSONToStep = this.compressedStepJSONToStep.bind(this);
 		this.addClientSelection = this.addClientSelection.bind(this);
 		this.updateClientSelection = this.updateClientSelection.bind(this);
 		this.deleteClientSelection = this.deleteClientSelection.bind(this);
 		this.issueEmptyTransaction = this.issueEmptyTransaction.bind(this);
-		// this.restartCollab = this.restartCollab.bind(this);
 		this.listenToChanges = this.listenToChanges.bind(this);
 
 		/* Make passed props accessible */
@@ -78,16 +75,10 @@ class CollaborativePlugin extends Plugin {
 		this.onClientChange = onClientChange;
 		this.onStatusChange = onStatusChange;
 
-
 		/* Init plugin variables */
-		// this.selfChanges = {};
 		this.startedLoad = false;
-		// this.latestKey = null;
-		// this.latestRemoteKey = null;
-		// this.selections = {};
 		this.view = null;
-		this.authorityDoc = null;
-		// this.setChangeListener = false;
+		this.mostRecentRemoteKey = null;
 
 		/* Setup Prosemirror plugin values */
 		this.spec = {
@@ -127,40 +118,9 @@ class CollaborativePlugin extends Plugin {
 		});
 	}
 
-	// compressedStepJSONToStep(compressedStepJSON) {
-	// 	return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
-	// }
-
 	disconnect() {
 		this.firebaseApp.delete();
 	}
-
-	// restartCollab() {
-	// 	console.log('Top of restartCollab');
-	// 	if (!this.startedLoad) { return null; }
-	// 	/* Unbind firebase listening that will be */
-	// 	/* re-initialized in loadDocument */
-	// 	console.log('**Calling off once');
-	// 	this.firebaseRef.child('changes').off('child_added', this.listenToChanges);
-	// 	const selectionsRef = this.firebaseRef.child('selections');
-	// 	selectionsRef.off('child_added', this.addClientSelection);
-	// 	selectionsRef.off('child_changed', this.updateClientSelection);
-	// 	selectionsRef.off('child_removed', this.deleteClientSelection);
-
-	// 	/* Re-initialize plugin variables and reload */
-	// 	this.selfChanges = {};
-	// 	this.startedLoad = false;
-	// 	this.latestKey = null;
-	// 	this.latestRemoteKey = null;
-	// 	// this.selections = {};
-	// 	Object.keys(this.selections).forEach((selectionId)=> {
-	// 		this.selections[selectionId] = undefined;
-	// 	});
-	// 	this.authorityDoc = null;
-	// 	this.setChangeListener = false;
-	// 	this.loadDocument();
-	// 	return true;
-	// }
 
 	loadDocument() {
 		if (this.startedLoad) { return null; }
@@ -170,17 +130,15 @@ class CollaborativePlugin extends Plugin {
 		/* Begin by loading the checkpoint if available */
 		return this.firebaseRef.child('checkpoint').once('value')
 		.then((checkpointSnapshot) => {
-			const checkpointSnapshotVal = checkpointSnapshot.val() || {};
-			const checkpointSnapshotDoc = checkpointSnapshotVal.d;
-			const checkpointSnapshotKey = checkpointSnapshotVal.k;
-			const checkpointKey = Number(checkpointSnapshotKey) || 0;
-			const newDoc = checkpointSnapshotDoc && Node.fromJSON(this.view.state.schema, uncompressStateJSON({ d: checkpointSnapshotDoc }).doc);
-			// this.latestKey = checkpointKey;
+			const checkpointSnapshotVal = checkpointSnapshot.val() || { k: '0', d: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] } };
 
-			/* Get all changes since checkpoint (or since 0 if no checkpoint) */
+			this.mostRecentRemoteKey = Number(checkpointSnapshotVal.k);
+			const newDoc = Node.fromJSON(this.view.state.schema, uncompressStateJSON({ d: checkpointSnapshotVal.d }).doc);
+
+			/* Get all changes since mostRecentRemoteKey */
 			const getChanges = this.firebaseRef.child('changes')
 			.orderByKey()
-			.startAt(String(checkpointKey + 1))
+			.startAt(String(this.mostRecentRemoteKey + 1))
 			.once('value');
 
 			return Promise.all([newDoc, getChanges]);
@@ -189,87 +147,43 @@ class CollaborativePlugin extends Plugin {
 			const changesSnapshotVal = changesSnapshot.val() || {};
 			const steps = [];
 			const stepClientIds = [];
-			// const keys = Object.keys(changesSnapshotVal);
-			// const stepsWithKeys = [];
-			// this.latestKey = keys.length ? Math.max(...keys) : this.latestKey;
-			// this.latestRemoteKey = this.latestKey;
+			const keys = Object.keys(changesSnapshotVal);
+			this.mostRecentRemoteKey = keys.length ? Math.max(...keys) : this.mostRecentRemoteKey;
+
+			/* Uncompress steps and add stepClientIds */
 			Object.keys(changesSnapshotVal).forEach((key)=> {
 				const compressedStepsJSON = changesSnapshotVal[key].s;
 				const uncompressedSteps = compressedStepsJSON.map((compressedStepJSON)=> {
 					return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
 				});
-				// stepsWithKeys.push({ key, steps: uncompressedSteps });
 				steps.push(...uncompressedSteps);
 				stepClientIds.push(...new Array(compressedStepsJSON.length).fill(changesSnapshotVal[key].c));
 			});
 
-			const docToUse = newDoc || Node.fromJSON(this.view.state.schema, { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] });
+			/* Update the prosemirror view with new doc */
 			this.view.updateState(EditorState.create({
-				doc: docToUse,
+				doc: newDoc,
 				plugins: this.view.state.plugins,
 			}));
-			this.authorityDoc = docToUse;
 
-			/* Test steps with authority doc. */
-			/* Don't need this because we never write something bad to the server */
-			// stepsWithKeys.sort((foo, bar)=> {
-			// 	if (Number(foo.key) < Number(bar.key)) { return -1; }
-			// 	if (Number(foo.key) > Number(bar.key)) { return 1; }
-			// 	return 0;
-			// }).forEach((stepObject)=> {
-			// 	try {
-			// 		stepObject.steps.forEach((step)=> {
-			// 			this.authorityDoc = step.apply(this.authorityDoc).doc;
-			// 			if (!this.authorityDoc) { throw new Error(`Invalid Authority Doc ${stepObject.key}`); }
-			// 		});
-			// 	} catch (err) {
-			// 		throw new Error(`Invalid Authority Doc ${stepObject.key}`);
-			// 	}
-			// });
-			console.log(steps);
 			const trans = receiveTransaction(this.view.state, steps, stepClientIds);
-			console.log(trans);
-			// trans.setMeta('receiveDoc', true);
 			this.view.dispatch(trans);
-			console.log('LoadDoc10');
-			// return true;
-			/* Why is this being fired more than once? That needs to be resolved first */
-			// if (!this.setChangeListener) {
-				/* Listen to Selections Change */
-				// const selectionsRef = this.firebaseRef.child('selections');
-				// selectionsRef.child(this.localClientId).onDisconnect().remove();
-				// selectionsRef.on('child_added', this.addClientSelection);
-				// selectionsRef.on('child_changed', this.updateClientSelection);
-				// selectionsRef.on('child_removed', this.deleteClientSelection);
 
-				/* Listen to Changes */
-				// console.log('**Calling on once');
-				return this.firebaseRef.child('changes')
-				.orderByKey()
-				.startAt(String(this.latestKey + 1))
-				.on('child_added', this.listenToChanges);
-				this.setChangeListener = true;
-			// } else {
-			// 	console.log('Ya - were still getting multiple calls for On');
-			// }
+			/* Listen to Selections Change */
+			// const selectionsRef = this.firebaseRef.child('selections');
+			// selectionsRef.child(this.localClientId).onDisconnect().remove();
+			// selectionsRef.on('child_added', this.addClientSelection);
+			// selectionsRef.on('child_changed', this.updateClientSelection);
+			// selectionsRef.on('child_removed', this.deleteClientSelection);
 
-			// return true;
+			/* Listen to Changes */
+			return this.firebaseRef.child('changes')
+			.orderByKey()
+			.startAt(String(this.mostRecentRemoteKey + 1))
+			.on('child_added', this.listenToChanges);
 		})
 		.catch((err)=> {
-			console.error('In catch with ', err, err.message);
-			// if (err.message.indexOf('Invalid Authority Doc') > -1) {
-			// 	const stepToDelete = Number(err.message.replace('Invalid Authority Doc ', ''));
-			// 	const sortedClientIds = [...Object.keys(this.selections), this.localClientId].sort((foo, bar)=> {
-			// 		if (foo > bar) { return 1; }
-			// 		if (foo < bar) { return -1; }
-			// 		return 0;
-			// 	});
-			// 	console.log(this.selections, sortedClientIds, this.localClientId);
-			// 	if (sortedClientIds[0] === this.localClientId) {
-			// 		console.log('Loading We should delete ', stepToDelete);
-			// 		this.firebaseRef.child('changes').child(stepToDelete).remove();
-			// 	}
-			// }
+			console.error('In loadDocument Error with ', err, err.message);
 		});
 	}
 
@@ -277,8 +191,7 @@ class CollaborativePlugin extends Plugin {
 		/* On listen, take the steps, apply them to your doc. If they are bad, restart your doc. */
 		/* What about rebasing them first though? Isn't there a confirmed thing here? */
 		if (!this.startedLoad) { console.log('You shouldnt be here!'); return null; }
-
-		this.latestKey = Number(snapshot.key);
+		this.mostRecentRemoteKey = Number(snapshot.key);
 		const snapshotVal = snapshot.val();
 		const compressedStepsJSON = snapshotVal.s;
 		const clientId = snapshotVal.c;
@@ -288,89 +201,18 @@ class CollaborativePlugin extends Plugin {
 			return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
 		});
 		const newStepsClientIds = new Array(newSteps.length).fill(clientId);
-		// let didRemoveChange;
-		// try {
-		// 	changeSteps.forEach((step)=> {
-		// 		this.authorityDoc = step.apply(this.authorityDoc).doc;
-		// 		if (!this.authorityDoc) { throw new Error('Empty Authority Doc'); }
-		// 	});
-		// } catch (err) {
-		// 	didRemoveChange = true;
-
-		// 	const sortedClientIds = [...Object.keys(this.selections), this.localClientId].sort((foo, bar)=> {
-		// 		if (foo > bar) { return 1; }
-		// 		if (foo < bar) { return -1; }
-		// 		return 0;
-		// 	});
-		// 	console.log(sortedClientIds[0], this.localClientId, sortedClientIds[0] === this.localClientId);
-		// 	if (sortedClientIds[0] === this.localClientId) {
-		// 		console.log('Listening We should delete ', snapshot.key, err);
-		// 		this.firebaseRef.child('changes').child(snapshot.key).remove();
-		// 	}
-		// }
-
-		// if (didRemoveChange) { return null; }
-
-		/* TODO: This if statement doesn't seem quite right. Shouldnt we be sending the changes, and 
-		then dealing with thether they are local by ID? Why would we use the localChanges object at all?
-		Just to save the compress step? */
-		// const changes = clientId === this.localClientId
-		// 	? {
-		// 		isLocal: true,
-		// 		steps: changeSteps,
-		// 		stepClientIds: changeStepClientIds,
-		// 		meta: meta,
-		// 		changeKey: this.latestKey
-		// 	}
-		// 	: {
-		// 		steps: changeSteps,
-		// 		stepClientIds: changeStepClientIds,
-		// 		meta: meta,
-		// 		changeKey: this.latestKey
-		// 	};
-		// return this.onRemoteChange(changes);
-		// console.log(this.selfChanges, changeKey);
-		// const receivedSteps = isLocal
-		// 	? this.selfChanges[changeKey]
-		// 	: steps;
-		// const recievedClientIds = isLocal
-		// 	? new Array(receivedSteps.length).fill(this.localClientId)
-		// 	: stepClientIds;
-
-		/* receiveTransaction sometimes throws a 'Position out of Range' */
-		/* error on sync. Not sure why out of range positions are syncing */
-		/* in the first place - but it doesn't seem to crash the editor. */
-		/* So, let's just catch it instead and move on. */
-		/* Well - why could position out of range happen? */
-		/* - Three people and you receive a later sync first */
-		/* - multiple steps sent up, and the first one is slower for some reason than the first */
-		/* - Undo issues? */
-		/* I don't quite understand what happens if two syncs send up the same version number */
-
-		/* I'm going to comment this try - because really this error should never happen - given */
-		/* we are testing against the authority doc */
-		// try {
 		const trans = receiveTransaction(this.view.state, newSteps, newStepsClientIds);
+
 		if (meta) {
 			Object.keys(meta).forEach((metaKey)=> {
 				trans.setMeta(metaKey, meta[metaKey]);
 			});
 		}
-		// trans.setMeta('receiveDoc', true);
+
 		return this.view.dispatch(trans);
-		// delete this.selfChanges[changeKey];
-		// this.latestRemoteKey = changeKey;
-		// return true;
-		// } catch (err) {
-		// /* Perhaps if we get here, we need to reload the whole doc - because we're out of sync */
-		// 	console.error('In the recieve error place', err);
-		// 	return null;
-		// }
 	}
 
 	sendCollabChanges(transaction, newState) {
-		if (!this.startedLoad) { console.log('You shouldnt be here!'); return null; }
-
 		const meta = transaction.meta;
 		if (meta.collab$ || meta.rebase || meta.footnote || meta.newSelection || meta.clearTempSelection) {
 			return null;
@@ -378,58 +220,41 @@ class CollaborativePlugin extends Plugin {
 
 		/* Don't send certain keys with to firebase */
 		Object.keys(meta).forEach((key)=> {
-			if (key.indexOf('$') > -1
-				|| key === 'addToHistory'
-				|| key === 'pointer'
-			) {
+			if (key.indexOf('$') > -1 || key === 'addToHistory' || key === 'pointer') {
 				delete meta[key];
 			}
 		});
 
 		const sendable = sendableSteps(newState);
+		console.log(sendable);
+		if (!sendable || this.ongoingTransaction) { return null; }
 
-		// Do not perform if sendable.version is duplicated.
-		// This seems like a bug. Sendable.version might be wrong becasue of race condition?
-		// ***************
-		// TODO! Pick up here!
-		// It seems that the bug may be because of onreceive race conditions. 
-		// Try setting up a rig where you have big delays, and can test all sorts of race conditions, and how they're handled
-		// There are a few places where we say, 'well it doesnt crash, so just move on'.
-		// Those smell bad and are probably the cause.
-		// Likewise, selection flickering should be properly handled by sending along the localClient versionId,
-		// and not updating unless they are up to date. Add cursors rather than circles to test.
-		// - An error was created on the last step of a user. When they came back 10 minutes later, there was a bad step.
-		// - If a single tab creates an error, there is no way to realize if the server has the same or differing structure. The user who creates the error is not notified of the error.
-		// - HealDatabase is only ever called on initialization. Never when the error happens live.
-		if (!sendable || sendable.version === this.sendableVersion) { return null; }
-
-		this.sendableVersion = sendable.version;
+		this.ongoingTransaction = true;
 		const steps = sendable.steps;
 		const clientId = sendable.clientID;
-		this.latestKey = this.latestKey + 1; /* TODO - why do we increment here, as opposed to listening on firebase? */
-		this.selfChanges[this.latestKey] = steps;
 
-		return this.firebaseRef.child('changes').child(this.latestKey)
-		.transaction((existingBatchedSteps)=> { /* TODO: what does firebase.transaction do? */
+		return this.firebaseRef.child('changes').child(this.mostRecentRemoteKey + 1)
+		.transaction((existingRemoteSteps)=> {
 			this.onStatusChange('saving');
-
-			if (existingBatchedSteps) { return null; }
+			if (existingRemoteSteps) { return null; }
 			return {
-				s: compressStepsLossy(steps).map((step) => {
+				s: steps.map((step) => {
 					return compressStepJSON(step.toJSON());
 				}),
 				c: clientId,
 				m: meta,
 				t: TIMESTAMP,
 			};
-		}, (error, committed, dataSnapshot)=> {
-			const key = dataSnapshot ? dataSnapshot.key : undefined;
+		}, (error, committed, snapshot)=> {
 			if (error) {
-				console.error('updateCollab', error, steps, clientId, key);
+				console.error('Error in sendCollab transaction', error, steps, clientId);
 				return null;
 			}
 
+			this.ongoingTransaction = false;
 			this.onStatusChange('saved');
+
+			const key = snapshot.key;
 			if (committed && key % SAVE_EVERY_N_STEPS === 0 && key > 0) {
 				/* Update Checkpoint */
 				this.firebaseRef.child('checkpoint').set({
@@ -440,46 +265,6 @@ class CollaborativePlugin extends Plugin {
 			}
 			return true;
 		}, false);
-	}
-
-	onRemoteChange({ isLocal, steps, stepClientIds, changeKey, meta }) {
-		console.log(this.selfChanges, changeKey);
-		const receivedSteps = isLocal
-			? this.selfChanges[changeKey]
-			: steps;
-		const recievedClientIds = isLocal
-			? new Array(receivedSteps.length).fill(this.localClientId)
-			: stepClientIds;
-
-		/* receiveTransaction sometimes throws a 'Position out of Range' */
-		/* error on sync. Not sure why out of range positions are syncing */
-		/* in the first place - but it doesn't seem to crash the editor. */
-		/* So, let's just catch it instead and move on. */
-		/* Well - why could position out of range happen? */
-		/* - Three people and you receive a later sync first */
-		/* - multiple steps sent up, and the first one is slower for some reason than the first */
-		/* - Undo issues? */
-		/* I don't quite understand what happens if two syncs send up the same version number */
-
-		/* I'm going to comment this try - because really this error should never happen - given */
-		/* we are testing against the authority doc */
-		// try {
-		const trans = receiveTransaction(this.view.state, receivedSteps, recievedClientIds);
-		if (meta) {
-			Object.keys(meta).forEach((metaKey)=> {
-				trans.setMeta(metaKey, meta[metaKey]);
-			});
-		}
-		// trans.setMeta('receiveDoc', true);
-		this.view.dispatch(trans);
-		delete this.selfChanges[changeKey];
-		this.latestRemoteKey = changeKey;
-		return true;
-		// } catch (err) {
-		// /* Perhaps if we get here, we need to reload the whole doc - because we're out of sync */
-		// 	console.error('In the recieve error place', err);
-		// 	return null;
-		// }
 	}
 
 	apply(transaction, state, prevEditorState, editorState) {
