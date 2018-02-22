@@ -21,6 +21,9 @@ import CursorType from './CursorType';
 // apply update
 // update cursor position
 // Don't write cursor position unless you are up to date with server
+// If your write fails (because it can't be merged), you restart the doc, and toss out your changes.
+// You still keep the authority doc around because you may have added things to your write that are no good...
+// 	Server has ABC, you have ABD, and ABDC doesn't fly.
 
 
 // Okay - so a delay in sendChanges causes the steps to show up out of order.
@@ -60,12 +63,12 @@ class CollaborativePlugin extends Plugin {
 		this.updateView = this.updateView.bind(this);
 		this.disconnect = this.disconnect.bind(this);
 		this.decorations = this.decorations.bind(this);
-		this.compressedStepJSONToStep = this.compressedStepJSONToStep.bind(this);
+		// this.compressedStepJSONToStep = this.compressedStepJSONToStep.bind(this);
 		this.addClientSelection = this.addClientSelection.bind(this);
 		this.updateClientSelection = this.updateClientSelection.bind(this);
 		this.deleteClientSelection = this.deleteClientSelection.bind(this);
 		this.issueEmptyTransaction = this.issueEmptyTransaction.bind(this);
-		this.restartCollab = this.restartCollab.bind(this);
+		// this.restartCollab = this.restartCollab.bind(this);
 		this.listenToChanges = this.listenToChanges.bind(this);
 
 		/* Make passed props accessible */
@@ -77,14 +80,14 @@ class CollaborativePlugin extends Plugin {
 
 
 		/* Init plugin variables */
-		this.selfChanges = {};
+		// this.selfChanges = {};
 		this.startedLoad = false;
-		this.latestKey = null;
-		this.latestRemoteKey = null;
-		this.selections = {};
+		// this.latestKey = null;
+		// this.latestRemoteKey = null;
+		// this.selections = {};
 		this.view = null;
 		this.authorityDoc = null;
-		this.setChangeListener = false;
+		// this.setChangeListener = false;
 
 		/* Setup Prosemirror plugin values */
 		this.spec = {
@@ -94,9 +97,9 @@ class CollaborativePlugin extends Plugin {
 				apply: this.apply
 			},
 		};
-		this.props = {
-			decorations: this.decorations
-		};
+		// this.props = {
+		// 	decorations: this.decorations
+		// };
 
 		/* Check for firebaseConfig */
 		if (!firebaseConfig) {
@@ -124,76 +127,57 @@ class CollaborativePlugin extends Plugin {
 		});
 	}
 
-	compressedStepJSONToStep(compressedStepJSON) {
-		return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
-	}
+	// compressedStepJSONToStep(compressedStepJSON) {
+	// 	return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
+	// }
 
 	disconnect() {
 		this.firebaseApp.delete();
 	}
 
-	restartCollab() {
-		console.log('Top of restartCollab');
-		if (!this.startedLoad) { return null; }
-		/* Unbind firebase listening that will be */
-		/* re-initialized in loadDocument */
-		console.log('**Calling off once');
-		this.firebaseRef.child('changes').off('child_added', this.listenToChanges);
-		const selectionsRef = this.firebaseRef.child('selections');
-		selectionsRef.off('child_added', this.addClientSelection);
-		selectionsRef.off('child_changed', this.updateClientSelection);
-		selectionsRef.off('child_removed', this.deleteClientSelection);
+	// restartCollab() {
+	// 	console.log('Top of restartCollab');
+	// 	if (!this.startedLoad) { return null; }
+	// 	/* Unbind firebase listening that will be */
+	// 	/* re-initialized in loadDocument */
+	// 	console.log('**Calling off once');
+	// 	this.firebaseRef.child('changes').off('child_added', this.listenToChanges);
+	// 	const selectionsRef = this.firebaseRef.child('selections');
+	// 	selectionsRef.off('child_added', this.addClientSelection);
+	// 	selectionsRef.off('child_changed', this.updateClientSelection);
+	// 	selectionsRef.off('child_removed', this.deleteClientSelection);
 
-		/* Re-initialize plugin variables and reload */
-		this.selfChanges = {};
-		this.startedLoad = false;
-		this.latestKey = null;
-		this.latestRemoteKey = null;
-		// this.selections = {};
-		Object.keys(this.selections).forEach((selectionId)=> {
-			this.selections[selectionId] = undefined;
-		});
-		this.authorityDoc = null;
-		this.setChangeListener = false;
-		this.loadDocument();
-		return true;
-	}
+	// 	/* Re-initialize plugin variables and reload */
+	// 	this.selfChanges = {};
+	// 	this.startedLoad = false;
+	// 	this.latestKey = null;
+	// 	this.latestRemoteKey = null;
+	// 	// this.selections = {};
+	// 	Object.keys(this.selections).forEach((selectionId)=> {
+	// 		this.selections[selectionId] = undefined;
+	// 	});
+	// 	this.authorityDoc = null;
+	// 	this.setChangeListener = false;
+	// 	this.loadDocument();
+	// 	return true;
+	// }
 
 	loadDocument() {
 		if (this.startedLoad) { return null; }
-		console.log('Top of loadDocument');
+		console.log('wtf', this.startedLoad);
 		this.startedLoad = true;
 
-		/* Listen for remove changes in case we need to restart the doc */
-		this.firebaseRef.child('changes').once('child_removed', this.restartCollab);
-
-
-		// This doesn't work. We need a way for the client to specify it is the authority.
-
-		/* Begin by adding yourself to selections */
-		return this.firebaseRef.child('selections').child(this.localClientId).set(0)
-		.then(()=> {
-			return this.firebaseRef.child('selections').once('value');
-		})
-		.then((snapshot)=> {
-			const snapshotVal = snapshot.val() || {};
-			this.selections = {};
-			Object.keys(snapshotVal).forEach((key)=> {
-				this.selections[key] = 0;
-			});
-			console.log('Init selections', this.selections);
-			/* Begin by loading the checkpoint if available */
-			return this.firebaseRef.child('checkpoint').once('value');
-		})
+		/* Begin by loading the checkpoint if available */
+		return this.firebaseRef.child('checkpoint').once('value')
 		.then((checkpointSnapshot) => {
 			const checkpointSnapshotVal = checkpointSnapshot.val() || {};
 			const checkpointSnapshotDoc = checkpointSnapshotVal.d;
 			const checkpointSnapshotKey = checkpointSnapshotVal.k;
 			const checkpointKey = Number(checkpointSnapshotKey) || 0;
 			const newDoc = checkpointSnapshotDoc && Node.fromJSON(this.view.state.schema, uncompressStateJSON({ d: checkpointSnapshotDoc }).doc);
-			this.latestKey = checkpointKey;
+			// this.latestKey = checkpointKey;
 
-			/* Get all changes since checkpoint (or since 0 if no checkpoint */
+			/* Get all changes since checkpoint (or since 0 if no checkpoint) */
 			const getChanges = this.firebaseRef.child('changes')
 			.orderByKey()
 			.startAt(String(checkpointKey + 1))
@@ -205,16 +189,18 @@ class CollaborativePlugin extends Plugin {
 			const changesSnapshotVal = changesSnapshot.val() || {};
 			const steps = [];
 			const stepClientIds = [];
-			const keys = Object.keys(changesSnapshotVal);
-			const stepsWithKeys = [];
-			this.latestKey = keys.length ? Math.max(...keys) : this.latestKey;
-			this.latestRemoteKey = this.latestKey;
-			keys.forEach((key)=> {
+			// const keys = Object.keys(changesSnapshotVal);
+			// const stepsWithKeys = [];
+			// this.latestKey = keys.length ? Math.max(...keys) : this.latestKey;
+			// this.latestRemoteKey = this.latestKey;
+			Object.keys(changesSnapshotVal).forEach((key)=> {
 				const compressedStepsJSON = changesSnapshotVal[key].s;
-				const uncompressedSteps = compressedStepsJSON.map(this.compressedStepJSONToStep);
-				stepsWithKeys.push({ key, steps: uncompressedSteps });
-				steps.push(...compressedStepsJSON.map(this.compressedStepJSONToStep));
-				stepClientIds.push(...new Array(compressedStepsJSON.length).fill('_server'));
+				const uncompressedSteps = compressedStepsJSON.map((compressedStepJSON)=> {
+					return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
+				});
+				// stepsWithKeys.push({ key, steps: uncompressedSteps });
+				steps.push(...uncompressedSteps);
+				stepClientIds.push(...new Array(compressedStepsJSON.length).fill(changesSnapshotVal[key].c));
 			});
 
 			const docToUse = newDoc || Node.fromJSON(this.view.state.schema, { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] });
@@ -225,67 +211,71 @@ class CollaborativePlugin extends Plugin {
 			this.authorityDoc = docToUse;
 
 			/* Test steps with authority doc. */
-			stepsWithKeys.sort((foo, bar)=> {
-				if (Number(foo.key) < Number(bar.key)) { return -1; }
-				if (Number(foo.key) > Number(bar.key)) { return 1; }
-				return 0;
-			}).forEach((stepObject)=> {
-				try {
-					stepObject.steps.forEach((step)=> {
-						this.authorityDoc = step.apply(this.authorityDoc).doc;
-						if (!this.authorityDoc) { throw new Error(`Invalid Authority Doc ${stepObject.key}`); }
-					});
-				} catch (err) {
-					throw new Error(`Invalid Authority Doc ${stepObject.key}`);
-				}
-			});
-
+			/* Don't need this because we never write something bad to the server */
+			// stepsWithKeys.sort((foo, bar)=> {
+			// 	if (Number(foo.key) < Number(bar.key)) { return -1; }
+			// 	if (Number(foo.key) > Number(bar.key)) { return 1; }
+			// 	return 0;
+			// }).forEach((stepObject)=> {
+			// 	try {
+			// 		stepObject.steps.forEach((step)=> {
+			// 			this.authorityDoc = step.apply(this.authorityDoc).doc;
+			// 			if (!this.authorityDoc) { throw new Error(`Invalid Authority Doc ${stepObject.key}`); }
+			// 		});
+			// 	} catch (err) {
+			// 		throw new Error(`Invalid Authority Doc ${stepObject.key}`);
+			// 	}
+			// });
+			console.log(steps);
 			const trans = receiveTransaction(this.view.state, steps, stepClientIds);
-			trans.setMeta('receiveDoc', true);
+			console.log(trans);
+			// trans.setMeta('receiveDoc', true);
 			this.view.dispatch(trans);
 			console.log('LoadDoc10');
-
+			// return true;
 			/* Why is this being fired more than once? That needs to be resolved first */
-			if (!this.setChangeListener) {
+			// if (!this.setChangeListener) {
 				/* Listen to Selections Change */
-				const selectionsRef = this.firebaseRef.child('selections');
-				selectionsRef.child(this.localClientId).onDisconnect().remove();
-				selectionsRef.on('child_added', this.addClientSelection);
-				selectionsRef.on('child_changed', this.updateClientSelection);
-				selectionsRef.on('child_removed', this.deleteClientSelection);
+				// const selectionsRef = this.firebaseRef.child('selections');
+				// selectionsRef.child(this.localClientId).onDisconnect().remove();
+				// selectionsRef.on('child_added', this.addClientSelection);
+				// selectionsRef.on('child_changed', this.updateClientSelection);
+				// selectionsRef.on('child_removed', this.deleteClientSelection);
 
 				/* Listen to Changes */
-				console.log('**Calling on once');
-				this.firebaseRef.child('changes')
+				// console.log('**Calling on once');
+				return this.firebaseRef.child('changes')
 				.orderByKey()
 				.startAt(String(this.latestKey + 1))
 				.on('child_added', this.listenToChanges);
 				this.setChangeListener = true;
-			} else {
-				console.log('Ya - were still getting multiple calls for On');
-			}
+			// } else {
+			// 	console.log('Ya - were still getting multiple calls for On');
+			// }
 
-			return true;
+			// return true;
 		})
 		.catch((err)=> {
-			console.log('In catch with ', err, err.message);
-			if (err.message.indexOf('Invalid Authority Doc') > -1) {
-				const stepToDelete = Number(err.message.replace('Invalid Authority Doc ', ''));
-				const sortedClientIds = [...Object.keys(this.selections), this.localClientId].sort((foo, bar)=> {
-					if (foo > bar) { return 1; }
-					if (foo < bar) { return -1; }
-					return 0;
-				});
-				console.log(this.selections, sortedClientIds, this.localClientId);
-				if (sortedClientIds[0] === this.localClientId) {
-					console.log('Loading We should delete ', stepToDelete);
-					this.firebaseRef.child('changes').child(stepToDelete).remove();
-				}
-			}
+			console.error('In catch with ', err, err.message);
+			// if (err.message.indexOf('Invalid Authority Doc') > -1) {
+			// 	const stepToDelete = Number(err.message.replace('Invalid Authority Doc ', ''));
+			// 	const sortedClientIds = [...Object.keys(this.selections), this.localClientId].sort((foo, bar)=> {
+			// 		if (foo > bar) { return 1; }
+			// 		if (foo < bar) { return -1; }
+			// 		return 0;
+			// 	});
+			// 	console.log(this.selections, sortedClientIds, this.localClientId);
+			// 	if (sortedClientIds[0] === this.localClientId) {
+			// 		console.log('Loading We should delete ', stepToDelete);
+			// 		this.firebaseRef.child('changes').child(stepToDelete).remove();
+			// 	}
+			// }
 		});
 	}
 
 	listenToChanges(snapshot) {
+		/* On listen, take the steps, apply them to your doc. If they are bad, restart your doc. */
+		/* What about rebasing them first though? Isn't there a confirmed thing here? */
 		if (!this.startedLoad) { console.log('You shouldnt be here!'); return null; }
 
 		this.latestKey = Number(snapshot.key);
@@ -294,49 +284,88 @@ class CollaborativePlugin extends Plugin {
 		const clientId = snapshotVal.c;
 		const meta = snapshotVal.m;
 
-		const changeSteps = compressedStepsJSON.map(this.compressedStepJSONToStep);
-		const changeStepClientIds = new Array(changeSteps.length).fill(clientId);
-		let didRemoveChange;
-		try {
-			changeSteps.forEach((step)=> {
-				this.authorityDoc = step.apply(this.authorityDoc).doc;
-				if (!this.authorityDoc) { throw new Error('Empty Authority Doc'); }
-			});
-		} catch (err) {
-			didRemoveChange = true;
+		const newSteps = compressedStepsJSON.map((compressedStepJSON)=> {
+			return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
+		});
+		const newStepsClientIds = new Array(newSteps.length).fill(clientId);
+		// let didRemoveChange;
+		// try {
+		// 	changeSteps.forEach((step)=> {
+		// 		this.authorityDoc = step.apply(this.authorityDoc).doc;
+		// 		if (!this.authorityDoc) { throw new Error('Empty Authority Doc'); }
+		// 	});
+		// } catch (err) {
+		// 	didRemoveChange = true;
 
-			const sortedClientIds = [...Object.keys(this.selections), this.localClientId].sort((foo, bar)=> {
-				if (foo > bar) { return 1; }
-				if (foo < bar) { return -1; }
-				return 0;
-			});
-			console.log(sortedClientIds[0], this.localClientId, sortedClientIds[0] === this.localClientId);
-			if (sortedClientIds[0] === this.localClientId) {
-				console.log('Listening We should delete ', snapshot.key, err);
-				this.firebaseRef.child('changes').child(snapshot.key).remove();
-			}
-		}
+		// 	const sortedClientIds = [...Object.keys(this.selections), this.localClientId].sort((foo, bar)=> {
+		// 		if (foo > bar) { return 1; }
+		// 		if (foo < bar) { return -1; }
+		// 		return 0;
+		// 	});
+		// 	console.log(sortedClientIds[0], this.localClientId, sortedClientIds[0] === this.localClientId);
+		// 	if (sortedClientIds[0] === this.localClientId) {
+		// 		console.log('Listening We should delete ', snapshot.key, err);
+		// 		this.firebaseRef.child('changes').child(snapshot.key).remove();
+		// 	}
+		// }
 
-		if (didRemoveChange) { return null; }
+		// if (didRemoveChange) { return null; }
 
 		/* TODO: This if statement doesn't seem quite right. Shouldnt we be sending the changes, and 
 		then dealing with thether they are local by ID? Why would we use the localChanges object at all?
 		Just to save the compress step? */
-		const changes = clientId === this.localClientId
-			? {
-				isLocal: true,
-				steps: changeSteps,
-				stepClientIds: changeStepClientIds,
-				meta: meta,
-				changeKey: this.latestKey
-			}
-			: {
-				steps: changeSteps,
-				stepClientIds: changeStepClientIds,
-				meta: meta,
-				changeKey: this.latestKey
-			};
-		return this.onRemoteChange(changes);
+		// const changes = clientId === this.localClientId
+		// 	? {
+		// 		isLocal: true,
+		// 		steps: changeSteps,
+		// 		stepClientIds: changeStepClientIds,
+		// 		meta: meta,
+		// 		changeKey: this.latestKey
+		// 	}
+		// 	: {
+		// 		steps: changeSteps,
+		// 		stepClientIds: changeStepClientIds,
+		// 		meta: meta,
+		// 		changeKey: this.latestKey
+		// 	};
+		// return this.onRemoteChange(changes);
+		// console.log(this.selfChanges, changeKey);
+		// const receivedSteps = isLocal
+		// 	? this.selfChanges[changeKey]
+		// 	: steps;
+		// const recievedClientIds = isLocal
+		// 	? new Array(receivedSteps.length).fill(this.localClientId)
+		// 	: stepClientIds;
+
+		/* receiveTransaction sometimes throws a 'Position out of Range' */
+		/* error on sync. Not sure why out of range positions are syncing */
+		/* in the first place - but it doesn't seem to crash the editor. */
+		/* So, let's just catch it instead and move on. */
+		/* Well - why could position out of range happen? */
+		/* - Three people and you receive a later sync first */
+		/* - multiple steps sent up, and the first one is slower for some reason than the first */
+		/* - Undo issues? */
+		/* I don't quite understand what happens if two syncs send up the same version number */
+
+		/* I'm going to comment this try - because really this error should never happen - given */
+		/* we are testing against the authority doc */
+		// try {
+		const trans = receiveTransaction(this.view.state, newSteps, newStepsClientIds);
+		if (meta) {
+			Object.keys(meta).forEach((metaKey)=> {
+				trans.setMeta(metaKey, meta[metaKey]);
+			});
+		}
+		// trans.setMeta('receiveDoc', true);
+		return this.view.dispatch(trans);
+		// delete this.selfChanges[changeKey];
+		// this.latestRemoteKey = changeKey;
+		// return true;
+		// } catch (err) {
+		// /* Perhaps if we get here, we need to reload the whole doc - because we're out of sync */
+		// 	console.error('In the recieve error place', err);
+		// 	return null;
+		// }
 	}
 
 	sendCollabChanges(transaction, newState) {
@@ -441,7 +470,7 @@ class CollaborativePlugin extends Plugin {
 				trans.setMeta(metaKey, meta[metaKey]);
 			});
 		}
-		trans.setMeta('receiveDoc', true);
+		// trans.setMeta('receiveDoc', true);
 		this.view.dispatch(trans);
 		delete this.selfChanges[changeKey];
 		this.latestRemoteKey = changeKey;
@@ -454,6 +483,7 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	apply(transaction, state, prevEditorState, editorState) {
+		return {};
 		/* Remove Stale Selections */
 		Object.keys(this.selections).forEach((clientId)=> {
 			const originalClientData = this.selections[clientId] ? this.selections[clientId].data : {};

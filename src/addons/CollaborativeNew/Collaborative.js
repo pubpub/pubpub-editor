@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { collab } from 'prosemirror-collab';
-import CollaborativePlugin from './collaborativePlugin';
+import CollaborativePlugin from './collaborativePluginNew2';
 
 require('./collaborative.scss');
 
