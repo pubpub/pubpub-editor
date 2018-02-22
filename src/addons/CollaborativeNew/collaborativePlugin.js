@@ -67,6 +67,7 @@ class CollaborativePlugin extends Plugin {
 		this.selfChanges = {};
 		this.startedLoad = false;
 		this.latestKey = null;
+		this.latestRemoteKey = null;
 		this.selections = {};
 		this.view = null;
 		this.authorityDoc = null;
@@ -134,7 +135,11 @@ class CollaborativePlugin extends Plugin {
 		this.selfChanges = {};
 		this.startedLoad = false;
 		this.latestKey = null;
-		this.selections = {};
+		this.latestRemoteKey = null;
+		// this.selections = {};
+		Object.keys(this.selections).forEach((selectionId)=> {
+			this.selections[selectionId] = undefined;
+		});
 		this.authorityDoc = null;
 		this.setChangeListener = false;
 		this.loadDocument();
@@ -174,6 +179,7 @@ class CollaborativePlugin extends Plugin {
 			const keys = Object.keys(changesSnapshotVal);
 			const stepsWithKeys = [];
 			this.latestKey = keys.length ? Math.max(...keys) : this.latestKey;
+			this.latestRemoteKey = this.latestKey;
 			keys.forEach((key)=> {
 				const compressedStepsJSON = changesSnapshotVal[key].s;
 				const uncompressedSteps = compressedStepsJSON.map(this.compressedStepJSONToStep);
@@ -236,7 +242,7 @@ class CollaborativePlugin extends Plugin {
 			console.log('In catch with ', err, err.message);
 			if (err.message.indexOf('Invalid Authority Doc') > -1) {
 				const stepToDelete = Number(err.message.replace('Invalid Authority Doc ', ''));
-				const sortedClientIds = [...this.selections, this.localClientId].sort((foo, bar)=> {
+				const sortedClientIds = [...Object.keys(this.selections), this.localClientId].sort((foo, bar)=> {
 					if (foo > bar) { return 1; }
 					if (foo < bar) { return -1; }
 					return 0;
@@ -269,7 +275,7 @@ class CollaborativePlugin extends Plugin {
 		} catch (err) {
 			didRemoveChange = true;
 
-			const sortedClientIds = [...this.selections, this.localClientId].sort((foo, bar)=> {
+			const sortedClientIds = [...Object.keys(this.selections), this.localClientId].sort((foo, bar)=> {
 				if (foo > bar) { return 1; }
 				if (foo < bar) { return -1; }
 				return 0;
@@ -408,6 +414,7 @@ class CollaborativePlugin extends Plugin {
 		trans.setMeta('receiveDoc', true);
 		this.view.dispatch(trans);
 		delete this.selfChanges[changeKey];
+		this.latestRemoteKey = changeKey;
 		return true;
 		// } catch (err) {
 		// /* Perhaps if we get here, we need to reload the whole doc - because we're out of sync */
@@ -449,6 +456,7 @@ class CollaborativePlugin extends Plugin {
 			A client will be active even if they have a tab open and are 'watching'. */
 			const smoothingTimeFactor = 1000 * 60;
 			compressed.data.lastActive = Math.round(new Date().getTime() / smoothingTimeFactor) * smoothingTimeFactor;
+			compressed.data.version = this.latestKey;
 
 			return this.firebaseRef.child('selections').child(this.localClientId).set(compressed);
 		}
@@ -465,26 +473,29 @@ class CollaborativePlugin extends Plugin {
 		const clientID = snapshot.key;
 		if (clientID !== this.localClientId) {
 			const compressedSelection = snapshot.val();
-			if (compressedSelection) {
-				const selection = uncompressSelectionJSON(compressedSelection);
-				this.selections[clientID] = Selection.fromJSON(this.view.state.doc, selection);
-				this.selections[clientID].data = compressedSelection.data;
-				// try {
-				// 	/* Sometimes, because the selection syncs before the doc, the */
-				// 	/* selection location is larger than the doc size. */
-				// 	/* Math.min the anchor and head to prevent this from being an issue */
-				// 	const docSize = this.view.state.doc.content.size;
-				// 	const correctedSelection = uncompressSelectionJSON(compressedSelection);
-				// 	correctedSelection.anchor = Math.min(docSize, correctedSelection.anchor);
-				// 	correctedSelection.head = Math.min(docSize, correctedSelection.head);
-				// 	this.selections[clientID] = Selection.fromJSON(this.view.state.doc, correctedSelection);
-				// 	this.selections[clientID].data = compressedSelection.data;
-				// } catch (error) {
-				// 	console.error('updateClientSelection', error);
-				// }
+			if (compressedSelection && this.latestRemoteKey === compressedSelection.data.version) {
+				// console.log(`Latest Local Key: ${this.latestKey} - remote client version: ${compressedSelection.data.version} - latest remote key: ${this.latestRemoteKey}`);
+				// const selection = uncompressSelectionJSON(compressedSelection);
+				// this.selections[clientID] = Selection.fromJSON(this.view.state.doc, selection);
+				// this.selections[clientID].data = compressedSelection.data;
+
+				try {
+					/* Sometimes, because the selection syncs before the doc, the */
+					/* selection location is larger than the doc size. */
+					/* Math.min the anchor and head to prevent this from being an issue */
+					const docSize = this.view.state.doc.content.size;
+					const correctedSelection = uncompressSelectionJSON(compressedSelection);
+					correctedSelection.anchor = Math.min(docSize, correctedSelection.anchor);
+					correctedSelection.head = Math.min(docSize, correctedSelection.head);
+					this.selections[clientID] = Selection.fromJSON(this.view.state.doc, correctedSelection);
+					this.selections[clientID].data = compressedSelection.data;
+				} catch (error) {
+					console.error('updateClientSelection', error);
+				}
 			} else {
 				delete this.selections[clientID];
 			}
+			// console.log(this.selections);
 			this.issueEmptyTransaction();
 		}
 	}
@@ -533,10 +544,9 @@ class CollaborativePlugin extends Plugin {
 
 		return DecorationSet.create(state.doc, selectionKeys.map((clientId)=> {
 			const selection = this.selections[clientId];
+			if (!selection) { return null; }
+
 			const data = selection.data || {};
-			if (!selection) {
-				return null;
-			}
 			const { from, to } = selection;
 			if (clientId === this.localClientId) {
 				return null;
