@@ -5,7 +5,7 @@ import { Step } from 'prosemirror-transform';
 import { Node } from 'prosemirror-model';
 import { compressSelectionJSON, compressStateJSON, compressStepJSON, compressStepsLossy, uncompressSelectionJSON, uncompressStateJSON, uncompressStepJSON } from 'prosemirror-compress';
 import firebase from 'firebase';
-// import CursorType from './CursorType';
+import CursorType from './CursorType';
 // import DocumentRef from './documentRef';
 
 
@@ -16,7 +16,17 @@ import firebase from 'firebase';
 // This indexOutOfRange dude, if he edits (since we just pass over the exception), creates edit that don't make any sense and cause heal database.
 
 
+// For Thursday/Friday
+// We're still getting multiple calls to loadDocument that I don't understand
+// as evidenced by the need for setChangeListener
+// Figure that out, and figure out how to better handle selections.
+// It seems we're also getting clients thingking they are the authority. probably
+// because we are wiping selections when we reset? Rather than wipe completely
+// we should just set their indexes back to 1 or something.
 
+// Collaborative selections and debugging
+   // Not-authority clients should still stop processing if they see the authority failed locally. They just aren't responsible for removal. We want to avoid getting an error that prohibits us from listening for remove.
+   
 // We need to determine an authority that is building only the server steps. If that fails,
 // we remove those steps, and restart all clients.
 // Is there any danger in having everyone be an authority?
@@ -43,7 +53,6 @@ class CollaborativePlugin extends Plugin {
 		this.issueEmptyTransaction = this.issueEmptyTransaction.bind(this);
 		this.restartCollab = this.restartCollab.bind(this);
 		this.listenToChanges = this.listenToChanges.bind(this);
-		this.initalizePluginVariables = this.initalizePluginVariables.bind(this);
 
 		/* Make passed props accessible */
 		this.localClientData = localClientData;
@@ -54,7 +63,13 @@ class CollaborativePlugin extends Plugin {
 
 
 		/* Init plugin variables */
-		this.initalizePluginVariables();
+		this.selfChanges = {};
+		this.startedLoad = false;
+		this.latestKey = null;
+		this.selections = {};
+		this.view = null;
+		this.authorityDoc = null;
+		this.setChangeListener = false;
 
 		/* Setup Prosemirror plugin values */
 		this.spec = {
@@ -94,23 +109,16 @@ class CollaborativePlugin extends Plugin {
 		});
 	}
 
-	initalizePluginVariables() {
-		this.selfChanges = {};
-		this.startedLoad = false;
-		this.latestKey = null;
-		this.selections = {};
-		this.view = null;
-		this.authorityDoc = null;
-	}
 	compressedStepJSONToStep(compressedStepJSON) {
 		return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
 	}
 
 	restartCollab() {
 		console.log('Top of restartCollab');
-
+		if (!this.startedLoad) { return null; }
 		/* Unbind firebase listening that will be */
 		/* re-initialized in loadDocument */
+		console.log('**Calling off once');
 		this.firebaseRef.child('changes').off('child_added', this.listenToChanges);
 		const selectionsRef = this.firebaseRef.child('selections');
 		selectionsRef.off('child_added', this.addClientSelection);
@@ -118,8 +126,14 @@ class CollaborativePlugin extends Plugin {
 		selectionsRef.off('child_removed', this.deleteClientSelection);
 
 		/* Re-initialize plugin variables and reload */
-		this.initalizePluginVariables();
+		this.selfChanges = {};
+		this.startedLoad = false;
+		this.latestKey = null;
+		this.selections = {};
+		this.authorityDoc = null;
+		this.setChangeListener = false;
 		this.loadDocument();
+		return true;
 	}
 
 	loadDocument() {
@@ -133,15 +147,16 @@ class CollaborativePlugin extends Plugin {
 		console.log('LoadDoc1');
 		return this.firebaseRef.child('checkpoint').once('value')
 		.then((checkpointSnapshot) => {
-			const checkpointSnapshotVal = checkpointSnapshot.val || {};
+			const checkpointSnapshotVal = checkpointSnapshot.val() || {};
 			const checkpointSnapshotDoc = checkpointSnapshotVal.d;
 			const checkpointSnapshotKey = checkpointSnapshotVal.k;
 			const checkpointKey = Number(checkpointSnapshotKey) || 0;
-			const newDoc = checkpointSnapshotDoc && Node.fromJSON(this.view.state.schema, uncompressStateJSON({ checkpointSnapshotDoc }).doc);
+			const newDoc = checkpointSnapshotDoc && Node.fromJSON(this.view.state.schema, uncompressStateJSON({ d: checkpointSnapshotDoc }).doc);
 			this.latestKey = checkpointKey;
 
 			const getChanges = this.firebaseRef.child('changes')
-			.startAt(null, String(checkpointKey))
+			.orderByKey()
+			.startAt(String(checkpointKey + 1))
 			.once('value');
 
 			console.log('LoadDoc2');
@@ -150,12 +165,13 @@ class CollaborativePlugin extends Plugin {
 		.then(([newDoc, changesSnapshot])=> {
 			console.log('LoadDoc3');
 			console.log('LoadDoc4');
-			const changesSnapshotVal = changesSnapshot.val();
+			const changesSnapshotVal = changesSnapshot.val() || {};
 			const steps = [];
 			const stepClientIds = [];
 			const keys = Object.keys(changesSnapshotVal);
 			const stepsWithKeys = [];
-			this.latestKey = Math.max(...keys);
+			this.latestKey = keys.length ? Math.max(...keys) : this.latestKey;
+			console.log(this.latestKey);
 			keys.forEach((key)=> {
 				const compressedStepsJSON = changesSnapshotVal[key].s;
 				const uncompressedSteps = compressedStepsJSON.map(this.compressedStepJSONToStep);
@@ -184,6 +200,7 @@ class CollaborativePlugin extends Plugin {
 						if (!this.authorityDoc) { throw new Error(`Invalid Authority Doc ${stepObject.key}`); }
 					});
 				} catch (err) {
+					console.log('Throw new error for ', stepObject.key);
 					throw new Error(`Invalid Authority Doc ${stepObject.key}`);
 				}
 			});
@@ -226,17 +243,28 @@ class CollaborativePlugin extends Plugin {
 
 			// console.log('Finished loading document 1');
 			/* Listen to Selections Change */
-			const selectionsRef = this.firebaseRef.child('selections');
-			selectionsRef.child(this.localClientId).onDisconnect().remove();
-			selectionsRef.on('child_added', this.addClientSelection);
-			selectionsRef.on('child_changed', this.updateClientSelection);
-			selectionsRef.on('child_removed', this.deleteClientSelection);
-			console.log('LoadDoc11');
-			/* Listen to Changes */
-			this.firebaseRef.child('changes')
-			.startAt(null, String(this.latestKey + 1))
-			.on('child_added', this.listenToChanges);
-			console.log('LoadDoc12');
+			if (!this.setChangeListener) {
+				/* Why is this being fired more than once? That needs to be resolved first*/
+				const selectionsRef = this.firebaseRef.child('selections');
+				selectionsRef.child(this.localClientId).onDisconnect().remove();
+				selectionsRef.on('child_added', this.addClientSelection);
+				selectionsRef.on('child_changed', this.updateClientSelection);
+				selectionsRef.on('child_removed', this.deleteClientSelection);
+				console.log('LoadDoc11');
+				/* Listen to Changes */
+				console.log('**Calling on once');
+				this.firebaseRef.child('changes')
+				.orderByKey()
+				.startAt(String(this.latestKey + 1))
+				.on('child_added', this.listenToChanges);
+				this.setChangeListener = true;
+			} else {
+				console.log('Ya - were still getting multiple calls for On');
+			}
+			
+			
+			return true;
+			// console.log('LoadDoc12');
 			// this.restarting = false;
 			// console.log('Finished loading document 2');
 
@@ -269,7 +297,7 @@ class CollaborativePlugin extends Plugin {
 
 	listenToChanges(snapshot) {
 		// console.log('in listen changes toptop');
-		if (!this.startedLoad) { return null; }
+		if (!this.startedLoad) { console.log('You shouldnt be here!'); return null; }
 		// console.log('Top of listenToChanges');
 		this.latestKey = Number(snapshot.key);
 		const snapshotVal = snapshot.val();
@@ -311,7 +339,7 @@ class CollaborativePlugin extends Plugin {
 		if (clientId === this.localClientId) {
 			/* If the change was made locally */
 			this.onRemoteChange({
-				// isLocal: true,
+				isLocal: true,
 				steps: changeSteps,
 				stepClientIds: changeStepClientIds,
 				meta: meta,
@@ -331,7 +359,7 @@ class CollaborativePlugin extends Plugin {
 	}
 	sendCollabChanges(transaction, newState) {
 		// console.log('in send collab toptop');
-		if (!this.startedLoad) { return null; }
+		if (!this.startedLoad) { console.log('You shouldnt be here!'); return null; }
 		// console.log('Top of sendCollabChanges');
 		const meta = transaction.meta;
 		if (meta.collab$ || meta.rebase || meta.footnote || meta.newSelection || meta.clearTempSelection) {
@@ -384,7 +412,7 @@ class CollaborativePlugin extends Plugin {
 		// - If a single tab creates an error, there is no way to realize if the server has the same or differing structure. The user who creates the error is not notified of the error.
 		// - HealDatabase is only ever called on initialization. Never when the error happens live.
 		if (!sendable || sendable.version === this.sendableVersion) { return null; }
-		console.log('Sendable');
+
 		this.sendableVersion = sendable.version;
 		const steps = sendable.steps;
 		const clientId = sendable.clientID;
@@ -470,6 +498,7 @@ class CollaborativePlugin extends Plugin {
 		// 	recievedClientIds = stepClientIds;
 		// }
 
+		console.log(this.selfChanges, changeKey)
 		const receivedSteps = isLocal
 			? this.selfChanges[changeKey]
 			: steps;
@@ -726,73 +755,75 @@ class CollaborativePlugin extends Plugin {
 				currentCursor.style.transform = `translate3d(-25px, ${top}, 0)`;
 
 
-				// 	const elem = document.createElement('span');
-				// 	elem.className = `collab-cursor ${data.id}`;
+				const elem = document.createElement('span');
+				elem.className = `collab-cursor ${data.id}`;
 
-				// 	/* Add Vertical Bar */
-				// 	const innerChildBar = document.createElement('span');
-				// 	innerChildBar.className = 'inner-bar';
-				// 	elem.appendChild(innerChildBar);
+				/* Add Vertical Bar */
+				const innerChildBar = document.createElement('span');
+				innerChildBar.className = 'inner-bar';
+				elem.appendChild(innerChildBar);
 
-				// 	const style = document.createElement('style');
-				// 	elem.appendChild(style);
-				// 	let innerStyle = '';
+				const style = document.createElement('style');
+				elem.appendChild(style);
+				let innerStyle = '';
 
-				// 	/* Add small circle at top of bar */
-				// 	const innerChildCircleSmall = document.createElement('span');
-				// 	innerChildCircleSmall.className = `inner-circle-small ${data.id}`;
-				// 	innerChildBar.appendChild(innerChildCircleSmall);
+				/* Add small circle at top of bar */
+				const innerChildCircleSmall = document.createElement('span');
+				innerChildCircleSmall.className = `inner-circle-small ${data.id}`;
+				innerChildBar.appendChild(innerChildCircleSmall);
 
-				// 	/* Add wrapper for hover items at top of bar */
-				// 	const hoverItemsWrapper = document.createElement('span');
-				// 	hoverItemsWrapper.className = 'hover-wrapper';
-				// 	innerChildBar.appendChild(hoverItemsWrapper);
+				/* Add wrapper for hover items at top of bar */
+				const hoverItemsWrapper = document.createElement('span');
+				hoverItemsWrapper.className = 'hover-wrapper';
+				innerChildBar.appendChild(hoverItemsWrapper);
 
-				// 	/* Add Large Circle for hover */
-				// 	const innerChildCircleBig = document.createElement('span');
-				// 	innerChildCircleBig.className = 'inner-circle-big';
-				// 	hoverItemsWrapper.appendChild(innerChildCircleBig);
+				/* Add Large Circle for hover */
+				const innerChildCircleBig = document.createElement('span');
+				innerChildCircleBig.className = 'inner-circle-big';
+				hoverItemsWrapper.appendChild(innerChildCircleBig);
 
-				// 	/* If Initials exist - add to hover items wrapper */
-				// 	if (data.initials) {
-				// 		const innerCircleInitials = document.createElement('span');
-				// 		innerCircleInitials.className = `initials ${data.id}`;
-				// 		innerStyle += `.initials.${data.id}::after { content: "${data.initials}"; } `;
-				// 		hoverItemsWrapper.appendChild(innerCircleInitials);
-				// 	}
-				// 	/* If Image exists - add to hover items wrapper */
-				// 	if (data.image) {
-				// 		const innerCircleImage = document.createElement('span');
-				// 		innerCircleImage.className = `image ${data.id}`;
-				// 		innerStyle += `.image.${data.id}::after { background-image: url('${data.image}'); } `;
-				// 		hoverItemsWrapper.appendChild(innerCircleImage);
-				// 	}
+				/* If Initials exist - add to hover items wrapper */
+				if (data.initials) {
+					const innerCircleInitials = document.createElement('span');
+					innerCircleInitials.className = `initials ${data.id}`;
+					innerStyle += `.initials.${data.id}::after { content: "${data.initials}"; } `;
+					hoverItemsWrapper.appendChild(innerCircleInitials);
+				}
+				/* If Image exists - add to hover items wrapper */
+				if (data.image) {
+					const innerCircleImage = document.createElement('span');
+					innerCircleImage.className = `image ${data.id}`;
+					innerStyle += `.image.${data.id}::after { background-image: url('${data.image}'); } `;
+					hoverItemsWrapper.appendChild(innerCircleImage);
+				}
 
-				// 	/* If name exists - add to hover items wrapper */
-				// 	if (data.name) {
-				// 		const innerCircleName = document.createElement('span');
-				// 		innerCircleName.className = `name ${data.id}`;
-				// 		innerStyle += `.name.${data.id}::after { content: "${data.name}"; } `;
-				// 		if (data.cursorColor) {
-				// 			innerCircleName.style.backgroundColor = data.cursorColor;
-				// 		}
-				// 		hoverItemsWrapper.appendChild(innerCircleName);
-				// 	}
+				/* If name exists - add to hover items wrapper */
+				if (data.name) {
+					const innerCircleName = document.createElement('span');
+					innerCircleName.className = `name ${data.id}`;
+					innerStyle += `.name.${data.id}::after { content: "${data.name}"; } `;
+					if (data.cursorColor) {
+						innerCircleName.style.backgroundColor = data.cursorColor;
+					}
+					hoverItemsWrapper.appendChild(innerCircleName);
+				}
 
-				// 	/* If cursor color provided - override defaults */
-				// 	if (data.cursorColor) {
-				// 		innerChildBar.style.backgroundColor = data.cursorColor;
-				// 		innerChildCircleSmall.style.backgroundColor = data.cursorColor;
-				// 		innerChildCircleBig.style.backgroundColor = data.cursorColor;
-				// 		innerStyle += `.name.${data.id}::after { background-color: ${data.cursorColor} !important; } `;
-				// 	}
-				// 	style.innerHTML = innerStyle;
+				/* If cursor color provided - override defaults */
+				if (data.cursorColor) {
+					innerChildBar.style.backgroundColor = data.cursorColor;
+					innerChildCircleSmall.style.backgroundColor = data.cursorColor;
+					innerChildCircleBig.style.backgroundColor = data.cursorColor;
+					innerStyle += `.name.${data.id}::after { background-color: ${data.cursorColor} !important; } `;
+				}
+				style.innerHTML = innerStyle;
 
 				/* This custom Decoration funkiness is because we don't want the cursor to */
 				/* be contenteditable="false". This will break spellcheck. So instead */
 				/* we do a bunch of specific :after elements and custom styles */
 				/* to build the rich cursor UI */
-				// return new Decoration(from, from, new CursorType(elem, {}));
+				return new Decoration(from, from, new CursorType(elem, {}));
+
+
 				// return new Decoration.widget(from, elem);
 				// return Decoration.widget(from, elem, {
 				// 	stopEvent: (event)=> {
