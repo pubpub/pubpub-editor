@@ -7,7 +7,7 @@ import DocumentRef from './documentRef';
 
 
 class FirebasePlugin extends Plugin {
-	constructor({ localClientId, localClientData, editorKey, firebaseConfig, rootRef, editorRef, pluginKey, onClientChange, onStatusChange, onForksUpdate }) {
+	constructor({ localClientId, localClientData, editorKey, firebaseConfig, rootRef, editorRef, pluginKey, onClientChange, onStatusChange, onForksUpdate, startStepIndex }) {
 		super({ key: pluginKey });
 		this.spec = {
 			view: this.updateView,
@@ -28,6 +28,7 @@ class FirebasePlugin extends Plugin {
 		this.localClientData = localClientData;
 		this.editorKey = editorKey;
 		this.selfChanges = {};
+		this.startStepIndex = startStepIndex;
 
 		const existingApp = firebase.apps.reduce((prev, curr)=> {
 			if (curr.name === editorKey) { return curr; }
@@ -83,8 +84,16 @@ class FirebasePlugin extends Plugin {
 		this.document = new DocumentRef(this.firebaseRef, this.view, this.localClientId, this.localClientData);
 		this.document.getCheckpoint(true)
 		.then(({ newDoc, checkpointKey }) => {
-			tempNewDoc = newDoc;
-			return this.document.getChanges(checkpointKey);
+			// tempNewDoc = newDoc;
+			// if (newDoc) {
+				// const newState = EditorState.create({
+				// tempState = EditorState.create({
+				// 	doc: newDoc,
+				// 	plugins: this.view.state.plugins,
+				// });
+				// this.view.updateState(newState);
+			// }
+			return this.document.getChanges(this.startStepIndex);
 		})
 		.then(({ steps, stepClientIDs, stepsWithKeys }) => {
 			if (tempNewDoc) {
@@ -102,8 +111,8 @@ class FirebasePlugin extends Plugin {
 					this.document.healDatabase({ stepsWithKeys, view: this.view });
 				}
 			}
-			this.document.listenToSelections(this.onClientChange);
-			this.document.listenToChanges(this.onRemoteChange);
+			// this.document.listenToSelections(this.onClientChange);
+			// this.document.listenToChanges(this.onRemoteChange);
 			if (this.onForksUpdate) {
 				this.getForks().then((forks) => {
 					this.onForksUpdate(forks);
@@ -113,6 +122,8 @@ class FirebasePlugin extends Plugin {
 	}
 
 	sendCollabChanges = (transaction, newState) => {
+		console.log('Sending collab Changes');
+		return null;
 		const { meta } = transaction;
 
 		// if (newState !== this.view.state) {
@@ -167,6 +178,7 @@ class FirebasePlugin extends Plugin {
 	}
 
 	onRemoteChange = ({ steps, stepClientIDs, changeKey, meta, isLocal })=> {
+		console.log('Recieving Remote Steps', steps, isLocal);
 		let receivedSteps;
 		let recievedClientIDs;
 
@@ -192,6 +204,8 @@ class FirebasePlugin extends Plugin {
 			this.view.dispatch(trans);
 			delete this.selfChanges[changeKey];
 		} catch (err) {
+			/* Perhaps if we get here, we need to reload the whole doc - because we're out of sync */
+			console.log('In the recieve error place', err);
 			return null;
 		}
 	}

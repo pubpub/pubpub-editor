@@ -58,6 +58,7 @@ class Editor extends Component {
 		this.configurePlugins = this.configurePlugins.bind(this);
 		this.createEditor = this.createEditor.bind(this);
 		this.renderStatic = this.renderStatic.bind(this);
+		// this.handleCollabLoad = this.handleCollabLoad.bind(this);
 
 		this._isMounted = false;
 		this._onAction = this._onAction.bind(this);
@@ -104,6 +105,10 @@ class Editor extends Component {
 		});
 
 		if (this.props.children) {
+			// const componentChildren = React.Children.map(this.props.children, (child)=> {
+			// 	return child.type.pluginName;
+			// });
+			// console.log(componentChildren.indexOf('Collaborative') > -1);
 			React.Children.forEach(this.props.children, (child) => {
 				if (child && child.type.getPlugins) {
 					const key = new PluginKey(child.type.pluginName);
@@ -111,7 +116,9 @@ class Editor extends Component {
 					const addonPlugins = child.type.getPlugins({
 						...child.props,
 						pluginKey: key,
-						getPlugin: this.getPlugin
+						getPlugin: this.getPlugin,
+						// onCollabLoad: componentChildren.indexOf('Collaborative') > -1 ? this.handleCollabLoad : undefined,
+
 					});
 					plugins = plugins.concat(addonPlugins);
 				}
@@ -186,7 +193,11 @@ class Editor extends Component {
 		if (this.view && this.view.state && this._isMounted) {
 			const newState = this.view.state.apply(transaction);
 			this.view.updateState(newState);
-			this.setState({ editorState: newState, transaction: transaction });
+			this.setState({ editorState: newState, transaction: transaction }, ()=> {
+				if (!this.state.loadedReal) {
+					this.setState({ loadedReal: true });
+				}
+			});
 			if (this.props.onChange) {
 				this.props.onChange(this.view.state.doc.toJSON());
 			}
@@ -214,8 +225,15 @@ class Editor extends Component {
 		});
 	}
 
+	// handleCollabLoad() {
+	// 	console.log('LOADED');
+	// }
 	render() {
 		const wrapperClasses = `pubpub-editor ${this.props.showHeaderLinks ? 'show-header-links' : ''}`;
+		// const componentChildren = React.Children.map(this.props.children, (child)=> {
+		// 	return child.type.pluginName;
+		// });
+		// console.log(componentChildren.indexOf('Collaborative') > -1);
 		return (
 			<div style={{ position: 'relative' }} id={this.containerId}>
 				{this.state.view
@@ -227,12 +245,14 @@ class Editor extends Component {
 							editorState: this.state.editorState,
 							transaction: this.state.transaction,
 							containerId: this.containerId,
-							pluginKey: this.state.pluginKeys[child.type.pluginName]
+							pluginKey: this.state.pluginKeys[child.type.pluginName],
 						});
 					})
 					: null
 				}
-
+				{/*componentChildren.indexOf('Collaborative') > -1 && !this.state.loadedReal &&
+					<p>LOADING</p>
+				*/}
 				{!this._isMounted &&
 					<div className={wrapperClasses}>
 						<div className="ProseMirror">

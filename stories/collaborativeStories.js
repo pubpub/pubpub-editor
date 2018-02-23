@@ -16,7 +16,7 @@ import { editorWrapperStyle, s3Upload, firebaseConfig, clientData, renderLatexSt
 storiesOf('Collaborative', module)
 .add('default', () => (
 	<div style={editorWrapperStyle}>
-		<Editor>
+		<Editor editorId={'editor'} placeholder="type here">
 			<FormattingMenu />
 			<InsertMenu />
 			<Image handleFileUpload={s3Upload} />
@@ -31,7 +31,7 @@ storiesOf('Collaborative', module)
 				clientData={clientData}
 				// onClientChange={(val)=> { console.log(val); }}
 				// onStatusChange={(val)=> { console.log(val); }}
-				editorKey={'sotrybook-editor-v16'}
+				editorKey={'storybook-editor-v22'}
 			/>
 		</Editor>
 	</div>

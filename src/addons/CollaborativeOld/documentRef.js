@@ -42,7 +42,8 @@ class DocumentRef {
 		const changesRef = this.ref.child('changes');
 
 		return changesRef
-		.startAt(null, String(changesKey))
+		// .startAt(null, String(changesKey))
+		.endAt(null, String(changesKey))
 		.once('value').then((snapshot) => {
 			const changes = snapshot.val();
 			if (changes) {
@@ -69,7 +70,7 @@ class DocumentRef {
 	sendChanges = ({ steps, clientID, meta, newState, onStatusChange }) => {
 		const changesRef = this.ref.child('changes');
 		this.latestKey = this.latestKey + 1;
-
+		console.log('latestKey', this.latestKey);
 		return changesRef.child(this.latestKey).transaction(
 			(existingBatchedSteps)=> {
 				onStatusChange('saving');
@@ -234,7 +235,7 @@ class DocumentRef {
 	healDatabase = ({ stepsWithKeys, view }) => {
 		const stepsToDelete = [];
 		const placeholderClientId = `_oldClient${Math.random()}`;
-		// const changesRef = this.ref.child('changes');
+		const changesRef = this.ref.child('changes');
 
 		console.error('Healing database', stepsWithKeys);
 		stepsWithKeys.forEach((step)=> {
