@@ -65,7 +65,6 @@ class CollaborativePlugin extends Plugin {
 		}, undefined);
 		this.firebaseApp = existingApp || firebase.initializeApp(firebaseConfig, editorKey);
 		const database = firebase.database(this.firebaseApp);
-		// database.goOnline();
 		this.firebaseRef = database.ref(editorKey);
 
 		/* Set user status and watch for status changes */
