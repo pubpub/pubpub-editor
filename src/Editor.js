@@ -58,7 +58,6 @@ class Editor extends Component {
 		this.configurePlugins = this.configurePlugins.bind(this);
 		this.createEditor = this.createEditor.bind(this);
 		this.renderStatic = this.renderStatic.bind(this);
-		// this.handleCollabLoad = this.handleCollabLoad.bind(this);
 
 		this._isMounted = false;
 		this._onAction = this._onAction.bind(this);
@@ -66,7 +65,13 @@ class Editor extends Component {
 		this.schema = this.configureSchema();
 		this.pluginsObject = this.configurePlugins(this.schema);
 		this.nodeViews = this.configureNodeViews(this.schema);
-		this.state = {};
+
+		const componentChildren = React.Children.map(this.props.children, (child)=> {
+			return child.type.pluginName;
+		});
+		this.state = {
+			collabLoading: componentChildren.indexOf('Collaborative') > -1,
+		};
 	}
 
 	componentDidMount() {
@@ -105,10 +110,6 @@ class Editor extends Component {
 		});
 
 		if (this.props.children) {
-			// const componentChildren = React.Children.map(this.props.children, (child)=> {
-			// 	return child.type.pluginName;
-			// });
-			// console.log(componentChildren.indexOf('Collaborative') > -1);
 			React.Children.forEach(this.props.children, (child) => {
 				if (child && child.type.getPlugins) {
 					const key = new PluginKey(child.type.pluginName);
@@ -117,8 +118,6 @@ class Editor extends Component {
 						...child.props,
 						pluginKey: key,
 						getPlugin: this.getPlugin,
-						// onCollabLoad: componentChildren.indexOf('Collaborative') > -1 ? this.handleCollabLoad : undefined,
-
 					});
 					plugins = plugins.concat(addonPlugins);
 				}
@@ -163,12 +162,6 @@ class Editor extends Component {
 	}
 
 	createEditor() {
-		/* I'm not sure why this was needed. It seems like with */
-		/* better render lifecycle management, we wouldn't */
-		// if (this.view) {
-		// 	this.view.destroy();
-		// }
-
 		this.state = EditorState.create({
 			doc: this.schema.nodeFromJSON(this.props.initialContent),
 			schema: this.schema,
@@ -182,6 +175,7 @@ class Editor extends Component {
 			editable: () => (!this.props.isReadOnly),
 			nodeViews: this.nodeViews,
 		});
+
 		this.setState({
 			view: this.view,
 			editorState: this.state,
@@ -194,8 +188,8 @@ class Editor extends Component {
 			const newState = this.view.state.apply(transaction);
 			this.view.updateState(newState);
 			this.setState({ editorState: newState, transaction: transaction }, ()=> {
-				if (!this.state.loadedReal) {
-					this.setState({ loadedReal: true });
+				if (this.state.collabLoading) {
+					this.setState({ collabLoading: false });
 				}
 			});
 			if (this.props.onChange) {
@@ -225,17 +219,10 @@ class Editor extends Component {
 		});
 	}
 
-	// handleCollabLoad() {
-	// 	console.log('LOADED');
-	// }
 	render() {
 		const wrapperClasses = `pubpub-editor ${this.props.showHeaderLinks ? 'show-header-links' : ''}`;
-		// const componentChildren = React.Children.map(this.props.children, (child)=> {
-		// 	return child.type.pluginName;
-		// });
-		// console.log(componentChildren.indexOf('Collaborative') > -1);
 		return (
-			<div style={{ position: 'relative' }} id={this.containerId}>
+			<div style={{ position: 'relative' }} id={this.containerId} className={this.state.collabLoading ? 'editor-loading' : ''}>
 				{this.state.view
 					? React.Children.map(this.props.children, (child) => {
 						if (!child) { return null; }
@@ -250,9 +237,16 @@ class Editor extends Component {
 					})
 					: null
 				}
-				{/*componentChildren.indexOf('Collaborative') > -1 && !this.state.loadedReal &&
-					<p>LOADING</p>
-				*/}
+
+				{/* Loading section displayed when collab is loading */}
+				<div className="editor-loading-bars">
+					<div className="loading pt-skeleton" style={{ width: '95%', height: '1.2em', marginBottom: '1em' }} />
+					<div className="loading pt-skeleton" style={{ width: '85%', height: '1.2em', marginBottom: '1em' }} />
+					<div className="loading pt-skeleton" style={{ width: '90%', height: '1.2em', marginBottom: '1em' }} />
+					<div className="loading pt-skeleton" style={{ width: '80%', height: '1.2em', marginBottom: '1em' }} />
+					<div className="loading pt-skeleton" style={{ width: '82%', height: '1.2em', marginBottom: '1em' }} />
+				</div>
+
 				{!this._isMounted &&
 					<div className={wrapperClasses}>
 						<div className="ProseMirror">

@@ -1,5 +1,21 @@
 @import "~@blueprintjs/core/dist/blueprint.css";
 
+
 .pubpub-editor {
 	font-family: serif;
+}
+
+.editor-loading-bars {
+	width: 100%;
+	display: none;
+	position: absolute;
+}
+
+.editor-loading {
+	.pubpub-editor {
+		opacity: 0;
+	}
+	.editor-loading-bars {
+		display: block;
+	}
 }
