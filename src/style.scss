@@ -39,7 +39,7 @@
 	outline: 0px;
 }
 
-/*Wierd bug with blueprint editable text empty on default*/
+/* Weird bug with blueprint editable text empty on default*/
 .pt-editable-text:not(.pt-editable-editing) .pt-editable-content {
   height: auto !important;
 }
@@ -48,13 +48,6 @@
 	outline: rgb(187, 189, 192) solid 3px;
 }
 
-.show-header-links {
-	h1, h2, h3, h4, h5, h6 {
-		.header-link {
-			display: inline;
-		}
-	}
-}
 .pubpub-editor {
 	h1, h2, h3, h4, h5, h6 {
 		position: relative;
@@ -77,6 +70,28 @@
 				}
 			}
 		}
+	}
+	&.show-header-links {
+		h1, h2, h3, h4, h5, h6 {
+			.header-link {
+				display: inline;
+			}
+		}
+	}
+}
+
+.editor-loading-bars {
+	width: 100%;
+	display: none;
+	position: absolute;
+}
+
+.editor-loading {
+	.pubpub-editor {
+		opacity: 0;
+	}
+	.editor-loading-bars {
+		display: block;
 	}
 }
 

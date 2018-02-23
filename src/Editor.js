@@ -67,7 +67,7 @@ class Editor extends Component {
 		this.nodeViews = this.configureNodeViews(this.schema);
 
 		const componentChildren = React.Children.map(this.props.children, (child)=> {
-			return child.type.pluginName;
+			return child ? child.type.pluginName : null;
 		});
 		this.state = {
 			collabLoading: componentChildren.indexOf('Collaborative') > -1,

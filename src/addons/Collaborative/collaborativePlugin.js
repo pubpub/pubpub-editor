@@ -363,6 +363,8 @@ class CollaborativePlugin extends Plugin {
 			if (!selection) { return null; }
 
 			const data = selection.data || {};
+			if (!data.canEdit) { return null; }
+
 			/* Classnames must begin with letter, so append one single uuid's may not. */
 			const formattedDataId = `c-${data.id}`;
 			const elem = document.createElement('span');

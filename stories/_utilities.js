@@ -35,6 +35,7 @@ export const clientData = {
 	cursorColor: 'rgba(0, 0, 250, 1.0)',
 	image: 'https://s3.amazonaws.com/uifaces/faces/twitter/rickdt/128.jpg',
 	initials: 'DR',
+	canEdit: true,
 };
 
 export function renderLatex(val, isBlock, callback) {
