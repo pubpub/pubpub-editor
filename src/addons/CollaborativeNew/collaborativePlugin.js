@@ -6,7 +6,7 @@ import { Step } from 'prosemirror-transform';
 import { Node } from 'prosemirror-model';
 import { compressSelectionJSON, compressStateJSON, compressStepJSON, compressStepsLossy, uncompressSelectionJSON, uncompressStateJSON, uncompressStepJSON } from 'prosemirror-compress';
 import firebase from 'firebase';
-import CursorType from './CursorType';
+// import CursorType from './CursorType';
 // import DocumentRef from './documentRef';
 
 

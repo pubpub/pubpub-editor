@@ -4,50 +4,9 @@ import { Decoration, DecorationSet } from 'prosemirror-view';
 import { receiveTransaction, sendableSteps } from 'prosemirror-collab';
 import { Step } from 'prosemirror-transform';
 import { Node } from 'prosemirror-model';
-import { compressSelectionJSON, compressStateJSON, compressStepJSON, compressStepsLossy, uncompressSelectionJSON, uncompressStateJSON, uncompressStepJSON } from 'prosemirror-compress';
+import { compressSelectionJSON, compressStateJSON, compressStepJSON, uncompressSelectionJSON, uncompressStateJSON, uncompressStepJSON } from 'prosemirror-compress';
 import firebase from 'firebase';
 import CursorType from './CursorType';
-// import DocumentRef from './documentRef';
-
-
-/* New2 */
-// Load document. Just read - there are no errors, so you're confident
-// Listen to changes, update if there are changes.
-// On write, do a transaction that
-// 	- reads changes and gets the previous version
-// 	- trys to write a new version with sendable changes
-
-// Receive change
-// apply update
-// update cursor position
-// Don't write cursor position unless you are up to date with server
-// If your write fails (because it can't be merged), you restart the doc, and toss out your changes.
-// You still keep the authority doc around because you may have added things to your write that are no good...
-// 	Server has ABC, you have ABD, and ABDC doesn't fly.
-
-
-// Okay - so a delay in sendChanges causes the steps to show up out of order.
-// If they show up out of order, they are jumbled on the server.
-// The local client doesn't see that though.
-// Then, once another tab edits, it is subject to IndexOutOfRange on the original, because the jumble is longer
-// This indexOutOfRange dude, if he edits (since we just pass over the exception), creates edit that don't make any sense and cause heal database.
-
-
-// For Thursday/Friday
-// We're still getting multiple calls to loadDocument that I don't understand
-// as evidenced by the need for setChangeListener
-// Figure that out, and figure out how to better handle selections.
-// It seems we're also getting clients thingking they are the authority. probably
-// because we are wiping selections when we reset? Rather than wipe completely
-// we should just set their indexes back to 1 or something.
-
-// Collaborative selections and debugging
-// Not-authority clients should still stop processing if they see the authority failed locally. They just aren't responsible for removal. We want to avoid getting an error that prohibits us from listening for remove.
-
-// We need to determine an authority that is building only the server steps. If that fails,
-// we remove those steps, and restart all clients.
-// Is there any danger in having everyone be an authority?
-// onDelete you restart!
 
 const TIMESTAMP = { '.sv': 'timestamp' };
 const SAVE_EVERY_N_STEPS = 100;
@@ -79,6 +38,7 @@ class CollaborativePlugin extends Plugin {
 		this.startedLoad = false;
 		this.view = null;
 		this.mostRecentRemoteKey = null;
+		this.selections = {};
 
 		/* Setup Prosemirror plugin values */
 		this.spec = {
@@ -88,9 +48,9 @@ class CollaborativePlugin extends Plugin {
 				apply: this.apply
 			},
 		};
-		// this.props = {
-		// 	decorations: this.decorations
-		// };
+		this.props = {
+			decorations: this.decorations
+		};
 
 		/* Check for firebaseConfig */
 		if (!firebaseConfig) {
@@ -169,11 +129,11 @@ class CollaborativePlugin extends Plugin {
 			this.view.dispatch(trans);
 
 			/* Listen to Selections Change */
-			// const selectionsRef = this.firebaseRef.child('selections');
-			// selectionsRef.child(this.localClientId).onDisconnect().remove();
-			// selectionsRef.on('child_added', this.addClientSelection);
-			// selectionsRef.on('child_changed', this.updateClientSelection);
-			// selectionsRef.on('child_removed', this.deleteClientSelection);
+			const selectionsRef = this.firebaseRef.child('selections');
+			selectionsRef.child(this.localClientId).onDisconnect().remove();
+			selectionsRef.on('child_added', this.addClientSelection);
+			selectionsRef.on('child_changed', this.updateClientSelection);
+			selectionsRef.on('child_removed', this.deleteClientSelection);
 
 			/* Listen to Changes */
 			return this.firebaseRef.child('changes')
@@ -187,6 +147,7 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	listenToChanges(snapshot) {
+		// console.log('Calling listenToChanges', snapshot.key, 'this.ongoingTransaction', this.ongoingTransaction);
 		if (!this.startedLoad) { console.log('You shouldnt be here!'); return null; }
 		this.mostRecentRemoteKey = Number(snapshot.key);
 		const snapshotVal = snapshot.val();
@@ -205,11 +166,12 @@ class CollaborativePlugin extends Plugin {
 				trans.setMeta(metaKey, meta[metaKey]);
 			});
 		}
-
+		document.getSelection().empty(); /* We do this because of a chrome bug: https://github.com/ProseMirror/prosemirror/issues/710 */
 		return this.view.dispatch(trans);
 	}
 
 	sendCollabChanges(transaction, newState) {
+		// console.log('Calling sendChanges');
 		const meta = transaction.meta;
 		if (meta.collab$ || meta.rebase || meta.footnote || meta.newSelection || meta.clearTempSelection) {
 			return null;
@@ -224,12 +186,12 @@ class CollaborativePlugin extends Plugin {
 
 		const sendable = sendableSteps(newState);
 		if (!sendable || this.ongoingTransaction) { return null; }
+		// console.log('Attempting sendChanges ', this.mostRecentRemoteKey + 1);
 
 		this.ongoingTransaction = true;
 		const steps = sendable.steps;
 		const clientId = sendable.clientID;
 
-		const tempKey = this.mostRecentRemoteKey + 1;
 		return this.firebaseRef.child('changes').child(this.mostRecentRemoteKey + 1)
 		.transaction((existingRemoteSteps)=> {
 			this.onStatusChange('saving');
@@ -245,13 +207,13 @@ class CollaborativePlugin extends Plugin {
 		}, (error, committed, snapshot)=> {
 			if (error) {
 				console.error('Error in sendCollab transaction', error, steps, clientId);
-				console.log('FAILED to write to ', tempKey);
 				return null;
 			}
 
 			this.ongoingTransaction = false;
 			if (committed) {
 				this.onStatusChange('saved');
+				// console.log('Successfully sent changes');
 
 				/* If multiple of SAVE_EVERY_N_STEPS, update checkpoint */
 				if (snapshot.key % SAVE_EVERY_N_STEPS === 0) {
@@ -268,7 +230,18 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	apply(transaction, state, prevEditorState, editorState) {
-		return {};
+		const baseNode = document.getSelection().baseNode;
+		const className = baseNode && baseNode.className;
+		const isBad = className && className.indexOf('inner-circle-small') > -1;
+		console.log(baseNode, className, isBad);
+		if (isBad) {
+			console.log('BAD');
+		}
+		// console.log(document.getSelection());
+		// console.log(transaction.meta);
+		// console.log('Calling apply', this.ongoingTransaction, 'this.ongoingTransaction', 'transaction.docChanged', transaction.docChanged);
+		// if (this.ongoingTransaction) { return undefined; }
+		// return {};
 		/* Remove Stale Selections */
 		Object.keys(this.selections).forEach((clientId)=> {
 			const originalClientData = this.selections[clientId] ? this.selections[clientId].data : {};
@@ -282,7 +255,7 @@ class CollaborativePlugin extends Plugin {
 		/* Map Selection */
 		if (transaction.docChanged) {
 			Object.keys(this.selections).forEach((clientId)=> {
-				if (this.selections[clientId]) {
+				if (this.selections[clientId] && this.selections[clientId] !== this.localClientId) {
 					const originalClientData = this.selections[clientId] ? this.selections[clientId].data : {};
 					this.selections[clientId] = this.selections[clientId].map(editorState.doc, transaction.mapping);
 					this.selections[clientId].data = originalClientData;
@@ -291,24 +264,34 @@ class CollaborativePlugin extends Plugin {
 		}
 
 		/* Set Selection */
-		const selection = editorState.selection;
-		if (selection instanceof AllSelection === false) {
-			const compressed = compressSelectionJSON(selection.toJSON());
-			compressed.data = this.localClientData;
+		const prevSelection = this.selections[this.localClientId] || {};
+		const selection = editorState.selection || {};
+		const needsToInit = !prevSelection.anchor;
+		const isPointer = transaction.meta.pointer;
+		const isNotSelectAll = selection instanceof AllSelection === false;
+		const isCursorChange = !transaction.docChanged && (selection.anchor !== prevSelection.anchor || selection.head !== prevSelection.head);
+		if (isNotSelectAll && (needsToInit || isPointer || isCursorChange)) {
+			const prevLocalSelectionData = this.selections[this.localClientId] || {};
+			const anchorEqual = prevLocalSelectionData.anchor === selection.anchor;
+			const headEqual = prevLocalSelectionData.head === selection.head;
+			if (!prevLocalSelectionData.anchor || !anchorEqual || !headEqual) {
+				const compressed = compressSelectionJSON(selection.toJSON());
+				compressed.data = this.localClientData;
 
-			/* compressed.data.lastActive has to be rounded to the nearest minute (or some larger value)
-			If it is updated every millisecond, firebase will see it as constant changes
-			And you'll get a loop of updates triggering millisecond updates.
-			- The lastActive is updated anytime a client makes or receives changes.
-			A client will be active even if they have a tab open and are 'watching'. */
-			const smoothingTimeFactor = 1000 * 60;
-			compressed.data.lastActive = Math.round(new Date().getTime() / smoothingTimeFactor) * smoothingTimeFactor;
-			compressed.data.version = this.latestKey;
+				/* compressed.data.lastActive has to be rounded to the nearest minute (or some larger value)
+				If it is updated every millisecond, firebase will see it as constant changes and you'll get a 
+				loop of updates triggering millisecond updates. The lastActive is updated anytime a client 
+				makes or receives changes. A client will be active even if they have a tab open and are 'watching'. */
+				const smoothingTimeFactor = 1000 * 60;
+				compressed.data.lastActive = Math.round(new Date().getTime() / smoothingTimeFactor) * smoothingTimeFactor;
+				compressed.data.version = this.mostRecentRemoteKey;
 
-			return this.firebaseRef.child('selections').child(this.localClientId).set(compressed);
+				// console.log('About to send: ', compressed, ' with most recent key ', this.mostRecentRemoteKey);
+				this.selections[this.localClientId] = selection;
+				this.selections[this.localClientId].data = this.localClientData;
+				this.firebaseRef.child('selections').child(this.localClientId).set(compressed);
+			}
 		}
-
-		return {};
 	}
 
 	issueEmptyTransaction() {
@@ -316,11 +299,14 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	updateClientSelection(snapshot) {
+		// console.log('Received updated clientselection', snapshot.val());
+		// debugger;
 		/* Called on firebase updates to selection */
 		const clientID = snapshot.key;
 		if (clientID !== this.localClientId) {
 			const compressedSelection = snapshot.val();
-			if (compressedSelection && this.latestRemoteKey === compressedSelection.data.version) {
+			// if (compressedSelection && this.mostRecentRemoteKey === compressedSelection.data.version) {
+			if (compressedSelection) {
 				// console.log(`Latest Local Key: ${this.latestKey} - remote client version: ${compressedSelection.data.version} - latest remote key: ${this.latestRemoteKey}`);
 				// const selection = uncompressSelectionJSON(compressedSelection);
 				// this.selections[clientID] = Selection.fromJSON(this.view.state.doc, selection);
@@ -330,10 +316,10 @@ class CollaborativePlugin extends Plugin {
 					/* Sometimes, because the selection syncs before the doc, the */
 					/* selection location is larger than the doc size. */
 					/* Math.min the anchor and head to prevent this from being an issue */
-					const docSize = this.view.state.doc.content.size;
+					// const docSize = this.view.state.doc.content.size;
 					const correctedSelection = uncompressSelectionJSON(compressedSelection);
-					correctedSelection.anchor = Math.min(docSize, correctedSelection.anchor);
-					correctedSelection.head = Math.min(docSize, correctedSelection.head);
+					// correctedSelection.anchor = Math.min(docSize, correctedSelection.anchor);
+					// correctedSelection.head = Math.min(docSize, correctedSelection.head);
 					this.selections[clientID] = Selection.fromJSON(this.view.state.doc, correctedSelection);
 					this.selections[clientID].data = compressedSelection.data;
 				} catch (error) {
@@ -413,48 +399,48 @@ class CollaborativePlugin extends Plugin {
 					return null;
 				}
 
-				const rootElem = document.getElementById(`cursor-container-${this.editorKey}`);
-				if (!rootElem) { return null; }
-				const rootElemCoords = rootElem.getBoundingClientRect();
-				const existingCursor = document.getElementById(`cursor-${clientId}`);
-				const currentCursor = existingCursor || document.createElement('span');
+				// const rootElem = document.getElementById(`cursor-container-${this.editorKey}`);
+				// if (!rootElem) { return null; }
+				// const rootElemCoords = rootElem.getBoundingClientRect();
+				// const existingCursor = document.getElementById(`cursor-${clientId}`);
+				// const currentCursor = existingCursor || document.createElement('span');
 
-				/* If no cursor yet - create it and its children */
-				if (!existingCursor) {
-					currentCursor.id = `cursor-${clientId}`;
-					currentCursor.className = 'left-cursor';
-					rootElem.appendChild(currentCursor);
+				// /* If no cursor yet - create it and its children */
+				// if (!existingCursor) {
+				// 	currentCursor.id = `cursor-${clientId}`;
+				// 	currentCursor.className = 'left-cursor';
+				// 	rootElem.appendChild(currentCursor);
 
-					if (data.image) {
-						const cursorImage = document.createElement('img');
-						cursorImage.className = `image ${data.id}`;
-						cursorImage.src = data.image;
-						currentCursor.appendChild(cursorImage);
-					}
+				// 	if (data.image) {
+				// 		const cursorImage = document.createElement('img');
+				// 		cursorImage.className = `image ${data.id}`;
+				// 		cursorImage.src = data.image;
+				// 		currentCursor.appendChild(cursorImage);
+				// 	}
 
-					const cursorInitials = document.createElement('span');
-					cursorInitials.className = `initials ${data.id}`;
-					if (!data.image && data.initials) {
-						cursorInitials.textContent = data.initials;
-					}
-					if (data.cursorColor) {
-						cursorInitials.style.backgroundColor = data.cursorColor;
-					}
-					currentCursor.appendChild(cursorInitials);
+				// 	const cursorInitials = document.createElement('span');
+				// 	cursorInitials.className = `initials ${data.id}`;
+				// 	if (!data.image && data.initials) {
+				// 		cursorInitials.textContent = data.initials;
+				// 	}
+				// 	if (data.cursorColor) {
+				// 		cursorInitials.style.backgroundColor = data.cursorColor;
+				// 	}
+				// 	currentCursor.appendChild(cursorInitials);
 
-					if (data.name) {
-						const cursorName = document.createElement('span');
-						cursorName.className = `name ${data.id}`;
-						cursorName.textContent = data.name;
-						if (data.cursorColor) {
-							cursorName.style.backgroundColor = data.cursorColor;
-						}
-						currentCursor.appendChild(cursorName);
-					}
-				}
+				// 	if (data.name) {
+				// 		const cursorName = document.createElement('span');
+				// 		cursorName.className = `name ${data.id}`;
+				// 		cursorName.textContent = data.name;
+				// 		if (data.cursorColor) {
+				// 			cursorName.style.backgroundColor = data.cursorColor;
+				// 		}
+				// 		currentCursor.appendChild(cursorName);
+				// 	}
+				// }
 
-				const top = `${cursorCoords.top - rootElemCoords.top}px`;
-				currentCursor.style.transform = `translate3d(-25px, ${top}, 0)`;
+				// const top = `${cursorCoords.top - rootElemCoords.top}px`;
+				// currentCursor.style.transform = `translate3d(-25px, ${top}, 0)`;
 
 
 				const elem = document.createElement('span');
@@ -526,7 +512,7 @@ class CollaborativePlugin extends Plugin {
 				// return new Decoration(from, from, new CursorType(elem, {}));
 
 
-				// return new Decoration.widget(from, elem);
+				return new Decoration.widget(from, elem);
 				// return Decoration.widget(from, elem, {
 				// 	stopEvent: (event)=> {
 				// 		console.log('Heyo', event);
