@@ -24,7 +24,7 @@ class CollaborativePlugin extends Plugin {
 		this.updateClientSelection = this.updateClientSelection.bind(this);
 		this.deleteClientSelection = this.deleteClientSelection.bind(this);
 		this.issueEmptyTransaction = this.issueEmptyTransaction.bind(this);
-		this.listenToChanges = this.listenToChanges.bind(this);
+		this.handleRemoteChanges = this.handleRemoteChanges.bind(this);
 
 		/* Make passed props accessible */
 		this.localClientData = localClientData;
@@ -147,14 +147,14 @@ class CollaborativePlugin extends Plugin {
 			return this.firebaseRef.child('changes')
 			.orderByKey()
 			.startAt(String(this.mostRecentRemoteKey + 1))
-			.on('child_added', this.listenToChanges);
+			.on('child_added', this.handleRemoteChanges);
 		})
 		.catch((err)=> {
 			console.error('In loadDocument Error with ', err, err.message);
 		});
 	}
 
-	listenToChanges(snapshot) {
+	handleRemoteChanges(snapshot) {
 		this.mostRecentRemoteKey = Number(snapshot.key);
 		const snapshotVal = snapshot.val();
 		const compressedStepsJSON = snapshotVal.s;
@@ -177,7 +177,14 @@ class CollaborativePlugin extends Plugin {
 		/* https://discuss.prosemirror.net/t/in-collab-setup-with-selections-cursor-jumps-to-a-different-position-without-selection-being-changed/1011 */
 		/* https://github.com/ProseMirror/prosemirror/issues/710 */
 		/* https://bugs.chromium.org/p/chromium/issues/detail?id=775939 */
-		document.getSelection().empty();
+		const selection = document.getSelection();
+		if (selection
+			&& selection.isCollapsed
+			&& selection.anchorNode.className.indexOf('options-wrapper') === -1
+		) {
+			document.getSelection().empty();
+		}
+
 		return this.view.dispatch(trans);
 	}
 

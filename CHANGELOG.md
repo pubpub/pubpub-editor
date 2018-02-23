@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.4.1] - 2018-02-23
+- fix: Fix handling of chrome-bug-workaround in options-wrapper
+
 ## [4.4.0] - 2018-02-23
 - feature: support for collaborative firebase authentication added.
 
