@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.4.0] - 2018-02-23
+- feature: support for collaborative firebase authentication added.
+
 ## [4.3.0] - 2018-02-23
 - fix: Collaborative editor rewritten to be much more stable.
 - fix: Load collaborative doc all at once if there is a checkpoint, rather than by piece.
