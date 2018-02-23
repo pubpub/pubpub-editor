@@ -124,7 +124,6 @@ class CollaborativePlugin extends Plugin {
 
 	loadDocument() {
 		if (this.startedLoad) { return null; }
-		console.log('wtf', this.startedLoad);
 		this.startedLoad = true;
 
 		/* Begin by loading the checkpoint if available */
@@ -231,7 +230,6 @@ class CollaborativePlugin extends Plugin {
 		const clientId = sendable.clientID;
 
 		const tempKey = this.mostRecentRemoteKey + 1;
-		console.log('Going attempt to write to ', tempKey);
 		return this.firebaseRef.child('changes').child(this.mostRecentRemoteKey + 1)
 		.transaction((existingRemoteSteps)=> {
 			this.onStatusChange('saving');
@@ -374,7 +372,6 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	updateView(view) {
-		console.log('In view');
 		this.view = view;
 		this.loadDocument();
 		return {
