@@ -279,6 +279,10 @@ class CollaborativePlugin extends Plugin {
 			if (!prevLocalSelectionData.anchor || !anchorEqual || !headEqual) {
 				const compressed = compressSelectionJSON(selection.toJSON());
 				compressed.data = this.localClientData;
+				if (needsToInit) {
+					compressed.a = 1;
+					compressed.h = 1;
+				}
 
 				/* compressed.data.lastActive has to be rounded to the nearest minute (or some larger value)
 				If it is updated every millisecond, firebase will see it as constant changes and you'll get a 
@@ -286,7 +290,6 @@ class CollaborativePlugin extends Plugin {
 				makes or receives changes. A client will be active even if they have a tab open and are 'watching'. */
 				const smoothingTimeFactor = 1000 * 60;
 				compressed.data.lastActive = Math.round(new Date().getTime() / smoothingTimeFactor) * smoothingTimeFactor;
-				compressed.data.version = this.mostRecentRemoteKey;
 
 				this.selections[this.localClientId] = selection;
 				this.selections[this.localClientId].data = this.localClientData;
@@ -304,7 +307,10 @@ class CollaborativePlugin extends Plugin {
 		const clientID = snapshot.key;
 		if (clientID !== this.localClientId) {
 			const snapshotVal = snapshot.val();
-			if (snapshotVal) {
+			/* Invalid selections can happen if a selection is synced before the corresponding changes from that 
+			remote editor. We simply remove the selection in that case, and wait for the proper position to sync. */
+			const invalidSelection = Math.max(snapshotVal.a, snapshotVal.h) > this.view.state.doc.content.size - 1;
+			if (snapshotVal && !invalidSelection) {
 				this.selections[clientID] = Selection.fromJSON(this.view.state.doc, uncompressSelectionJSON(snapshotVal));
 				this.selections[clientID].data = snapshotVal.data;
 			} else {
