@@ -86,13 +86,11 @@ class CollaborativePlugin extends Plugin {
 		if (this.startedLoad) { return null; }
 		this.startedLoad = true;
 
-		/* We need do the following so that we can
-		operate without authentication in development */
+		/* Authenticate with Firebase if a firebaseToken is provided in the client data */
 		const authenticationFunction = this.localClientData.firebaseToken
 			? firebase.auth(this.firebaseApp).signInWithCustomToken(this.localClientData.firebaseToken)
 			: new Promise((resolve)=> { return resolve(); });
 
-		/* Authenticate user with Firebase */
 		return authenticationFunction
 		.then(()=> {
 			/* Load the checkpoint if available */
