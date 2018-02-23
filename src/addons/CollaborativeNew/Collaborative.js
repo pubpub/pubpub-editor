@@ -1,8 +1,8 @@
 /* eslint-disable react/no-unused-prop-types */
-import React, { Component } from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { collab } from 'prosemirror-collab';
-import CollaborativePlugin from './collaborativePluginNew2';
+import CollaborativePlugin from './collaborativePlugin';
 
 require('./collaborative.scss');
 
@@ -102,17 +102,6 @@ class Collaborative extends Component {
 		];
 	}
 
-	// constructor(props) {
-	// 	super(props);
-	// 	this.state = {
-	// 		collaborators: []
-	// 	};
-	// 	this.plugin = props.pluginKey.get(props.editorState);
-	// 	this.onChange = this.onChange.bind(this);
-	// 	this.getPlugin = this.getPlugin.bind(this);
-	// 	this.commit = this.commit.bind(this);
-	// }
-
 	componentWillReceiveProps(nextProps) {
 		const plugin = nextProps.pluginKey.get(nextProps.editorState);
 		if (this.props.editorState !== nextProps.editorState
@@ -120,12 +109,7 @@ class Collaborative extends Component {
 			&& nextProps.transaction
 			&& plugin
 		) {
-			// this.onChange(nextProps.editorState, nextProps.transaction);
-			// const delay = Math.floor(Math.random() * 2000);
-			// console.log(`Delay is ${delay} for step `, nextProps.transaction);
-			// setTimeout(()=> {
 			plugin.sendCollabChanges(nextProps.transaction, nextProps.editorState);
-			// }, delay);
 		}
 	}
 	componentWillUnmount() {
@@ -133,34 +117,8 @@ class Collaborative extends Component {
 		plugin.disconnect();
 	}
 
-	// onChange(editorState, transaction) {
-	// 	if (editorState && transaction && this.plugin) {
-	// 		this.plugin.sendCollabChanges(transaction, editorState);
-	// 	}
-	// 	// if (!editorState || !transaction) { return null; }
-	// 	// const plugin = this.plugin;
-	// 	// if (plugin) {
-	// 	// 	return plugin.sendCollabChanges(transaction, editorState);
-	// 	// }
-	// 	// return null;
-	// }
-
-	// getPlugin() {
-	// 	return this.plugin;
-	// 	const { pluginKey, editorState } = this.props;
-	// 	console.log(pluginKey.get(editorState));
-	// 	return pluginKey.get(editorState);
-	// }
-
-	// commit({ description, uuid, steps, start, end }) {
-	// 	console.log('Ya were using this!');
-	// 	return this.plugin.commit({ description, uuid, steps, start, end });
-	// }
-
 	render() {
 		return null;
-		// if (!this.props.view) { return null; }
-		// return <div id={`cursor-container-${this.props.editorKey}`} className={'cursor-container'} />;
 	}
 }
 
