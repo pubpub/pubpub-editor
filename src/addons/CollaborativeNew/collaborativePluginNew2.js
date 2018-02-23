@@ -6,7 +6,6 @@ import { Step } from 'prosemirror-transform';
 import { Node } from 'prosemirror-model';
 import { compressSelectionJSON, compressStateJSON, compressStepJSON, uncompressSelectionJSON, uncompressStateJSON, uncompressStepJSON } from 'prosemirror-compress';
 import firebase from 'firebase';
-import CursorType from './CursorType';
 
 const TIMESTAMP = { '.sv': 'timestamp' };
 const SAVE_EVERY_N_STEPS = 100;
@@ -147,8 +146,6 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	listenToChanges(snapshot) {
-		// console.log('Calling listenToChanges', snapshot.key, 'this.ongoingTransaction', this.ongoingTransaction);
-		if (!this.startedLoad) { console.log('You shouldnt be here!'); return null; }
 		this.mostRecentRemoteKey = Number(snapshot.key);
 		const snapshotVal = snapshot.val();
 		const compressedStepsJSON = snapshotVal.s;
@@ -166,12 +163,16 @@ class CollaborativePlugin extends Plugin {
 				trans.setMeta(metaKey, meta[metaKey]);
 			});
 		}
-		document.getSelection().empty(); /* We do this because of a chrome bug: https://github.com/ProseMirror/prosemirror/issues/710 */
+
+		/* We do getSelection().empty() because of a chrome bug: */
+		/* https://discuss.prosemirror.net/t/in-collab-setup-with-selections-cursor-jumps-to-a-different-position-without-selection-being-changed/1011 */
+		/* https://github.com/ProseMirror/prosemirror/issues/710 */
+		/* https://bugs.chromium.org/p/chromium/issues/detail?id=775939 */
+		document.getSelection().empty();
 		return this.view.dispatch(trans);
 	}
 
 	sendCollabChanges(transaction, newState) {
-		// console.log('Calling sendChanges');
 		const meta = transaction.meta;
 		if (meta.collab$ || meta.rebase || meta.footnote || meta.newSelection || meta.clearTempSelection) {
 			return null;
@@ -186,7 +187,6 @@ class CollaborativePlugin extends Plugin {
 
 		const sendable = sendableSteps(newState);
 		if (!sendable || this.ongoingTransaction) { return null; }
-		// console.log('Attempting sendChanges ', this.mostRecentRemoteKey + 1);
 
 		this.ongoingTransaction = true;
 		const steps = sendable.steps;
@@ -213,7 +213,6 @@ class CollaborativePlugin extends Plugin {
 			this.ongoingTransaction = false;
 			if (committed) {
 				this.onStatusChange('saved');
-				// console.log('Successfully sent changes');
 
 				/* If multiple of SAVE_EVERY_N_STEPS, update checkpoint */
 				if (snapshot.key % SAVE_EVERY_N_STEPS === 0) {
@@ -230,22 +229,10 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	apply(transaction, state, prevEditorState, editorState) {
-		const baseNode = document.getSelection().baseNode;
-		const className = baseNode && baseNode.className;
-		const isBad = className && className.indexOf('inner-circle-small') > -1;
-		console.log(baseNode, className, isBad);
-		if (isBad) {
-			console.log('BAD');
-		}
-		// console.log(document.getSelection());
-		// console.log(transaction.meta);
-		// console.log('Calling apply', this.ongoingTransaction, 'this.ongoingTransaction', 'transaction.docChanged', transaction.docChanged);
-		// if (this.ongoingTransaction) { return undefined; }
-		// return {};
 		/* Remove Stale Selections */
 		Object.keys(this.selections).forEach((clientId)=> {
 			const originalClientData = this.selections[clientId] ? this.selections[clientId].data : {};
-			const expirationTime = (1000 * 60 * 10); // 10 Minutes
+			const expirationTime = (1000 * 60 * 10); /* 10 minutes */
 			const lastActiveExpired = (originalClientData.lastActive + expirationTime) < new Date().getTime();
 			if (!originalClientData.lastActive || lastActiveExpired) {
 				this.firebaseRef.child('selections').child(clientId).remove();
@@ -286,7 +273,6 @@ class CollaborativePlugin extends Plugin {
 				compressed.data.lastActive = Math.round(new Date().getTime() / smoothingTimeFactor) * smoothingTimeFactor;
 				compressed.data.version = this.mostRecentRemoteKey;
 
-				// console.log('About to send: ', compressed, ' with most recent key ', this.mostRecentRemoteKey);
 				this.selections[this.localClientId] = selection;
 				this.selections[this.localClientId].data = this.localClientData;
 				this.firebaseRef.child('selections').child(this.localClientId).set(compressed);
@@ -299,36 +285,16 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	updateClientSelection(snapshot) {
-		// console.log('Received updated clientselection', snapshot.val());
-		// debugger;
 		/* Called on firebase updates to selection */
 		const clientID = snapshot.key;
 		if (clientID !== this.localClientId) {
-			const compressedSelection = snapshot.val();
-			// if (compressedSelection && this.mostRecentRemoteKey === compressedSelection.data.version) {
-			if (compressedSelection) {
-				// console.log(`Latest Local Key: ${this.latestKey} - remote client version: ${compressedSelection.data.version} - latest remote key: ${this.latestRemoteKey}`);
-				// const selection = uncompressSelectionJSON(compressedSelection);
-				// this.selections[clientID] = Selection.fromJSON(this.view.state.doc, selection);
-				// this.selections[clientID].data = compressedSelection.data;
-
-				try {
-					/* Sometimes, because the selection syncs before the doc, the */
-					/* selection location is larger than the doc size. */
-					/* Math.min the anchor and head to prevent this from being an issue */
-					// const docSize = this.view.state.doc.content.size;
-					const correctedSelection = uncompressSelectionJSON(compressedSelection);
-					// correctedSelection.anchor = Math.min(docSize, correctedSelection.anchor);
-					// correctedSelection.head = Math.min(docSize, correctedSelection.head);
-					this.selections[clientID] = Selection.fromJSON(this.view.state.doc, correctedSelection);
-					this.selections[clientID].data = compressedSelection.data;
-				} catch (error) {
-					console.error('updateClientSelection', error);
-				}
+			const snapshotVal = snapshot.val();
+			if (snapshotVal) {
+				this.selections[clientID] = Selection.fromJSON(this.view.state.doc, uncompressSelectionJSON(snapshotVal));
+				this.selections[clientID].data = snapshotVal.data;
 			} else {
 				delete this.selections[clientID];
 			}
-			// console.log(this.selections);
 			this.issueEmptyTransaction();
 		}
 	}
@@ -367,164 +333,91 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	decorations(state) {
-		/* Remove inactive cursor bubbles */
 		const selectionKeys = Object.keys(this.selections);
-		const existingElements = document.getElementsByClassName('left-cursor');
-		for (let index = 0; index < existingElements.length; index += 1) {
-			const domItemClientId = existingElements[index].id.replace('cursor-', '');
-			const itemIndex = selectionKeys.indexOf(domItemClientId);
-			if (itemIndex === -1) {
-				existingElements[index].remove();
-			}
-		}
+		const decorations = [];
+		selectionKeys.forEach((clientId)=> {
+			if (clientId === this.localClientId) { return null; }
 
-		return DecorationSet.create(state.doc, selectionKeys.map((clientId)=> {
 			const selection = this.selections[clientId];
 			if (!selection) { return null; }
 
 			const data = selection.data || {};
-			const { from, to } = selection;
-			if (clientId === this.localClientId) {
-				return null;
+			const elem = document.createElement('span');
+			elem.className = `collab-cursor ${data.id}`;
+
+			/* Add Vertical Bar */
+			const innerChildBar = document.createElement('span');
+			innerChildBar.className = 'inner-bar';
+			elem.appendChild(innerChildBar);
+
+			const style = document.createElement('style');
+			elem.appendChild(style);
+			let innerStyle = '';
+
+			/* Add small circle at top of bar */
+			const innerChildCircleSmall = document.createElement('span');
+			innerChildCircleSmall.className = `inner-circle-small ${data.id}`;
+			innerChildBar.appendChild(innerChildCircleSmall);
+
+			/* Add wrapper for hover items at top of bar */
+			const hoverItemsWrapper = document.createElement('span');
+			hoverItemsWrapper.className = 'hover-wrapper';
+			innerChildBar.appendChild(hoverItemsWrapper);
+
+			/* Add Large Circle for hover */
+			const innerChildCircleBig = document.createElement('span');
+			innerChildCircleBig.className = 'inner-circle-big';
+			hoverItemsWrapper.appendChild(innerChildCircleBig);
+
+			/* If Initials exist - add to hover items wrapper */
+			if (data.initials) {
+				const innerCircleInitials = document.createElement('span');
+				innerCircleInitials.className = `initials ${data.id}`;
+				innerStyle += `.initials.${data.id}::after { content: "${data.initials}"; } `;
+				hoverItemsWrapper.appendChild(innerCircleInitials);
 			}
-			if (from === to) {
-				// const toPos = selection.$to.pos;
-				// if (!toPos) { return null; }
-				if (!to) { return null; }
-				let cursorCoords;
-				try {
-					// cursorCoords = this.view.coordsAtPos(toPos);
-					cursorCoords = this.view.coordsAtPos(to);
-				} catch (err) {
-					return null;
-				}
+			/* If Image exists - add to hover items wrapper */
+			if (data.image) {
+				const innerCircleImage = document.createElement('span');
+				innerCircleImage.className = `image ${data.id}`;
+				innerStyle += `.image.${data.id}::after { background-image: url('${data.image}'); } `;
+				hoverItemsWrapper.appendChild(innerCircleImage);
+			}
 
-				// const rootElem = document.getElementById(`cursor-container-${this.editorKey}`);
-				// if (!rootElem) { return null; }
-				// const rootElemCoords = rootElem.getBoundingClientRect();
-				// const existingCursor = document.getElementById(`cursor-${clientId}`);
-				// const currentCursor = existingCursor || document.createElement('span');
-
-				// /* If no cursor yet - create it and its children */
-				// if (!existingCursor) {
-				// 	currentCursor.id = `cursor-${clientId}`;
-				// 	currentCursor.className = 'left-cursor';
-				// 	rootElem.appendChild(currentCursor);
-
-				// 	if (data.image) {
-				// 		const cursorImage = document.createElement('img');
-				// 		cursorImage.className = `image ${data.id}`;
-				// 		cursorImage.src = data.image;
-				// 		currentCursor.appendChild(cursorImage);
-				// 	}
-
-				// 	const cursorInitials = document.createElement('span');
-				// 	cursorInitials.className = `initials ${data.id}`;
-				// 	if (!data.image && data.initials) {
-				// 		cursorInitials.textContent = data.initials;
-				// 	}
-				// 	if (data.cursorColor) {
-				// 		cursorInitials.style.backgroundColor = data.cursorColor;
-				// 	}
-				// 	currentCursor.appendChild(cursorInitials);
-
-				// 	if (data.name) {
-				// 		const cursorName = document.createElement('span');
-				// 		cursorName.className = `name ${data.id}`;
-				// 		cursorName.textContent = data.name;
-				// 		if (data.cursorColor) {
-				// 			cursorName.style.backgroundColor = data.cursorColor;
-				// 		}
-				// 		currentCursor.appendChild(cursorName);
-				// 	}
-				// }
-
-				// const top = `${cursorCoords.top - rootElemCoords.top}px`;
-				// currentCursor.style.transform = `translate3d(-25px, ${top}, 0)`;
-
-
-				const elem = document.createElement('span');
-				elem.className = `collab-cursor ${data.id}`;
-
-				/* Add Vertical Bar */
-				const innerChildBar = document.createElement('span');
-				innerChildBar.className = 'inner-bar';
-				elem.appendChild(innerChildBar);
-
-				const style = document.createElement('style');
-				elem.appendChild(style);
-				let innerStyle = '';
-
-				/* Add small circle at top of bar */
-				const innerChildCircleSmall = document.createElement('span');
-				innerChildCircleSmall.className = `inner-circle-small ${data.id}`;
-				innerChildBar.appendChild(innerChildCircleSmall);
-
-				/* Add wrapper for hover items at top of bar */
-				const hoverItemsWrapper = document.createElement('span');
-				hoverItemsWrapper.className = 'hover-wrapper';
-				innerChildBar.appendChild(hoverItemsWrapper);
-
-				/* Add Large Circle for hover */
-				const innerChildCircleBig = document.createElement('span');
-				innerChildCircleBig.className = 'inner-circle-big';
-				hoverItemsWrapper.appendChild(innerChildCircleBig);
-
-				/* If Initials exist - add to hover items wrapper */
-				if (data.initials) {
-					const innerCircleInitials = document.createElement('span');
-					innerCircleInitials.className = `initials ${data.id}`;
-					innerStyle += `.initials.${data.id}::after { content: "${data.initials}"; } `;
-					hoverItemsWrapper.appendChild(innerCircleInitials);
-				}
-				/* If Image exists - add to hover items wrapper */
-				if (data.image) {
-					const innerCircleImage = document.createElement('span');
-					innerCircleImage.className = `image ${data.id}`;
-					innerStyle += `.image.${data.id}::after { background-image: url('${data.image}'); } `;
-					hoverItemsWrapper.appendChild(innerCircleImage);
-				}
-
-				/* If name exists - add to hover items wrapper */
-				if (data.name) {
-					const innerCircleName = document.createElement('span');
-					innerCircleName.className = `name ${data.id}`;
-					innerStyle += `.name.${data.id}::after { content: "${data.name}"; } `;
-					if (data.cursorColor) {
-						innerCircleName.style.backgroundColor = data.cursorColor;
-					}
-					hoverItemsWrapper.appendChild(innerCircleName);
-				}
-
-				/* If cursor color provided - override defaults */
+			/* If name exists - add to hover items wrapper */
+			if (data.name) {
+				const innerCircleName = document.createElement('span');
+				innerCircleName.className = `name ${data.id}`;
+				innerStyle += `.name.${data.id}::after { content: "${data.name}"; } `;
 				if (data.cursorColor) {
-					innerChildBar.style.backgroundColor = data.cursorColor;
-					innerChildCircleSmall.style.backgroundColor = data.cursorColor;
-					innerChildCircleBig.style.backgroundColor = data.cursorColor;
-					innerStyle += `.name.${data.id}::after { background-color: ${data.cursorColor} !important; } `;
+					innerCircleName.style.backgroundColor = data.cursorColor;
 				}
-				style.innerHTML = innerStyle;
-
-				/* This custom Decoration funkiness is because we don't want the cursor to */
-				/* be contenteditable="false". This will break spellcheck. So instead */
-				/* we do a bunch of specific :after elements and custom styles */
-				/* to build the rich cursor UI */
-				// return new Decoration(from, from, new CursorType(elem, {}));
-
-
-				return new Decoration.widget(from, elem);
-				// return Decoration.widget(from, elem, {
-				// 	stopEvent: (event)=> {
-				// 		console.log('Heyo', event);
-				// 	},
-				// 	key: `cursor-${data.id}`,
-				// });
+				hoverItemsWrapper.appendChild(innerCircleName);
 			}
-			return Decoration.inline(from, to, {
-				class: `collab-selection ${data.id}`,
-				style: `background-color: ${data.backgroundColor || 'rgba(0, 25, 150, 0.2)'};`,
-			});
-		}).filter((dec) => {
+
+			/* If cursor color provided - override defaults */
+			if (data.cursorColor) {
+				innerChildBar.style.backgroundColor = data.cursorColor;
+				innerChildCircleSmall.style.backgroundColor = data.cursorColor;
+				innerChildCircleBig.style.backgroundColor = data.cursorColor;
+				innerStyle += `.name.${data.id}::after { background-color: ${data.cursorColor} !important; } `;
+			}
+			style.innerHTML = innerStyle;
+
+			const selectionFrom = selection.from;
+			const selectionTo = selection.to;
+			const selectionHead = selection.head;
+			decorations.push(Decoration.widget(selectionHead, elem));
+
+			if (selectionFrom !== selectionTo) {
+				decorations.push(Decoration.inline(selectionFrom, selectionTo, {
+					class: `collab-selection ${data.id}`,
+					style: `background-color: ${data.backgroundColor || 'rgba(0, 25, 150, 0.2)'};`,
+				}));
+			}
+			return null;
+		});
+		return DecorationSet.create(state.doc, decorations.filter((dec)=> {
 			return !!dec;
 		}));
 	}

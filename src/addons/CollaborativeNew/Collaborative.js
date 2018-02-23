@@ -158,8 +158,9 @@ class Collaborative extends Component {
 	// }
 
 	render() {
-		if (!this.props.view) { return null; }
-		return <div id={`cursor-container-${this.props.editorKey}`} className={'cursor-container'} />;
+		return null;
+		// if (!this.props.view) { return null; }
+		// return <div id={`cursor-container-${this.props.editorKey}`} className={'cursor-container'} />;
 	}
 }
 
