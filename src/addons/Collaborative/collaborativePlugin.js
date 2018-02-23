@@ -199,7 +199,7 @@ class CollaborativePlugin extends Plugin {
 			clearTimeout(this.resendSyncTimeout);
 			this.resendSyncTimeout = setTimeout(()=> {
 				this.sendCollabChanges({ meta: {} }, this.view.state);
-			}, 5000);
+			}, 2000);
 			return null;
 		}
 
@@ -363,8 +363,10 @@ class CollaborativePlugin extends Plugin {
 			if (!selection) { return null; }
 
 			const data = selection.data || {};
+			/* Classnames must begin with letter, so append one single uuid's may not. */
+			const formattedDataId = `c-${data.id}`;
 			const elem = document.createElement('span');
-			elem.className = `collab-cursor ${data.id}`;
+			elem.className = `collab-cursor ${formattedDataId}`;
 
 			/* Add Vertical Bar */
 			const innerChildBar = document.createElement('span');
@@ -377,7 +379,7 @@ class CollaborativePlugin extends Plugin {
 
 			/* Add small circle at top of bar */
 			const innerChildCircleSmall = document.createElement('span');
-			innerChildCircleSmall.className = `inner-circle-small ${data.id}`;
+			innerChildCircleSmall.className = `inner-circle-small ${formattedDataId}`;
 			innerChildBar.appendChild(innerChildCircleSmall);
 
 			/* Add wrapper for hover items at top of bar */
@@ -393,23 +395,23 @@ class CollaborativePlugin extends Plugin {
 			/* If Initials exist - add to hover items wrapper */
 			if (data.initials) {
 				const innerCircleInitials = document.createElement('span');
-				innerCircleInitials.className = `initials ${data.id}`;
-				innerStyle += `.initials.${data.id}::after { content: "${data.initials}"; } `;
+				innerCircleInitials.className = `initials ${formattedDataId}`;
+				innerStyle += `.initials.${formattedDataId}::after { content: "${data.initials}"; } `;
 				hoverItemsWrapper.appendChild(innerCircleInitials);
 			}
 			/* If Image exists - add to hover items wrapper */
 			if (data.image) {
 				const innerCircleImage = document.createElement('span');
-				innerCircleImage.className = `image ${data.id}`;
-				innerStyle += `.image.${data.id}::after { background-image: url('${data.image}'); } `;
+				innerCircleImage.className = `image ${formattedDataId}`;
+				innerStyle += `.image.${formattedDataId}::after { background-image: url('${data.image}'); } `;
 				hoverItemsWrapper.appendChild(innerCircleImage);
 			}
 
 			/* If name exists - add to hover items wrapper */
 			if (data.name) {
 				const innerCircleName = document.createElement('span');
-				innerCircleName.className = `name ${data.id}`;
-				innerStyle += `.name.${data.id}::after { content: "${data.name}"; } `;
+				innerCircleName.className = `name ${formattedDataId}`;
+				innerStyle += `.name.${formattedDataId}::after { content: "${data.name}"; } `;
 				if (data.cursorColor) {
 					innerCircleName.style.backgroundColor = data.cursorColor;
 				}
@@ -421,7 +423,7 @@ class CollaborativePlugin extends Plugin {
 				innerChildBar.style.backgroundColor = data.cursorColor;
 				innerChildCircleSmall.style.backgroundColor = data.cursorColor;
 				innerChildCircleBig.style.backgroundColor = data.cursorColor;
-				innerStyle += `.name.${data.id}::after { background-color: ${data.cursorColor} !important; } `;
+				innerStyle += `.name.${formattedDataId}::after { background-color: ${data.cursorColor} !important; } `;
 			}
 			style.innerHTML = innerStyle;
 
@@ -432,7 +434,7 @@ class CollaborativePlugin extends Plugin {
 
 			if (selectionFrom !== selectionTo) {
 				decorations.push(Decoration.inline(selectionFrom, selectionTo, {
-					class: `collab-selection ${data.id}`,
+					class: `collab-selection ${formattedDataId}`,
 					style: `background-color: ${data.backgroundColor || 'rgba(0, 25, 150, 0.2)'};`,
 				}));
 			}

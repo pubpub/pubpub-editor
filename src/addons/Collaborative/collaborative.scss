@@ -28,6 +28,7 @@
 			position: absolute;
 			bottom: 100%;
 			pointer-events: none;
+			z-index: 1;
 			.inner-circle-big {
 				position: absolute;
 				height: 24px;
