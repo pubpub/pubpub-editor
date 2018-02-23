@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { Editor } from 'index';
 import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
-import Collaborative from 'addons/CollaborativeNew/Collaborative';
+import Collaborative from 'addons/Collaborative/Collaborative';
 import Image from 'addons/Image/Image';
 import Video from 'addons/Video/Video';
 import File from 'addons/File/File';
