@@ -64,13 +64,12 @@ class CollaborativePlugin extends Plugin {
 			return prev;
 		}, undefined);
 		this.firebaseApp = existingApp || firebase.initializeApp(firebaseConfig, editorKey);
-		this.rootRef = firebase.database(this.firebaseApp);
-		this.rootRef.goOnline();
-		this.firebaseRef = this.rootRef.ref(editorKey);
+		const database = firebase.database(this.firebaseApp);
+		// database.goOnline();
+		this.firebaseRef = database.ref(editorKey);
 
 		/* Set user status and watch for status changes */
-		const connectedRef = this.rootRef.ref('.info/connected');
-		connectedRef.on('value', (snapshot)=> {
+		database.ref('.info/connected').on('value', (snapshot)=> {
 			if (snapshot.val() === true) {
 				this.onStatusChange('connected');
 			} else {
@@ -87,8 +86,18 @@ class CollaborativePlugin extends Plugin {
 		if (this.startedLoad) { return null; }
 		this.startedLoad = true;
 
-		/* Begin by loading the checkpoint if available */
-		return this.firebaseRef.child('checkpoint').once('value')
+		/* We need do the following if so that we can operate
+		without authentication on the storybook development */
+		const authenticationFunction = window.location.origin !== 'http://localhost:9002'
+			? firebase.auth(this.firebaseApp).signInWithCustomToken(this.localClientData.firebaseToken)
+			: new Promise((resolve)=> { return resolve(); });
+
+		/* Authenticate user with Firebase */
+		return authenticationFunction
+		.then(()=> {
+			/* Load the checkpoint if available */
+			return this.firebaseRef.child('checkpoint').once('value');
+		})
 		.then((checkpointSnapshot) => {
 			const checkpointSnapshotVal = checkpointSnapshot.val() || { k: '0', d: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] } };
 
