@@ -188,8 +188,6 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	listenToChanges(snapshot) {
-		/* On listen, take the steps, apply them to your doc. If they are bad, restart your doc. */
-		/* What about rebasing them first though? Isn't there a confirmed thing here? */
 		if (!this.startedLoad) { console.log('You shouldnt be here!'); return null; }
 		this.mostRecentRemoteKey = Number(snapshot.key);
 		const snapshotVal = snapshot.val();
@@ -226,17 +224,18 @@ class CollaborativePlugin extends Plugin {
 		});
 
 		const sendable = sendableSteps(newState);
-		console.log(sendable);
 		if (!sendable || this.ongoingTransaction) { return null; }
 
 		this.ongoingTransaction = true;
 		const steps = sendable.steps;
 		const clientId = sendable.clientID;
 
+		const tempKey = this.mostRecentRemoteKey + 1;
+		console.log('Going attempt to write to ', tempKey);
 		return this.firebaseRef.child('changes').child(this.mostRecentRemoteKey + 1)
 		.transaction((existingRemoteSteps)=> {
 			this.onStatusChange('saving');
-			if (existingRemoteSteps) { return null; }
+			if (existingRemoteSteps) { return undefined; }
 			return {
 				s: steps.map((step) => {
 					return compressStepJSON(step.toJSON());
@@ -248,21 +247,24 @@ class CollaborativePlugin extends Plugin {
 		}, (error, committed, snapshot)=> {
 			if (error) {
 				console.error('Error in sendCollab transaction', error, steps, clientId);
+				console.log('FAILED to write to ', tempKey);
 				return null;
 			}
 
 			this.ongoingTransaction = false;
-			this.onStatusChange('saved');
+			if (committed) {
+				this.onStatusChange('saved');
 
-			const key = snapshot.key;
-			if (committed && key % SAVE_EVERY_N_STEPS === 0 && key > 0) {
-				/* Update Checkpoint */
-				this.firebaseRef.child('checkpoint').set({
-					d: compressStateJSON(newState.toJSON()).d,
-					k: key,
-					t: TIMESTAMP
-				});
+				/* If multiple of SAVE_EVERY_N_STEPS, update checkpoint */
+				if (snapshot.key % SAVE_EVERY_N_STEPS === 0) {
+					this.firebaseRef.child('checkpoint').set({
+						d: compressStateJSON(newState.toJSON()).d,
+						k: snapshot.key,
+						t: TIMESTAMP
+					});
+				}
 			}
+
 			return true;
 		}, false);
 	}
