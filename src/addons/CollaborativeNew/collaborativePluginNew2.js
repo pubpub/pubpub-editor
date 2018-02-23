@@ -38,6 +38,8 @@ class CollaborativePlugin extends Plugin {
 		this.view = null;
 		this.mostRecentRemoteKey = null;
 		this.selections = {};
+		this.ongoingTransaction = false;
+		this.resendSyncTimeout = undefined;
 
 		/* Setup Prosemirror plugin values */
 		this.spec = {
@@ -186,7 +188,20 @@ class CollaborativePlugin extends Plugin {
 		});
 
 		const sendable = sendableSteps(newState);
-		if (!sendable || this.ongoingTransaction) { return null; }
+		if (!sendable) { return null; }
+
+		if (this.ongoingTransaction) {
+			/* We only allow one outgoing transaction at a time. Sometimes the 
+			local view is updated before an ongoing transaction is finished. If this
+			is the case, we abort the newly triggered outgoing transaction. If we do
+			that, we need to ensure we eventually send the most recent state for
+			syncing. This timeout ensures that. */
+			clearTimeout(this.resendSyncTimeout);
+			this.resendSyncTimeout = setTimeout(()=> {
+				this.sendCollabChanges({ meta: {} }, this.view.state);
+			}, 5000);
+			return null;
+		}
 
 		this.ongoingTransaction = true;
 		const steps = sendable.steps;
