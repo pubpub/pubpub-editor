@@ -86,9 +86,9 @@ class CollaborativePlugin extends Plugin {
 		if (this.startedLoad) { return null; }
 		this.startedLoad = true;
 
-		/* We need do the following if so that we can operate
-		without authentication on the storybook development */
-		const authenticationFunction = window.location.origin !== 'http://localhost:9002'
+		/* We need do the following so that we can
+		operate without authentication in development */
+		const authenticationFunction = this.localClientData.firebaseToken
 			? firebase.auth(this.firebaseApp).signInWithCustomToken(this.localClientData.firebaseToken)
 			: new Promise((resolve)=> { return resolve(); });
 

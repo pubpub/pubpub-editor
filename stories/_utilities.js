@@ -18,7 +18,7 @@ export const editorWrapperStyle = {
 // 	storageBucket: 'pubpub-v4-dev.appspot.com',
 // 	messagingSenderId: '175246944410'
 // };
-	
+
 export const firebaseConfig = {
 	apiKey: 'AIzaSyBpE1sz_-JqtcIm2P4bw4aoMEzwGITfk0U',
 	authDomain: 'pubpub-rich.firebaseapp.com',
