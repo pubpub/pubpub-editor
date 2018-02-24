@@ -179,6 +179,8 @@ class CollaborativePlugin extends Plugin {
 		const selection = document.getSelection();
 		if (selection
 			&& selection.isCollapsed
+			&& selection.anchorNode
+			&& selection.anchorNode.className
 			&& selection.anchorNode.className.indexOf('options-wrapper') === -1
 		) {
 			document.getSelection().empty();

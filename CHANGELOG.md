@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.4.2] - 2018-02-23
+- fix: Fix dom anchor selection
+
 ## [4.4.1] - 2018-02-23
 - fix: Fix handling of chrome-bug-workaround in options-wrapper
 
