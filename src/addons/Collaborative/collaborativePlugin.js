@@ -25,6 +25,7 @@ class CollaborativePlugin extends Plugin {
 		this.deleteClientSelection = this.deleteClientSelection.bind(this);
 		this.issueEmptyTransaction = this.issueEmptyTransaction.bind(this);
 		this.handleRemoteChanges = this.handleRemoteChanges.bind(this);
+		this.setResendTimeout = this.setResendTimeout.bind(this);
 
 		/* Make passed props accessible */
 		this.localClientData = localClientData;
@@ -177,11 +178,11 @@ class CollaborativePlugin extends Plugin {
 		/* https://github.com/ProseMirror/prosemirror/issues/710 */
 		/* https://bugs.chromium.org/p/chromium/issues/detail?id=775939 */
 		const selection = document.getSelection();
+		const anchorNode = selection.anchorNode || { className: '' };
+		const anchorClasses = anchorNode.className || '';
 		if (selection
 			&& selection.isCollapsed
-			&& selection.anchorNode
-			&& selection.anchorNode.className
-			&& selection.anchorNode.className.indexOf('options-wrapper') === -1
+			&& anchorClasses.indexOf('options-wrapper') === -1
 		) {
 			document.getSelection().empty();
 		}
@@ -211,10 +212,7 @@ class CollaborativePlugin extends Plugin {
 			is the case, we abort the newly triggered outgoing transaction. If we do
 			that, we need to ensure we eventually send the most recent state for
 			syncing. This timeout ensures that. */
-			clearTimeout(this.resendSyncTimeout);
-			this.resendSyncTimeout = setTimeout(()=> {
-				this.sendCollabChanges({ meta: {} }, this.view.state);
-			}, 2000);
+			this.setResendTimeout();
 			return null;
 		}
 
@@ -252,10 +250,22 @@ class CollaborativePlugin extends Plugin {
 						t: TIMESTAMP
 					});
 				}
+			} else {
+				/* If the transaction did not commit changes, we need
+				to trigger sendCollabChanges to fire again. */
+				this.setResendTimeout();
 			}
 
-			return true;
+			return undefined;
 		}, false);
+	}
+
+	setResendTimeout() {
+		clearTimeout(this.resendSyncTimeout);
+		this.resendSyncTimeout = setTimeout(()=> {
+			this.sendCollabChanges({ meta: {} }, this.view.state);
+		}, 2000);
+		return null;
 	}
 
 	apply(transaction, state, prevEditorState, editorState) {

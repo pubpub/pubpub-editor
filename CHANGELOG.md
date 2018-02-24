@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.4.3] - 2018-02-24
+- fix: Better handling of resending pending changes when a transaction fails to commit.
+
 ## [4.4.2] - 2018-02-23
 - fix: Fix dom anchor selection
 
