@@ -233,12 +233,12 @@ class CollaborativePlugin extends Plugin {
 				t: TIMESTAMP,
 			};
 		}, (error, committed, snapshot)=> {
+			this.ongoingTransaction = false;
 			if (error) {
 				console.error('Error in sendCollab transaction', error, steps, clientId);
 				return null;
 			}
 
-			this.ongoingTransaction = false;
 			if (committed) {
 				this.onStatusChange('saved');
 
@@ -257,7 +257,11 @@ class CollaborativePlugin extends Plugin {
 			}
 
 			return undefined;
-		}, false);
+		}, false)
+		.catch(()=> {
+			this.ongoingTransaction = false;
+			this.setResendTimeout();
+		});
 	}
 
 	setResendTimeout() {
@@ -272,7 +276,7 @@ class CollaborativePlugin extends Plugin {
 		/* Remove Stale Selections */
 		Object.keys(this.selections).forEach((clientId)=> {
 			const originalClientData = this.selections[clientId] ? this.selections[clientId].data : {};
-			const expirationTime = (1000 * 60 * 10); /* 10 minutes */
+			const expirationTime = (1000 * 60 * 5); /* 5 minutes */
 			const lastActiveExpired = (originalClientData.lastActive + expirationTime) < new Date().getTime();
 			if (!originalClientData.lastActive || lastActiveExpired) {
 				this.firebaseRef.child('selections').child(clientId).remove();

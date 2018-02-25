@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.4.4] - 2018-02-24
+- fix: Handle transaction disconnect error with .catch
+
 ## [4.4.3] - 2018-02-24
 - fix: Better handling of resending pending changes when a transaction fails to commit.
 
