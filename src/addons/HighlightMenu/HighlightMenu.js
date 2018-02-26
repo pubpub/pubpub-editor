@@ -47,7 +47,7 @@ class HighlightMenu extends Component {
 					const decoSet = state.formattedHighlights;
 					let newDecoSet;
 
-					
+					console.log('transaction', transaction);
 					let posBasedExact;
 					let stillInTact = false;
 					if (transaction.meta.newSelectionData) {
@@ -60,16 +60,21 @@ class HighlightMenu extends Component {
 						stillInTact = posBasedExact === newData.exact;
 					}
 					if (transaction.meta.clearTempSelection) {
+						console.log('In here 4');
 						const tempSelections = decoSet.find().filter((item)=>{ return item.type.attrs.class.indexOf('temp-selection') > -1; });
 						newDecoSet = decoSet.remove(tempSelections);
-					} else if (transaction.meta.newSelection && (transaction.meta.newSelectionData.version || stillInTact)) {
+					// } else if (transaction.meta.newSelection && (transaction.meta.newSelectionData.version || stillInTact)) {
+					} else if (transaction.meta.newSelection && stillInTact) {
+						console.log('Still in tact');
 						const from = Number(transaction.meta.newSelectionData.from);
 						const to = Number(transaction.meta.newSelectionData.to);
 						const tempSelections = decoSet.find().filter((item)=>{ return item.type.attrs.class.indexOf('temp-selection') > -1; });
 						newDecoSet = decoSet.remove(tempSelections).add(editorState.doc, [Decoration.inline(from, to, {
 							class: `highlight-background ${transaction.meta.newSelectionData.id} ${transaction.meta.newSelectionData.permanent ? 'permanent' : ''}`.trim(),
 						})]);
-					} else if (transaction.meta.newSelection && !transaction.meta.newSelectionData.version) {
+						// } else if (transaction.meta.newSelection && !transaction.meta.newSelectionData.version) {
+					} else if (transaction.meta.newSelection && !stillInTact) {
+						console.log('Not still in tact');
 						const container = document.getElementsByClassName(primaryEditorClassName)[0];
 						const range = textQuote.toRange(container, {
 							exact: transaction.meta.newSelectionData.exact,
@@ -79,6 +84,7 @@ class HighlightMenu extends Component {
 						let resolvedStartContainer;
 						let resolvedEndContainer;
 						if (range) {
+							console.log('found it not in tact');
 							resolvedStartContainer = range.startContainer;
 							while (resolvedStartContainer && !resolvedStartContainer.pmViewDesc && resolvedStartContainer.className !== 'ProseMirror') {
 								resolvedStartContainer = resolvedStartContainer.parentElement;
@@ -89,6 +95,7 @@ class HighlightMenu extends Component {
 							}
 						}
 						if (!range || !resolvedStartContainer || !resolvedStartContainer.pmViewDesc || !resolvedEndContainer || !resolvedEndContainer.pmViewDesc) {
+							console.log('didnt find it not in tact');
 							newDecoSet = decoSet;
 						} else {
 							const from = editorState.doc.resolve(resolvedStartContainer.pmViewDesc.posAtStart + range.startOffset).pos;
