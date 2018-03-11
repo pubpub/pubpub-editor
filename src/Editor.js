@@ -192,7 +192,7 @@ class Editor extends Component {
 					this.setState({ collabLoading: false });
 				}
 			});
-			if (this.props.onChange) {
+			if (this.props.onChange && transaction.docChanged) {
 				this.props.onChange(this.view.state.doc.toJSON());
 			}
 		}

@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.4.6] - 2018-03-11
+- fix: Only trigger onChange on Editor component if the doc changes - rather than on every transaction.
+
 ## [4.4.5] - 2018-02-26
 - fix: Highlight version bug fix.
 
