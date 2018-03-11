@@ -68,7 +68,7 @@ class Editor extends Component {
 
 		const componentChildren = React.Children.map(this.props.children, (child)=> {
 			return child ? child.type.pluginName : null;
-		});
+		}) || [];
 		this.state = {
 			collabLoading: componentChildren.indexOf('Collaborative') > -1,
 		};
