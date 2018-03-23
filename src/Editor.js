@@ -89,6 +89,13 @@ class Editor extends Component {
 		return this.view.state.doc.toJSON();
 	}
 
+	getCollabJSONs(collabIds) {
+		if (this.state.pluginKeys.Collaborative) {
+			const collabPlugin = this.state.pluginKeys.Collaborative.get(this.view.state);
+			return collabPlugin.getJSONs(collabIds);
+		}
+		return null;
+	}
 	getPlugin(key) {
 		if (this.state.pluginKeys[key]) {
 			return this.state.pluginKeys[key].get(this.state.editorState);

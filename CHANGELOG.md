@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.5.0] - 2018-03-23
+- feature: Add getCollabJSONs function to <Editor /> which builds the JSONS at a array of paths.
+
 ## [4.4.7] - 2018-03-11
 - fix: Bug fix for Editors with no children components
 

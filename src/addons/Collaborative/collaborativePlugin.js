@@ -26,6 +26,7 @@ class CollaborativePlugin extends Plugin {
 		this.issueEmptyTransaction = this.issueEmptyTransaction.bind(this);
 		this.handleRemoteChanges = this.handleRemoteChanges.bind(this);
 		this.setResendTimeout = this.setResendTimeout.bind(this);
+		this.getJSONs = this.getJSONs.bind(this);
 
 		/* Make passed props accessible */
 		this.localClientData = localClientData;
@@ -65,11 +66,11 @@ class CollaborativePlugin extends Plugin {
 			return prev;
 		}, undefined);
 		this.firebaseApp = existingApp || firebase.initializeApp(firebaseConfig, editorKey);
-		const database = firebase.database(this.firebaseApp);
-		this.firebaseRef = database.ref(editorKey);
+		this.database = firebase.database(this.firebaseApp);
+		this.firebaseRef = this.database.ref(editorKey);
 
 		/* Set user status and watch for status changes */
-		database.ref('.info/connected').on('value', (snapshot)=> {
+		this.database.ref('.info/connected').on('value', (snapshot)=> {
 			if (snapshot.val() === true) {
 				this.onStatusChange('connected');
 			} else {
@@ -80,6 +81,70 @@ class CollaborativePlugin extends Plugin {
 
 	disconnect() {
 		this.firebaseApp.delete();
+	}
+
+	getJSONs(collabIds) {
+		/* The purpose of this function is to get and build the docs as stored on the server */
+		const buildJSONs = collabIds.map((id)=> {
+			const currentRef = this.database.ref(id);
+
+			/* Authenticate with Firebase if a firebaseToken is provided in the client data */
+			const authenticationFunction = this.localClientData.firebaseToken
+				? firebase.auth(this.firebaseApp).signInWithCustomToken(this.localClientData.firebaseToken)
+				: new Promise((resolve)=> { return resolve(); });
+
+			return authenticationFunction
+			.then(()=> {
+				/* Load the checkpoint if available */
+				return currentRef.child('checkpoint').once('value');
+			})
+			.then((checkpointSnapshot)=> {
+				const checkpointSnapshotVal = checkpointSnapshot.val() || { k: '0', d: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] } };
+				const mostRecentRemoteKey = Number(checkpointSnapshotVal.k);
+				const newDoc = Node.fromJSON(this.view.state.schema, uncompressStateJSON({ d: checkpointSnapshotVal.d }).doc);
+
+				/* Get all changes since mostRecentRemoteKey */
+				const getChanges = currentRef.child('changes')
+				.orderByKey()
+				.startAt(String(mostRecentRemoteKey + 1))
+				.once('value');
+
+				return Promise.all([newDoc, getChanges]);
+			})
+			.then(([newDoc, changesSnapshot])=> {
+				const changesSnapshotVal = changesSnapshot.val() || {};
+				const steps = [];
+
+				/* Uncompress steps and add stepClientIds */
+				Object.keys(changesSnapshotVal).forEach((key)=> {
+					const compressedStepsJSON = changesSnapshotVal[key].s;
+					const uncompressedSteps = compressedStepsJSON.map((compressedStepJSON)=> {
+						return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
+					});
+					steps.push(...uncompressedSteps);
+				});
+
+				const checkpointState = EditorState.create({
+					doc: newDoc,
+					schema: this.view.state.schema,
+					plugins: this.view.state.plugins,
+				});
+
+				const trans = checkpointState.tr;
+				trans.setMeta('buildingJSON', true);
+				steps.forEach((step)=> {
+					trans.step(step);
+				});
+
+				const allChangesState = checkpointState.apply(trans);
+				return allChangesState.doc.toJSON();
+			})
+			.catch((err)=> {
+				console.error('In getJSONs error with ', err, err.message);
+			});
+		});
+
+		return Promise.all(buildJSONs);
 	}
 
 	loadDocument() {
@@ -284,7 +349,7 @@ class CollaborativePlugin extends Plugin {
 		});
 
 		/* Map Selection */
-		if (transaction.docChanged) {
+		if (transaction.docChanged && !transaction.meta.buildingJSON) {
 			Object.keys(this.selections).forEach((clientId)=> {
 				if (this.selections[clientId] && this.selections[clientId] !== this.localClientId) {
 					const originalClientData = this.selections[clientId] ? this.selections[clientId].data : {};
