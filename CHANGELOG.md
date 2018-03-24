@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.5.1] - 2018-03-24
+- feature: Add getText function.
+
 ## [4.5.0] - 2018-03-23
 - feature: Add getCollabJSONs function to <Editor /> which builds the JSONS at a array of paths.
 

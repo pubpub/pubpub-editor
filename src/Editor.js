@@ -88,6 +88,13 @@ class Editor extends Component {
 	getJSON() {
 		return this.view.state.doc.toJSON();
 	}
+	/**
+	 * Get Text
+	 * @return {string} The plain text content of an editor instance
+	 */
+	getText() {
+		return this.view.state.doc.textContent;
+	}
 
 	getCollabJSONs(collabIds) {
 		if (this.state.pluginKeys.Collaborative) {
