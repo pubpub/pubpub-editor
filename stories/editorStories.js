@@ -8,6 +8,11 @@ import { editorWrapperStyle, renderLatex } from './_utilities';
 storiesOf('Editor', module)
 .add('default', () => (
 	<div style={editorWrapperStyle}>
+		<Editor placeholder={'Begin writing...'} />
+	</div>
+))
+.add('Formatting Menu', () => (
+	<div style={editorWrapperStyle}>
 		<Editor placeholder={'Begin writing...'}>
 			<FormattingMenu />
 		</Editor>
