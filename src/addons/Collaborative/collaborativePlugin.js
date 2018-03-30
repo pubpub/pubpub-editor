@@ -138,9 +138,6 @@ class CollaborativePlugin extends Plugin {
 
 				const allChangesState = checkpointState.apply(trans);
 				return allChangesState.doc.toJSON();
-			})
-			.catch((err)=> {
-				console.error('In getJSONs error with ', err, err.message);
 			});
 		});
 
