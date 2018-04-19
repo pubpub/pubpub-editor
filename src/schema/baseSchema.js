@@ -78,8 +78,8 @@ const nodes = {
 			}
 			return [`h${node.attrs.level}`, { id: node.attrs.id }, ['span', 0], ['a', { href: `#${node.attrs.id}`, contenteditable: 'false', class: 'header-link pt-button pt-minimal pt-icon-link' }]];
 		},
-		toStatic(node, children) {
-			const headerLink = node.attrs.id
+		toStatic(node, children, editorProps) {
+			const headerLink = node.attrs.id && editorProps.showHeaderLinks
 				? <a href={`#${node.attrs.id}`} contentEditable="false" className="header-link pt-button pt-minimal pt-icon-link" />
 				: null;
 			if (node.attrs.level === 1) { return <h1 key={node.currIndex} id={node.attrs.id}>{children}{headerLink}</h1>; }
@@ -147,8 +147,10 @@ const nodes = {
 	text: {
 		group: 'inline',
 		toDOM(node) { return node.text; },
-		toStatic(node, children) {
-			return <span key={node.currIndex}>{children}</span>;
+		toStatic(node, children, editorProps) {
+			return editorProps.renderStaticMarkup
+				? children
+				: <span key={node.currIndex}>{children}</span>;
 		}
 	},
 	hard_break: {

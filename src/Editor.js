@@ -231,7 +231,7 @@ class Editor extends Component {
 
 			const nodeWithIndex = node;
 			nodeWithIndex.currIndex = index;
-			const NodeComponent = this.schema.nodes[node.type].spec.toStatic(nodeWithIndex, children);
+			const NodeComponent = this.schema.nodes[node.type].spec.toStatic(nodeWithIndex, children, this.props);
 			return NodeComponent;
 		});
 	}

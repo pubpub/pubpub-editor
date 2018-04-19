@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.6.1] - 2018-04-19
+- fix: Clean up spans produced when rendering staticMarkup.
+
 ## [4.6.0] - 2018-04-19
 - feature: Add renderStaticMarkup prop on <Editor /> so that you can server-render clean markup.
 
