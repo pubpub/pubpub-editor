@@ -16,6 +16,7 @@ const propTypes = {
 	placeholder: PropTypes.string,
 	isReadOnly: PropTypes.bool,
 	showHeaderLinks: PropTypes.bool,
+	renderStaticMarkup: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -26,6 +27,7 @@ const defaultProps = {
 	placeholder: undefined,
 	isReadOnly: false,
 	showHeaderLinks: false,
+	renderStaticMarkup: false,
 };
 
 
@@ -43,6 +45,7 @@ const defaultProps = {
 * @prop {String} placeholder A placeholder string that will appear if there is no content.
 * @prop {bool} isReadOnly Set to true to disallow editing, both in text and modifying or inserting add ons.
 * @prop {bool} showHeaderLinks Set to true to show links next to headers
+* @prop {bool} renderStaticMarkup Set to true to render only static markup on the server.
 *
 * @example
 return <Editor />
@@ -234,6 +237,10 @@ class Editor extends Component {
 	}
 
 	render() {
+		if (!this._isMounted && this.props.renderStaticMarkup) {
+			return this.renderStatic(this.props.initialContent.content);
+		}
+
 		const wrapperClasses = `pubpub-editor ${this.props.showHeaderLinks ? 'show-header-links' : ''}`;
 		return (
 			<div style={{ position: 'relative' }} id={this.containerId} className={this.state.collabLoading ? 'editor-loading' : ''}>

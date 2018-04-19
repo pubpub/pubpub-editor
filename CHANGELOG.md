@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.6.0] - 2018-04-19
+- feature: Add renderStaticMarkup prop on <Editor /> so that you can server-render clean markup.
+
 ## [4.5.2] - 2018-03-30
 - fix: Don't catch getJSONs error - let is pass up the promise chain.
 
