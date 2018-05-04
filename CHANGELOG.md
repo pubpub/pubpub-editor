@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.8.0] - 2018-05-04
+- feature: Add handlePermalink prop for HighlightQuote.
+
 ## [4.7.0] - 2018-05-04
 - feature: Add chapter support in highlights.
 

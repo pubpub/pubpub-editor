@@ -16,6 +16,7 @@ const propTypes = {
 	isEditable: PropTypes.bool,
 	hoverBackgroundColor: PropTypes.string.isRequired,
 	hideScrollButton: PropTypes.bool,
+	handlePermalink: PropTypes.func,
 };
 
 const defaultProps = {
@@ -30,6 +31,7 @@ const defaultProps = {
 	isSelected: false,
 	isEditable: false,
 	hideScrollButton: false,
+	handlePermalink: undefined,
 };
 
 class HighlightQuoteStatic extends Component {
@@ -55,13 +57,19 @@ class HighlightQuoteStatic extends Component {
 			const thing = document.getElementsByClassName(this.props.id)[0];
 			if (thing) {
 				thing.scrollIntoView({ behavior: 'smooth' });
+			} else if (this.props.handlePermalink) {
+				this.props.handlePermalink({
+					to: this.props.to,
+					from: this.props.from,
+					version: this.props.version,
+					chapter: this.props.chapter,
+				});
 			} else {
 				this.setState({ removed: true });
 			}
 		};
 		return (
 			<div className={`pt-card pt-elevation-2 highlight-quote ${this.props.isSelected ? 'isSelected' : ''}`}>
-				
 				{!this.props.isEditable && !this.state.removed && !this.props.hideScrollButton &&
 					<button
 						className={'scroll-to-button pt-button pt-small pt-icon-highlight'}

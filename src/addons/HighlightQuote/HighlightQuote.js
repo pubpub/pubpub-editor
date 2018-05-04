@@ -10,6 +10,7 @@ const propTypes = {
 	getHighlightContent: PropTypes.func,
 	hoverBackgroundColor: PropTypes.string,
 	hideScrollButton: PropTypes.bool,
+	handlePermalink: PropTypes.func,
 	/* All addons get the following props,
 	but certain schema-based addons may not need them */
 	// containerId: PropTypes.string.isRequired,
@@ -20,6 +21,7 @@ const defaultProps = {
 	getHighlightContent: undefined,
 	hoverBackgroundColor: 'red',
 	hideScrollButton: false,
+	handlePermalink: undefined,
 };
 
 class HighlightQuote extends Component {
@@ -84,6 +86,7 @@ class HighlightQuote extends Component {
 								isEditable={true}
 								hoverBackgroundColor={props.hoverBackgroundColor}
 								hideScrollButton={props.hideScrollButton}
+								handlePermalink={props.handlePermalink}
 							/>
 						);
 					},
@@ -101,6 +104,7 @@ class HighlightQuote extends Component {
 								chapter={node.attrs.chapter}
 								hoverBackgroundColor={props.hoverBackgroundColor}
 								hideScrollButton={props.hideScrollButton}
+								handlePermalink={props.handlePermalink}
 							/>
 						);
 					},
