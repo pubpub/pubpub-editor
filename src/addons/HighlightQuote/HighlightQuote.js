@@ -36,6 +36,7 @@ class HighlightQuote extends Component {
 						suffix: { default: null },
 						prefix: { default: null },
 						version: { default: null },
+						chapter: { default: null },
 					},
 					parseDOM: [{
 						tag: 'highlightquote',
@@ -48,6 +49,7 @@ class HighlightQuote extends Component {
 								suffix: node.getAttribute('data-suffix') || null,
 								prefix: node.getAttribute('data-prefix') || null,
 								version: node.getAttribute('data-version') || null,
+								chapter: node.getAttribute('data-chapter') || null,
 							};
 						}
 					}],
@@ -60,6 +62,7 @@ class HighlightQuote extends Component {
 							'data-suffix': node.attrs.suffix,
 							'data-prefix': node.attrs.prefix,
 							'data-version': node.attrs.version,
+							'data-chapter': node.attrs.chapter,
 						}];
 					},
 					inline: false,
@@ -76,6 +79,7 @@ class HighlightQuote extends Component {
 								suffix={node.attrs.suffix}
 								prefix={node.attrs.prefix}
 								version={node.attrs.version}
+								chapter={node.attrs.chapter}
 								isSelected={isSelected}
 								isEditable={true}
 								hoverBackgroundColor={props.hoverBackgroundColor}
@@ -94,6 +98,7 @@ class HighlightQuote extends Component {
 								suffix={node.attrs.suffix}
 								prefix={node.attrs.prefix}
 								version={node.attrs.version}
+								chapter={node.attrs.chapter}
 								hoverBackgroundColor={props.hoverBackgroundColor}
 								hideScrollButton={props.hideScrollButton}
 							/>
