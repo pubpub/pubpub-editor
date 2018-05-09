@@ -7,7 +7,7 @@ const HeaderIdPlugin = new Plugin({
 				const topBlocks = editorView.state.doc.content.content;
 				topBlocks.reduce((prev, curr)=> {
 					if (curr.type.name === 'heading') {
-						const newId = curr.textContent.toLowerCase().replace(/ /gi, '-').replace(/[^a-zA-Z0-9-]/gi, '');
+						const newId = curr.textContent.trim().toLowerCase().replace(/ /gi, '-').replace(/[^a-zA-Z0-9-]/gi, '');
 						if (curr.attrs.id !== newId) {
 							const transaction = editorView.state.tr.setNodeMarkup(
 								prev,

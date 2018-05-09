@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.8.2] - 2018-05-09
+- fix: Trim header Id to remove trailing spaces.
+
 ## [4.8.1] - 2018-05-04
 - fix: Attempting to fix firebase dependency bug.
 
