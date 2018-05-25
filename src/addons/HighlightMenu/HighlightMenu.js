@@ -46,62 +46,64 @@ class HighlightMenu extends Component {
 					};
 				},
 				apply(transaction, state, prevEditorState, editorState) {
-					const decoSet = state.formattedHighlights;
-					let newDecoSet;
+					let newDecoSet = state.formattedHighlights;
+					const newSelectionHighlights = transaction.meta.newSelectionData;
 
-					let posBasedExact;
-					let stillInTact = false;
-					if (transaction.meta.newSelectionData) {
-						const newData = transaction.meta.newSelectionData;
-						const datafrom = Number(newData.from);
-						const datato = Number(newData.to);
+					if (transaction.meta.clearTempSelection) {
+						const tempSelections = newDecoSet.find().filter((item)=>{ return item.type.attrs.class.indexOf('temp-selection') > -1; });
+						return { formattedHighlights: newDecoSet.remove(tempSelections) };
+					}
+
+					if (!newSelectionHighlights) {
+						return { formattedHighlights: newDecoSet.map(transaction.mapping, transaction.doc) };
+					}
+
+					newSelectionHighlights.forEach((newHighlightData)=> {
+						let posBasedExact;
+						let stillInTact = false;
+
+						const datafrom = Number(newHighlightData.from);
+						const datato = Number(newHighlightData.to);
 						if (editorState.doc.nodeSize >= datafrom && editorState.doc.nodeSize >= datato) {
 							posBasedExact = editorState.doc.textBetween(datafrom, datato);
 						}
-						stillInTact = posBasedExact === newData.exact;
-					}
-					if (transaction.meta.clearTempSelection) {
-						const tempSelections = decoSet.find().filter((item)=>{ return item.type.attrs.class.indexOf('temp-selection') > -1; });
-						newDecoSet = decoSet.remove(tempSelections);
-					} else if (transaction.meta.newSelection && stillInTact) {
-						const from = Number(transaction.meta.newSelectionData.from);
-						const to = Number(transaction.meta.newSelectionData.to);
-						const tempSelections = decoSet.find().filter((item)=>{ return item.type.attrs.class.indexOf('temp-selection') > -1; });
-						newDecoSet = decoSet.remove(tempSelections).add(editorState.doc, [Decoration.inline(from, to, {
-							class: `highlight-background ${transaction.meta.newSelectionData.id} ${transaction.meta.newSelectionData.permanent ? 'permanent' : ''}`.trim(),
-						})]);
-					} else if (transaction.meta.newSelection && !stillInTact) {
-						const container = document.getElementsByClassName(primaryEditorClassName)[0];
-						const range = textQuote.toRange(container, {
-							exact: transaction.meta.newSelectionData.exact,
-							prefix: transaction.meta.newSelectionData.prefix,
-							suffix: transaction.meta.newSelectionData.suffix,
-						});
-						let resolvedStartContainer;
-						let resolvedEndContainer;
-						if (range) {
-							resolvedStartContainer = range.startContainer;
-							while (resolvedStartContainer && !resolvedStartContainer.pmViewDesc && resolvedStartContainer.className !== 'ProseMirror') {
-								resolvedStartContainer = resolvedStartContainer.parentElement;
-							}
-							resolvedEndContainer = range.endContainer;
-							while (resolvedEndContainer && !resolvedEndContainer.pmViewDesc && resolvedEndContainer.className !== 'ProseMirror') {
-								resolvedEndContainer = resolvedEndContainer.parentElement;
-							}
-						}
-						if (!range || !resolvedStartContainer || !resolvedStartContainer.pmViewDesc || !resolvedEndContainer || !resolvedEndContainer.pmViewDesc) {
-							newDecoSet = decoSet;
-						} else {
-							const from = editorState.doc.resolve(resolvedStartContainer.pmViewDesc.posAtStart + range.startOffset).pos;
-							const to = editorState.doc.resolve(resolvedEndContainer.pmViewDesc.posAtStart + range.endOffset).pos;
-							newDecoSet = decoSet.add(editorState.doc, [Decoration.inline(from, to, {
-								class: `highlight-background ${transaction.meta.newSelectionData.id} ${transaction.meta.newSelectionData.permanent ? 'permanent' : ''}`.trim(),
-							})]);
-						}
-					} else {
-						newDecoSet = decoSet.map(transaction.mapping, transaction.doc);
-					}
+						stillInTact = posBasedExact === newHighlightData.exact;
 
+						if (stillInTact) {
+							const from = Number(newHighlightData.from);
+							const to = Number(newHighlightData.to);
+							const tempSelections = newDecoSet.find().filter((item)=>{ return item.type.attrs.class.indexOf('temp-selection') > -1; });
+							newDecoSet = newDecoSet.remove(tempSelections).add(editorState.doc, [Decoration.inline(from, to, {
+								class: `highlight-background ${newHighlightData.id} ${newHighlightData.permanent ? 'permanent' : ''}`.trim(),
+							})]);
+						} else {
+							const container = document.getElementsByClassName(primaryEditorClassName)[0];
+							const range = textQuote.toRange(container, {
+								exact: newHighlightData.exact,
+								prefix: newHighlightData.prefix,
+								suffix: newHighlightData.suffix,
+							});
+							let resolvedStartContainer;
+							let resolvedEndContainer;
+							if (range) {
+								resolvedStartContainer = range.startContainer;
+								while (resolvedStartContainer && !resolvedStartContainer.pmViewDesc && resolvedStartContainer.className !== 'ProseMirror') {
+									resolvedStartContainer = resolvedStartContainer.parentElement;
+								}
+								resolvedEndContainer = range.endContainer;
+								while (resolvedEndContainer && !resolvedEndContainer.pmViewDesc && resolvedEndContainer.className !== 'ProseMirror') {
+									resolvedEndContainer = resolvedEndContainer.parentElement;
+								}
+							}
+							if (range && resolvedStartContainer && resolvedStartContainer.pmViewDesc && resolvedEndContainer && resolvedEndContainer.pmViewDesc) {
+								const from = editorState.doc.resolve(resolvedStartContainer.pmViewDesc.posAtStart + range.startOffset).pos;
+								const to = editorState.doc.resolve(resolvedEndContainer.pmViewDesc.posAtStart + range.endOffset).pos;
+								newDecoSet = newDecoSet.add(editorState.doc, [Decoration.inline(from, to, {
+									class: `highlight-background ${newHighlightData.id} ${newHighlightData.permanent ? 'permanent' : ''}`.trim(),
+								})]);
+							}
+						}
+					});
 					return { formattedHighlights: newDecoSet };
 				}
 			},
@@ -189,22 +191,31 @@ class HighlightMenu extends Component {
 		});
 
 		this.setState({ createdHighlights: props.highlights });
-		props.highlights.filter((item)=> {
+
+		const highlightData = props.highlights.filter((item)=> {
 			return createdHighlightIds.indexOf(item.id) === -1;
-		}).forEach((item)=> {
-			setTimeout(()=> {
-				this.completeNewDiscussion({
-					from: item.from,
-					to: item.to,
-					id: item.id,
-					exact: item.exact,
-					prefix: item.prefix,
-					suffix: item.suffix,
-					version: item.version,
-					permanent: item.permanent
-				});
-			}, 1);
+		}).map((item)=> {
+			// setTimeout(()=> {
+			return {
+				from: item.from,
+				to: item.to,
+				id: item.id,
+				exact: item.exact,
+				prefix: item.prefix,
+				suffix: item.suffix,
+				version: item.version,
+				permanent: item.permanent
+			};
 		});
+
+		if (highlightData.length) {
+			setTimeout(()=> {
+				const transaction = this.props.view.state.tr;
+				transaction.setMeta('newSelection', true);
+				transaction.setMeta('newSelectionData', highlightData);
+				this.props.view.dispatch(transaction);
+			}, 1);
+		}
 	}
 
 	handleNewDiscussion() {
@@ -225,16 +236,18 @@ class HighlightMenu extends Component {
 	completeNewDiscussion({ from, to, id, version, exact, prefix, suffix, permanent }) {
 		const transaction = this.props.view.state.tr;
 		transaction.setMeta('newSelection', true);
-		transaction.setMeta('newSelectionData', {
-			from: from,
-			to: to,
-			id: id,
-			version: version,
-			exact: exact,
-			prefix: prefix,
-			suffix: suffix,
-			permanent: permanent,
-		});
+		transaction.setMeta('newSelectionData', [
+			{
+				from: from,
+				to: to,
+				id: id,
+				version: version,
+				exact: exact,
+				prefix: prefix,
+				suffix: suffix,
+				permanent: permanent,
+			}
+		]);
 		// console.log(JSON.stringify(transaction.meta.newSelectionData, null, 2));
 		// transaction.setMeta('newSelectionFrom', from);
 		// transaction.setMeta('newSelectionTo', to);

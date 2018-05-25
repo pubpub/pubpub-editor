@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.8.3] - 2018-05-25
+- fix: Apply highlights in batches for better performance.
+
 ## [4.8.2] - 2018-05-09
 - fix: Trim header Id to remove trailing spaces.
 

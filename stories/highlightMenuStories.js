@@ -6,14 +6,14 @@ import Image from 'addons/Image/Image';
 import InsertMenu from 'addons/InsertMenu/InsertMenu';
 import Latex from 'addons/Latex/Latex';
 import { editorWrapperStyle, s3Upload, renderLatex } from './_utilities';
-import plainDoc from './initialDocs/plainDoc';
+import longDoc from './initialDocs/longDoc';
 
 storiesOf('HighlightMenu', module)
 .add('default', () => (
 	<div style={editorWrapperStyle} className={'selection-cite-wrapper'}>
 		<Editor
 			placeholder={'Begin writing...'}
-			initialContent={plainDoc}
+			initialContent={longDoc}
 		>
 			<HighlightMenu
 				highlights={[
@@ -21,9 +21,9 @@ storiesOf('HighlightMenu', module)
 						from: 126,
 						to: 145,
 						id: 'asdh71j',
-						exact: 'Hello, this is some',
-						prefix: ' though.',
-						suffix: ' text abou'
+						exact: ' the truth of the ',
+						prefix: ' endeavoured to preserve.',
+						suffix: ' elementary principles'
 					},
 					{
 						from: 257,
@@ -37,9 +37,17 @@ storiesOf('HighlightMenu', module)
 						from: 26,
 						to: 45,
 						id: 'nausd52',
-						exact: 'about a thing that ',
-						prefix: 'some text ',
-						suffix: 'we are typ'
+						exact: 'largely on the basis of circumstantial evidence. ',
+						prefix: 'in a murder trial ',
+						suffix: 'She was found in '
+					},
+					{
+						from: 3000,
+						to: 3008,
+						id: 'dddsd52',
+						exact: ' any thi',
+						prefix: 'in a murder trial ',
+						suffix: 'She was found in '
 					}
 				]}
 				primaryEditorClassName={'selection-cite-wrapper'}
