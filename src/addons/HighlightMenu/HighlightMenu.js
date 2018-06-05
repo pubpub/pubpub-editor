@@ -12,7 +12,7 @@ require('./highlightMenu.scss');
 const propTypes = {
 	highlights: PropTypes.array,
 	versionId: PropTypes.string,
-	chapterNumber: PropTypes.string,
+	sectionId: PropTypes.string,
 	onNewDiscussion: PropTypes.func,
 	onDotClick: PropTypes.func,
 	primaryEditorClassName: PropTypes.string,
@@ -25,7 +25,7 @@ const propTypes = {
 const defaultProps = {
 	highlights: [],
 	versionId: undefined,
-	chapterNumber: undefined,
+	sectionId: undefined,
 	onNewDiscussion: undefined,
 	onDotClick: undefined,
 	primaryEditorClassName: undefined,
@@ -225,7 +225,7 @@ class HighlightMenu extends Component {
 			from: this.state.from,
 			to: this.state.to,
 			version: this.props.versionId,
-			chapter: this.props.chapterNumber,
+			section: this.props.sectionId,
 			exact: this.state.exact,
 			prefix: this.state.prefix,
 			suffix: this.state.suffix,

@@ -11,7 +11,7 @@ const propTypes = {
 	suffix: PropTypes.string,
 	prefix: PropTypes.string,
 	version: PropTypes.string,
-	chapter: PropTypes.string,
+	section: PropTypes.string,
 	isSelected: PropTypes.bool,
 	isEditable: PropTypes.bool,
 	hoverBackgroundColor: PropTypes.string.isRequired,
@@ -27,7 +27,7 @@ const defaultProps = {
 	suffix: undefined,
 	prefix: undefined,
 	version: undefined,
-	chapter: undefined,
+	section: undefined,
 	isSelected: false,
 	isEditable: false,
 	hideScrollButton: false,
@@ -62,7 +62,7 @@ class HighlightQuoteStatic extends Component {
 					to: this.props.to,
 					from: this.props.from,
 					version: this.props.version,
-					chapter: this.props.chapter,
+					section: this.props.section,
 				});
 			} else {
 				this.setState({ removed: true });
