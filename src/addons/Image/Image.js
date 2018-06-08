@@ -6,10 +6,12 @@ import ImageStatic from './ImageStatic';
 const propTypes = {
 	handleFileUpload: PropTypes.func,
 	handleResizeUrl: PropTypes.func, // Should take a url and return a url to a resized image
+	linkToSrc: PropTypes.bool,
 };
 const defaultProps = {
 	handleFileUpload: ()=>{},
 	handleResizeUrl: undefined,
+	linkToSrc: false,
 };
 
 /**
@@ -104,6 +106,7 @@ class Image extends Component {
 								size={node.attrs.size}
 								caption={node.attrs.caption}
 								handleResizeUrl={props.handleResizeUrl}
+								linkToSrc={props.linkToSrc}
 							/>
 						);
 					},

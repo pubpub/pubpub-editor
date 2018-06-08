@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.9.1] - 2018-06-08
+- feature: Allow images to link to their src.
+
 ## [4.9.0] - 2018-05-26
 - fix: Change chapter to section for more general naming.
 
