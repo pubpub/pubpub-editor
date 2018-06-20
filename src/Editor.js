@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { EditorState, PluginKey } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
+import { DOMParser } from 'prosemirror-model';
 import PropTypes from 'prop-types';
 import ReactView from './schema/reactView';
 import createSchema from './schema';
@@ -17,6 +18,7 @@ const propTypes = {
 	isReadOnly: PropTypes.bool,
 	showHeaderLinks: PropTypes.bool,
 	renderStaticMarkup: PropTypes.bool,
+	initHtml: PropTypes.string,
 };
 
 const defaultProps = {
@@ -28,6 +30,7 @@ const defaultProps = {
 	isReadOnly: false,
 	showHeaderLinks: false,
 	renderStaticMarkup: false,
+	initHtml: undefined,
 };
 
 
@@ -237,6 +240,20 @@ class Editor extends Component {
 	}
 
 	render() {
+		// Click import.
+		// Upload file.
+		// Convert file into HTML (worker task).
+		// When task is done, get HTML.
+		// Turn it into a dom node.
+		// Feed domNode to collaborative component
+		// ---------------
+		// if (this.props.initHtml) {
+		// 	console.log(this.props.initHtml);
+		// 	let tmp = document.createElement("div");
+		//     tmp.innerHTML = this.props.initHtml;
+		// 	console.log(DOMParser.fromSchema(this.schema).parse(tmp));
+		// }
+
 		if (!this._isMounted && this.props.renderStaticMarkup) {
 			return this.renderStatic(this.props.initialContent.content);
 		}
