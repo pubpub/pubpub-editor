@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.11.0] - 2018-06-20
+- feature: Add importHtml function to <Editor />.
+
 ## [4.10.0] - 2018-06-20
 - Updating prosemirror and react dependencies.
 

@@ -112,6 +112,10 @@ class Editor extends Component {
 		}
 		return null;
 	}
+	/**
+	 * Import HTML
+	 * {string} Imports a string of HTML into the document
+	 */
 	importHtml(htmlString) {
 		/* Create wrapper DOM node */
 		const wrapperElem = document.createElement('div');
