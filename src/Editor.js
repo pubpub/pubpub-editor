@@ -118,19 +118,29 @@ class Editor extends Component {
 		}
 		return null;
 	}
-	importHtml(html) {
-		// console.log(html, this.view, this.view.eventHandlers.paste);
-		console.log('in insert');
-		console.log(this.view);
-		const tmp = document.createElement('div');
-		tmp.innerHTML = html;
-		const newDoc = DOMParser.fromSchema(this.schema).parse(tmp);
-		console.log(newDoc.content.content);
+	importHtml(htmlString) {
+		/* Create wrapper DOM node */
+		const wrapperElem = document.createElement('div');
+
+		/* Insert htmlString into wrapperElem to generate full DOM tree */
+		wrapperElem.innerHTML = htmlString;
+
+		/* Generate new ProseMirror doc from DOM node */
+		const newDoc = DOMParser.fromSchema(this.schema).parse(wrapperElem);
+
+		/* Create transaction and set selection to the beginning of the doc */
 		const tr = this.view.state.tr;
 		tr.setSelection(Selection.atStart(this.view.state.doc));
+
+
+		/* Insert each node of newDoc to current doc */
+		/* Note, we don't want to just replaceSelectionWith(newDoc) */
+		/* because it will add a doc within a doc. */
 		newDoc.content.content.forEach((node)=> {
 			tr.replaceSelectionWith(node);
 		});
+
+		/* Dispatch transaction to setSelection and insert content */
 		this.view.dispatch(tr);
 	}
 	focus() {
