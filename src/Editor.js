@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { EditorState, PluginKey } from 'prosemirror-state';
+import { EditorState, PluginKey, Selection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { DOMParser } from 'prosemirror-model';
 import PropTypes from 'prop-types';
@@ -78,11 +78,15 @@ class Editor extends Component {
 		this.state = {
 			collabLoading: componentChildren.indexOf('Collaborative') > -1,
 		};
+		this.importHtml = this.importHtml.bind(this);
 	}
 
 	componentDidMount() {
 		this._isMounted = true;
 		this.createEditor();
+		// setTimeout(()=> {
+		// 	this.importHtml('<b>WOW!</b>');
+		// }, 5000);
 	}
 	componentWillUnmount() {
 		this._isMounted = false;
@@ -101,7 +105,6 @@ class Editor extends Component {
 	getText() {
 		return this.view.state.doc.textContent;
 	}
-
 	getCollabJSONs(collabIds) {
 		if (this.state.pluginKeys.Collaborative) {
 			const collabPlugin = this.state.pluginKeys.Collaborative.get(this.view.state);
@@ -115,7 +118,21 @@ class Editor extends Component {
 		}
 		return null;
 	}
-
+	importHtml(html) {
+		// console.log(html, this.view, this.view.eventHandlers.paste);
+		console.log('in insert');
+		console.log(this.view);
+		const tmp = document.createElement('div');
+		tmp.innerHTML = html;
+		const newDoc = DOMParser.fromSchema(this.schema).parse(tmp);
+		console.log(newDoc.content.content);
+		const tr = this.view.state.tr;
+		tr.setSelection(Selection.atStart(this.view.state.doc));
+		newDoc.content.content.forEach((node)=> {
+			tr.replaceSelectionWith(node);
+		});
+		this.view.dispatch(tr);
+	}
 	focus() {
 		this.view.focus();
 	}
