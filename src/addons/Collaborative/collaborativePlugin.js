@@ -5,7 +5,10 @@ import { receiveTransaction, sendableSteps } from 'prosemirror-collab';
 import { Step } from 'prosemirror-transform';
 import { Node } from 'prosemirror-model';
 import { compressSelectionJSON, compressStateJSON, compressStepJSON, uncompressSelectionJSON, uncompressStateJSON, uncompressStepJSON } from 'prosemirror-compress';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+
+require('firebase/auth');
+require('firebase/database');
 
 const TIMESTAMP = { '.sv': 'timestamp' };
 const SAVE_EVERY_N_STEPS = 100;
