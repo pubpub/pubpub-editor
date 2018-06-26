@@ -1,5 +1,6 @@
-@import "~@blueprintjs/core/dist/blueprint.css";
-
+// @import "~@blueprintjs/core/dist/blueprint.css";
+@import '~@blueprintjs/core/src/blueprint.scss';
+@import '~@blueprintjs/icons/lib/css/blueprint-icons.css';
 
 .pubpub-editor {
 	font-family: serif;
