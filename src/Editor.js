@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { EditorState, PluginKey, Selection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { DOMParser } from 'prosemirror-model';
+// import { keydownHandler } from 'prosemirror-keymap';
 import PropTypes from 'prop-types';
 import ReactView from './schema/reactView';
 import createSchema from './schema';
@@ -218,6 +219,11 @@ class Editor extends Component {
 			spellcheck: true,
 			editable: () => (!this.props.isReadOnly),
 			nodeViews: this.nodeViews,
+			// handleKeyDown: keydownHandler({
+			// 	'Mod-s': (view, evt)=>{
+					
+			// 	},
+			// })
 		});
 
 		this.setState({

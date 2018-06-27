@@ -64,6 +64,9 @@ export function buildKeymap(schema, mapKeys) {
 	if (schema.marks.code) {
 		bind('Mod-`', toggleMark(schema.marks.code));
 	}
+	if (schema.marks.link) {
+		bind('Mod-k', toggleMark(schema.marks.link));
+	}
 
 	if (schema.nodes.bullet_list) {
 		bind('Shift-Ctrl-8', wrapInList(schema.nodes.bullet_list));

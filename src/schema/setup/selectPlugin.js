@@ -1,6 +1,8 @@
 import { Decoration, DecorationSet } from 'prosemirror-view';
 import { Plugin } from 'prosemirror-state';
 
+/* The SelectPlugin applies a 'selection-marker */
+/* class to selected content */
 const SelectPlugin = new Plugin({
 	state: {
 		init() {

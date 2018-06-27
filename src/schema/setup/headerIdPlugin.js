@@ -1,6 +1,6 @@
 import { Plugin } from 'prosemirror-state';
 
-const HeaderIdPlugin = new Plugin({
+const headerIdPlugin = new Plugin({
 	view: ()=> {
 		return {
 			update: function(editorView) {
@@ -28,4 +28,4 @@ const HeaderIdPlugin = new Plugin({
 
 });
 
-export default HeaderIdPlugin;
+export default headerIdPlugin;
