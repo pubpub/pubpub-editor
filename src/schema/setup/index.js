@@ -6,7 +6,6 @@ import { keymap } from 'prosemirror-keymap';
 import { buildKeymap } from './keymap';
 import { buildInputRules } from './inputRules';
 import headerIdPlugin from './headerIdPlugin';
-import linkPlugin from './linkPlugin';
 import generatePlaceholderPlugin from './placeholderPlugin';
 
 exports.buildKeymap = buildKeymap;
@@ -21,7 +20,6 @@ function getBasePlugins(options) {
 	if (!options.isReadOnly) {
 		/* It's not clear that the SelectPlugin is used by anything */
 		// deps.push(SelectPlugin);
-		deps.push(linkPlugin);
 	}
 	if (options.placeholder) { deps.push(generatePlaceholderPlugin(options.placeholder)); }
 	if (options.history !== false) { deps.push(history()); }

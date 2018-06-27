@@ -28,7 +28,7 @@ const defaultProps = {
 /**
 * @component
 *
-* Displays a formatting menu for inline operation such as bold, italics, etc. when a user selects some text.
+* Displays a formatting menu at the top of the editor for formatting and insert.
 *
 * @prop {array} [include] An array of the menu items that should be included in the menu. Allowed options are: 'header1', 'header2', 'bold', 'italic', 'code', 'subscript', 'superscript', 'strikethrough', 'blockquote', 'bullet-list', 'numbered-list', and 'link'
 *

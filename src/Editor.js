@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { EditorState, PluginKey, Selection } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { DOMParser } from 'prosemirror-model';
-// import { keydownHandler } from 'prosemirror-keymap';
+import { keydownHandler } from 'prosemirror-keymap';
 import PropTypes from 'prop-types';
 import ReactView from './schema/reactView';
 import createSchema from './schema';
@@ -219,13 +219,12 @@ class Editor extends Component {
 			spellcheck: true,
 			editable: () => (!this.props.isReadOnly),
 			nodeViews: this.nodeViews,
-			/* keydownHandler seems to have a bug. */
-			/* Submitted here: https://github.com/ProseMirror/prosemirror/issues/813 */
-			// handleKeyDown: keydownHandler({
-			// 	'Mod-s': (view, evt)=>{
-					
-			// 	},
-			// })
+			handleKeyDown: keydownHandler({
+				'Mod-s': (view, evt)=>{
+					/* Block Ctrl-S from launching the browser Save window */
+					return true;
+				},
+			})
 		});
 
 		this.setState({

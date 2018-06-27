@@ -3,6 +3,7 @@ import { storiesOf } from '@storybook/react';
 import { Editor } from 'index';
 import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
 import HeaderMenu from 'addons/HeaderMenu/HeaderMenu';
+import LinkMenu from 'addons/LinkMenu/LinkMenu';
 import Image from 'addons/Image/Image';
 import Latex from 'addons/Latex/Latex';
 import { editorWrapperStyle, s3Upload, renderLatex } from './_utilities';
@@ -26,6 +27,7 @@ storiesOf('Editor', module)
 			<HeaderMenu />
 			<Latex renderFunction={renderLatex} />
 			<Image handleFileUpload={s3Upload} />
+			<LinkMenu />
 		</Editor>
 	</div>
 ))
