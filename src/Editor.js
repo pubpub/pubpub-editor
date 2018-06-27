@@ -219,6 +219,8 @@ class Editor extends Component {
 			spellcheck: true,
 			editable: () => (!this.props.isReadOnly),
 			nodeViews: this.nodeViews,
+			/* keydownHandler seems to have a bug. */
+			/* Submitted here: https://github.com/ProseMirror/prosemirror/issues/813 */
 			// handleKeyDown: keydownHandler({
 			// 	'Mod-s': (view, evt)=>{
 					

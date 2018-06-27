@@ -10,19 +10,19 @@ import { editorWrapperStyle, s3Upload, renderLatex } from './_utilities';
 storiesOf('Editor', module)
 .add('default', () => (
 	<div style={editorWrapperStyle}>
-		<Editor placeholder={'Begin writing...'} />
+		<Editor placeholder="Begin writing..." />
 	</div>
 ))
 .add('Formatting Menu', () => (
 	<div style={editorWrapperStyle}>
-		<Editor placeholder={'Begin writing...'}>
+		<Editor placeholder="Begin writing...">
 			<FormattingMenu />
 		</Editor>
 	</div>
 ))
 .add('Header Menu', () => (
 	<div style={editorWrapperStyle}>
-		<Editor placeholder={'Begin writing...'}>
+		<Editor placeholder="Begin writing...">
 			<HeaderMenu />
 			<Latex renderFunction={renderLatex} />
 			<Image handleFileUpload={s3Upload} />
@@ -31,14 +31,14 @@ storiesOf('Editor', module)
 ))
 .add('Multiple Editors', () => (
 	<div>
-		<div className={'editor-1'} style={editorWrapperStyle}>
-			<Editor placeholder={'Begin writing...'}>
+		<div className="editor-1" style={editorWrapperStyle}>
+			<Editor placeholder="Begin writing...">
 				<FormattingMenu />
 				<Latex renderFunction={renderLatex} />
 			</Editor>
 		</div>
-		<div className={'editor-2'} style={editorWrapperStyle}>
-			<Editor placeholder={'Begin writing...'}>
+		<div className="editor-2" style={editorWrapperStyle}>
+			<Editor placeholder="Begin writing...">
 				<FormattingMenu />
 				<Latex renderFunction={renderLatex} />
 			</Editor>
@@ -47,7 +47,7 @@ storiesOf('Editor', module)
 ))
 .add('Reduced Formatting Menu', () => (
 	<div style={editorWrapperStyle}>
-		<Editor placeholder={'Begin writing...'}>
+		<Editor placeholder="Begin writing...">
 			<FormattingMenu include={['link', 'bold', 'italic']} />
 		</Editor>
 	</div>
