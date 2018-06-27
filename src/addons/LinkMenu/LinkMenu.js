@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Plugin } from 'prosemirror-state';
 import { Overlay } from '@blueprintjs/core';
-// import fuzzysearch from 'fuzzysearch';
-// import { getMenuItems, canUseLinkMenu } from './LinkMenuConfig';
 
 require('./linkMenu.scss');
 
@@ -45,223 +43,163 @@ class LinkMenu extends Component {
 			state: {
 				init() {
 					return {
-						// isActive: false,
 						start: undefined,
-						href: undefined,
-						// end: 0,
-						// positionNumber: 0,
-						// parentOffset: 0,
-						// emptyLine: false,
-						// substring: '',
+						end: undefined,
+						mark: undefined,
 					};
 				},
 				apply(transaction, state, prevEditorState, editorState) {
 					const type = editorState.schema.marks.link;
-					console.log(type);
-					// const { from, $from, to, empty } = state.selection;
 					const { from, $from, empty, $to } = editorState.selection;
-					let isLink = false;
 					const start = editorState.doc.resolve(from + 1);
 					const end = $to;
-					if (empty) {
-						isLink = type.isInSet(start.marks()) || type.isInSet(end.marks());
-					} else {
-						isLink = type.isInSet(start.marks()) && type.isInSet(end.marks());
+					const isLink = empty
+						? type.isInSet(start.marks()) || type.isInSet(end.marks())
+						: type.isInSet(start.marks()) && type.isInSet(end.marks());
+
+					if (!isLink) {
+						return {
+							start: undefined,
+							end: undefined,
+							mark: undefined,
+						};
 					}
 
-					let href;
-					let startPos;
-					console.log('from', from);
-					if (isLink) {
-						startPos = from - 1;
-						let foundStart = false;
-						// debugger;
-						while (!foundStart) {
-							console.log('rangehas mark', editorState.doc.rangeHasMark(startPos, startPos, type));
-							if (startPos === 0) { foundStart = true; }
-							if (editorState.doc.rangeHasMark(startPos, startPos + 1, type)) {
-								startPos -= 1;
-								console.log('In here');
-							} else {
-								foundStart = true;
-							}
+					let startPos = from - 1;
+					let foundStart = false;
+					while (!foundStart) {
+						if (startPos === 0) { foundStart = true; }
+						if (editorState.doc.rangeHasMark(startPos, startPos + 1, type)) {
+							startPos -= 1;
+						} else {
+							foundStart = true;
 						}
+					}
+					let endPos = from;
+					let foundEnd = false;
+					while (!foundEnd) {
+						if (endPos === 0) { foundEnd = true; }
+						if (editorState.doc.rangeHasMark(endPos, endPos + 1, type)) {
+							endPos += 1;
+						} else {
+							foundEnd = true;
+						}
+					}
 
-						href = $from.nodeBefore && $from.nodeBefore.marks.reduce((prev, curr)=> {
-							if (curr.type.name === 'link') { return curr.attrs.href; }
-							return prev;
-						}, '');
 
-						// if (href) {
-						// 	const elemWrapper = document.createElement('span');
-						// 	elemWrapper.className = 'prosemirror-link-url';
-						// 	const elemStyle = document.createElement('style');
-						// 	elemStyle.innerHTML = `.prosemirror-link-url:after { content: "${href}"; display: block; }`;
-						// 	elemWrapper.appendChild(elemStyle);
-						// 	return DecorationSet.create(state.doc, [Decoration.widget(startPos, elemWrapper)]);
-						// }
-						// if (!href) {
-						// 	const elemWrapper = document.createElement('input');
-						// 	elemWrapper.className = 'prosemirror-link-url-input';
-						// 	// const elemStyle = document.createElement('style');
-						// 	// elemWrapper.innerHTML = "yippie";
-						// 	// elemWrapper.appendChild(elemStyle);
-						// 	elemWrapper.focus();
-						// 	return DecorationSet.create(state.doc, [Decoration.widget(startPos, elemWrapper)]);
-						// }
-						// https://discuss.prosemirror.net/t/editing-link-targets/1203/2
-					};
-					console.log(startPos);
+					const markBefore = $from.nodeBefore && $from.nodeBefore.marks.reduce((prev, curr)=> {
+						// if (curr.type.name === 'link') { return curr.attrs.href; }
+						if (curr.type.name === 'link') { return curr; }
+						return prev;
+					}, undefined);
+					const markAfter = $from.nodeAfter && $from.nodeAfter.marks.reduce((prev, curr)=> {
+						// if (curr.type.name === 'link') { return curr.attrs.href; }
+						if (curr.type.name === 'link') { return curr; }
+						return prev;
+					}, undefined);
+
 					return {
 						start: startPos,
-						href: href,
+						end: endPos,
+						mark: markBefore || markAfter,
 					};
-
-
-					// const doc = editorState.doc;
-					// const emptyDoc = doc.childCount === 0 || (doc.childCount === 1 && doc.firstChild.isTextblock && doc.firstChild.content.size === 0);
-					// if (emptyDoc) { return null; }
-
-					// const canUse = canUseLinkMenu(editorState);
-					// const sel = editorState.selection;
-					// const currentPos = sel.$to;
-					// const currentNode = editorState.doc.nodeAt(currentPos.pos - 1);
-					// const text = currentNode && currentNode.textContent ? currentNode.textContent : '';
-					// const currentLine = text.replace(/\s/g, ' ');
-					// let parentOffset = currentPos.parentOffset;
-					// // sometimes the parent offset may not be describing the offset into the text node
-					// // if so, we need to correct for this.
-					// if (currentNode !== currentPos.parent) {
-					// 	const child = currentPos.parent.childAfter(currentPos.parentOffset - 1);
-					// 	if (child.node === currentNode) {
-					// 		parentOffset -= child.offset;
-					// 	}
-					// }
-					// const nextChIndex = parentOffset;
-					// const nextCh = currentLine.length > nextChIndex ? currentLine.charAt(nextChIndex) : ' ';
-					// const prevChars = currentLine.substring(0, parentOffset);
-					// const startIndex = prevChars.lastIndexOf(' ') + 1;
-					// const startLetter = currentLine.charAt(startIndex);
-					// const charsAreCorrect = startLetter === '/' && nextCh.charCodeAt(0) === 32;
-					// const substring = currentLine.substring(startIndex + 1, nextChIndex) || '';
-					// const start = currentPos.pos - parentOffset + startIndex;
-					// const end = currentPos.pos - parentOffset + startIndex + 1 + substring.length;
-					// return {
-					// 	isActive: sel.empty && canUse && charsAreCorrect,
-					// 	start: start,
-					// 	end: end,
-					// 	positionNumber: currentPos.pos,
-					// 	parentOffset: sel.$to.parentOffset,
-					// 	emptyLine: currentLine.length === 0,
-					// 	substring: substring,
-					// };
 				},
-			},
-			// props: {
-			// 	handleDOMEvents: {
-			// 		keydown: (view, evt)=> {
-			// 			const state = pluginKey.getState(view.state);
-			// 			if (state && state.isActive && evt.type === 'keydown' && (evt.keyCode === 38 || evt.keyCode === 40  || evt.keyCode === 13)) {
-			// 				evt.preventDefault();
-			// 				return true;
-			// 			}
-			// 			return false;
-			// 		},
-			// 	},
-			// }
+			}
 		})];
 	}
-
-
 
 	constructor(props) {
 		super(props);
 
 		this.state = {
 			recievedStart: undefined,
-			recievedHref: undefined,
-		// 	isActive: false,
-		// 	start: 0,
-		// 	end: 0,
-		// 	opacity: 0,
-		// 	top: 0,
-		// 	left: 0,
-		// 	substring: '',
-		// 	activeMenuItem: 0,
-		// 	activeMenuItems: getMenuItems(this.props.view)
+			recievedEnd: undefined,
+			recievedMark: undefined,
+			newHref: '',
 		};
 		this.container = document.getElementById(props.containerId);
-		// this.onKeyEvents = this.onKeyEvents.bind(this);
 		this.onChange = this.onChange.bind(this);
-		// this.replaceContent = this.replaceContent.bind(this);
+		this.onOverlaySubmit = this.onOverlaySubmit.bind(this);
+		this.onOverlayClose = this.onOverlayClose.bind(this);
+		this.removeLink = this.removeLink.bind(this);
+		this.cancelChange = this.cancelChange.bind(this);
 	}
-	// componentDidMount() {
-	// 	window.addEventListener('keydown', this.onKeyEvents);
-	// }
+
 	componentWillReceiveProps(nextProps) {
 		if (this.props.editorState !== nextProps.editorState) {
-			console.log(this.props.view);
 			this.onChange();
 		}
 	}
-	// componentWillUnmount() {
-	// 	window.removeEventListener('keydown', this.onKeyEvents);
-	// }
-
-	// onKeyEvents(evt) {
-	// 	if (!this.state.isActive) { return null; }
-	// 	if (evt.keyCode === 38) { // ArrowUp
-	// 		return this.setState({ activeMenuItem: Math.max(this.state.activeMenuItem - 1, 0) });
-	// 	}
-	// 	if (evt.keyCode === 40) { // ArrowDown
-	// 		return this.setState({ activeMenuItem: Math.min(this.state.activeMenuItem + 1, this.state.activeMenuItems.length - 1) });
-	// 	}
-	// 	if (evt.keyCode === 13) { // Enter
-	// 		return this.replaceContent(this.state.activeMenuItems[this.state.activeMenuItem].run);
-	// 	}
-	// 	return null;
-	// }
 
 	onChange() {
-		// const container = document.getElementById(this.props.containerId);
 		const viewState = this.props.pluginKey.getState(this.props.view.state);
 		if (!viewState) { return null; }
-		console.log(viewState);
 		const boundingCoords = this.container.getBoundingClientRect();
 		const coordsAtPos = viewState.start
 			? this.props.view.coordsAtPos(viewState.start + 1)
 			: undefined;
-		// console.log(coordsAtPos);
-		// const boundRect = container.getBoundingClientRect();
+		const href = viewState.mark ? viewState.mark.attrs.href : '';
 		return this.setState({
-			// isActive: viewState.isActive,
 			recievedStart: viewState.start,
-			recievedHref: viewState.href,
+			recievedEnd: viewState.end,
+			recievedMark: viewState.mark,
 			boundingCoords: boundingCoords,
 			coords: coordsAtPos,
-			// end: viewState.end,
-			// opacity: viewState.parentOffset === 0 && viewState.emptyLine ? 0.5 : 0,
-			// top: coordsAtPos.top - boundRect.top,
-			// left: coordsAtPos.left - boundRect.left,
-			// substring: viewState.substring,
-			// activeMenuItems: getMenuItems(this.props.view).filter((item)=> {
-			// 	return fuzzysearch(viewState.substring.replace('/', '').toLowerCase(), item.label.toLowerCase());
-			// })
+			newHref: href,
 		});
 	}
 
-	// replaceContent(itemRunFunc) {
-	// 	const transaction = this.props.view.state.tr.delete(this.state.start, this.state.end);
-	// 	this.props.view.dispatch(transaction);
-	// 	itemRunFunc();
-	// 	this.setState({
-	// 		activeMenuItem: 0,
-	// 		activeMenuItems: getMenuItems(this.props.view)
-	// 	});
-	// }
+	onOverlayClose() {
+		this.setState({
+			editOptionsOpen: false,
+			coords: undefined,
+			newHref: '',
+		});
+		setTimeout(()=> {
+			/* This timeout seems to be necessary for Prosemirror to actually capture focus. */
+			this.props.view.focus();
+		}, 1);
+	}
+
+	removeLink() {
+		const transaction = this.props.view.state.tr;
+		transaction.removeMark(
+			this.state.recievedStart + 1,
+			this.state.recievedEnd,
+			this.props.view.state.schema.marks.link,
+		);
+		this.props.view.dispatch(transaction);
+		this.onOverlayClose();
+	}
+	cancelChange() {
+		if (!this.state.recievedMark.attrs.href) {
+			this.removeLink();
+		} else {
+			this.onOverlayClose();
+		}
+	}
+	onOverlaySubmit(evt) {
+		evt.preventDefault();
+		const oldNodeAttrs = this.state.recievedMark.attrs;
+		const formattedHref = this.state.newHref.indexOf(':') > -1
+			? this.state.newHref
+			: `http://${this.state.newHref}`;
+		const transaction = this.props.view.state.tr;
+		transaction.removeMark(
+			this.state.recievedStart + 1,
+			this.state.recievedEnd,
+			this.props.view.state.schema.marks.link,
+		);
+		transaction.addMark(
+			this.state.recievedStart + 1,
+			this.state.recievedEnd,
+			this.props.view.state.schema.marks.link.create({ ...oldNodeAttrs, href: formattedHref }),
+		);
+		this.props.view.dispatch(transaction);
+		this.onOverlayClose();
+	}
 
 	render() {
-		console.log(this.state.coords);
 		const coords = this.state.coords || {};
 		const boundingCoords = this.state.boundingCoords || {};
 		const style = {
@@ -269,34 +207,62 @@ class LinkMenu extends Component {
 			top: coords.bottom - boundingCoords.top,
 			left: coords.left - boundingCoords.left,
 		};
-		console.log(this.props.view);
+		const href = this.state.recievedMark ? this.state.recievedMark.attrs.href : '';
+		const emptyMark = this.state.recievedMark && !href;
 		return (
-			<div className="link-menu pt-elevation-2" style={style}>
-				<span className="link">{this.state.href}href</span>
-				<span> - </span>
-				<button className="pt-button pt-minimal" onClick={()=> {this.setState({editOptionsOpen: true});}}>Change</button>
-				<button className="pt-button pt-minimal">Remove</button>
-
+			<div className="link-menu" style={style}>
+				{!this.state.editOptionsOpen && !emptyMark &&
+					<div className="pt-elevation-2" >
+						<span className="link">
+							<a href={href} target="_blank">{href}</a>
+						</span>
+						<span> - </span>
+						<button
+							className="pt-button pt-minimal"
+							type="button"
+							onClick={()=> {
+								this.setState({ editOptionsOpen: true });
+							}}
+						>
+							Change
+						</button>
+						<button type="button" className="pt-button pt-minimal" onClick={this.removeLink}>
+							Remove
+						</button>		
+					</div>
+				}
 
 				<Overlay
-					isOpen={this.state.editOptionsOpen}
-					onClose={()=> { this.setState({ editOptionsOpen: false, coords: undefined }); }}
+					isOpen={this.state.editOptionsOpen || emptyMark}
+					onClose={this.onOverlayClose}
 				>
 					<div className="overlay-wrapper pt-card pt-elevation-2">
-						<textarea defaultValue={'Hello'} ref={(thingy)=> { if (this.state.editOptionsOpen) {thingy.focus();} }}></textarea>
-						<button className="pt-button pt-intent-success" onClick={()=> {
-							// this.props.updateAttrs({
-							// 	caption: String(Math.random()),
-							// 	size: Math.floor(Math.random() * 100),
-							// });
-							this.setState({ editOptionsOpen: false, coords: undefined });
-							// window.getSelection().removeAllRanges();
-							// this.props.view.focus();
-							/* This timeout seems to be necessary for Prosemirror to actually capture focus. */
-							setTimeout(()=> {
-								this.props.view.focus();
-							}, 1);
-						}}>Save</button>
+						<form onSubmit={this.onOverlaySubmit}>
+							<input
+								type="text"
+								value={this.state.newHref}
+								onChange={(evt)=> {
+									this.setState({ newHref: evt.target.value });
+								}}
+								ref={(inputRef)=> {
+									if (inputRef) { inputRef.focus(); }
+								}}
+							/>
+							<button
+								type="button"
+								className="pt-button pt-intent-danger"
+								onClick={this.cancelChange}
+							>
+								Cancel
+							</button>
+							<button
+								type="submit"
+								className="pt-button pt-intent-success"
+								onClick={this.onOverlaySubmit}
+							>
+								Save
+							</button>
+						</form>
 					</div>
 				</Overlay>
 			</div>
@@ -307,65 +273,3 @@ class LinkMenu extends Component {
 LinkMenu.propTypes = propTypes;
 LinkMenu.defaultProps = defaultProps;
 export default LinkMenu;
-
-
-// import { Plugin } from 'prosemirror-state';
-// import { DecorationSet, Decoration } from 'prosemirror-view';
-
-// const linkPlugin = new Plugin({
-// 	props: {
-// 		decorations(state) {
-// 			const type = state.schema.marks.link;
-// 			// const { from, $from, to, empty } = state.selection;
-// 			const { from, $from, empty, $to } = state.selection;
-// 			let isLink = false;
-// 			const start = state.doc.resolve(from + 1);
-// 			const end = $to;
-// 			if (empty) {
-// 				isLink = type.isInSet(start.marks()) || type.isInSet(end.marks());
-// 			} else {
-// 				isLink = type.isInSet(start.marks()) && type.isInSet(end.marks());
-// 			}
-
-// 			if (isLink) {
-// 				let startPos = from - 1;
-// 				let foundStart = false;
-// 				while (!foundStart) {
-// 					if (startPos === 0) { foundStart = true; }
-// 					if (state.doc.rangeHasMark(startPos, startPos, type)) {
-// 						startPos -= 1;
-// 					} else {
-// 						foundStart = true;
-// 					}
-// 				}
-
-// 				const href = $from.nodeBefore && $from.nodeBefore.marks.reduce((prev, curr)=> {
-// 					if (curr.type.name === 'link') { return curr.attrs.href; }
-// 					return prev;
-// 				}, '');
-
-// 				if (href) {
-// 					const elemWrapper = document.createElement('span');
-// 					elemWrapper.className = 'prosemirror-link-url';
-// 					const elemStyle = document.createElement('style');
-// 					elemStyle.innerHTML = `.prosemirror-link-url:after { content: "${href}"; display: block; }`;
-// 					elemWrapper.appendChild(elemStyle);
-// 					return DecorationSet.create(state.doc, [Decoration.widget(startPos, elemWrapper)]);
-// 				}
-// 				if (!href) {
-// 					const elemWrapper = document.createElement('input');
-// 					elemWrapper.className = 'prosemirror-link-url-input';
-// 					// const elemStyle = document.createElement('style');
-// 					// elemWrapper.innerHTML = "yippie";
-// 					// elemWrapper.appendChild(elemStyle);
-// 					elemWrapper.focus();
-// 					return DecorationSet.create(state.doc, [Decoration.widget(startPos, elemWrapper)]);
-// 				}
-// 				// https://discuss.prosemirror.net/t/editing-link-targets/1203/2
-// 			}
-// 			return null;
-// 		}
-// 	}
-// });
-
-// export default linkPlugin;

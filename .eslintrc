@@ -24,6 +24,7 @@
 		"import/no-extraneous-dependencies": 0,
 		"indent": [2, "tab", { "MemberExpression": 0 }],
 		"object-shorthand": 0,
+		"object-curly-newline": 0,
 		"max-len": 0,
 		"no-tabs": 0,
 		"no-underscore-dangle": 0,
@@ -33,6 +34,7 @@
 		"react/jsx-filename-extension": 0,
 		"react/jsx-indent": [2, "tab"],
 		"react/jsx-indent-props": [2, "tab"],
+		"react/jsx-one-expression-per-line": 0,
 		"space-before-function-paren": 0,
 	},
 }

@@ -1,4 +1,8 @@
 .link-menu {
 	position: absolute;
-	padding: 5px;
+	z-index: 15;
+	.pt-elevation-2 {
+		background-color: white;
+		padding: 5px;
+	}
 }
