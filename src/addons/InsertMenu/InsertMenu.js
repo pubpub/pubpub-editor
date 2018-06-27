@@ -206,7 +206,7 @@ class InsertMenu extends Component {
 								role={'button'}
 								tabIndex={-1}
 							>
-								{item.label}
+								Insert {item.label}
 							</div>
 						);
 					})}

@@ -59,7 +59,7 @@ class Latex extends Component {
 					draggable: false,
 					selectable: true,
 					insertMenu: {
-						label: 'Insert Latex Math',
+						label: 'LaTeX Math',
 						icon: 'pt-icon-function',
 						onInsert: (view) => {
 							const newNode = view.state.schema.nodes.equation.create({

@@ -58,7 +58,7 @@ class Iframe extends Component {
 					draggable: false,
 					selectable: true,
 					insertMenu: {
-						label: 'Insert iFrame',
+						label: 'iFrame',
 						icon: 'pt-icon-code-block',
 						onInsert: (view) => {
 							const iframeNode = view.state.schema.nodes.iframe.create();

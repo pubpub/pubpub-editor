@@ -64,7 +64,7 @@ class File extends Component {
 					draggable: false,
 					selectable: true,
 					insertMenu: {
-						label: 'Insert File',
+						label: 'File',
 						icon: 'pt-icon-document',
 						onInsert: (view) => {
 							const fileNode = view.state.schema.nodes.file.create();

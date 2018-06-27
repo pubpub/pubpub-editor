@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { AnchorButton, Overlay } from '@blueprintjs/core';
+import { AnchorButton } from '@blueprintjs/core';
 
 require('./image.scss');
 
 const propTypes = {
 	// node: PropTypes.object,
-	view: PropTypes.object,
+	// view: PropTypes.object,
 	caption: PropTypes.string.isRequired,
 	url: PropTypes.string,
 	align: PropTypes.oneOf(['full', 'left', 'right', 'center']).isRequired,
@@ -32,7 +32,6 @@ class ImageEditable extends Component {
 			isResizing: false,
 			uploading: false,
 			imageBlob: null,
-			editOptionsOpen: false,
 		};
 		this.randKey = Math.round(Math.random() * 99999);
 		this.onDragMouseDown = this.onDragMouseDown.bind(this);
@@ -119,13 +118,13 @@ class ImageEditable extends Component {
 		const imageUrl = this.props.url && this.props.handleResizeUrl ? this.props.handleResizeUrl(this.props.url) : this.props.url;
 		return (
 			<div className={'figure-wrapper'} ref={(rootElem)=> { this.rootElem = rootElem; }}>
-				<figure className={`image ${this.props.isSelected ? 'isSelected' : ''}`} style={figStyle} onDoubleClick={()=> { this.setState({ editOptionsOpen: true })}}>
-					{/*this.props.isSelected && this.props.url && this.props.align !== 'full' &&
+				<figure className={`image ${this.props.isSelected ? 'isSelected' : ''}`} style={figStyle}>
+					{this.props.isSelected && this.props.url && this.props.align !== 'full' &&
 						<div>
 							<div className={'drag-handle left'} onMouseDown={this.onDragMouseDown} role={'button'} tabIndex={-1} />
 							<div className={'drag-handle right'} onMouseDown={this.onDragMouseDown} role={'button'} tabIndex={-1} />
 						</div>
-					*/}
+					}
 					{this.props.url &&
 						<img
 							ref={(imgElem)=> { this.imgElem = imgElem; }}
@@ -151,15 +150,12 @@ class ImageEditable extends Component {
 							/>
 						</label>
 					}
-					{/*!this.props.isSelected &&
+					{!this.props.isSelected &&
 						<figcaption>
 							{this.props.caption}
 						</figcaption>
-					*/}
-					<figcaption>
-						{this.props.caption}
-					</figcaption>
-					{/*this.props.isSelected && this.props.url &&
+					}
+					{this.props.isSelected && this.props.url &&
 						<div className={'options-wrapper'}>
 							<div className={'top-row'}>
 								<div className={'pt-button-group pt-minimal'}>
@@ -199,29 +195,8 @@ class ImageEditable extends Component {
 								onChange={this.updateCaption}
 							/>
 						</div>
-					*/}
-					{this.props.isSelected && this.props.url &&
-						<div className="new-option-menu">
-							<button className="pt-button pt-minimal" onClick={()=> { this.setState({ editOptionsOpen: true })}}>Edit</button>
-						</div>
 					}
 				</figure>
-				<Overlay
-					isOpen={this.state.editOptionsOpen}
-					onClose={()=> { this.setState({ editOptionsOpen: false }); }}
-				>
-					<div className="overlay-wrapper pt-card pt-elevation-2">
-						<textarea defaultValue={'Hello'} ref={(thingy)=> { if (this.state.editOptionsOpen) {thingy.focus();} }}></textarea>
-						<button className="pt-button pt-intent-success" onClick={()=> {
-							this.props.updateAttrs({
-								caption: String(Math.random()),
-								size: Math.floor(Math.random() * 100),
-							});
-							this.setState({ editOptionsOpen: false });
-							this.props.view.focus();
-						}}>Save</button>
-					</div>
-				</Overlay>
 			</div>
 		);
 	}

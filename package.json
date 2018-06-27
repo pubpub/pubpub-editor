@@ -47,7 +47,8 @@
     "firebase": "^5.1.0",
     "react": "^16.4.1",
     "react-addons-css-transition-group": "^15.6.2",
-    "react-dom": "^16.4.1"
+    "react-dom": "^16.4.1",
+    "react-transition-group": "^2.3.1"
   },
   "devDependencies": {
     "@blueprintjs/core": "^2.3.1",
@@ -84,6 +85,7 @@
     "react": "^16.4.1",
     "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^16.4.1",
+    "react-transition-group": "^2.3.1",
     "sass-loader": "^7.0.3",
     "smooth-jsdoc": "0.0.1",
     "style-loader": "^0.21.0",

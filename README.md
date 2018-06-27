@@ -117,7 +117,7 @@ class NewAddon extends Component {
                     draggable: false,
                     selectable: true,
                     insertMenu: {
-                        label: 'Insert MySchemaItem',
+                        label: 'MySchemaItem',
                         icon: 'pt-icon-asterisk',
                         onInsert: (view) => {
                             const newNode = view.state.schema.nodes.mySchemaItem.create();

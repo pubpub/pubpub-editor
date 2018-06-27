@@ -65,7 +65,7 @@ class Video extends Component {
 					draggable: false,
 					selectable: true,
 					insertMenu: {
-						label: 'Insert Video',
+						label: 'Video',
 						icon: 'pt-icon-video',
 						onInsert: (view) => {
 							const videoNode = view.state.schema.nodes.video.create();

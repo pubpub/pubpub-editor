@@ -2,8 +2,10 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { Editor } from 'index';
 import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
+import HeaderMenu from 'addons/HeaderMenu/HeaderMenu';
+import Image from 'addons/Image/Image';
 import Latex from 'addons/Latex/Latex';
-import { editorWrapperStyle, renderLatex } from './_utilities';
+import { editorWrapperStyle, s3Upload, renderLatex } from './_utilities';
 
 storiesOf('Editor', module)
 .add('default', () => (
@@ -15,6 +17,15 @@ storiesOf('Editor', module)
 	<div style={editorWrapperStyle}>
 		<Editor placeholder={'Begin writing...'}>
 			<FormattingMenu />
+		</Editor>
+	</div>
+))
+.add('Header Menu', () => (
+	<div style={editorWrapperStyle}>
+		<Editor placeholder={'Begin writing...'}>
+			<HeaderMenu />
+			<Latex renderFunction={renderLatex} />
+			<Image handleFileUpload={s3Upload} />
 		</Editor>
 	</div>
 ))

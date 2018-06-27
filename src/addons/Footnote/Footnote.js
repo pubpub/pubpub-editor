@@ -74,7 +74,7 @@ class Footnote extends Component {
 					draggable: false,
 					selectable: true,
 					insertMenu: {
-						label: 'Insert Footnote',
+						label: 'Footnote',
 						icon: 'pt-icon-asterisk',
 						onInsert: (view) => {
 							const newNode = view.state.schema.nodes.footnote.create();

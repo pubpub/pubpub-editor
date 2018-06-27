@@ -46,7 +46,7 @@ const nodes = {
 		parseDOM: [{ tag: 'hr' }],
 		toDOM() { return ['div', ['hr']]; },
 		insertMenu: {
-			label: 'Insert Horizontal Line',
+			label: 'Horizontal Line',
 			icon: 'pt-icon-minus',
 			onInsert: (view) => {
 				view.dispatch(view.state.tr.replaceSelectionWith(view.state.schema.nodes.horizontal_rule.create()));
@@ -134,7 +134,7 @@ const nodes = {
 		parseDOM: [{ tag: 'pre', preserveWhitespace: true }],
 		toDOM() { return ['pre', ['code', 0]]; },
 		insertMenu: {
-			label: 'Insert Code Block',
+			label: 'Code Block',
 			icon: 'pt-icon-code',
 			onInsert: (view) => {
 				view.dispatch(view.state.tr.replaceSelectionWith(view.state.schema.nodes.code_block.create()));

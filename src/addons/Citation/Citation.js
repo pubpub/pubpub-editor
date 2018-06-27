@@ -64,7 +64,7 @@ class Citation extends Component {
 					draggable: false,
 					selectable: true,
 					insertMenu: {
-						label: 'Insert Citation',
+						label: 'Citation',
 						icon: 'pt-icon-bookmark',
 						onInsert: (view) => {
 							const newNode = view.state.schema.nodes.citation.create();
@@ -109,7 +109,7 @@ class Citation extends Component {
 					draggable: false,
 					selectable: true,
 					insertMenu: {
-						label: 'Insert Citation List',
+						label: 'Citation List',
 						icon: 'pt-icon-numbered-list',
 						onInsert: (view) => {
 							const citationListNode = view.state.schema.nodes.citationList.create();

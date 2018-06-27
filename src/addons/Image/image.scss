@@ -65,10 +65,35 @@
 				margin: 5px 0px 0px;
 			}
 		}
+		.new-option-menu {
+			position: absolute;
+			bottom: -40px;
+			left: 0px;
+			background-color: white;
+			padding: 2px 10px;
+			box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.5);
+		}
 		input.file-input {
 			display: none;
 		}
 	}	
+}
+
+.overlay-wrapper {
+	display: none;
+}
+.pt-overlay.pt-overlay-open {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    .overlay-wrapper {
+    	display: block;
+    }
+}
+.pt-overlay .pt-overlay-backdrop {
+	background-color: rgba(16, 22, 26, 0.3);
 }
 
 @media only screen and (max-width: 720px) {  /* 45em or 720px */

@@ -42,7 +42,6 @@ class Image extends Component {
 			nodes: {
 				image: {
 					atom: true,
-					// content: 'inline*',
 					attrs: {
 						url: { default: null },
 						size: { default: 50 }, // number as percentage
@@ -73,7 +72,7 @@ class Image extends Component {
 					draggable: false,
 					selectable: true,
 					insertMenu: {
-						label: 'Insert Image',
+						label: 'Image',
 						icon: 'pt-icon-media',
 						onInsert: (view) => {
 							const imageNode = view.state.schema.nodes.image.create();
