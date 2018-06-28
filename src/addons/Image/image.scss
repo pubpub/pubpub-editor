@@ -31,11 +31,13 @@
 	}	
 }
 
-.file-select {
-	margin-top: 1em;
-	display: block;
-	input.file-input {
-		display: none;
+.options-box {
+	.file-select {
+		margin-top: 1em;
+		display: block;
+		input.file-input {
+			display: none;
+		}
 	}
 }
 
