@@ -11,7 +11,7 @@ function loadStories() {
 }
 /* Set Storybook options */
 setOptions({
-	showDownPanel: false,
+	showAddonPanel: false,
 });
 
 configure(loadStories, module);

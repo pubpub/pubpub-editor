@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { AnchorButton, Overlay } from '@blueprintjs/core';
+import {EditorState} from "prosemirror-state"
+import {EditorView} from "prosemirror-view"
+import {Schema, DOMParser} from "prosemirror-model"
+import { getBasePlugins } from '../../schema/setup';
 
 require('./image.scss');
 
@@ -43,6 +47,7 @@ class ImageEditable extends Component {
 		this.handleImageSelect = this.handleImageSelect.bind(this);
 		this.setBlob = this.setBlob.bind(this);
 		this.onUploadFinish = this.onUploadFinish.bind(this);
+		this.createCaptionEditor = this.createCaptionEditor.bind(this);
 	}
 
 	onDragMouseDown(evt) {
@@ -97,6 +102,38 @@ class ImageEditable extends Component {
 	onUploadFinish(evt, index, type, filename) {
 		this.setState({ uploading: false });
 		this.props.updateAttrs({ url: `https://assets.pubpub.org/${filename}` });
+	}
+	createCaptionEditor() {
+		console.log(this.props.view.state);
+		const mainSchema = this.props.view.state.config.schema;
+		const nodes = {
+			doc: mainSchema.nodes.doc.spec,
+			paragraph: mainSchema.nodes.paragraph.spec,
+			text: mainSchema.nodes.text.spec,
+		};
+		const marks = {};
+		Object.keys(mainSchema.marks).forEach((markKey)=> {
+			return marks[markKey] = mainSchema.marks[markKey].spec;
+		});
+		console.log(nodes, marks);
+		const mySchema = new Schema({
+			nodes: nodes,
+			marks: marks,
+		});
+		const wrapperElem = document.createElement('div');
+		wrapperElem.innerHTML = '<p>cat<strong>OH SNAP That </strong></p><p>Is cool</p>';
+
+		const editorState = EditorState.create({
+			doc: DOMParser.fromSchema(mySchema).parse(wrapperElem),
+			schema: mySchema,
+			plugins: getBasePlugins({
+				schema: mySchema,
+				placeholder: 'Caption...'
+			})
+		});
+		this.editorView = new EditorView(document.getElementById('caption-editor'), {
+			state: editorState,
+		});
 	}
 	render() {
 		const alignOptions = [
@@ -201,7 +238,8 @@ class ImageEditable extends Component {
 						</div>
 					*/}
 					{this.props.isSelected && this.props.url &&
-						<div className="new-option-menu">
+						// <div className="new-option-menu">
+						<div className={'options-wrapper'}>
 							<button className="pt-button pt-minimal" onClick={()=> { this.setState({ editOptionsOpen: true })}}>Edit</button>
 						</div>
 					}
@@ -212,7 +250,13 @@ class ImageEditable extends Component {
 				>
 					<div className="overlay-wrapper pt-card pt-elevation-2">
 						<textarea defaultValue={'Hello'} ref={(thingy)=> { if (this.state.editOptionsOpen) {thingy.focus();} }}></textarea>
+						<div id="caption-editor" ref={(ref)=> {
+							if (ref) {
+								this.createCaptionEditor();
+							}
+						}}/>
 						<button className="pt-button pt-intent-success" onClick={()=> {
+							console.log(document.getElementById('caption-editor').children[0].innerHTML);
 							this.props.updateAttrs({
 								caption: String(Math.random()),
 								size: Math.floor(Math.random() * 100),

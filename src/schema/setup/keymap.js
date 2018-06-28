@@ -61,8 +61,17 @@ export function buildKeymap(schema, mapKeys) {
 	if (schema.marks.em) {
 		bind('Mod-i', toggleMark(schema.marks.em));
 	}
+	if (schema.marks.sup) {
+		bind('Mod-.', toggleMark(schema.marks.sup));
+	}
+	if (schema.marks.sub) {
+		bind('Mod-,', toggleMark(schema.marks.sub));
+	}
+	if (schema.marks.strike) {
+		bind('Mod-Shift-x', toggleMark(schema.marks.strike));
+	}
 	if (schema.marks.code) {
-		bind('Mod-`', toggleMark(schema.marks.code));
+		bind('Mod-<', toggleMark(schema.marks.code));
 	}
 	if (schema.marks.link) {
 		bind('Mod-k', toggleMark(schema.marks.link));

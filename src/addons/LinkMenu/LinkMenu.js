@@ -88,12 +88,10 @@ class LinkMenu extends Component {
 
 
 					const markBefore = $from.nodeBefore && $from.nodeBefore.marks.reduce((prev, curr)=> {
-						// if (curr.type.name === 'link') { return curr.attrs.href; }
 						if (curr.type.name === 'link') { return curr; }
 						return prev;
 					}, undefined);
 					const markAfter = $from.nodeAfter && $from.nodeAfter.marks.reduce((prev, curr)=> {
-						// if (curr.type.name === 'link') { return curr.attrs.href; }
 						if (curr.type.name === 'link') { return curr; }
 						return prev;
 					}, undefined);
