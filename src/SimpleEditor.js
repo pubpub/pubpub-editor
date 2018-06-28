@@ -15,7 +15,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-	initialContent: '',
+	initialHtmlString: '',
 	editorId: undefined,
 	onChange: undefined,
 	placeholder: '',
@@ -33,7 +33,7 @@ const defaultProps = {
 * The SimpleEditor component provides an editor with support for paragraphs and marks. 
 *
 * @prop {string} initialHtmlString A string of HTML representing the initial content.
-* @prop {func} onChange Fired whenever the document is changed. Given an HTML string of the content.
+* @prop {func} onChange Fired whenever the document is changed. Provided an HTML string of the content.
 * @prop {String} placeholder A placeholder string that will appear if there is no content.
 * @prop {bool} isReadOnly Set to true to disallow editing, both in text and modifying or inserting add ons.
 *
@@ -57,7 +57,7 @@ class SimpleEditor extends Component {
 	}
 	/**
 	 * Get HtmlString
-	 * @return {string} The HTML string of the document. Useful for saving documents for use in initialContent.
+	 * @return {string} The HTML string of the document. Useful for saving documents for use in initialHtmlString.
 	 */
 	getHtmlString() {
 		return this.view.state.doc.toJSON();
@@ -85,7 +85,7 @@ class SimpleEditor extends Component {
 		});
 		
 		const wrapperElem = document.createElement('div');
-		wrapperElem.innerHTML = this.props.initialContent;
+		wrapperElem.innerHTML = this.props.initialHtmlString;
 
 		const editorState = EditorState.create({
 			doc: DOMParser.fromSchema(simpleSchema).parse(wrapperElem),
@@ -107,7 +107,7 @@ class SimpleEditor extends Component {
 			this.view.updateState(newState);
 			
 			if (this.props.onChange && transaction.docChanged) {
-				this.props.onChange(this.view.state.doc.toJSON());
+				this.props.onChange(this.editorElement.children[0].innerHTML);
 			}
 		}
 	}

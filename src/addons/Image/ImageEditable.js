@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Portal } from 'react-portal';
-import { AnchorButton, Overlay } from '@blueprintjs/core';
+import { AnchorButton, Slider } from '@blueprintjs/core';
 import {EditorState} from "prosemirror-state"
 import {EditorView} from "prosemirror-view"
 import {Schema, DOMParser} from "prosemirror-model"
 import { getBasePlugins } from '../../schema/setup';
+import SimpleEditor from '../../SimpleEditor';
 
 require('./image.scss');
 
@@ -41,15 +42,11 @@ class ImageEditable extends Component {
 			imageBlob: null,
 		};
 		this.randKey = Math.round(Math.random() * 99999);
-		// this.onDragMouseDown = this.onDragMouseDown.bind(this);
-		// this.onDragMouseUp = this.onDragMouseUp.bind(this);
-		// this.onMouseMove = this.onMouseMove.bind(this);
 		this.updateCaption = this.updateCaption.bind(this);
 		this.updateAlign = this.updateAlign.bind(this);
 		this.handleImageSelect = this.handleImageSelect.bind(this);
 		this.setBlob = this.setBlob.bind(this);
 		this.onUploadFinish = this.onUploadFinish.bind(this);
-		// this.createCaptionEditor = this.createCaptionEditor.bind(this);
 		this.portalRefFunc = this.portalRefFunc.bind(this);
 	}
 
@@ -83,42 +80,10 @@ class ImageEditable extends Component {
 		this.setState({ uploading: false });
 		this.props.updateAttrs({ url: `https://assets.pubpub.org/${filename}` });
 	}
-	// createCaptionEditor() {
-	// 	console.log(this.props.view.state);
-	// 	const mainSchema = this.props.view.state.config.schema;
-	// 	const nodes = {
-	// 		doc: mainSchema.nodes.doc.spec,
-	// 		paragraph: mainSchema.nodes.paragraph.spec,
-	// 		text: mainSchema.nodes.text.spec,
-	// 	};
-	// 	const marks = {};
-	// 	Object.keys(mainSchema.marks).forEach((markKey)=> {
-	// 		return marks[markKey] = mainSchema.marks[markKey].spec;
-	// 	});
-	// 	console.log(nodes, marks);
-	// 	const mySchema = new Schema({
-	// 		nodes: nodes,
-	// 		marks: marks,
-	// 	});
-	// 	const wrapperElem = document.createElement('div');
-	// 	wrapperElem.innerHTML = '<p>cat<strong>OH SNAP That </strong></p><p>Is cool</p>';
 
-	// 	const editorState = EditorState.create({
-	// 		doc: DOMParser.fromSchema(mySchema).parse(wrapperElem),
-	// 		schema: mySchema,
-	// 		plugins: getBasePlugins({
-	// 			schema: mySchema,
-	// 			placeholder: 'Caption...'
-	// 		})
-	// 	});
-	// 	this.editorView = new EditorView(document.getElementById('caption-editor'), {
-	// 		state: editorState,
-	// 	});
-	// }
-
-	portalRefFunc(ref) {
+	portalRefFunc(elem) {
 		/* Used to call onOptioneRender so that optionsBox can be placed */
-		if (ref) {
+		if (elem) {
 			const domAtPos = this.props.view.domAtPos(this.props.view.state.selection.from);
 			const nodeDom = domAtPos.node.childNodes[domAtPos.offset];
 			this.props.onOptionsRender(nodeDom, this.props.optionsContainerRef.current);
@@ -178,91 +143,90 @@ class ImageEditable extends Component {
 							/>
 						</label>
 					}
-					<figcaption>
-						{this.props.caption}
-					</figcaption>
-					{/*this.props.isSelected && this.props.url &&
-						<div className={'options-wrapper'}>
-							<div className={'top-row'}>
-								<div className={'pt-button-group pt-minimal'}>
-									{alignOptions.map((item)=> {
-										return (
-											<button
-												key={`align-option-${item.key}`}
-												className={`pt-button ${item.icon} ${this.props.align === item.key ? 'pt-active' : ''}`}
-												onClick={()=> { this.updateAlign(item.key); }}
-											/>
-										);
-									})}
-								</div>
-								<div className={'right-wrapper'}>
-									<label htmlFor={this.randKey} className={'file-select'}>
-										<AnchorButton
-											className={'pt-button'}
-											text={'Choose new image'}
-											loading={this.state.uploading}
-										/>
-										<input
-											id={this.randKey}
-											name={'image'}
-											type="file"
-											accept="image/png, image/jpeg, image/gif"
-											onChange={this.handleImageSelect}
-											className={'file-input'}
-										/>
-									</label>
-								</div>
-							</div>
-							<input
-								type={'text'}
-								placeholder={'Add Caption'}
-								className={'pt-input pt-fill'}
-								value={this.props.caption}
-								onChange={this.updateCaption}
-							/>
-						</div>
-					*/}
-					{/*this.props.isSelected && this.props.url &&
-						// <div className="new-option-menu">
-						<div className={'options-wrapper'}>
-							<button className="pt-button pt-minimal" onClick={()=> { this.setState({ editOptionsOpen: true })}}>Edit</button>
-						</div>
-					*/}
+					<figcaption dangerouslySetInnerHTML={{ __html: this.props.caption }} />
 				</figure>
-				{this.props.isSelected &&
+
+				{this.props.isSelected && this.props.url &&
 					<Portal 
 						ref={this.portalRefFunc} 
 						node={this.props.optionsContainerRef.current}
 					>
 						<div className="options-box">
-							<input type="range" min="1" max="100" defaultValue="50"  onChange={((evt)=> {
-								this.props.updateAttrs({ size: evt.target.value });
-							})} />
+							{/* Image Size Adjustment */}
+							<label className="form-label">
+								Image Size
+							</label>
+							<Slider
+								min={25}
+								max={100}
+								value={this.props.size}
+								onChange={(newSize)=> {
+									this.props.updateAttrs({ size: newSize });
+								}}
+								labelRenderer={false}
+								disabled={this.props.align === 'full'}
+								// labelRenderer={(val)=> { return `${val}%`; }}
+								// labelStepSize={100}
+							/>
+							
+							{/* Image Alignment Adjustment */}
+							<label className="form-label">
+								Image Alignment
+							</label>
+							<div className={'pt-button-group pt-minimal'}>
+								{alignOptions.map((item)=> {
+									return (
+										<button
+											key={`align-option-${item.key}`}
+											className={`pt-button ${item.icon} ${this.props.align === item.key ? 'pt-active' : ''}`}
+											onClick={()=> { this.updateAlign(item.key); }}
+										/>
+									);
+								})}
+							</div>
+							
+							{/* Image Caption Adjustment */}
+							<label className="form-label">
+								Caption
+							</label>
+							<div className="simple-editor-wrapper">
+								<SimpleEditor
+									initialHtmlString={this.props.caption}
+									onChange={(htmlString)=> {
+										this.props.updateAttrs({ caption: htmlString });
+									}}
+								/>
+							</div>
+
+							{/* Image Source Details */}
+							<label className="form-label">
+								Source
+							</label>
+							<div>
+								<a href={this.props.url}  target="_blank" rel="noopener noreferrer">
+									{this.props.url}
+								</a>
+							</div>
+
+							{/* Select New Image File */}
+							<label htmlFor={this.randKey} className="file-select">
+								<AnchorButton
+									className={'pt-button'}
+									text={'Choose new image'}
+									loading={this.state.uploading}
+								/>
+								<input
+									id={this.randKey}
+									name={'image'}
+									type="file"
+									accept="image/png, image/jpeg, image/gif"
+									onChange={this.handleImageSelect}
+									className={'file-input'}
+								/>
+							</label>
 						</div>
 					</Portal>
 				}
-				{/*<Overlay
-					isOpen={this.state.editOptionsOpen}
-					onClose={()=> { this.setState({ editOptionsOpen: false }); }}
-				>
-					<div className="overlay-wrapper pt-card pt-elevation-2">
-						<textarea defaultValue={'Hello'} ref={(thingy)=> { if (this.state.editOptionsOpen) {thingy.focus();} }}></textarea>
-						<div id="caption-editor" ref={(ref)=> {
-							if (ref) {
-								this.createCaptionEditor();
-							}
-						}}/>
-						<button className="pt-button pt-intent-success" onClick={()=> {
-							console.log(document.getElementById('caption-editor').children[0].innerHTML);
-							this.props.updateAttrs({
-								caption: String(Math.random()),
-								size: Math.floor(Math.random() * 100),
-							});
-							this.setState({ editOptionsOpen: false });
-							this.props.view.focus();
-						}}>Save</button>
-					</div>
-				</Overlay>*/}
 			</div>
 		);
 	}

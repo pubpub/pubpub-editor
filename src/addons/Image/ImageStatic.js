@@ -35,19 +35,17 @@ const ImageStatic = function(props) {
 	const imageUrl = props.handleResizeUrl ? props.handleResizeUrl(props.url) : props.url;
 	const imgElement = <img src={imageUrl} alt={props.caption} />;
 	return (
-		<div className={'figure-wrapper'}>
-			<figure className={'image'} style={figStyle}>
+		<div className="figure-wrapper">
+			<figure className="image" style={figStyle}>
 				{props.linkToSrc &&
-					<a href={props.url} target="_blank">
+					<a href={props.url} target="_blank" rel="noopener noreferrer">
 						{imgElement}
 					</a>
 				}
 				{!props.linkToSrc &&
 					imgElement
 				}
-				<figcaption>
-					{props.caption}
-				</figcaption>
+				<figcaption dangerouslySetInnerHTML={{ __html: props.caption }} />
 			</figure>
 		</div>
 	);
