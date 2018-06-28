@@ -55,7 +55,9 @@ return <Editor />
 class Editor extends Component {
 	constructor(props) {
 		super(props);
-		this.containerId = `pubpub-editor-container-${props.editorId}` || `pubpub-editor-container-${Math.round(Math.random() * 10000)}`;
+		this.containerId = props.editorId
+			? `pubpub-editor-container-${props.editorId}`
+			: `pubpub-editor-container-${Math.round(Math.random() * 10000)}`;
 		this.getJSON = this.getJSON.bind(this);
 		this.getPlugin = this.getPlugin.bind(this);
 
@@ -310,6 +312,7 @@ class Editor extends Component {
 					</div>
 				}
 				<div ref={(elem)=> { this.editorElement = elem; }} className={wrapperClasses} />
+				<div id={`${this.containerId}-options`} />
 			</div>
 		);
 	}

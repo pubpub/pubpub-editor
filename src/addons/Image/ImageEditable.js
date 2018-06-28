@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+// import ReactDOM from 'react-dom';
+import { Portal } from 'react-portal';
 import PropTypes from 'prop-types';
 import { AnchorButton, Overlay } from '@blueprintjs/core';
 import {EditorState} from "prosemirror-state"
@@ -37,6 +39,7 @@ class ImageEditable extends Component {
 			uploading: false,
 			imageBlob: null,
 			editOptionsOpen: false,
+			portalOpened: false,
 		};
 		this.randKey = Math.round(Math.random() * 99999);
 		this.onDragMouseDown = this.onDragMouseDown.bind(this);
@@ -49,6 +52,38 @@ class ImageEditable extends Component {
 		this.onUploadFinish = this.onUploadFinish.bind(this);
 		this.createCaptionEditor = this.createCaptionEditor.bind(this);
 	}
+	// static getDerivedStateFromProps(props, state) {
+	// 	if (props.isSelected && !state.portalOpened) {
+	// 		console.log('Add portal');
+	// 		setTimeout(()=> {
+	// 			ReactDOM.render(<div>
+	// 				<input type="range" min="1" max="100" defaultValue="50" class="slider" id="myRange" onChange={((evt)=> {
+	// 					props.updateAttrs({ size: evt.target.value });
+	// 				})} />
+	// 			</div>, document.getElementById('editor-portal-spot'));
+	// 			// console.log(props.view.state.selection.from)
+	// 			const coords = props.view.coordsAtPos(props.view.state.selection.from);
+	// 			console.log(coords);
+	// 			const domAtPos = props.view.domAtPos(props.view.state.selection.from);
+	// 			console.log(domAtPos);
+	// 			const offsetCoords = domAtPos.node.getBoundingClientRect();
+	// 			const otherCoords = domAtPos.node.childNodes[domAtPos.offset].getBoundingClientRect();
+	// 			// debugger;
+	// 			console.log('scroll', window.pageYOffset);
+	// 			console.log('otherCoords', otherCoords)
+	// 			document.getElementById('editor-portal-spot').style.top = `${window.pageYOffset + otherCoords.top}px`;
+	// 		}, 1);
+	// 		return { portalOpened: true };
+	// 	}
+	// 	if (!props.isSelected && state.portalOpened) {
+	// 		console.log('Remove portal');
+	// 		// document.getElementById('editor-portal-spot').innerHTML = '';
+	// 		ReactDOM.unmountComponentAtNode(document.getElementById('editor-portal-spot'));
+	// 		return { portalOpened: false };
+	// 	}
+	// 	console.log('do nothing');
+	// 	return null;
+	// }
 
 	onDragMouseDown(evt) {
 		const handle = evt.target.className.replace('drag-handle ', '');
@@ -244,6 +279,15 @@ class ImageEditable extends Component {
 						</div>
 					}
 				</figure>
+				{this.props.isSelected &&
+					<Portal ref={(ref)=> { console.log('ref is', ref); }} node={document.getElementById('editor-portal-spot')}>
+						<div>
+							<input type="range" min="1" max="100" defaultValue="50"  onChange={((evt)=> {
+								this.props.updateAttrs({ size: evt.target.value });
+							})} />
+						</div>
+					</Portal>
+				}
 				<Overlay
 					isOpen={this.state.editOptionsOpen}
 					onClose={()=> { this.setState({ editOptionsOpen: false }); }}
