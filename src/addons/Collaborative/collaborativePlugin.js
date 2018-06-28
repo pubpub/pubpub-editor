@@ -238,16 +238,21 @@ class CollaborativePlugin extends Plugin {
 			});
 		}
 
+
 		/* We do getSelection().empty() because of a chrome bug: */
 		/* https://discuss.prosemirror.net/t/in-collab-setup-with-selections-cursor-jumps-to-a-different-position-without-selection-being-changed/1011 */
 		/* https://github.com/ProseMirror/prosemirror/issues/710 */
 		/* https://bugs.chromium.org/p/chromium/issues/detail?id=775939 */
+		/* To reproduce, put one cursor in the middle of the last line of the paragraph, */
+		/* and then with another cursor begin typing at the end of the paragraph. The typing */
+		/* cursor will jump to the location of the middle cursor. */
 		const selection = document.getSelection();
 		const anchorNode = selection.anchorNode || { className: '' };
 		const anchorClasses = anchorNode.className || '';
 		if (selection
 			&& selection.isCollapsed
 			&& anchorClasses.indexOf('options-wrapper') === -1
+			&& this.view.hasFocus()
 		) {
 			document.getSelection().empty();
 		}
