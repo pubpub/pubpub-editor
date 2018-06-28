@@ -20,6 +20,5 @@ storiesOf('Image', module)
 			<Latex renderFunction={renderLatex} />
 			<Image handleFileUpload={s3Upload} />
 		</Editor>
-		<div id="editor-portal-spot"></div>
 	</div>
 ));

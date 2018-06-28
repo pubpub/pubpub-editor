@@ -19,6 +19,7 @@ const propTypes = {
 	isReadOnly: PropTypes.bool,
 	showHeaderLinks: PropTypes.bool,
 	renderStaticMarkup: PropTypes.bool,
+	onOptionsRender: PropTypes.func,
 };
 
 const defaultProps = {
@@ -30,6 +31,11 @@ const defaultProps = {
 	isReadOnly: false,
 	showHeaderLinks: false,
 	renderStaticMarkup: false,
+	onOptionsRender: (nodeDom, optionsDom)=>{
+		const nodeDomCoords = nodeDom.getBoundingClientRect();
+		optionsDom.style.top = `${nodeDom.offsetTop}px`;
+		optionsDom.style.left = `${nodeDom.offsetLeft + nodeDom.offsetWidth}px`;
+	}
 };
 
 
@@ -48,6 +54,7 @@ const defaultProps = {
 * @prop {bool} isReadOnly Set to true to disallow editing, both in text and modifying or inserting add ons.
 * @prop {bool} showHeaderLinks Set to true to show links next to headers
 * @prop {bool} renderStaticMarkup Set to true to render only static markup on the server.
+* @prop {func} onOptionsRender Function that is called by nodeViews and menus when an options container is opened. It will be passed `nodeDom` and `optionsDom`, allowing the options block to be positioned.
 *
 * @example
 return <Editor />
@@ -69,6 +76,7 @@ class Editor extends Component {
 		this._isMounted = false;
 		this._onAction = this._onAction.bind(this);
 
+		this.optionsContainerRef = React.createRef();
 		this.schema = this.configureSchema();
 		this.pluginsObject = this.configurePlugins(this.schema);
 		this.nodeViews = this.configureNodeViews(this.schema);
@@ -147,6 +155,45 @@ class Editor extends Component {
 		this.view.focus();
 	}
 
+	configureSchema() {
+		const schemaNodes = {};
+		const schemaMarks = {};
+		if (this.props.children) {
+			React.Children.forEach(this.props.children, (child)=> {
+				if (child && child.type.schema) {
+					const { nodes, marks } = child.type.schema({
+						...child.props,
+						optionsContainerRef: this.optionsContainerRef,
+						onOptionsRender: this.props.onOptionsRender,
+					});
+					Object.keys(nodes || {}).forEach((key) => {
+						schemaNodes[key] = nodes[key];
+					});
+					Object.keys(marks || {}).forEach((key) => {
+						schemaMarks[key] = marks[key];
+					});
+				}
+			});
+		}
+		const schema = createSchema(schemaNodes, schemaMarks);
+		return schema;
+	}
+
+	configureNodeViews(schema) {
+		const nodeViews = {};
+		const nodes = schema.nodes;
+		Object.keys(nodes).forEach((nodeName) => {
+			const nodeSpec = nodes[nodeName].spec;
+			if (nodeSpec.toEditable) {
+				nodeViews[nodeName] = (node, view, getPos, decorations) => {
+					return new ReactView(node, view, getPos, decorations, this.props.isReadOnly);
+				};
+			}
+		});
+
+		return nodeViews;
+	}
+
 	configurePlugins(schema) {
 		const pluginKeys = {};
 
@@ -171,41 +218,6 @@ class Editor extends Component {
 			});
 		}
 		return { plugins, pluginKeys };
-	}
-
-	configureNodeViews(schema) {
-		const nodeViews = {};
-		const nodes = schema.nodes;
-		Object.keys(nodes).forEach((nodeName) => {
-			const nodeSpec = nodes[nodeName].spec;
-			if (nodeSpec.toEditable) {
-				nodeViews[nodeName] = (node, view, getPos, decorations) => {
-					return new ReactView(node, view, getPos, decorations, this.props.isReadOnly);
-				};
-			}
-		});
-
-		return nodeViews;
-	}
-
-	configureSchema() {
-		const schemaNodes = {};
-		const schemaMarks = {};
-		if (this.props.children) {
-			React.Children.forEach(this.props.children, (child)=> {
-				if (child && child.type.schema) {
-					const { nodes, marks } = child.type.schema(child.props);
-					Object.keys(nodes || {}).forEach((key) => {
-						schemaNodes[key] = nodes[key];
-					});
-					Object.keys(marks || {}).forEach((key) => {
-						schemaMarks[key] = marks[key];
-					});
-				}
-			});
-		}
-		const schema = createSchema(schemaNodes, schemaMarks);
-		return schema;
 	}
 
 	createEditor() {
@@ -278,8 +290,11 @@ class Editor extends Component {
 		}
 
 		const wrapperClasses = `pubpub-editor ${this.props.showHeaderLinks ? 'show-header-links' : ''}`;
+		const optionsContainerId = `${this.containerId}-options`;
 		return (
 			<div style={{ position: 'relative' }} id={this.containerId} className={this.state.collabLoading ? 'editor-loading' : ''}>
+				
+				{/* Clone all child elements and pass them important new props*/}
 				{this.state.view
 					? React.Children.map(this.props.children, (child) => {
 						if (!child) { return null; }
@@ -290,6 +305,8 @@ class Editor extends Component {
 							transaction: this.state.transaction,
 							containerId: this.containerId,
 							pluginKey: this.state.pluginKeys[child.type.pluginName],
+							optionsContainerRef: this.optionsContainerRef,
+							onOptionsRender: this.props.onOptionsRender,
 						});
 					})
 					: null
@@ -304,6 +321,7 @@ class Editor extends Component {
 					<div className="loading pt-skeleton" style={{ width: '82%', height: '1.2em', marginBottom: '1em' }} />
 				</div>
 
+				{/* If not yet mounted, render a static server-side friendly version of the content */}
 				{!this._isMounted &&
 					<div className={wrapperClasses}>
 						<div className="ProseMirror">
@@ -311,8 +329,12 @@ class Editor extends Component {
 						</div>
 					</div>
 				}
+
+				{/* Element the ProseMirror instance will be mounted into */}
 				<div ref={(elem)=> { this.editorElement = elem; }} className={wrapperClasses} />
-				<div id={`${this.containerId}-options`} />
+
+				{/* Element that options content will be mounted into */}
+				<div id={optionsContainerId} ref={this.optionsContainerRef} className="options-container" />
 			</div>
 		);
 	}

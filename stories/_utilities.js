@@ -4,10 +4,11 @@ import { awsConfig } from './_config';
 
 export const editorWrapperStyle = {
 	border: '1px solid #CCC',
-	maxWidth: '600px',
+	maxWidth: '700px',
 	minHeight: '250px',
 	cursor: 'text',
 	padding: '20px',
+	paddingRight: '200px',
 };
 
 // export const firebaseConfig = {

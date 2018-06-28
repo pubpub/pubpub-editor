@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-// import ReactDOM from 'react-dom';
-import { Portal } from 'react-portal';
 import PropTypes from 'prop-types';
+import { Portal } from 'react-portal';
 import { AnchorButton, Overlay } from '@blueprintjs/core';
 import {EditorState} from "prosemirror-state"
 import {EditorView} from "prosemirror-view"
@@ -20,7 +19,9 @@ const propTypes = {
 	isSelected: PropTypes.bool,
 	onFileUpload: PropTypes.func.isRequired,
 	updateAttrs: PropTypes.func.isRequired,
-	handleResizeUrl: PropTypes.func
+	handleResizeUrl: PropTypes.func,
+	onOptionsRender: PropTypes.func.isRequired,
+	optionsContainerRef: PropTypes.object.isRequired,
 };
 
 const defaultProps = {
@@ -38,86 +39,28 @@ class ImageEditable extends Component {
 			isResizing: false,
 			uploading: false,
 			imageBlob: null,
-			editOptionsOpen: false,
-			portalOpened: false,
 		};
 		this.randKey = Math.round(Math.random() * 99999);
-		this.onDragMouseDown = this.onDragMouseDown.bind(this);
-		this.onDragMouseUp = this.onDragMouseUp.bind(this);
-		this.onMouseMove = this.onMouseMove.bind(this);
+		// this.onDragMouseDown = this.onDragMouseDown.bind(this);
+		// this.onDragMouseUp = this.onDragMouseUp.bind(this);
+		// this.onMouseMove = this.onMouseMove.bind(this);
 		this.updateCaption = this.updateCaption.bind(this);
 		this.updateAlign = this.updateAlign.bind(this);
 		this.handleImageSelect = this.handleImageSelect.bind(this);
 		this.setBlob = this.setBlob.bind(this);
 		this.onUploadFinish = this.onUploadFinish.bind(this);
-		this.createCaptionEditor = this.createCaptionEditor.bind(this);
+		// this.createCaptionEditor = this.createCaptionEditor.bind(this);
+		this.portalRefFunc = this.portalRefFunc.bind(this);
 	}
-	// static getDerivedStateFromProps(props, state) {
-	// 	if (props.isSelected && !state.portalOpened) {
-	// 		console.log('Add portal');
-	// 		setTimeout(()=> {
-	// 			ReactDOM.render(<div>
-	// 				<input type="range" min="1" max="100" defaultValue="50" class="slider" id="myRange" onChange={((evt)=> {
-	// 					props.updateAttrs({ size: evt.target.value });
-	// 				})} />
-	// 			</div>, document.getElementById('editor-portal-spot'));
-	// 			// console.log(props.view.state.selection.from)
-	// 			const coords = props.view.coordsAtPos(props.view.state.selection.from);
-	// 			console.log(coords);
-	// 			const domAtPos = props.view.domAtPos(props.view.state.selection.from);
-	// 			console.log(domAtPos);
-	// 			const offsetCoords = domAtPos.node.getBoundingClientRect();
-	// 			const otherCoords = domAtPos.node.childNodes[domAtPos.offset].getBoundingClientRect();
-	// 			// debugger;
-	// 			console.log('scroll', window.pageYOffset);
-	// 			console.log('otherCoords', otherCoords)
-	// 			document.getElementById('editor-portal-spot').style.top = `${window.pageYOffset + otherCoords.top}px`;
-	// 		}, 1);
-	// 		return { portalOpened: true };
-	// 	}
-	// 	if (!props.isSelected && state.portalOpened) {
-	// 		console.log('Remove portal');
-	// 		// document.getElementById('editor-portal-spot').innerHTML = '';
-	// 		ReactDOM.unmountComponentAtNode(document.getElementById('editor-portal-spot'));
-	// 		return { portalOpened: false };
-	// 	}
-	// 	console.log('do nothing');
-	// 	return null;
-	// }
 
-	onDragMouseDown(evt) {
-		const handle = evt.target.className.replace('drag-handle ', '');
-		this.setState({ isResizing: handle });
-		document.addEventListener('mousemove', this.onMouseMove);
-		document.addEventListener('mouseup', this.onDragMouseUp);
-	}
-	onDragMouseUp() {
-		this.setState({ isResizing: false });
-		document.removeEventListener('mousemove', this.onMouseMove);
-		document.removeEventListener('mouseup', this.onDragMouseUp);
-	}
-	onMouseMove(evt) {
-		const imgBounding = this.imgElem.getBoundingClientRect();
-		const delta = this.state.isResizing === 'left'
-			? imgBounding.left - evt.clientX
-			: evt.clientX - imgBounding.right;
-		const maxWidth = this.rootElem.clientWidth;
-		const currentWidth = imgBounding.width;
-		const nextSize = Math.min(
-			Math.max(
-				Math.round(((currentWidth + delta) / maxWidth) * 100),
-				20
-			),
-			100
-		);
-		this.props.updateAttrs({ size: nextSize });
-	}
 	updateCaption(evt) {
 		this.props.updateAttrs({ caption: evt.target.value });
 	}
+
 	updateAlign(val) {
 		this.props.updateAttrs({ align: val });
 	}
+
 	handleImageSelect(evt) {
 		if (evt.target.files.length) {
 			this.props.onFileUpload(evt.target.files[0], ()=>{}, this.onUploadFinish, 0);
@@ -127,6 +70,7 @@ class ImageEditable extends Component {
 			this.setBlob(evt.target.files[0]);
 		}
 	}
+
 	setBlob(image) {
 		const reader = new FileReader();
 		reader.onload = (imageBlob)=> {
@@ -134,42 +78,53 @@ class ImageEditable extends Component {
 		};
 		reader.readAsDataURL(image);
 	}
+
 	onUploadFinish(evt, index, type, filename) {
 		this.setState({ uploading: false });
 		this.props.updateAttrs({ url: `https://assets.pubpub.org/${filename}` });
 	}
-	createCaptionEditor() {
-		console.log(this.props.view.state);
-		const mainSchema = this.props.view.state.config.schema;
-		const nodes = {
-			doc: mainSchema.nodes.doc.spec,
-			paragraph: mainSchema.nodes.paragraph.spec,
-			text: mainSchema.nodes.text.spec,
-		};
-		const marks = {};
-		Object.keys(mainSchema.marks).forEach((markKey)=> {
-			return marks[markKey] = mainSchema.marks[markKey].spec;
-		});
-		console.log(nodes, marks);
-		const mySchema = new Schema({
-			nodes: nodes,
-			marks: marks,
-		});
-		const wrapperElem = document.createElement('div');
-		wrapperElem.innerHTML = '<p>cat<strong>OH SNAP That </strong></p><p>Is cool</p>';
+	// createCaptionEditor() {
+	// 	console.log(this.props.view.state);
+	// 	const mainSchema = this.props.view.state.config.schema;
+	// 	const nodes = {
+	// 		doc: mainSchema.nodes.doc.spec,
+	// 		paragraph: mainSchema.nodes.paragraph.spec,
+	// 		text: mainSchema.nodes.text.spec,
+	// 	};
+	// 	const marks = {};
+	// 	Object.keys(mainSchema.marks).forEach((markKey)=> {
+	// 		return marks[markKey] = mainSchema.marks[markKey].spec;
+	// 	});
+	// 	console.log(nodes, marks);
+	// 	const mySchema = new Schema({
+	// 		nodes: nodes,
+	// 		marks: marks,
+	// 	});
+	// 	const wrapperElem = document.createElement('div');
+	// 	wrapperElem.innerHTML = '<p>cat<strong>OH SNAP That </strong></p><p>Is cool</p>';
 
-		const editorState = EditorState.create({
-			doc: DOMParser.fromSchema(mySchema).parse(wrapperElem),
-			schema: mySchema,
-			plugins: getBasePlugins({
-				schema: mySchema,
-				placeholder: 'Caption...'
-			})
-		});
-		this.editorView = new EditorView(document.getElementById('caption-editor'), {
-			state: editorState,
-		});
+	// 	const editorState = EditorState.create({
+	// 		doc: DOMParser.fromSchema(mySchema).parse(wrapperElem),
+	// 		schema: mySchema,
+	// 		plugins: getBasePlugins({
+	// 			schema: mySchema,
+	// 			placeholder: 'Caption...'
+	// 		})
+	// 	});
+	// 	this.editorView = new EditorView(document.getElementById('caption-editor'), {
+	// 		state: editorState,
+	// 	});
+	// }
+
+	portalRefFunc(ref) {
+		/* Used to call onOptioneRender so that optionsBox can be placed */
+		if (ref) {
+			const domAtPos = this.props.view.domAtPos(this.props.view.state.selection.from);
+			const nodeDom = domAtPos.node.childNodes[domAtPos.offset];
+			this.props.onOptionsRender(nodeDom, this.props.optionsContainerRef.current);
+		}
 	}
+
 	render() {
 		const alignOptions = [
 			{ key: 'left', icon: 'pt-icon-align-left' },
@@ -177,30 +132,30 @@ class ImageEditable extends Component {
 			{ key: 'right', icon: 'pt-icon-align-right' },
 			{ key: 'full', icon: 'pt-icon-vertical-distribution' },
 		];
-		const figFloat = this.props.align === 'left' || this.props.align === 'right' ? this.props.align : 'none';
+		
+		const imageUrl = this.props.url && this.props.handleResizeUrl
+			? this.props.handleResizeUrl(this.props.url)
+			: this.props.url;
+		const figFloat = this.props.align === 'left' || this.props.align === 'right'
+			? this.props.align
+			: 'none';
 		let figMargin = '0em auto 1em';
 		if (this.props.align === 'left') { figMargin = '1em 1em 1em 0px'; }
 		if (this.props.align === 'right') { figMargin = '1em 0px 1em 1em'; }
-		const figWidth = this.props.align === 'full' ? '100%' : `${this.props.size}%`;
+		const figWidth = this.props.align === 'full'
+			? '100%'
+			: `${this.props.size}%`;
 		const figStyle = {
 			width: figWidth,
 			margin: figMargin,
 			float: figFloat,
 		};
 
-		const imageUrl = this.props.url && this.props.handleResizeUrl ? this.props.handleResizeUrl(this.props.url) : this.props.url;
 		return (
-			<div className={'figure-wrapper'} ref={(rootElem)=> { this.rootElem = rootElem; }}>
-				<figure className={`image ${this.props.isSelected ? 'isSelected' : ''}`} style={figStyle} onDoubleClick={()=> { this.setState({ editOptionsOpen: true })}}>
-					{/*this.props.isSelected && this.props.url && this.props.align !== 'full' &&
-						<div>
-							<div className={'drag-handle left'} onMouseDown={this.onDragMouseDown} role={'button'} tabIndex={-1} />
-							<div className={'drag-handle right'} onMouseDown={this.onDragMouseDown} role={'button'} tabIndex={-1} />
-						</div>
-					*/}
+			<div className={'figure-wrapper'}>
+				<figure className={`image ${this.props.isSelected ? 'isSelected' : ''}`} style={figStyle}>
 					{this.props.url &&
 						<img
-							ref={(imgElem)=> { this.imgElem = imgElem; }}
 							src={this.state.imageBlob || imageUrl}
 							alt={this.props.caption}
 							style={{ opacity: this.state.uploading ? 0 : 1 }}
@@ -223,11 +178,6 @@ class ImageEditable extends Component {
 							/>
 						</label>
 					}
-					{/*!this.props.isSelected &&
-						<figcaption>
-							{this.props.caption}
-						</figcaption>
-					*/}
 					<figcaption>
 						{this.props.caption}
 					</figcaption>
@@ -272,23 +222,26 @@ class ImageEditable extends Component {
 							/>
 						</div>
 					*/}
-					{this.props.isSelected && this.props.url &&
+					{/*this.props.isSelected && this.props.url &&
 						// <div className="new-option-menu">
 						<div className={'options-wrapper'}>
 							<button className="pt-button pt-minimal" onClick={()=> { this.setState({ editOptionsOpen: true })}}>Edit</button>
 						</div>
-					}
+					*/}
 				</figure>
 				{this.props.isSelected &&
-					<Portal ref={(ref)=> { console.log('ref is', ref); }} node={document.getElementById('editor-portal-spot')}>
-						<div>
+					<Portal 
+						ref={this.portalRefFunc} 
+						node={this.props.optionsContainerRef.current}
+					>
+						<div className="options-box">
 							<input type="range" min="1" max="100" defaultValue="50"  onChange={((evt)=> {
 								this.props.updateAttrs({ size: evt.target.value });
 							})} />
 						</div>
 					</Portal>
 				}
-				<Overlay
+				{/*<Overlay
 					isOpen={this.state.editOptionsOpen}
 					onClose={()=> { this.setState({ editOptionsOpen: false }); }}
 				>
@@ -309,7 +262,7 @@ class ImageEditable extends Component {
 							this.props.view.focus();
 						}}>Save</button>
 					</div>
-				</Overlay>
+				</Overlay>*/}
 			</div>
 		);
 	}

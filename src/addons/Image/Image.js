@@ -7,11 +7,15 @@ const propTypes = {
 	handleFileUpload: PropTypes.func,
 	handleResizeUrl: PropTypes.func, // Should take a url and return a url to a resized image
 	linkToSrc: PropTypes.bool,
+	onOptionsRender: PropTypes.func,
+	optionsContainerRef: PropTypes.object,
 };
 const defaultProps = {
 	handleFileUpload: ()=>{},
 	handleResizeUrl: undefined,
 	linkToSrc: false,
+	onOptionsRender: ()=>{},
+	optionsContainerRef: {},
 };
 
 /**
@@ -93,6 +97,8 @@ class Image extends Component {
 								{...helperFunctions}
 								onFileUpload={props.handleFileUpload}
 								handleResizeUrl={props.handleResizeUrl}
+								onOptionsRender={props.onOptionsRender}
+								optionsContainerRef={props.optionsContainerRef}
 							/>
 						);
 					},
