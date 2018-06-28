@@ -39,6 +39,11 @@
 			display: none;
 		}
 	}
+	.source-url {
+		text-overflow: ellipsis;
+		width: 100%;
+		overflow: hidden;
+	}
 }
 
 @media only screen and (max-width: 720px) {  /* 45em or 720px */

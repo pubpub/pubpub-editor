@@ -203,7 +203,7 @@ class ImageEditable extends Component {
 							<label className="form-label">
 								Source
 							</label>
-							<div>
+							<div className="source-url">
 								<a href={this.props.url}  target="_blank" rel="noopener noreferrer">
 									{this.props.url}
 								</a>

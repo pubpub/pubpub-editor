@@ -35,7 +35,7 @@ const doc = {
 		{
 			type: 'image',
 			attrs: {
-				url: 'https://i.imgur.com/4jIx7oE.gif',
+				url: 'https://assets.pubpub.org/_testing/41517872250621.png',
 				caption: 'Hello there!',
 			},
 		},
