@@ -152,9 +152,10 @@ class ImageEditable extends Component {
 						node={this.props.optionsContainerRef.current}
 					>
 						<div className="options-box">
+							<div className="options-title">Image Details</div>
 							{/* Image Size Adjustment */}
 							<label className="form-label">
-								Image Size
+								Size
 							</label>
 							<Slider
 								min={25}
@@ -171,9 +172,9 @@ class ImageEditable extends Component {
 							
 							{/* Image Alignment Adjustment */}
 							<label className="form-label">
-								Image Alignment
+								Alignment
 							</label>
-							<div className={'pt-button-group pt-minimal'}>
+							<div className={'pt-button-group pt-fill'}>
 								{alignOptions.map((item)=> {
 									return (
 										<button
