@@ -22,7 +22,6 @@ const defaultProps = {
 	isReadOnly: false,
 };
 
-
 /**
  * @module Components
  */

@@ -212,7 +212,7 @@ const marks = {
 		parseDOM: [
 			{
 				tag: 'a[href]',
-				getAttrs(dom) {
+				getAttrs: (dom)=> {
 					return {
 						href: dom.getAttribute('href'),
 						title: dom.getAttribute('title'),

@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 import { Editor } from 'index';
 import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
 import Collaborative from 'addons/Collaborative/Collaborative';
-import TrackChanges from 'addons/TrackChanges/TrackChangesAddon';
+import TrackChanges from 'addons/TrackChanges/TrackChanges';
 import Latex from 'addons/Latex/Latex';
 import Image from 'addons/Image/Image';
 import InsertMenu from 'addons/InsertMenu/InsertMenu';

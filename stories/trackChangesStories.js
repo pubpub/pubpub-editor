@@ -1,25 +1,47 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { storiesOf } from '@storybook/react';
 import { Editor } from 'index';
-import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
-import TrackChanges from 'addons/TrackChanges/TrackChangesAddon';
-import Latex from 'addons/Latex/Latex';
-import Image from 'addons/Image/Image';
-import InsertMenu from 'addons/InsertMenu/InsertMenu';
-import { editorWrapperStyle, s3Upload, renderLatex } from './_utilities';
-import initialContent from './initialDocs/imageDoc';
+import TrackChanges from 'addons/TrackChanges/TrackChanges';
+import { editorWrapperStyle } from './_utilities';
+import plainDoc from './initialDocs/plainDoc';
+
+let isActive = true;
 
 storiesOf('TrackChanges', module)
 .add('default', () => (
-	<div style={editorWrapperStyle}>
-		<Editor
-			initialContent={initialContent}
-		>
-			<FormattingMenu />
-			<InsertMenu />
-			<TrackChanges />
-			<Latex renderFunction={renderLatex} />
-			<Image handleFileUpload={s3Upload} />
-		</Editor>
-	</div>
+	<Wrapper />
 ));
+
+class Wrapper extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			isActive: true,
+			userId: String(Math.floor(Math.random() * 50)),
+		};
+	}
+
+	render() {
+		return (
+			<div style={editorWrapperStyle}>
+				<button
+					className="pt-button"
+					onClick={()=> {
+						this.setState({ isActive: !this.state.isActive });
+					}}
+				>
+					Toggle Active (currently {String(this.state.isActive)})
+				</button>
+				<Editor
+					placeholder="Begin writing..."
+					initialContent={plainDoc}
+				>
+					<TrackChanges
+						isActive={()=> { return this.state.isActive; }}
+						userId={this.state.userId}
+					/>
+				</Editor>
+			</div>
+		);
+	}
+}

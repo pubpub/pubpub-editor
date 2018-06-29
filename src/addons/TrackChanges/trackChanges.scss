@@ -1,8 +1,12 @@
-.diff-marker.added {
-		background-color: rgba(50,255,50,0.3);
+ins {
+	// background-color: rgba(50,255,50,0.1);
+	background: rgba(83, 183, 83, 0.25);
+	text-decoration: none;
 }
 
-.diff-marker.removed {
-		background-color: rgba(255,50,50,0.3);
-		text-decoration: line-through;
+del {
+	// background-color: rgba(255,50,50,0.3);
+	background: rgba(226, 61, 61, 0.25);
+	text-decoration: line-through;
+	// text-decoration-color: red;
 }

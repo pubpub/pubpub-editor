@@ -1,324 +1,275 @@
-import { AddMarkStep, ReplaceAroundStep, ReplaceStep, canJoin, insertPoint, joinPoint, replaceStep } from 'prosemirror-transform';
-import { Decoration, DecorationSet } from "prosemirror-view";
-import { Fragment, Node, NodeRange, Slice } from 'prosemirror-model';
-import { Mapping, Step, StepMap, findWrapping } from 'prosemirror-transform';
+import { Plugin, Selection } from 'prosemirror-state';
+import { ChangeSet } from 'prosemirror-changeset';
 
-import { CommitTracker } from './CommitTracker';
-import { Plugin } from 'prosemirror-state';
-import { Selection } from 'prosemirror-state';
+// Track formatting
+// Track new lines
+// Track nodes
+// Restore initial state. If the invert function is equivalent to null - then remove
+// Maybe I need to be calling changeset on the stored inverted steps.
 
-/*
-  if you only store deletions in a map, then inevitably it will be removeD?
-  instead store deletions to remove after a certain map?
-  e.g. store at POS 34, remove 4. at pos 40, remove 5
-  How to represent deleted items? Can't use widgets because of removal
-*/
+// I need to get all marks at the position, and add them to a changeset, and then go.
 
-// need to store an array of steps that recreate the original document
-// need to store mappings that remove additions
+// Given a thing, we want to look at all the marks, calculate the net-total mark
+// and then apply that. That is what changeset helps us do
 
-// keep a track of commits
-// check if the new commit is not near the others
-// otherwise, keep grouping until it happens
+class TrackChangesPlugin extends Plugin {
+	constructor({ pluginKey, isActive, usersData, userId }) {
+		super({ key: pluginKey });
+		this.spec = {
+			appendTransaction: (transactions, oldState, newState)=> {
+				if (!isActive()) {
+					console.log(transactions);
+					// return null;
+					const removeMarksTransaction = newState.tr;
+					transactions.forEach((transaction)=> {
+						transaction.steps.forEach((step)=> {
+							removeMarksTransaction.removeMark(step.from, step.from + step.slice.content.size, newState.schema.marks.insertion);
+							removeMarksTransaction.removeMark(step.from, step.from + step.slice.content.size, newState.schema.marks.deletion);
+						});
+					});
+					return removeMarksTransaction;
+				}
+				console.log(transactions)
+				const newTransaction2 = newState.tr;
+				transactions.filter((transaction)=> {
+					// Don't apply insertions/deletions if the transaction is a history$ item
+					return !transaction.meta.history$;
+				}).forEach((transaction)=> {
+					transaction.steps.forEach((step)=> {
+						console.log(step);
+						const isInsert = step.from === step.to;
+						const isReplace = step.jsonID = 'replace';
+						if (isInsert && isReplace) {
+							console.log('insert');
+							newTransaction2.addMark(
+								step.from,
+								step.from + step.slice.size,
+								newState.schema.marks.insertion.create({ userId: userId })
+							);
+						} else if (isReplace) {
+							console.log('deletion');
+							console.log('to marks', transaction.selection.$to.marks());
+							console.log('from marks', transaction.selection.$from.marks());
+							console.log('marks across', transaction.selection.$from.marksAcross(transaction.selection.$to));
+
+							const invertedStep2 = step.invert(oldState.doc);
+							newTransaction2.step(invertedStep2);
+							newTransaction2.addMark(
+								step.from,
+								step.to,
+								newState.schema.marks.deletion.create({ userId: userId })
+							);
+
+							console.log(newTransaction2);
+							// debugger;
+
+							/* Check if any of the content we just deleted was actually our own */
+							/* and if so, remove */
+							newTransaction2.steps.forEach((thisStep)=> {
+								if (thisStep.jsonID === 'replace') {
+									// Does slice.content.content always exist?
+									// Test with pure deletion
+									let runningOffset = 0;
+									thisStep.slice.content.content.forEach((node)=> {
+										if (node.type.name === 'text') {
+											const hasInsertionMark = node.marks.reduce((prev, curr)=> {
+												if (curr.type.name === 'insertion') {
+													// && curr.attrs.userId = myUserId
+													return true;
+												}
+												return prev;
+											}, false);
+											if (hasInsertionMark) {
+												console.log(thisStep.from, runningOffset, node.nodeSize);
+												// Can deleteRange be more useful here?
+												newTransaction2.setSelection(new Selection(newTransaction2.doc.resolve(thisStep.from + runningOffset), newTransaction2.doc.resolve(thisStep.from + runningOffset + node.nodeSize)));
+												newTransaction2.deleteSelection();
+											} else {
+												runningOffset += node.nodeSize;
+											}
+										}
+									});
+								}
+							});
 
 
-// keep a mapping of all steps/domains?
-function isAdjacentToLastStep(step, prevMap) {
-  if (!prevMap) return false
-  let firstMap = step.getMap(), adjacent = false
-  if (!firstMap) return true
-  firstMap.forEach((start, end) => {
-    prevMap.forEach((_start, _end, rStart, rEnd) => {
-      if (start <= rEnd && end >= rStart) adjacent = true
-    })
-    return false
-  })
-  return adjacent
+							// When it's fn-delete, they all stay the same
+							// When its delete, new is one less
+							// when it's double click,, select ltr new state is to the left
+							console.log(oldState.selection.to, oldState.selection.from, newState.selection.to, newState.selection.from, )
+							const hasInsertion = step.slice.size;
+							/* Inverting the step causes the cursor to jump. We want to */
+							/* correct this in all situations except when forward-delete is used */
+							console.log('content', oldState.selection.content());
+							if (oldState.selection.to !== newState.selection.to && !hasInsertion) {
+								newTransaction2.setSelection(newState.selection);
+							}
+							
+							/* If there is an insertion with the replaceStep, add that slice back in */
+							if (hasInsertion) {
+								newTransaction2.replaceSelection(step.slice);
+								newTransaction2.addMark(
+									oldState.selection.to,
+									oldState.selection.to + step.slice.size,
+									newState.schema.marks.insertion.create({ userId: userId })
+								);
+							}
+
+						}
+					});
+				});
+
+				/*
+				Inserts:
+					On accept, remove mark.
+					On reject, make selection on mark, removeSelection.
+				Deletes:
+					On accept, make selection on mark, removeSelection.
+					on reject, remove mark.
+				*/
+				
+				// Handle overwriting
+				// If you're in a deletion mark, don't add the insert
+				// If the whole thing is in a insert mark, don't invert
+				return newTransaction2;
+
+
+				/*
+				For each transaction
+				get the marks at the curent position
+				from each mark, take data.genesisStep
+				Create changeset
+				Add genesis steps
+				Add steps from transaction
+				Remove all marks
+				Add marks according to changeset
+	
+				*/
+				// How do we tell which steps go with which marks? So we can invert?
+				// How do we compute genesisStep, using combine. The data we add when we addStep included the stepJSON
+				// How do we tell whether the marks are to the left or right? Maybe changeset does that?
+				// Which doc do we begin creating the changeset from?
+				//		Does it make sense to just do the above on the inversions? Would
+				// 		that let us get away with using newDoc only?
+				// 		If the two inversions cancel out - isn't that enough?
+				// We can cancel insertion - but not cancel deletions? 
+				// Replace selections that aren't an empty selection might need to be treated specially
+				// Marks are just a way to keep track of stepchanges. Marks always represent the change to be made on accept/reject.
+				// But then I'll have to map the marks?
+				// Can't the marks just be the representation of the change themselves?
+
+
+				// For each step
+
+
+				// console.log(transactions);
+				// console.log('oldState', oldState);
+				console.log('newState', newState);
+
+
+				// const nodeAtCurrentPos = newState.doc.nodeAt()
+				let changeSet = ChangeSet.create(oldState.doc, {
+					compare: (a, b)=> {
+						console.log('compare', a, b);
+						return a.userId === b.userId;
+					},
+					combine: (a, b)=> {
+						console.log('combine', a, b);
+						// I think combine will at some point have to merge steps
+						// So that the invert step is functional
+						// You add some content.
+						// Then add in the middle.
+						// You need to invert to remove the whole thing
+						// We'll pull the step from the a.invertJson
+						// and do Step.fromJson(a.invertJson).merge(Step(fromJson(b.invertJson)))
+
+						return a;
+					}
+				});
+				let invertedStep;
+				// const newUserId = Math.random() < 0.1 ? userId + 1 : userId ;
+				const newTransaction = newState.tr;
+				transactions.filter((transaction)=> {
+					// Don't apply insertions/deletions if the transaction is a history$ item
+					return !transaction.meta.history$;
+				}).forEach((transaction)=> {
+					console.log(transaction);
+					changeSet = changeSet.addSteps(
+						transaction.doc,
+						transaction.mapping.maps,
+						{ userId: userId }
+					);
+					const mergedStep = transaction.steps.reduce((prev, curr)=> {
+						// invertedSteps.push(step.invert(oldState.doc)));
+						if (!prev) { return curr; }
+						return prev.merge(curr);
+					}, undefined);
+					transaction.steps.forEach((step)=> {
+						if (step.jsonID === 'addMark') {
+							console.log('here');
+							newTransaction.addMark(
+								step.from,
+								step.to,
+								newState.schema.marks.insertion.create({ userId: userId })
+							);
+						}
+						if (step.jsonID === 'removeMark') {
+							newTransaction.addMark(
+								step.from,
+								step.to,
+								newState.schema.marks.deletion.create({ userId: userId })
+							);
+						}
+					});
+					if (mergedStep) {
+						invertedStep = mergedStep.invert(oldState.doc);
+					}
+				});
+
+				console.log(changeSet);
+				// console.log('invertedStep', invertedStep);
+
+				// console.log(oldState.selection.to, newState.selection.to);
+				// invertedStep.apply(newState.doc);
+
+				// We produce two 'reject' steps to store.
+				// One that is based off of the mergedStep for insert rejects.
+				// And one that is based off of invertedStep for deletion rejects
+
+				
+				changeSet.inserted.forEach((insertion)=> {
+					newTransaction.addMark(
+						insertion.from,
+						insertion.to,
+						newState.schema.marks.insertion.create({ userId: insertion.data.userId })
+					);
+				});
+				// console.log(invertedStep.invert(oldState.doc).toJSON());
+				// const doubleInverted = invertedStep.invert(oldState.doc);
+				if (invertedStep && changeSet.deleted.length && !changeSet.inserted.length) {
+					newTransaction.step(invertedStep);
+					/* Applying the inverting step causes the cursor to jump to the end */
+					/* causing a bug when using the delete key. So, set the selection */
+					/* to what it was at the point of newState */
+					// This isn't quite right yet. Selections with delete still wind up being funky
+					if (oldState.selection.to - newState.selection.to === 1) {
+						newTransaction.setSelection(newState.selection);
+					}
+				}
+				changeSet.deleted.forEach((deletion)=> {
+					newTransaction.addMark(
+						deletion.from,
+						deletion.to,
+						newState.schema.marks.deletion.create({ userId: deletion.data.userId })
+					);
+				});
+
+				// const marksAtTo = newTransaction.selection.$to.marks();
+				// marksAtTo.forEach
+				return newTransaction;
+			}
+		};
+	}
 }
 
-
-// commitUUID
-// UUIDs enable easy tracking of commits
-/*
-
-  - how to make the current commit a combination of all steps?
-  - make current commit store last key?
-  - do not display last key until it's been officially committed?
-  - assumes linearity
-  - cannot assume user will easily discard?
-  -
-  - store last key in a commit, keep arrays of commits by user?
-  - why does description not work?
-
-*/
-// how to update stored steps?
-const createTrackPlugin = (trackKey, getPlugin) => {
-
-
-  return new Plugin({
-    state: {
-      init(config, instance) {
-        this.storedSteps = [];
-        this.sendableSteps = [];
-        this.stepOffsets = [];
-        this.sendableOffsets = [];
-
-        this.transactions = {};
-
-        this.tracker = new CommitTracker(this, getPlugin);
-
-        this.storeStep = (step) => {
-          this.tracker.add(step);
-          if (step.slice && step.slice.content) {
-            for (const stepContent of step.slice.content.content) {
-              const marks = stepContent.marks;
-              const diffPlusMark = this.view.state.schema.marks['diff_plus'];
-              const diffMinusMark = this.view.state.schema.marks['diff_minus'];
-              stepContent.marks = diffMinusMark.removeFromSet(diffPlusMark.removeFromSet(marks));
-            }
-          }
-          this.storedSteps.push(step);
-          this.sendableSteps.push(step);
-        };
-
-
-        this.storeOffset = (stepOffset) => {
-          this.stepOffsets.push(stepOffset);
-          this.sendableOffsets.push(stepOffset);
-        };
-
-        this.getSendableSteps = () => {
-          const steps = this.sendableSteps;
-          const offsets = this.sendableOffsets;
-
-          this.sendableSteps = [];
-          this.sendableOffsets = [];
-
-          if (steps.length > 0 || offsets.length > 0) {
-            return { steps, offsets };
-          }
-          return null;
-        };
-
-        return {
-          deco: DecorationSet.empty, commit: null
-        };
-      },
-      apply(transaction, state, prevEditorState, editorState) {
-
-        return state;
-      }
-    },
-    appendTransaction: function (transactions, oldState, newState) {
-      const firstTransaction = transactions[0];
-      if (!firstTransaction || transactions.length > 1) {
-        return;
-      }
-      let transaction = firstTransaction;
-
-      if (transaction.getMeta("trackAddition") || transaction.getMeta("backdelete") || transaction.getMeta('history$') || transaction.getMeta('collab$')) {
-        return;
-      }
-
-      const schema = newState.schema;
-
-      if (transaction.mapping && transaction.mapping.maps.length > 0) {
-        const sel = newState.selection;
-        const pos = sel.$from;
-
-
-        /*
-          For each step in the transaction, adjust the positions of the steps
-          according to the step offsets stored. Step offsets store additions to the document
-          mainly deletions
-        */
-        for (const step of transaction.steps) {
-          let mappedStep = step;
-          let totalOffset = 0;
-
-          for (const stepOffset of this.stepOffsets) {
-            if (mappedStep.from > stepOffset.index) {
-              totalOffset = totalOffset + stepOffset.size;
-            }
-          }
-
-          const offsetMap = StepMap.offset(totalOffset * -1)
-          mappedStep = mappedStep.map(offsetMap);
-          this.storeStep(mappedStep);
-        }
-
-        if (!pos.parent || !pos.parent.nodeType || pos.parent.nodeType.name !== 'diff') {
-
-          let tr = newState.tr;
-
-          const mappings = transaction.mapping.maps;
-
-          for (const step of transaction.steps) {
-            const map = step.getMap();
-
-            if (step instanceof AddMarkStep || step instanceof ReplaceAroundStep) {
-              tr = tr.addMark(step.from, step.to, schema.mark('diff_plus', { commitID: this.tracker.uuid }));
-              tr.setMeta("trackAddition", true);
-              continue;
-            }
-
-            if (!step.slice) {
-              continue;
-            }
-
-            const slice = step.slice.content;
-
-
-            map.forEach((oldStart, oldEnd, newStart, newEnd) => {
-
-              if (oldStart !== oldEnd) {
-                const inverse = step.invert(oldState.doc);
-                /*
-                This checks if it is a 'space operation' that prosemirror does, i.e. it will sometimes replace a space with a space and the character you just typed.
-                */
-                let isSpaceOperation = false;
-
-                const replacedFragment = step.slice.content;
-                const oldFragment = inverse.slice.content;
-                const fragmentIsText = function(fragment) {
-                  return (fragment.content && fragment.content.length === 1 && fragment.content[0].isText === true);
-                }
-
-                if (fragmentIsText(replacedFragment) && fragmentIsText(oldFragment)) {
-                  const replacedNodeText = replacedFragment.content[0].text;
-                  const oldNodeText = oldFragment.content[0].text;
-                  if (oldNodeText.charAt(0).trim() == '' && replacedNodeText.length === 2 && replacedNodeText.charAt(0).trim() == '') {
-                    isSpaceOperation = true;
-                  }
-                }
-
-                if (isSpaceOperation) {
-                  tr = tr.addMark(newStart, newEnd, schema.mark('diff_plus', { commitID: this.tracker.uuid  }));
-                  return;
-                }
-
-
-                tr = tr.step(inverse);
-                const slice = step.slice.content;
-                const possibleInsert = tr.mapping.map(newEnd, 1);
-
-                if (step.slice.size > 0) {
-                  const insertstep = replaceStep(oldState.doc, possibleInsert, possibleInsert, (step.slice.size > 0) ? step.slice : Slice.empty);
-                  const newOffset = { index: oldEnd, size: inverse.slice.size };
-                  this.stepOffsets.push(newOffset);
-                  this.storeOffset(newOffset);
-                  try {
-                    tr = tr.step(insertstep);
-                  } catch (err) {
-                    console.log('cannot do this!', insertstep, step);
-                    console.log(err);
-                  }
-                  tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', { commitID: this.tracker.uuid  }));
-                  const insertStart = tr.mapping.map(newEnd, -1);
-                  const insertEnd = tr.mapping.map(newEnd, 1);
-                  tr = tr.addMark(insertStart, insertEnd, schema.mark('diff_plus', { commitID: this.tracker.uuid  }));
-                } else {
-                  const insertStart = tr.mapping.map(newEnd, -1);
-                  const insertEnd = tr.mapping.map(newEnd, 1);
-                  tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', { commitID: this.tracker.uuid  }));
-                  const newOffset = { index: oldEnd, size: inverse.slice.size };
-                  this.stepOffsets.push(newOffset);
-                  this.storeOffset(newOffset);
-                  // tr = tr.addMark(insertStart, insertEnd, schema.mark('diff_plus', { commitID: this.commitID }));
-                }
-                /*
-                let i;
-                let lastRange = null;
-                for (i = oldStart; i <= oldEnd; i++) {
-                  const incrementPos = tr.doc.resolve(oldStart);
-                  const incrementPos = tr.doc.resolve(oldStart);
-                }
-                */
-                // tr = tr.addMark(oldStart, oldEnd, schema.mark('diff_minus', {}));
-
-                tr.setMeta("backdelete", true);
-                tr.setMeta("trackAddition", true);
-              //  transaction.setMeta('appendedTransaction', true);
-
-              } else {
-                tr = tr.addMark(newStart, newEnd, schema.mark('diff_plus', { commitID: this.tracker.uuid  }));
-                tr.setMeta("trackAddition", true);
-                tr.setStoredMarks(schema.mark('diff_plus', { commitID: this.tracker.uuid  }));
-              }
-
-
-            });
-          }
-
-          return tr;
-        }
-        return null;
-      }
-      return null;
-    },
-    view: function(_view) {
-      const plugin = this.key.get(_view.state);
-      plugin.view = _view;
-      return {
-        update: (newView, prevState) => {
-          plugin.view = newView;
-        },
-        destroy: () => {
-          plugin.view = null;
-        }
-      }
-    },
-    key: trackKey,
-    props: {
-      updateCommits: function(commits) {
-        this.commits = commits;
-      },
-      updateCommitID: function(commitID) {
-        this.commitID = commitID;
-      },
-      getTrackedSteps: function() {
-        return this.storedSteps;
-      },
-      handleKeyDown: function (view, event) {
-        if (event.code === 'Backspace') {
-          const sel = view.state.selection;
-          const pos = sel.$from;
-          let tr = view.state.tr;
-          // what if they delete a region??
-          const beforeSel = Selection.findFrom(view.state.doc.resolve(sel.from - 1), -1, true);
-          const marks = beforeSel.$from.marks();
-          const hasDiff = marks.find((mark) => {
-            return (mark.type.name === 'diff_plus');
-          });
-          const deleteStep = replaceStep(tr.doc, beforeSel.from, sel.from, Slice.empty);
-          if (hasDiff) {
-            // need to actually delete it but then avoid random deletions
-            this.storeStep(deleteStep);
-            tr.step(deleteStep);
-            tr.setMeta('backdelete', true);
-            view.dispatch(tr);
-            return true;
-          }
-          // is this step size always 1??
-          const newOffset = { index: beforeSel.from, size: 1 };
-          this.storeStep(deleteStep);
-          this.stepOffsets.push(newOffset);
-          this.storeOffset(newOffset);
-
-          tr = tr.addMark(beforeSel.from, sel.from, view.state.schema.mark('diff_minus', { commitID: this.tracker.uuid }));
-          tr = tr.setSelection(beforeSel);
-          tr.setMeta('backdelete', true);
-          tr.setMeta('trackAddition', true);
-          //tr.setMeta('appendedTransaction', true);
-
-          view.dispatch(tr);
-
-          return true;
-        }
-      },
-
-    }
-  });
-}
-
-export default createTrackPlugin;
+export default TrackChangesPlugin;

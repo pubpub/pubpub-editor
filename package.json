@@ -26,6 +26,7 @@
     "fuzzysearch": "^1.0.3",
     "katex": "^0.9.0",
     "linkifyjs": "^2.1.6",
+    "prosemirror-changeset": "^1.0.3",
     "prosemirror-collab": "^1.0.0",
     "prosemirror-commands": "^1.0.7",
     "prosemirror-compress": "0.0.2",
