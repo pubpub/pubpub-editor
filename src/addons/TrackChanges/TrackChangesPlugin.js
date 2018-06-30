@@ -1,11 +1,14 @@
 import { Plugin } from 'prosemirror-state';
+import { Decoration, DecorationSet } from 'prosemirror-view';
 
 // DONE: Track formatting
 // Track new lines
 // Track nodes
 // DONE: Restore initial state. If the invert function is equivalent to null - then remove
 // NOPE: Maybe I need to be calling changeset on the stored inverted steps.
-// blockquote error - when trying to use > to generate a block, same for bullet list
+// DONE: blockquote error - when trying to use > to generate a block, same for bullet list
+// DONE: Can't delete a bullet list item in suggest changes mode
+// Can't delete a new paragraph you made in track changes
 
 /*
 Replace Inserts:
@@ -29,6 +32,11 @@ class TrackChangesPlugin extends Plugin {
 			appendTransaction: (transactions, oldState, newState)=> {
 				const insertionMarkType = newState.schema.marks.insertion;
 				const deletionMarkType = newState.schema.marks.deletion;
+				const inputRulesPluginKey = newState.plugins.reduce((prev, curr)=> {
+					if (curr.spec.isInputRules) { return curr.key; }
+					return prev;
+				}, undefined);
+
 				if (!isActive()) {
 					/* If trackChanges if off, we need to make sure that */
 					/* changes made inside changeMarks don't inherit the mark */
@@ -54,13 +62,17 @@ class TrackChangesPlugin extends Plugin {
 				transactions.filter((transaction)=> {
 					/* Don't apply insertions/deletions if */
 					/* the transaction is a history$ item */
-					return !transaction.meta.history$;
+					const isHistory = transaction.meta.history$;
+					return !isHistory;
 				}).forEach((transaction)=> {
+					const isInputRulesPlugin = transaction.meta[inputRulesPluginKey];
 					transaction.steps.forEach((step)=> {
+						console.log(step);
 						const isInsert = step.from === step.to;
 						const isReplace = step.jsonID === 'replace';
 						const isAddMark = step.jsonID === 'addMark';
 						const isRemoveMark = step.jsonID === 'removeMark';
+						const isReplaceAround = step.jsonID === 'replaceAround';
 						if (isInsert && isReplace) {
 							/* If we're inserting content, wrap it in add mark */
 							/* and make sure it does not have a deletion mark */
@@ -74,7 +86,7 @@ class TrackChangesPlugin extends Plugin {
 								step.from + step.slice.size,
 								deletionMarkType
 							);
-						} else if (isReplace) {
+						} else if (isReplace && !isInputRulesPlugin) {
 							/* If we are deleting content... */
 							/* First invert the step to 'undo' the change */
 							/* and then apply the deletion marker */
@@ -208,11 +220,50 @@ class TrackChangesPlugin extends Plugin {
 									return true;
 								}
 							);
+						} else if (isReplaceAround) {
+							console.log('Ya we replace around!');
+							// It seems for these we want to use decorations to style the nodes.
+							// we can pass some data through attrs that are applied on each node?
+							// Currently this is in schema setup - can we do this in this plugin?
+							// Need to find a better way to do appendMetaAttr
+							// How do we detect when a paragraph is split?
+							// transaction.doc.forEach((node, offset)=> {
+							// 	console.log(offset);
+							// 	newTransaction.setNodeMarkup(offset, null, { ...node.attrs, class: 'cat', trackChangesData: { userId: userId } }, []);
+							// });
+							const newNode = newTransaction.doc.nodeAt(step.from);
+							console.log('newNode', newNode);
+							newTransaction.setNodeMarkup(step.from, null, { ...newNode.attrs, trackChangesData: { userId: userId } }, []);
+							// transaction.doc.nodesBetween(
+							// 	step.from,
+							// 	step.to,
+							// 	(node, nodePos)=> {
+							// 		newTransaction.setNodeMarkup(nodePos, null, node.attrs, []);
+							// 		return false;
+							// 	},
+							// );
 						}
 					});
 				});
 
 				return newTransaction;
+			}
+		};
+		this.props = {
+			decorations: (editorState)=> {
+				const decorations = [];
+				editorState.doc.forEach((node, offset)=> {
+					console.log(node.attrs);
+					if (node.attrs.trackChangesData.userId) {
+						const decoration = Decoration.node(
+							offset,
+							offset + node.nodeSize,
+							{ class: 'wow' }
+						);
+						decorations.push(decoration);
+					}
+				});
+				return DecorationSet.create(editorState.doc, decorations);
 			}
 		};
 	}

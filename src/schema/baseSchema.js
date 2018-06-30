@@ -1,7 +1,6 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
 
-const nodes = {
+export const nodes = {
 	doc: {
 		content: 'block+',
 		attrs: {
@@ -24,7 +23,9 @@ const nodes = {
 				}
 			}
 		],
-		toDOM(node) { return ['p', node.attrs, 0]; },
+		toDOM(node) {
+			return ['p', { class: node.attrs.class }, 0]; 
+		},
 		toStatic(node, children) {
 			const attrs = {};
 			if (node.attrs && node.attrs.class) { attrs.className = node.attrs.class; }
@@ -173,7 +174,7 @@ const nodes = {
 	},
 };
 
-const marks = {
+export const marks = {
 	em: {
 		parseDOM: [
 			{ tag: 'i' },
@@ -263,7 +264,3 @@ const marks = {
 		}
 	}
 };
-
-
-exports.marks = marks;
-exports.nodes = nodes;

@@ -1,16 +1,27 @@
 import { Schema } from 'prosemirror-model';
 import { marks, nodes } from './baseSchema';
 
-const baseSchema = new Schema({
-	nodes: nodes,
-	marks: marks,
-	topNode: 'doc'
-});
+const appendMetaAttr = (nodesObject)=> {
+	const newNodes = {};
+	Object.keys(nodesObject).forEach((nodeKey)=> {
+		if (nodeKey === 'text') {
+			newNodes[nodeKey] = nodesObject[nodeKey];
+		} else {
+			newNodes[nodeKey] = {
+				...nodesObject[nodeKey],
+				attrs: {
+					...nodesObject[nodeKey].attrs,
+					trackChangesData: { default: {} },
+				}
+			};
+		}
+	});
+	return newNodes;
+};
 
-const schemaNodes = baseSchema.spec.nodes;
 export default (addonNodes, addonMarks) => {
 	return new Schema({
-		nodes: schemaNodes.append(addonNodes),
+		nodes: appendMetaAttr({ ...nodes, ...addonNodes }),
 		marks: { ...marks, ...addonMarks },
 		topNode: 'doc'
 	});

@@ -1,3 +1,12 @@
+.wow:before {
+	content: "";
+	display: block;
+	width: 5px;
+	height: 5px;
+	background: green;
+	position: absolute;
+	left: -10px;
+}
 ins {
 	background: rgba(83, 183, 83, 0.25);
 	text-decoration: none;
