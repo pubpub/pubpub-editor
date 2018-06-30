@@ -123,7 +123,7 @@ class Citation extends Component {
 							view.dispatch(transaction);
 						},
 					},
-					toEditable(node, view, decorations, isSelected, helperFunctions) {
+					toEditable(node, view, decorations, isSelected) {
 						return (
 							<CitationList
 								key={node.attrs.key}

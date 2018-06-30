@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Plugin } from 'prosemirror-state';
 import FootnoteEditable from './FootnoteEditable';
 import FootnoteStatic from './FootnoteStatic';
+import FootnoteList from './FootnoteList';
 
 const propTypes = {
 	onOptionsRender: PropTypes.func,
@@ -102,6 +103,46 @@ class Footnote extends Component {
 						);
 					},
 				},
+				footnoteList: {
+					atom: true,
+					attrs: {
+						listItems: { default: [] } /* An array of objects with the form { value: footnoteValue }  */
+					},
+					parseDOM: [{ tag: 'footnoteList' }],
+					toDOM: ()=> {
+						return ['footnoteList'];
+					},
+					inline: false,
+					group: 'block',
+					draggable: false,
+					selectable: true,
+					insertMenu: {
+						label: 'Footnote List',
+						icon: 'pt-icon-numbered-list',
+						onInsert: (view) => {
+							const footnoteListNode = view.state.schema.nodes.footnoteList.create();
+							const transaction = view.state.tr.replaceSelectionWith(footnoteListNode);
+							view.dispatch(transaction);
+						},
+					},
+					toEditable(node, view, decorations, isSelected) {
+						return (
+							<FootnoteList
+								key={node.attrs.key}
+								isSelected={isSelected}
+								listItems={node.attrs.listItems}
+							/>
+						);
+					},
+					toStatic(node) {
+						return (
+							<FootnoteList
+								key={node.currIndex}
+								listItems={node.attrs.listItems}
+							/>
+						);
+					},
+				},
 			}
 		};
 	};
@@ -113,6 +154,7 @@ class Footnote extends Component {
 			key: pluginKey,
 			appendTransaction: (transactions, oldState, newState)=> {
 				let footnoteCount = 1;
+				let footnoteItems = [];
 				let didUpdate = false;
 				const newTransaction = newState.tr;
 				newState.doc.nodesBetween(
@@ -128,12 +170,47 @@ class Footnote extends Component {
 									{ ...node.attrs, count: footnoteCount }
 								);
 								newTransaction.setMeta('footnote', true);
+								footnoteItems.push({ value: node.attrs.value, count: footnoteCount});
+							} else {
+								footnoteItems.push({ value: node.attrs.value, count: node.count});
 							}
 							footnoteCount += 1;
 						}
 						return true;
 					}
 				);
+
+				/* Check all FootnoteList nodes to make sure they are updated if */
+				/* didUpdate is true, or if the list is empty, but counts is not */
+				newState.doc.nodesBetween(
+					0,
+					newState.doc.nodeSize - 2,
+					(node, nodePos)=> {
+						if (node.type.name === 'footnoteList') {
+							/* Test whether the values of the footnote list should be */
+							/* updated due to new value in individual footnotes */
+							const footnoteContentChanged = footnoteItems.reduce((prev, curr, index)=> {
+								const prevFootnoteData = node.attrs.listItems[index] || {};
+								if (prevFootnoteData.value !== curr.value) {
+									return true;
+								}
+								return prev;
+							}, false);
+
+							if (node.attrs.listItems.length !== footnoteItems.length || didUpdate || footnoteContentChanged) {
+								didUpdate = true;
+								newTransaction.setNodeMarkup(
+									nodePos,
+									null,
+									{ ...node.attrs, listItems: footnoteItems }
+								);
+								newTransaction.setMeta('footnote', true);
+							}
+						}
+						return true;
+					}
+				);
+
 				return didUpdate ? newTransaction : null;
 			}
 		})];
