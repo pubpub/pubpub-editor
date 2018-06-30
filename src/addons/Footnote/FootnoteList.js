@@ -16,11 +16,11 @@ const defaultProps = {
 const FootnoteList = function(props) {
 	return (
 		<ol className={`footnote-list-wrapper ${props.isSelected ? 'isSelected' : ''}`}>
-			{props.listItems.map((item, index)=> {
+			{props.listItems.map((item)=> {
 				return (
-					<li key={`footnote-list-item-${index}`} className="footnote-list-item">
+					<li key={`footnote-list-item-${item.count}`} className="footnote-list-item">
 						<span className="count">
-							{index + 1}.
+							{item.count}.
 						</span>
 						<span
 							className="rendered-footnote"

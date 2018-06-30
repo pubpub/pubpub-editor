@@ -154,7 +154,7 @@ class Footnote extends Component {
 			key: pluginKey,
 			appendTransaction: (transactions, oldState, newState)=> {
 				let footnoteCount = 1;
-				let footnoteItems = [];
+				const footnoteItems = [];
 				let didUpdate = false;
 				const newTransaction = newState.tr;
 				newState.doc.nodesBetween(
@@ -170,10 +170,8 @@ class Footnote extends Component {
 									{ ...node.attrs, count: footnoteCount }
 								);
 								newTransaction.setMeta('footnote', true);
-								footnoteItems.push({ value: node.attrs.value, count: footnoteCount});
-							} else {
-								footnoteItems.push({ value: node.attrs.value, count: node.count});
 							}
+							footnoteItems.push({ value: node.attrs.value, count: footnoteCount });
 							footnoteCount += 1;
 						}
 						return true;

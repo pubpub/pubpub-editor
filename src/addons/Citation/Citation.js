@@ -228,7 +228,6 @@ class Citation extends Component {
 									{ ...node.attrs, listItems: listItems }
 								);
 								newTransaction.setMeta('citation', true);
-
 							}
 						}
 						return true;
