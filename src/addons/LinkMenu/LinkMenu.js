@@ -59,11 +59,14 @@ class LinkMenu extends Component {
 					/* Because we set link marks to not be inclusive, we need to do */
 					/* some shifted so the dialog will appear at the start and end */
 					/* of the link text */
-					const marksAcross = empty
-						? $from.marksAcross($to).length ? $from.marksAcross($to) : shiftedFrom.marksAcross(shiftedTo)
-						: $from.marksAcross(shiftedTo);
+					const getMarks = (open, close)=> {
+						return open.marksAcross(close) || [];
+					};
+					const foundMarks = empty
+						? getMarks($from, $to).length ? getMarks($from, $to) : getMarks(shiftedFrom, shiftedTo)
+						: getMarks($from, shiftedTo);
 
-					const activeLinkMark = marksAcross.reduce((prev, curr)=> {
+					const activeLinkMark = foundMarks.reduce((prev, curr)=> {
 						if (curr.type.name === 'link') { return curr; }
 						return prev;
 					}, undefined);
@@ -155,7 +158,9 @@ class LinkMenu extends Component {
 		/* Used to call onOptioneRender so that optionsBox can be placed */
 		if (elem) {
 			const domAtPos = this.props.view.domAtPos(this.props.view.state.selection.from);
-			const nodeDom = domAtPos.node.childNodes[domAtPos.offset];
+			const nodeDom = domAtPos.node.nodeName === '#text'
+				? domAtPos.node.parentElement
+				: domAtPos.node.childNodes[domAtPos.offset];
 			if (nodeDom) {
 				this.props.onOptionsRender(nodeDom, this.props.optionsContainerRef.current);	
 			}
