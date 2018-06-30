@@ -109,6 +109,8 @@ class Editor extends Component {
 	 * @return {string} The plain text content of an editor instance
 	 */
 	getText() {
+		// https://prosemirror.net/docs/ref/#model.Node.textBetween might be better.
+		// We can pass a 'blockSeparator' to avoid the spaceless paragraph break issue.
 		return this.view.state.doc.textContent;
 	}
 	getCollabJSONs(collabIds) {

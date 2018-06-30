@@ -86,20 +86,29 @@ class TrackChanges extends Component {
 					inclusive: false,
 					attrs: {
 						userId: { default: '' },
+						editType: { default: '' },
+						addedFormats: { default: [] },
+						removedFormats: { default: [] },
 					},
 					parseDOM: [
 						{
 							tag: 'insertion', // This is intentionally not going to match. We don't want to allow pasting of insertions
 							getAttrs: (dom)=> {
 								return {
-									userId: dom.getAttribute('data-userId'),
+									userId: dom.getAttribute('data-user-id'),
+									editType: dom.getAttribute('data-edit-type'),
+									addedFormats: dom.getAttribute('data-added-formats'),
+									removedFormats: dom.getAttribute('data-removed-formats'),
 								};
 							}
 						}
 					],
 					toDOM: (node)=> {
 						return ['ins', {
-							'data-userId': node.attrs.userId,
+							'data-user-id': node.attrs.userId,
+							'data-edit-type': node.attrs.editType,
+							'data-added-formats': node.attrs.addedFormats,
+							'data-removed-formats': node.attrs.removedFormats,
 						}];
 					},
 					toStatic: (mark, children)=> {
@@ -114,20 +123,23 @@ class TrackChanges extends Component {
 					inclusive: false,
 					attrs: {
 						userId: { default: '' },
+						editType: { default: '' },
 					},
 					parseDOM: [
 						{
 							tag: 'deletion', // This is intentionally not going to match. We don't want to allow pasting of deletions
 							getAttrs: (dom)=> {
 								return {
-									userId: dom.getAttribute('data-userId'),
+									userId: dom.getAttribute('data-user-id'),
+									editType: dom.getAttribute('data-edit-type'),
 								};
 							}
 						}
 					],
 					toDOM: (node)=> {
 						return ['del', {
-							'data-userId': node.attrs.userId,
+							'data-user-id': node.attrs.userId,
+							'data-edit-type': node.attrs.editType,
 						}];
 					},
 					toStatic: (mark, children)=> {

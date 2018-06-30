@@ -5,8 +5,6 @@ import TrackChanges from 'addons/TrackChanges/TrackChanges';
 import { editorWrapperStyle } from './_utilities';
 import plainDoc from './initialDocs/plainDoc';
 
-let isActive = true;
-
 storiesOf('TrackChanges', module)
 .add('default', () => (
 	<Wrapper />
