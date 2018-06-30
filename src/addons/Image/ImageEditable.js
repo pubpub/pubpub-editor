@@ -2,10 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Portal } from 'react-portal';
 import { AnchorButton, Slider } from '@blueprintjs/core';
-// import { EditorState } from "prosemirror-state"
-// import { EditorView } from "prosemirror-view"
-// import {Schema, DOMParser} from "prosemirror-model"
-// import { getBasePlugins } from '../../schema/setup';
 import SimpleEditor from '../../SimpleEditor';
 
 require('./image.scss');

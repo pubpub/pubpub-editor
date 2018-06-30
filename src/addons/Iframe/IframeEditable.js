@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { AnchorButton } from '@blueprintjs/core';
+import { Portal } from 'react-portal';
+import { AnchorButton, Slider } from '@blueprintjs/core';
+import SimpleEditor from '../../SimpleEditor';
 
 require('./iframe.scss');
 
@@ -14,6 +16,8 @@ const propTypes = {
 	height: PropTypes.number, // Number as pixel height
 	isSelected: PropTypes.bool,
 	updateAttrs: PropTypes.func.isRequired,
+	onOptionsRender: PropTypes.func.isRequired,
+	optionsContainerRef: PropTypes.object.isRequired,
 };
 
 const defaultProps = {
@@ -32,58 +36,33 @@ class IframeEditable extends Component {
 			isResizing: false,
 		};
 		this.randKey = Math.round(Math.random() * 99999);
-		this.onDragMouseDown = this.onDragMouseDown.bind(this);
-		this.onDragMouseUp = this.onDragMouseUp.bind(this);
-		this.onMouseMove = this.onMouseMove.bind(this);
 		this.updateUrl = this.updateUrl.bind(this);
 		this.updateCaption = this.updateCaption.bind(this);
 		this.updateAlign = this.updateAlign.bind(this);
+		this.portalRefFunc = this.portalRefFunc.bind(this);
 	}
 
-	onDragMouseDown(evt) {
-		const handle = evt.target.className.replace('drag-handle ', '');
-		this.setState({ isResizing: handle });
-		document.addEventListener('mousemove', this.onMouseMove);
-		document.addEventListener('mouseup', this.onDragMouseUp);
-	}
-	onDragMouseUp() {
-		this.setState({ isResizing: false });
-		document.removeEventListener('mousemove', this.onMouseMove);
-		document.removeEventListener('mouseup', this.onDragMouseUp);
-	}
-	onMouseMove(evt) {
-		const iframeBounding = this.iframeElem.getBoundingClientRect();
-		if (this.state.isResizing === 'bottom') {
-			const bottomDragBounding = this.bottomDragElem.getBoundingClientRect();
-			const delta = evt.clientY - bottomDragBounding.bottom;
-			const currentHeight = iframeBounding.height;
-			const nextSize = Math.max(Math.round(currentHeight + delta), 100);
-			this.props.updateAttrs({ height: nextSize });
-		} else {
-			const delta = this.state.isResizing === 'left'
-				? iframeBounding.left - evt.clientX
-				: evt.clientX - iframeBounding.right;
-			const maxWidth = this.rootElem.clientWidth;
-			const currentWidth = iframeBounding.width;
-			const nextSize = Math.min(
-				Math.max(
-					Math.round(((currentWidth + delta) / maxWidth) * 100),
-					20
-				),
-				100
-			);
-			this.props.updateAttrs({ size: nextSize });
-		}
-	}
 	updateUrl(evt) {
 		this.props.updateAttrs({ url: evt.target.value });
 	}
+
 	updateCaption(evt) {
 		this.props.updateAttrs({ caption: evt.target.value });
 	}
+
 	updateAlign(val) {
 		this.props.updateAttrs({ align: val });
 	}
+
+	portalRefFunc(elem) {
+		/* Used to call onOptioneRender so that optionsBox can be placed */
+		if (elem) {
+			const domAtPos = this.props.view.domAtPos(this.props.view.state.selection.from);
+			const nodeDom = domAtPos.node.childNodes[domAtPos.offset];
+			this.props.onOptionsRender(nodeDom, this.props.optionsContainerRef.current);
+		}
+	}
+
 	render() {
 		const alignOptions = [
 			{ key: 'left', icon: 'pt-icon-align-left' },
@@ -103,20 +82,10 @@ class IframeEditable extends Component {
 		};
 
 		return (
-			<div className={'iframe-figure-wrapper editable'} ref={(rootElem)=> { this.rootElem = rootElem; }}>
+			<div className={'figure-wrapper editable'}>
 				<figure className={`iframe ${this.props.isSelected ? 'isSelected' : ''}`} style={figStyle}>
-					{this.props.isSelected && this.props.url && this.props.align !== 'full' &&
-						<div>
-							<div className={'drag-handle left'} onMouseDown={this.onDragMouseDown} role={'button'} tabIndex={-1} />
-							<div className={'drag-handle right'} onMouseDown={this.onDragMouseDown} role={'button'} tabIndex={-1} />
-						</div>
-					}
-					{this.props.isSelected && this.props.url &&
-						<div className={'drag-handle bottom'} onMouseDown={this.onDragMouseDown} role={'button'} tabIndex={-1} ref={(bottomDragElem)=> { this.bottomDragElem = bottomDragElem; }} />
-					}
 					{this.props.url &&
 						<iframe
-							ref={(iframeElem)=> { this.iframeElem = iframeElem; }}
 							title={`iFrame of ${this.props.url}`}
 							src={this.props.url}
 							height={`${this.props.height}px`}
@@ -126,46 +95,89 @@ class IframeEditable extends Component {
 					}
 					{!this.props.url &&
 						<label htmlFor={`new-${this.randKey}`} className={'empty-iframe'}>
-							Enter URL below
+							Enter Source URL
 						</label>
 					}
-					{!this.props.isSelected && this.props.url &&
-						<figcaption>
-							{this.props.caption}
-						</figcaption>
-					}
-					{(this.props.isSelected || !this.props.url) &&
-						<div className={'options-wrapper'}>
-							<div className={'top-row'}>
-								<div className={'pt-button-group pt-minimal'}>
-									{alignOptions.map((item)=> {
-										return (
-											<button
-												key={`align-option-${item.key}`}
-												className={`pt-button ${item.icon} ${this.props.align === item.key ? 'pt-active' : ''}`}
-												onClick={()=> { this.updateAlign(item.key); }}
-											/>
-										);
-									})}
-								</div>
+					<figcaption dangerouslySetInnerHTML={{ __html: this.props.caption }} />
+				</figure>
+				{this.props.isSelected &&
+					<Portal 
+						ref={this.portalRefFunc} 
+						node={this.props.optionsContainerRef.current}
+					>
+						<div className="options-box">
+							<div className="options-title">Iframe Details</div>
+							{/*  Size Adjustment */}
+							<label className="form-label">
+								Size
+							</label>
+							<Slider
+								min={25}
+								max={100}
+								value={this.props.size}
+								onChange={(newSize)=> {
+									this.props.updateAttrs({ size: newSize });
+								}}
+								labelRenderer={false}
+								disabled={this.props.align === 'full'}
+							/>
+
+							{/*  Height Adjustment */}
+							<label className="form-label">
+								Height
+							</label>
+							<Slider
+								min={150}
+								max={800}
+								value={this.props.height}
+								onChange={(newHeight)=> {
+									this.props.updateAttrs({ height: newHeight });
+								}}
+								labelRenderer={false}
+							/>
+							
+							{/*  Alignment Adjustment */}
+							<label className="form-label">
+								Alignment
+							</label>
+							<div className="pt-button-group pt-fill">
+								{alignOptions.map((item)=> {
+									return (
+										<button
+											key={`align-option-${item.key}`}
+											className={`pt-button ${item.icon} ${this.props.align === item.key ? 'pt-active' : ''}`}
+											onClick={()=> { this.updateAlign(item.key); }}
+										/>
+									);
+								})}
 							</div>
-							<input
-								type={'text'}
+							
+							{/*  Caption Adjustment */}
+							<label className="form-label">
+								Caption
+							</label>
+							<div className="simple-editor-wrapper">
+								<SimpleEditor
+									initialHtmlString={this.props.caption}
+									onChange={(htmlString)=> {
+										this.props.updateAttrs({ caption: htmlString });
+									}}
+								/>
+							</div>
+
+							{/*  Source Details */}
+							<label className="form-label">
+								Source
+							</label>
+							<textarea
 								className={'pt-input pt-fill'}
 								value={this.props.url}
 								onChange={this.updateUrl}
 								placeholder={'Enter URL'}
 							/>
-							<input
-								type={'text'}
-								placeholder={'Add Caption'}
-								className={'pt-input pt-fill'}
-								value={this.props.caption}
-								onChange={this.updateCaption}
-							/>
 						</div>
-					}
-				</figure>
+					</Portal>
+				}
 			</div>
 		);
 	}
