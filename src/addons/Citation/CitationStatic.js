@@ -12,17 +12,15 @@ const propTypes = {
 
 const CitationStatic = function(props) {
 	return (
-		<span className={'citation-wrapper'}>
+		<span className="citation-wrapper">
 			<Popover
 				content={
-					<div className={'rendered-citation pt-card pt-elevation-2'}>
+					<div className="rendered-citation">
 						{props.value &&
-							<div
-								dangerouslySetInnerHTML={{ __html: props.html }}
-							/>
+							<div dangerouslySetInnerHTML={{ __html: props.html }} />
 						}
 						{!props.value &&
-							<div className={'empty-citation-text'}>
+							<div className="empty-citation-text">
 								No Citation text entered...
 							</div>
 						}
@@ -30,7 +28,7 @@ const CitationStatic = function(props) {
 				}
 				interactionKind={PopoverInteractionKind.CLICK}
 				position={Position.TOP_LEFT}
-				popoverClassName={'pt-minimal citation-popover'}
+				popoverClassName="citation-popover"
 				transitionDuration={-1}
 				inheritDarkTheme={false}
 				tetherOptions={{
@@ -38,7 +36,7 @@ const CitationStatic = function(props) {
 				}}
 
 			>
-				<span className={'citation'}>[{props.count}]</span>
+				<span className="citation">[{props.count}]</span>
 			</Popover>
 		</span>
 	);

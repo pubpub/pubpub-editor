@@ -1,61 +1,26 @@
 .citation-wrapper {
-	display: inline-block;
-	max-width: 100%;
-	vertical-align: top;
-	position: relative;
 	span.citation {
 		font-weight: bold;
 		cursor: pointer;
-	}
-	&.selected {
-		.render-wrapper {
-			outline: 3px solid #BBBDC0;	
-		}
 	}
 	.render-wrapper {
 		display: inline-block;
 		max-width: 100%;
 	}
-	.editable-render {
-		user-select: none;
-	}
-	.options-wrapper {
-		font-family: -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", "Helvetica Neue", sans-serif;
-		font-size: 14px;
-		width: 400px;
-		z-index: 15;
-		// border: 2px solid #CCC;
-		background-color: #F9F9F9;
-		overflow: hidden;
-		position: absolute;
-		left: -2px;
-		top: calc(100% + 3px);
-		padding: 0px;
-		.rendered-citation {
-			padding: 8px;
-			background-color: white;
-			user-select: none;
-			line-height: 1.3;
-			div {
-				display: inline;
-			}
-		}
-		.input-wrapper {
-			padding: 8px;
-			border-top: 1px solid #CCC;
-			user-select: none;
-			.input-title {
-				font-weight: bold;
-				padding-bottom: 8px;
-			}
-			
-		}
-		.pt-input {
-			min-height: 75px;
-			resize: vertical;
-		}
+}
+
+.citation-popover {
+	.rendered-citation {
+		max-width: 400px;
+		padding: 15px;
+		display: inline-block;
+		.empty-citation-text {
+			font-style: italic;
+			opacity: 0.75;
+		}	
 	}
 }
+
 .citation-list-wrapper {
 	list-style: none;
 	padding: 0 !important;
@@ -80,15 +45,5 @@
 	}
 	.pt-non-ideal-state {
 		padding: 2em 0em;
-	}
-}
-.citation-popover {
-	.rendered-citation {
-		max-width: 400px;
-		padding: 15px;
-		.empty-citation-text {
-			font-style: italic;
-			opacity: 0.75;
-		}	
 	}
 }

@@ -1,7 +1,7 @@
 const doc = {
 	type: 'doc',
 	attrs: {
-		'meta': {}
+		meta: {}
 	},
 	content: [
 		{
@@ -15,6 +15,7 @@ const doc = {
 					type: 'footnote',
 					attrs: {
 						value: 'This here is some text!',
+						count: 0,
 						id: 'ah8f01je8ja7bfh1',
 					},
 				},

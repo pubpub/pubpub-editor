@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import linkifyStr from 'linkifyjs/string';
 import { Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 
 require('./footnote.scss');
@@ -12,30 +11,23 @@ const propTypes = {
 
 const FootnoteStatic = function(props) {
 	return (
-		<span className={'footnote-wrapper'}>
+		<span className="footnote-wrapper">
 			<Popover
 				content={
-					<div className={'footnote-text pt-card pt-elevation-2'}>
+					<span className="footnote-text">
 						{props.value &&
-							<div
-								dangerouslySetInnerHTML={{
-									__html: linkifyStr(props.value, {
-										defaultProtocol: 'https',
-										className: ''
-									})
-								}}
-							/>
+							<span dangerouslySetInnerHTML={{ __html: props.value }} />
 						}
 						{!props.value &&
-							<div className={'empty-footnote-text'}>
+							<span className="empty-footnote-text">
 								No Footnote text entered...
-							</div>
+							</span>
 						}
-					</div>
+					</span>
 				}
 				interactionKind={PopoverInteractionKind.CLICK}
 				position={Position.TOP_LEFT}
-				popoverClassName={'pt-minimal footnote-popover'}
+				popoverClassName="footnote-popover"
 				transitionDuration={-1}
 				inheritDarkTheme={false}
 				tetherOptions={{
@@ -43,7 +35,9 @@ const FootnoteStatic = function(props) {
 				}}
 
 			>
-				<sup className={'footnote editable-render'}>{props.count}</sup>
+				<span className="render-wrapper">
+					<sup className="footnote">{props.count}</sup>
+				</span>
 			</Popover>
 		</span>
 	);

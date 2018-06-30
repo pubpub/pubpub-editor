@@ -19,14 +19,8 @@ const propTypes = {
 class FootnoteEditable extends Component {
 	constructor(props) {
 		super(props);
-		// this.handleValueChange = this.handleValueChange.bind(this);
-		// this.refocusNode = this.refocusNode.bind(this);
 		this.portalRefFunc = this.portalRefFunc.bind(this);
 	}
-	// handleValueChange(htmlString) {
-	// 	this.props.updateAttrs({ value: htmlString });
-	// 	// this.refocusNode();
-	// }
 
 	portalRefFunc(elem) {
 		/* Used to call onOptioneRender so that optionsBox can be placed */
@@ -39,21 +33,11 @@ class FootnoteEditable extends Component {
 
 	render() {
 		return (
-			<div className={`footnote-wrapper ${this.props.isSelected ? 'selected' : ''}`}>
-				<div className={'render-wrapper'}>
-					<sup className={'footnote editable-render'}>{this.props.count}</sup>
+			<span className="footnote-wrapper">
+				<span className={`render-wrapper ${this.props.isSelected ? 'isSelected' : ''}`}>
+					<sup className="footnote">{this.props.count}</sup>
+				</span>
 
-					{/*this.props.isSelected &&
-						<div className={'options-wrapper pt-card pt-elevation-2'}>
-							<textarea
-								placeholder={'Enter footnote...'}
-								className={'pt-input pt-fill'}
-								value={this.props.value}
-								onChange={this.handleValueChange}
-							/>
-						</div>
-					*/}
-				</div>
 				{this.props.isSelected &&
 					<Portal 
 						ref={this.portalRefFunc} 
@@ -77,7 +61,7 @@ class FootnoteEditable extends Component {
 						</div>
 					</Portal>
 				}
-			</div>
+			</span>
 
 		);
 	}

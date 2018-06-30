@@ -1,49 +1,21 @@
 .footnote-wrapper {
-	display: inline;
-	max-width: 100%;
-	vertical-align: middle;
-	position: relative;
-	.pt-popover-target {
-		display: inline;
-	}
-	sup.footnote {
-		font-weight: bold;
-		cursor: pointer;
-	}
-	&.selected {
-		.render-wrapper {
-			outline: 3px solid #BBBDC0;	
-		}
+	.pt-popover-wrapper {
+		vertical-align: initial;
 	}
 	.render-wrapper {
 		display: inline-block;
 		max-width: 100%;
 	}
-	.editable-render {
-		user-select: none;
-	}
-	.options-wrapper {
-		width: 400px;
-		z-index: 15;
-		// border: 2px solid #CCC;
-		background-color: #F9F9F9;
-		overflow: hidden;
-		position: absolute;
-		left: -2px;
-		top: calc(100% + 3px);
-		padding: 0;
-		.pt-input {
-			width: 100%;
-			min-height: 56px;
-			box-shadow: none;
-			resize: vertical;
-		}
+	sup.footnote {
+		font-weight: bold;
+		cursor: pointer;
 	}
 }
 .footnote-popover {
 	.footnote-text {
 		max-width: 400px;
 		padding: 15px;
+		display: inline-block;
 		.empty-footnote-text {
 			font-style: italic;
 			opacity: 0.75;

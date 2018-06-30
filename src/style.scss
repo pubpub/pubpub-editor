@@ -144,11 +144,11 @@
 	label.form-label {
 		display: block;
 		font-weight: 600;
+		margin-bottom: 0.5em;
 		&:not(:first-of-type) {
 			padding-top: 1em;
 			margin-top: 1em;
 			position: relative;
-			margin-bottom: 0.5em;
 			&:before {
 				content: "";
 				position: absolute;

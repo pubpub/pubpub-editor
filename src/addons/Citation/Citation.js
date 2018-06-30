@@ -124,6 +124,7 @@ class Citation extends Component {
 						},
 					},
 					toEditable(node, view, decorations, isSelected, helperFunctions) {
+						console.log(1, view);
 						return (
 							<CitationList
 								key={node.attrs.key}
@@ -135,6 +136,7 @@ class Citation extends Component {
 						);
 					},
 					toStatic(node, view) {
+						console.log(2, view);
 						return (
 							<CitationList
 								key={node.currIndex}

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { NodeSelection } from 'prosemirror-state';
+import { Portal } from 'react-portal';
+import SimpleEditor from '../../SimpleEditor';
 
 require('./citation.scss');
 
@@ -12,65 +14,69 @@ const propTypes = {
 	isSelected: PropTypes.bool.isRequired,
 	view: PropTypes.object.isRequired,
 	updateAttrs: PropTypes.func.isRequired,
+	onOptionsRender: PropTypes.func,
+	optionsContainerRef: PropTypes.object,
 };
 
 class CitationEditable extends Component {
 	constructor(props) {
 		super(props);
-		this.state = { html: props.html };
 		this.handleValueChange = this.handleValueChange.bind(this);
 		this.handleHTMLChange = this.handleHTMLChange.bind(this);
-		this.refocusNode = this.refocusNode.bind(this);
-	}
-	componentWillReceiveProps(nextProps) {
-		if (this.props.isSelected && !nextProps.isSelected) {
-			this.props.updateAttrs({ html: this.state.html });
-		}
+		this.portalRefFunc = this.portalRefFunc.bind(this);
 	}
 	handleValueChange(evt) {
-		this.props.updateAttrs({ value: evt.target.value, html: this.state.html });
-		this.refocusNode();
+		this.props.updateAttrs({ value: evt.target.value });
 		this.props.formatFunction(evt.target.value, this.handleHTMLChange);
 	}
 	handleHTMLChange(html) {
-		this.setState({ html: html });
-		/* This is a bit funky, but to avoid losing cursor position on */
-		/* an asynchronous update, we use setState to display new HTML. */
-		/* This means that the node attrs still has an HTML value that is one-behind. */
-		/* On deselect of the node, we fire an updateAttrs to make sure */
-		/* that last value is synced to attrs. */
+		this.props.updateAttrs({ html: html });
 	}
-	refocusNode() {
-		const view = this.props.view;
-		const pos = view.state.selection.from;
-		const sel = NodeSelection.create(view.state.doc, pos);
-		const transaction = view.state.tr.setSelection(sel);
-		view.dispatch(transaction);
+
+	portalRefFunc(elem) {
+		/* Used to call onOptioneRender so that optionsBox can be placed */
+		if (elem) {
+			const domAtPos = this.props.view.domAtPos(this.props.view.state.selection.from);
+			const nodeDom = domAtPos.node.childNodes[domAtPos.offset];
+			this.props.onOptionsRender(nodeDom, this.props.optionsContainerRef.current);
+		}
 	}
 
 	render() {
 		return (
-			<div className={`citation-wrapper ${this.props.isSelected ? 'selected' : ''}`}>
-				<div className={'render-wrapper'}>
-					<span className={'citation editable-render'}>[{this.props.count}]</span>
+			<span className="citation-wrapper">
+				<span className={`render-wrapper ${this.props.isSelected ? 'isSelected' : ''}`}>
+					<span className="citation">[{this.props.count}]</span>
+				</span>
 
-					{this.props.isSelected &&
-						<div className={'options-wrapper pt-card pt-elevation-2'}>
-							<div className={'rendered-citation'} dangerouslySetInnerHTML={{ __html: this.state.html }} />
+				{this.props.isSelected &&
+					<Portal 
+						ref={this.portalRefFunc} 
+						node={this.props.optionsContainerRef.current}
+					>
+						<div className="options-box">
+							<div className="options-title">Citation Details</div>
+							
+							{/*  Content Adjustment */}
+							<label className="form-label">
+								Structured Data
+							</label>
+							<textarea
+								placeholder="Enter bibtex, DOI, wikidata url, or bibjson..."
+								className="pt-input pt-fill"
+								value={this.props.value}
+								onChange={this.handleValueChange}
+							/>
 
-							<div className={'input-wrapper'}>
-								<div className={'input-title'}>Input</div>
-								<textarea
-									placeholder={'Enter bibtex, DOI, wikidata url, or bibjson...'}
-									className={'pt-input pt-fill'}
-									value={this.props.value}
-									onChange={this.handleValueChange}
-								/>
-							</div>
+							{/*  Output */}
+							<label className="form-label">
+								Data Output
+							</label>
+							<div className="rendered-citation" dangerouslySetInnerHTML={{ __html: this.props.html }} />
 						</div>
-					}
-				</div>
-			</div>
+					</Portal>
+				}
+			</span>
 
 		);
 	}
