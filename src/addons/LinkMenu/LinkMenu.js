@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Plugin } from 'prosemirror-state';
-import { Overlay } from '@blueprintjs/core';
+import { Portal } from 'react-portal';
 
 require('./linkMenu.scss');
 
@@ -10,6 +10,8 @@ const propTypes = {
 	view: PropTypes.object,
 	editorState: PropTypes.object,
 	pluginKey: PropTypes.object,
+	onOptionsRender: PropTypes.func.isRequired,
+	optionsContainerRef: PropTypes.object.isRequired,
 };
 
 const defaultProps = {
@@ -49,15 +51,24 @@ class LinkMenu extends Component {
 					};
 				},
 				apply(transaction, state, prevEditorState, editorState) {
-					const type = editorState.schema.marks.link;
-					const { from, $from, empty, $to } = editorState.selection;
-					const start = editorState.doc.resolve(from + 1);
-					const end = $to;
-					const isLink = empty
-						? type.isInSet(start.marks()) || type.isInSet(end.marks())
-						: type.isInSet(start.marks()) && type.isInSet(end.marks());
+					const linkMarkType = editorState.schema.marks.link;
+					const { from, $from, to, $to, empty } = editorState.selection;
+					const shiftedFrom = editorState.doc.resolve(from - 1);
+					const shiftedTo = editorState.doc.resolve(to - 1);
 
-					if (!isLink) {
+					/* Because we set link marks to not be inclusive, we need to do */
+					/* some shifted so the dialog will appear at the start and end */
+					/* of the link text */
+					const marksAcross = empty
+						? $from.marksAcross($to).length ? $from.marksAcross($to) : shiftedFrom.marksAcross(shiftedTo)
+						: $from.marksAcross(shiftedTo);
+
+					const activeLinkMark = marksAcross.reduce((prev, curr)=> {
+						if (curr.type.name === 'link') { return curr; }
+						return prev;
+					}, undefined);
+
+					if (!activeLinkMark) {
 						return {
 							start: undefined,
 							end: undefined,
@@ -65,11 +76,16 @@ class LinkMenu extends Component {
 						};
 					}
 
+					/* Note - this start and end will cause directly adjacent */
+					/* links to be merged into a single link on edit. Adjacent */
+					/* links with different URLs seems like a worse UI experience */
+					/* than having two links merge on edit. So, perhaps we simply */
+					/* leave this 'bug'. We can revisit later. */
 					let startPos = from - 1;
 					let foundStart = false;
 					while (!foundStart) {
 						if (startPos === 0) { foundStart = true; }
-						if (editorState.doc.rangeHasMark(startPos, startPos + 1, type)) {
+						if (editorState.doc.rangeHasMark(startPos, startPos + 1, linkMarkType)) {
 							startPos -= 1;
 						} else {
 							foundStart = true;
@@ -79,27 +95,17 @@ class LinkMenu extends Component {
 					let foundEnd = false;
 					while (!foundEnd) {
 						if (endPos === 0) { foundEnd = true; }
-						if (editorState.doc.rangeHasMark(endPos, endPos + 1, type)) {
+						if (editorState.doc.rangeHasMark(endPos, endPos + 1, linkMarkType)) {
 							endPos += 1;
 						} else {
 							foundEnd = true;
 						}
 					}
 
-
-					const markBefore = $from.nodeBefore && $from.nodeBefore.marks.reduce((prev, curr)=> {
-						if (curr.type.name === 'link') { return curr; }
-						return prev;
-					}, undefined);
-					const markAfter = $from.nodeAfter && $from.nodeAfter.marks.reduce((prev, curr)=> {
-						if (curr.type.name === 'link') { return curr; }
-						return prev;
-					}, undefined);
-
 					return {
 						start: startPos,
 						end: endPos,
-						mark: markBefore || markAfter,
+						mark: activeLinkMark,
 					};
 				},
 			}
@@ -113,75 +119,24 @@ class LinkMenu extends Component {
 			recievedStart: undefined,
 			recievedEnd: undefined,
 			recievedMark: undefined,
-			newHref: '',
 		};
-		this.container = document.getElementById(props.containerId);
-		this.onChange = this.onChange.bind(this);
-		this.onOverlaySubmit = this.onOverlaySubmit.bind(this);
-		this.onOverlayClose = this.onOverlayClose.bind(this);
-		this.removeLink = this.removeLink.bind(this);
-		this.cancelChange = this.cancelChange.bind(this);
+		this.updateAttrs = this.updateAttrs.bind(this);
+		this.portalRefFunc = this.portalRefFunc.bind(this);
 	}
 
 	componentWillReceiveProps(nextProps) {
 		if (this.props.editorState !== nextProps.editorState) {
-			this.onChange();
+			const viewState = this.props.pluginKey.getState(this.props.view.state);
+			return this.setState({
+				recievedMark: viewState.mark,
+				recievedStart: viewState.start,
+				recievedEnd: viewState.end,
+			});
 		}
 	}
 
-	onChange() {
-		const viewState = this.props.pluginKey.getState(this.props.view.state);
-		if (!viewState) { return null; }
-		const boundingCoords = this.container.getBoundingClientRect();
-		const coordsAtPos = viewState.start
-			? this.props.view.coordsAtPos(viewState.start + 1)
-			: undefined;
-		const href = viewState.mark ? viewState.mark.attrs.href : '';
-		return this.setState({
-			recievedStart: viewState.start,
-			recievedEnd: viewState.end,
-			recievedMark: viewState.mark,
-			boundingCoords: boundingCoords,
-			coords: coordsAtPos,
-			newHref: href,
-		});
-	}
-
-	onOverlayClose() {
-		this.setState({
-			editOptionsOpen: false,
-			coords: undefined,
-			newHref: '',
-		});
-		setTimeout(()=> {
-			/* This timeout seems to be necessary for Prosemirror to actually capture focus. */
-			this.props.view.focus();
-		}, 1);
-	}
-
-	removeLink() {
-		const transaction = this.props.view.state.tr;
-		transaction.removeMark(
-			this.state.recievedStart + 1,
-			this.state.recievedEnd,
-			this.props.view.state.schema.marks.link,
-		);
-		this.props.view.dispatch(transaction);
-		this.onOverlayClose();
-	}
-	cancelChange() {
-		if (!this.state.recievedMark.attrs.href) {
-			this.removeLink();
-		} else {
-			this.onOverlayClose();
-		}
-	}
-	onOverlaySubmit(evt) {
-		evt.preventDefault();
+	updateAttrs(newAttrs) {
 		const oldNodeAttrs = this.state.recievedMark.attrs;
-		const formattedHref = this.state.newHref.indexOf(':') > -1
-			? this.state.newHref
-			: `http://${this.state.newHref}`;
 		const transaction = this.props.view.state.tr;
 		transaction.removeMark(
 			this.state.recievedStart + 1,
@@ -191,78 +146,62 @@ class LinkMenu extends Component {
 		transaction.addMark(
 			this.state.recievedStart + 1,
 			this.state.recievedEnd,
-			this.props.view.state.schema.marks.link.create({ ...oldNodeAttrs, href: formattedHref }),
+			this.props.view.state.schema.marks.link.create({ ...oldNodeAttrs, ...newAttrs }),
 		);
 		this.props.view.dispatch(transaction);
-		this.onOverlayClose();
+	}
+
+	portalRefFunc(elem) {
+		/* Used to call onOptioneRender so that optionsBox can be placed */
+		if (elem) {
+			const domAtPos = this.props.view.domAtPos(this.props.view.state.selection.from);
+			const nodeDom = domAtPos.node.childNodes[domAtPos.offset];
+			if (nodeDom) {
+				this.props.onOptionsRender(nodeDom, this.props.optionsContainerRef.current);	
+			}
+		}
 	}
 
 	render() {
-		const coords = this.state.coords || {};
-		const boundingCoords = this.state.boundingCoords || {};
-		const style = {
-			display: coords.bottom ? 'block' : 'none',
-			top: coords.bottom - boundingCoords.top,
-			left: coords.left - boundingCoords.left,
-		};
-		const href = this.state.recievedMark ? this.state.recievedMark.attrs.href : '';
-		const emptyMark = this.state.recievedMark && !href;
+		const mark = this.state.recievedMark;
+		const markHref = mark ? mark.attrs.href : '';
+		const formattedHref = markHref.indexOf(':') > -1
+			? markHref
+			: `http://${markHref}`;
 		return (
-			<div className="link-menu" style={style}>
-				{!this.state.editOptionsOpen && !emptyMark &&
-					<div className="pt-elevation-2" >
-						<span className="link">
-							<a href={href} target="_blank">{href}</a>
-						</span>
-						<span> - </span>
-						<button
-							className="pt-button pt-minimal"
-							type="button"
-							onClick={()=> {
-								this.setState({ editOptionsOpen: true });
-							}}
-						>
-							Change
-						</button>
-						<button type="button" className="pt-button pt-minimal" onClick={this.removeLink}>
-							Remove
-						</button>		
-					</div>
-				}
-
-				<Overlay
-					isOpen={this.state.editOptionsOpen || emptyMark}
-					onClose={this.onOverlayClose}
-				>
-					<div className="overlay-wrapper pt-card pt-elevation-2">
-						<form onSubmit={this.onOverlaySubmit}>
+			<div className="link-menu">
+				{mark &&
+					<Portal 
+						ref={this.portalRefFunc} 
+						node={this.props.optionsContainerRef.current}
+					>
+						<div className="options-box">
+							<div className="options-title">Link Details</div>
+							
+							{/*  URL Adjustment */}
+							<label className="form-label">
+								URL
+							</label>
 							<input
 								type="text"
-								value={this.state.newHref}
+								className="pt-input pt-fill"
+								value={mark.attrs.href}
 								onChange={(evt)=> {
-									this.setState({ newHref: evt.target.value });
-								}}
-								ref={(inputRef)=> {
-									if (inputRef) { inputRef.focus(); }
+									this.updateAttrs({ href: evt.target.value });
 								}}
 							/>
-							<button
-								type="button"
-								className="pt-button pt-intent-danger"
-								onClick={this.cancelChange}
+
+							<a
+								target="_blank"
+								rel="noopener noreferrer"
+								href={formattedHref}
+								className="preview-href"
 							>
-								Cancel
-							</button>
-							<button
-								type="submit"
-								className="pt-button pt-intent-success"
-								onClick={this.onOverlaySubmit}
-							>
-								Save
-							</button>
-						</form>
-					</div>
-				</Overlay>
+								{formattedHref}
+							</a>
+						</div>
+					</Portal>
+				}
 			</div>
 		);
 	}

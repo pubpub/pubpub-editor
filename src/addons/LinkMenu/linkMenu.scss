@@ -1,8 +1,13 @@
 .link-menu {
-	position: absolute;
-	z-index: 15;
-	.pt-elevation-2 {
-		background-color: white;
-		padding: 5px;
+
+}
+.options-box {
+	.preview-href {
+		padding-top: 5px;
+		text-overflow: ellipsis;
+		width: 100%;
+		overflow: hidden;
+		white-space: nowrap;
+		display: block;
 	}
 }

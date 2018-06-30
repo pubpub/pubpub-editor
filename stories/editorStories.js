@@ -6,6 +6,7 @@ import HeaderMenu from 'addons/HeaderMenu/HeaderMenu';
 import LinkMenu from 'addons/LinkMenu/LinkMenu';
 import Image from 'addons/Image/Image';
 import Latex from 'addons/Latex/Latex';
+import plainDoc from './initialDocs/plainDoc';
 import { editorWrapperStyle, s3Upload, renderLatex } from './_utilities';
 
 storiesOf('Editor', module)
@@ -23,7 +24,7 @@ storiesOf('Editor', module)
 ))
 .add('Header Menu', () => (
 	<div style={editorWrapperStyle}>
-		<Editor placeholder="Begin writing...">
+		<Editor placeholder="Begin writing..." initialContent={plainDoc}>
 			<HeaderMenu />
 			<Latex renderFunction={renderLatex} />
 			<Image handleFileUpload={s3Upload} />

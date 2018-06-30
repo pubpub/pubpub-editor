@@ -205,6 +205,7 @@ export const marks = {
 		}
 	},
 	link: {
+		inclusive: false,
 		attrs: {
 			href: { default: '' },
 			title: { default: null },
