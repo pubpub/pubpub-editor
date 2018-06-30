@@ -158,6 +158,7 @@ class Citation extends Component {
 						const counts = {};
 						let didUpdate = false;
 
+						// This seems to just be building a string of all past citation html
 						let oldCitations = '';
 						for (let nodeIndex = 0; nodeIndex < prevState.doc.nodeSize - 1; nodeIndex++) {
 							const curr = prevState.doc.nodeAt(nodeIndex);

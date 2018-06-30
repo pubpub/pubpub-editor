@@ -111,31 +111,31 @@ class Footnote extends Component {
 	static getPlugins({ pluginKey }) {
 		return [new Plugin({
 			key: pluginKey,
-			view: function() {
-				return {
-					update: function(view) {
-						let footnoteCount = 1;
-						for (let nodeIndex = 0; nodeIndex < view.state.doc.nodeSize - 1; nodeIndex++) {
-							const curr = view.state.doc.nodeAt(nodeIndex);
-							if (curr && curr.type.name === 'footnote') {
-								if (curr.attrs.count !== footnoteCount) {
-									const transaction = view.state.tr.setNodeMarkup(
-										nodeIndex,
-										null,
-										{
-											...curr.attrs,
-											count: footnoteCount
-										}
-									);
-									transaction.setMeta('footnote', true);
-									view.dispatch(transaction);
-								}
-								footnoteCount += 1;
+			appendTransaction: (transactions, oldState, newState)=> {
+				let footnoteCount = 1;
+				let didUpdate = false;
+				const newTransaction = newState.tr;
+				newState.doc.nodesBetween(
+					0,
+					newState.doc.nodeSize - 2,
+					(node, nodePos)=> {
+						if (node.type.name === 'footnote') {
+							if (node.attrs.count !== footnoteCount) {
+								didUpdate = true;
+								newTransaction.setNodeMarkup(
+									nodePos,
+									null,
+									{ ...node.attrs, count: footnoteCount }
+								);
+								newTransaction.setMeta('footnote', true);
 							}
+							footnoteCount += 1;
 						}
+						return true;
 					}
-				};
-			},
+				);
+				return didUpdate ? newTransaction : null;
+			}
 		})];
 	}
 
