@@ -36,6 +36,13 @@ class ReactView {
 				null,
 				{ ...oldNodeAttrs, ...nodeAttrs }
 			);
+			if (this.node.type.isInline) {
+				/* Inline nodeviews lose focus on content change */
+				/* this fixes that issue. */
+				const pos = this.getPos();
+				const sel = NodeSelection.create(this.view.state.doc, pos);
+				transaction.setSelection(sel);
+			}
 			this.view.dispatch(transaction);
 		}
 	}
@@ -79,11 +86,20 @@ class ReactView {
 	}
 
 	changeNode(nodeType, attrs, content) {
-		const newNode = nodeType.create(attrs, content);
+		const nodeTrackingId = Math.floor(Math.random() * 999999);
+		const newNode = nodeType.create({
+			...attrs,
+			nodeTrackingId: nodeTrackingId
+		}, content);
 		const start = this.getPos();
 		const end = start + this.node.nodeSize;
-		const transaction = this.view.state.tr.replaceWith(start, end, newNode);
+		const transaction = this.view.state.tr.replaceRangeWith(start, end, newNode);
 		this.view.dispatch(transaction);
+		this.view.focus();
+		/* Changing a node between inline and block will cause it to lose focus */
+		/* Attempting to regain that focus seems difficult due to the fuzzy nature */
+		/* of replaceRangeWith. For the moment, changing from inline to block will */
+		/* simply result in losing focus. */
 	}
 
 	forceSelection() {

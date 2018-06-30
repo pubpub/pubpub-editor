@@ -21,28 +21,19 @@ const propTypes = {
 class LatexEditable extends Component {
 	constructor(props) {
 		super(props);
-		this.state = { html: props.html };
 		this.handleValueChange = this.handleValueChange.bind(this);
 		this.handleHTMLChange = this.handleHTMLChange.bind(this);
 		this.changeToInline = this.changeToInline.bind(this);
 		this.changeToBlock = this.changeToBlock.bind(this);
-		this.refocusNode = this.refocusNode.bind(this);
 		this.portalRefFunc = this.portalRefFunc.bind(this);
-	}
-
-	componentWillReceiveProps(nextProps) {
-		if (this.props.isSelected && !nextProps.isSelected) {
-			this.props.updateAttrs({ html: this.state.html });
-		}
 	}
 
 	changeToInline() {
 		if (this.props.isBlock) {
 			this.props.changeNode(this.props.view.state.schema.nodes.equation, {
 				value: this.props.value,
-				html: this.state.html,
+				html: this.props.html,
 			}, null);
-			this.refocusNode();	
 		}
 	}
 
@@ -50,35 +41,18 @@ class LatexEditable extends Component {
 		if (!this.props.isBlock) {
 			this.props.changeNode(this.props.view.state.schema.nodes.block_equation, {
 				value: this.props.value,
-				html: this.state.html,
+				html: this.props.html,
 			}, null);
-			this.refocusNode(1);
 		}
 	}
 
 	handleValueChange(evt) {
-		this.props.updateAttrs({ value: evt.target.value, html: this.state.html });
-		if (!this.props.isBlock) {
-			this.refocusNode();
-		}
+		this.props.updateAttrs({ value: evt.target.value });
 		this.props.renderFunction(evt.target.value, this.props.isBlock, this.handleHTMLChange);
 	}
 
 	handleHTMLChange(html) {
-		this.setState({ html: html });
-		/* This is a bit funky, but to avoid losing cursor position on */
-		/* an asynchronous update, we use setState to display new HTML. */
-		/* This means that the node attrs still has an HTML value that is one-behind. */
-		/* On deselect of the node, we fire an updateAttrs to make sure */
-		/* that last value is synced to attrs. */
-	}
-
-	refocusNode(offset = 0) {
-		const view = this.props.view;
-		const pos = view.state.selection.from + offset;
-		const sel = NodeSelection.create(view.state.doc, pos);
-		const transaction = view.state.tr.setSelection(sel);
-		view.dispatch(transaction);
+		this.props.updateAttrs({ html: html });
 	}
 
 	portalRefFunc(elem) {
@@ -96,7 +70,7 @@ class LatexEditable extends Component {
 				<div className={`render-wrapper ${this.props.isSelected ? 'isSelected' : ''}`}>
 					<span
 						className={'editable-render'}
-						dangerouslySetInnerHTML={{ __html: this.state.html }}
+						dangerouslySetInnerHTML={{ __html: this.props.html }}
 					/>
 				</div>
 				{this.props.isSelected &&
