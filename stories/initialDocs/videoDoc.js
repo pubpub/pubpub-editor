@@ -8,14 +8,8 @@ const doc = {
 			type: 'paragraph',
 			content: [
 				{
-					type: 'equation',
-					attrs: {
-						value: '\\sum_ix^i'
-					}
-				},
-				{
 					type: 'text',
-					text: ' and hello.'
+					text: 'Hello there and hello.'
 				}
 			]
 		},

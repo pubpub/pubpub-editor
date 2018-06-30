@@ -1,6 +1,6 @@
 .figure-wrapper {
 	text-align: center;
-	user-select: none;
+	// user-select: none;
 	pointer-events: none;
 	a {
 		text-decoration: none !important;
@@ -10,10 +10,10 @@
 		position: relative;
 		text-align: center;
 		display: inline-block;
-		&.isSelected {
-			outline: 3px solid #BBBDC0;
-			background-color: #F0F0F0;
-		}
+		// &.isSelected {
+		// 	outline: 3px solid #BBBDC0;
+		// 	background-color: #F0F0F0;
+		// }
 		.empty-video {
 			background-color: #F0F0F0;
 			border-radius: 2px;
@@ -23,52 +23,71 @@
 				width: 100%;
 			}
 		}
-		.drag-handle {
-			width: 8px;
-			height: 30px;
-			border-radius: 5px;
-			position: absolute;
-			top: calc(50% - 20px);
-			background-color: rgba(0, 0, 0, 0.25);
-			cursor: ew-resize;
-			&.left {
-				left: -15px
-			}
-			&.right {
-				right: -15px
-			}
-		}
+		// .drag-handle {
+		// 	width: 8px;
+		// 	height: 30px;
+		// 	border-radius: 5px;
+		// 	position: absolute;
+		// 	top: calc(50% - 20px);
+		// 	background-color: rgba(0, 0, 0, 0.25);
+		// 	cursor: ew-resize;
+		// 	&.left {
+		// 		left: -15px
+		// 	}
+		// 	&.right {
+		// 		right: -15px
+		// 	}
+		// }
 		video {
-			user-select: none;
+			// user-select: none;
 			display: block;
 			width: 100%;
 		}
 		figcaption {
 			opacity: 0.75;
-		}
-		.options-wrapper {
-			width: 100%;
-			border-top: 1px solid #CCC;
-			background-color: #F9F9F9;
-			padding: 5px;
-			overflow: hidden;
-			.top-row {
-				display: flex;	
-				.right-wrapper {
-					flex-grow: 1;
-					flex-shrink: 1;
-					text-align: right;
-					white-space: nowrap;
-				}
-			}
-			.pt-input {
-				margin: 5px 0px 0px;
+			p {
+				margin-bottom: 0em;
 			}
 		}
+		// .options-wrapper {
+		// 	width: 100%;
+		// 	border-top: 1px solid #CCC;
+		// 	background-color: #F9F9F9;
+		// 	padding: 5px;
+		// 	overflow: hidden;
+		// 	.top-row {
+		// 		display: flex;	
+		// 		.right-wrapper {
+		// 			flex-grow: 1;
+		// 			flex-shrink: 1;
+		// 			text-align: right;
+		// 			white-space: nowrap;
+		// 		}
+		// 	}
+		// 	.pt-input {
+		// 		margin: 5px 0px 0px;
+		// 	}
+		// }
+		// input.file-input {
+		// 	display: none;
+		// }
+	}	
+}
+
+.options-box {
+	.file-select {
+		margin-top: 1em;
+		display: block;
 		input.file-input {
 			display: none;
 		}
-	}	
+	}
+	.source-url {
+		text-overflow: ellipsis;
+		width: 100%;
+		overflow: hidden;
+		white-space: nowrap;
+	}
 }
 
 @media only screen and (max-width: 720px) {  /* 45em or 720px */

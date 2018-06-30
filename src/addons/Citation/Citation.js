@@ -6,11 +6,15 @@ import CitationStatic from './CitationStatic';
 import CitationList from './CitationList';
 
 const propTypes = {
-	formatFunction: PropTypes.func
+	formatFunction: PropTypes.func,
+	onOptionsRender: PropTypes.func,
+	optionsContainerRef: PropTypes.object,
 };
 
 const defaultProps = {
-	formatFunction: (item, callback)=> { callback(`html:${item}`); }
+	formatFunction: (item, callback)=> { callback(`html:${item}`); },
+	onOptionsRender: ()=>{},
+	optionsContainerRef: {},
 };
 
 /**
@@ -81,6 +85,8 @@ class Citation extends Component {
 								view={view}
 								formatFunction={props.formatFunction}
 								{...helperFunctions}
+								onOptionsRender={props.onOptionsRender}
+								optionsContainerRef={props.optionsContainerRef}
 							/>
 						);
 					},

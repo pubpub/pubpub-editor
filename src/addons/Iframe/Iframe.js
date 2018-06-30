@@ -1,7 +1,16 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import IframeEditable from './IframeEditable';
 import IframeStatic from './IframeStatic';
 
+const propTypes = {
+	onOptionsRender: PropTypes.func,
+	optionsContainerRef: PropTypes.object,
+};
+const defaultProps = {
+	onOptionsRender: ()=>{},
+	optionsContainerRef: {},
+};
 /**
 * @module Addons
 */
@@ -19,7 +28,7 @@ return (
 );
 */
 class Iframe extends Component {
-	static schema = ()=> {
+	static schema = (props)=> {
 		return {
 			nodes: {
 				iframe: {
@@ -78,6 +87,8 @@ class Iframe extends Component {
 								isSelected={isSelected}
 								view={view}
 								{...helperFunctions}
+								onOptionsRender={props.onOptionsRender}
+								optionsContainerRef={props.optionsContainerRef}
 							/>
 						);
 					},
@@ -103,4 +114,6 @@ class Iframe extends Component {
 	}
 }
 
+Iframe.propTypes = propTypes;
+Iframe.defaultProps = defaultProps;
 export default Iframe;

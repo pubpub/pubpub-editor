@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { Plugin } from 'prosemirror-state';
 import FootnoteEditable from './FootnoteEditable';
 import FootnoteStatic from './FootnoteStatic';
 
-/*
-All addons get the following props,
-but certain schema-based addons may not need them
-*/
-
-// const propTypes = {
-// 	containerId: PropTypes.string.isRequired,
-// 	view: PropTypes.object.isRequired,
-// 	editorState: PropTypes.object.isRequired,
-// };
+const propTypes = {
+	onOptionsRender: PropTypes.func,
+	optionsContainerRef: PropTypes.object,
+};
+const defaultProps = {
+	onOptionsRender: ()=>{},
+	optionsContainerRef: {},
+};
 
 /**
 * @module Addons
@@ -32,7 +30,7 @@ return (
 );
 */
 class Footnote extends Component {
-	static schema = ()=> {
+	static schema = (props)=> {
 		return {
 			nodes: {
 				footnote: {
@@ -89,6 +87,8 @@ class Footnote extends Component {
 								isSelected={isSelected}
 								view={view}
 								{...helperFunctions}
+								onOptionsRender={props.onOptionsRender}
+								optionsContainerRef={props.optionsContainerRef}
 							/>
 						);
 					},
@@ -107,6 +107,7 @@ class Footnote extends Component {
 	};
 
 	static pluginName = 'Footnote';
+
 	static getPlugins({ pluginKey }) {
 		return [new Plugin({
 			key: pluginKey,
@@ -143,5 +144,6 @@ class Footnote extends Component {
 	}
 }
 
-// Footnote.propTypes = propTypes;
+Footnote.propTypes = propTypes;
+Footnote.defaultProps = defaultProps;
 export default Footnote;

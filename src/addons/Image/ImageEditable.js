@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Portal } from 'react-portal';
 import { AnchorButton, Slider } from '@blueprintjs/core';
-import {EditorState} from "prosemirror-state"
-import {EditorView} from "prosemirror-view"
-import {Schema, DOMParser} from "prosemirror-model"
-import { getBasePlugins } from '../../schema/setup';
+// import { EditorState } from "prosemirror-state"
+// import { EditorView } from "prosemirror-view"
+// import {Schema, DOMParser} from "prosemirror-model"
+// import { getBasePlugins } from '../../schema/setup';
 import SimpleEditor from '../../SimpleEditor';
 
 require('./image.scss');
@@ -117,7 +117,7 @@ class ImageEditable extends Component {
 		};
 
 		return (
-			<div className={'figure-wrapper'}>
+			<div className="figure-wrapper">
 				<figure className={`image ${this.props.isSelected ? 'isSelected' : ''}`} style={figStyle}>
 					{this.props.url &&
 						<img
@@ -127,17 +127,17 @@ class ImageEditable extends Component {
 						/>
 					}
 					{!this.props.url &&
-						<label htmlFor={`new-${this.randKey}`} className={'empty-image pt-elevation-0'}>
+						<label htmlFor={`new-${this.randKey}`} className="empty-image pt-elevation-0">
 							<AnchorButton
-								className={'pt-button pt-large pt-icon-media pt-minimal'}
-								text={'Click to Upload image'}
+								className="pt-button pt-large pt-icon-media pt-minimal"
+								text="Click to Upload image"
 								loading={this.state.uploading}
 							/>
 							<input
 								id={`new-${this.randKey}`}
-								name={'image'}
+								name="image"
 								type="file"
-								className={'file-input'}
+								className="file-input"
 								accept="image/png, image/jpeg, image/gif"
 								onChange={this.handleImageSelect}
 							/>
@@ -153,7 +153,7 @@ class ImageEditable extends Component {
 					>
 						<div className="options-box">
 							<div className="options-title">Image Details</div>
-							{/* Image Size Adjustment */}
+							{/*  Size Adjustment */}
 							<label className="form-label">
 								Size
 							</label>
@@ -170,11 +170,11 @@ class ImageEditable extends Component {
 								// labelStepSize={100}
 							/>
 							
-							{/* Image Alignment Adjustment */}
+							{/*  Alignment Adjustment */}
 							<label className="form-label">
 								Alignment
 							</label>
-							<div className={'pt-button-group pt-fill'}>
+							<div className="pt-button-group pt-fill">
 								{alignOptions.map((item)=> {
 									return (
 										<button
@@ -186,7 +186,7 @@ class ImageEditable extends Component {
 								})}
 							</div>
 							
-							{/* Image Caption Adjustment */}
+							{/*  Caption Adjustment */}
 							<label className="form-label">
 								Caption
 							</label>
@@ -199,7 +199,7 @@ class ImageEditable extends Component {
 								/>
 							</div>
 
-							{/* Image Source Details */}
+							{/*  Source Details */}
 							<label className="form-label">
 								Source
 							</label>
@@ -209,20 +209,20 @@ class ImageEditable extends Component {
 								</a>
 							</div>
 
-							{/* Select New Image File */}
+							{/* Select New  File */}
 							<label htmlFor={this.randKey} className="file-select">
 								<AnchorButton
-									className={'pt-button'}
-									text={'Choose new image'}
+									className="pt-button"
+									text="Choose new image"
 									loading={this.state.uploading}
 								/>
 								<input
 									id={this.randKey}
-									name={'image'}
+									name="image"
 									type="file"
 									accept="image/png, image/jpeg, image/gif"
 									onChange={this.handleImageSelect}
-									className={'file-input'}
+									className="file-input"
 								/>
 							</label>
 						</div>

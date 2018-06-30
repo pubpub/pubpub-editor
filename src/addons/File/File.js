@@ -5,9 +5,13 @@ import FileStatic from './FileStatic';
 
 const propTypes = {
 	handleFileUpload: PropTypes.func,
+	onOptionsRender: PropTypes.func,
+	optionsContainerRef: PropTypes.object,
 };
 const defaultProps = {
 	handleFileUpload: ()=>{},
+	onOptionsRender: ()=>{},
+	optionsContainerRef: {},
 };
 
 /**
@@ -84,6 +88,8 @@ class File extends Component {
 								view={view}
 								{...helperFunctions}
 								onFileUpload={props.handleFileUpload}
+								onOptionsRender={props.onOptionsRender}
+								optionsContainerRef={props.optionsContainerRef}
 							/>
 						);
 					},

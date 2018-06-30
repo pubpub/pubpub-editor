@@ -5,9 +5,13 @@ import LatexStatic from './LatexStatic';
 
 const propTypes = {
 	renderFunction: PropTypes.func,
+	onOptionsRender: PropTypes.func,
+	optionsContainerRef: PropTypes.object,
 };
 const defaultProps = {
 	renderFunction: undefined,
+	onOptionsRender: ()=>{},
+	optionsContainerRef: {},
 };
 
 /**
@@ -79,6 +83,8 @@ class Latex extends Component {
 								view={view}
 								renderFunction={props.renderFunction}
 								{...helperFunctions}
+								onOptionsRender={props.onOptionsRender}
+								optionsContainerRef={props.optionsContainerRef}
 							/>
 						);
 					},
@@ -129,6 +135,8 @@ class Latex extends Component {
 								view={view}
 								renderFunction={props.renderFunction}
 								{...helperFunctions}
+								onOptionsRender={props.onOptionsRender}
+								optionsContainerRef={props.optionsContainerRef}
 							/>
 						);
 					},

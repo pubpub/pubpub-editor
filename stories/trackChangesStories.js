@@ -21,24 +21,27 @@ class Wrapper extends Component {
 
 	render() {
 		return (
-			<div style={editorWrapperStyle}>
+			<div>
 				<button
-					className="pt-button"
+					className={`pt-button ${this.state.isActive ? 'pt-intent-success' : ''}`}
 					onClick={()=> {
 						this.setState({ isActive: !this.state.isActive });
 					}}
+					style={{ marginBottom: '1em' }}
 				>
 					Toggle Active (currently {String(this.state.isActive)})
 				</button>
-				<Editor
-					placeholder="Begin writing..."
-					initialContent={plainDoc}
-				>
-					<TrackChanges
-						isActive={()=> { return this.state.isActive; }}
-						userId={this.state.userId}
-					/>
-				</Editor>
+				<div style={editorWrapperStyle}>
+					<Editor
+						placeholder="Begin writing..."
+						initialContent={plainDoc}
+					>
+						<TrackChanges
+							isActive={()=> { return this.state.isActive; }}
+							userId={this.state.userId}
+						/>
+					</Editor>
+				</div>
 			</div>
 		);
 	}
