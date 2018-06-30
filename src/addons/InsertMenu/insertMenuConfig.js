@@ -4,7 +4,6 @@ export function canUseInsertMenu(state) {
 	const fromObject = state.selection.$from;
 	for (let d = fromObject.depth; d >= 0; d--) {
 		const index = fromObject.index(d);
-		console.log(index, index, nodeType, attrs)
 		if (fromObject.node(d).canReplaceWith(index, index, nodeType, attrs)) { return true; }
 	}
 	return false;

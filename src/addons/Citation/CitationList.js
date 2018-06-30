@@ -5,12 +5,13 @@ import { NonIdealState } from '@blueprintjs/core';
 require('./citation.scss');
 
 const propTypes = {
-	view: PropTypes.object.isRequired,
+	view: PropTypes.object,
 	isSelected: PropTypes.bool,
 	isEditable: PropTypes.bool
 };
 
 const defaultProps = {
+	view: undefined,
 	isSelected: false,
 	isEditable: false,
 };
@@ -19,26 +20,33 @@ const CitationList = function(props) {
 	if (!props.view) { return null; }
 	const citations = [];
 	const usedIndexes = {};
-	for (let nodeIndex = 0; nodeIndex < props.view.state.doc.nodeSize - 1; nodeIndex++) {
-		const curr = props.view.state.doc.nodeAt(nodeIndex);
-		if (curr && curr.type.name === 'citation') {
-			if (!usedIndexes[curr.attrs.count]) {
-				citations.push(curr.attrs);
-				usedIndexes[curr.attrs.count] = true;
+
+	props.view.state.doc.nodesBetween(
+		0,
+		props.view.state.doc.nodeSize - 2,
+		(node)=> {
+			if (node.type.name === 'citation') {
+				if (!usedIndexes[node.attrs.count]) {
+					citations.push(node.attrs);
+					usedIndexes[node.attrs.count] = true;
+				}
 			}
+			return true;
 		}
-	}
+	);
 
 	if (!citations.length && !props.isEditable) { return null; }
 
 	return (
-		<ol className={`citation-list-wrapper ${props.isSelected ? 'selected' : ''} ${props.isEditable ? 'editable' : ''}`}>
+		<ol className={`citation-list-wrapper ${props.isSelected ? 'isSelected' : ''}`}>
 			{citations.map((item)=> {
 				return (
-					<li key={`citation-list-item-${item.count}`} className={'citation-list-item'}>
-						<span className={'count'}>[{item.count}]</span>
+					<li key={`citation-list-item-${item.count}`} className="citation-list-item">
+						<span className="count">
+							[{item.count}]
+						</span>
 						<span
-							className={'rendered-citation'}
+							className="rendered-citation"
 							dangerouslySetInnerHTML={{ __html: item.html }}
 						/>
 					</li>
@@ -46,8 +54,8 @@ const CitationList = function(props) {
 			})}
 			{!citations.length &&
 				<NonIdealState
-					title={'No citations'}
-					description={'This pub does not have any citations to list.'}
+					title="No citations"
+					description="This pub does not have any citations to list."
 				/>
 			}
 		</ol>
