@@ -1,24 +1,16 @@
 @import "./fileicon.scss";
 
-.file-figure-wrapper {
+.figure-wrapper {
 	text-align: center;
-	&.editable {
-		user-select: none;
-		pointer-events: none;
-	}
 	a {
 		text-decoration: none !important;
 	}
-	.file {
+	figure.file {
 		pointer-events: auto;
 		position: relative;
 		text-align: center;
 		display: inline-block;
 		width: 65%;		
-		&.isSelected {
-			outline: 3px solid #BBBDC0;
-			background-color: #F0F0F0;
-		}
 		.empty-image {
 			background-color: #F0F0F0;
 			border-radius: 2px;
@@ -26,6 +18,9 @@
 			.pt-button {
 				padding: 2em 0em;
 				width: 100%;
+			}
+			input {
+				display: none;
 			}
 		}
 		.details {
@@ -57,30 +52,27 @@
 		figcaption {
 			opacity: 0.75;
 			padding-top: 5px;
-		}
-		.options-wrapper {
-			width: 100%;
-			border-top: 1px solid #CCC;
-			background-color: #F9F9F9;
-			padding: 5px;
-			overflow: hidden;
-			.top-row {
-				display: flex;	
-				.right-wrapper {
-					flex-grow: 1;
-					flex-shrink: 1;
-					text-align: right;
-					white-space: nowrap;
-				}
-			}
-			.pt-input {
-				margin: 5px 0px 0px;
+			p {
+				margin-bottom: 0em;
 			}
 		}
+	}	
+}
+
+.options-box {
+	.file-select {
+		margin-top: 1em;
+		display: block;
 		input.file-input {
 			display: none;
 		}
-	}	
+	}
+	.source-url {
+		text-overflow: ellipsis;
+		width: 100%;
+		overflow: hidden;
+		white-space: nowrap;
+	}
 }
 
 @media only screen and (max-width: 720px) {  /* 45em or 720px */

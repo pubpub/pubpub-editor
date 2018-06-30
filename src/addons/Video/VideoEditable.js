@@ -109,6 +109,23 @@ class VideoEditable extends Component {
 							preload="metadata"
 						/>
 					}
+					{!this.props.url &&
+						<label htmlFor={`new-${this.randKey}`} className="empty-video pt-elevation-0">
+							<AnchorButton
+								className="pt-large pt-icon-video pt-minimal"
+								text="Click to Upload video"
+								loading={this.state.uploading}
+							/>
+							<input
+								id={`new-${this.randKey}`}
+								name="video"
+								type="file"
+								className="file-input"
+								accept="video/mp4, video/webm"
+								onChange={this.handleVideoSelect}
+							/>
+						</label>
+					}
 					<figcaption dangerouslySetInnerHTML={{ __html: this.props.caption }} />
 				</figure>
 				{this.props.isSelected && this.props.url &&
