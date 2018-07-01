@@ -2,6 +2,10 @@ import { Schema } from 'prosemirror-model';
 import { marks, nodes } from './baseSchema';
 
 const appendMetaAttr = (nodesObject)=> {
+	// TODO: This breaks 'blockIsActive' in headerMenuConfig
+	// We just have to write blockTypeIsActive to use our own
+	// hasMarkup, that checks to ensure passed attrs exist, rather
+	// than requiring all attrs to match.
 	const newNodes = {};
 	Object.keys(nodesObject).forEach((nodeKey)=> {
 		if (nodeKey === 'text') {

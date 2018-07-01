@@ -1,0 +1,18 @@
+@import "~prosemirror-tables/style/tables.css";
+
+.ProseMirror table {
+	margin: 0;
+	max-width: 100%;
+}
+.ProseMirror th, .ProseMirror td {
+	min-width: 1em;
+	border: 1px solid #ddd;
+	padding: 3px 5px;
+}
+.ProseMirror .tableWrapper {
+	margin: 1em 0;
+}
+.ProseMirror th {
+	font-weight: bold;
+	text-align: left;
+}

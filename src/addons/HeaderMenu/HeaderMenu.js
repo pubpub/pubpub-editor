@@ -87,7 +87,14 @@ class HeaderMenu extends Component {
 											className={`pt-menu-item pt-popover-dismiss ${item.icon || ''}`}
 											onClick={()=> {
 												item.run();
-												this.props.view.focus();
+												setTimeout(()=> {
+													/* Setting focus synchornously seems to  */
+													/* be incorrect and set the focus on the */
+													/* 'previous' view. It causes weird cursor */
+													/* behavior. Asynchronous seems to fix it. */
+													this.props.view.focus();	
+												}, 0);
+												
 											}}
 										>
 											{item.label}

@@ -202,7 +202,7 @@ class LinkMenu extends Component {
 								href={formattedHref}
 								className="preview-href"
 							>
-								{formattedHref}
+								{markHref}
 							</a>
 						</div>
 					</Portal>

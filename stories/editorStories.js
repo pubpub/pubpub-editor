@@ -6,7 +6,9 @@ import HeaderMenu from 'addons/HeaderMenu/HeaderMenu';
 import LinkMenu from 'addons/LinkMenu/LinkMenu';
 import Image from 'addons/Image/Image';
 import Latex from 'addons/Latex/Latex';
+import Table from 'addons/Table/Table';
 import plainDoc from './initialDocs/plainDoc';
+import imageDoc from './initialDocs/imageDoc';
 import { editorWrapperStyle, s3Upload, renderLatex } from './_utilities';
 
 storiesOf('Editor', module)
@@ -29,6 +31,7 @@ storiesOf('Editor', module)
 			<Latex renderFunction={renderLatex} />
 			<Image handleFileUpload={s3Upload} />
 			<LinkMenu />
+			<Table />
 		</Editor>
 	</div>
 ))
