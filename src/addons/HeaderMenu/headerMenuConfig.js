@@ -30,7 +30,7 @@ function getMenuItems(view) {
 
 	/* Blocks */
 	/* -------------- */
-	function blockTypeIsActive(type, attrs) {
+	function blockTypeIsActive(type, attrs = {}) {
 		const $from = view.state.selection.$from;
 
 		let wrapperDepth;
@@ -41,12 +41,21 @@ function getMenuItems(view) {
 			if (currentNodeAtDepth.attrs.id) {
 				comparisonAttrs.id = currentNodeAtDepth.attrs.id;
 			}
-			const isType = currentNodeAtDepth.hasMarkup(type, comparisonAttrs);
-			if (isType) { wrapperDepth = currentDepth; }
+
+			/* Previous versions used node.hasMarkup but that */
+			/* mandates deep equality on attrs. We just want to */
+			/* ensure that everyting in the passed in attrs */
+			/* is present in the node at the depth */
+			const isType = type.name === currentNodeAtDepth.type.name;
+			const hasAttrs = Object.keys(attrs).reduce((prev, curr)=> {
+				if (attrs[curr] !== currentNodeAtDepth.attrs[curr]) { return false; }
+				return prev;
+			}, true);
+
+			if (isType && hasAttrs) { wrapperDepth = currentDepth; }
 			currentDepth -= 1;
 		}
 
-		// return wrapperDepth !== undefined;
 		return wrapperDepth;
 	}
 
