@@ -32,7 +32,14 @@ const defaultProps = {
 	showHeaderLinks: false,
 	renderStaticMarkup: false,
 	onOptionsRender: (nodeDom, optionsDom)=>{
-		optionsDom.style.top = `${nodeDom.offsetTop}px`;
+		const getOffsetTop = (node, runningOffset)=> {
+			if (node.offsetParent.className.split(' ').indexOf('ProseMirror') > -1) {
+				return node.offsetTop + runningOffset;
+			}
+			return getOffsetTop(node.parentNode, node.offsetTop + runningOffset);
+		};
+
+		optionsDom.style.top = `${getOffsetTop(nodeDom, 0)}px`;
 		optionsDom.style.left = `${nodeDom.offsetLeft + nodeDom.offsetWidth}px`;
 		optionsDom.style.width = '250px';
 	}
