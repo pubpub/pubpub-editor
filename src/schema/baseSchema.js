@@ -234,7 +234,8 @@ export const marks = {
 					{children}
 				</a>
 			);
-		}
+		},
+		toEditable: ()=> {}, /* This is a workaround to make the LinkMenu function within tables */ 
 	},
 	sub: {
 		parseDOM: [{ tag: 'sub' }],

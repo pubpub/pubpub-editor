@@ -137,11 +137,32 @@ class Table extends Component {
 	}
 
 	render() {
+		const nodeAtPos = this.props.editorState.doc.nodeAt(this.props.view.state.selection.from);
+		const otherMenuFromPosNode = nodeAtPos && !!nodeAtPos.type.spec.toEditable;
+		const otherMenuFromPosMarks = nodeAtPos && nodeAtPos.marks.reduce((prev, curr)=> {
+			if (curr.type.spec.toEditable) { return true; }
+		}, false);
+
+		/* We do PosShift to account for non-inclusive marks that have menus, such as links. */
+		/* If there is an inclusive mark that has a menu, this will probably break functionality */
+		/* If we need to, maybe we should attach a 'showMenuAtPos' function on all marks with menus */
+		/* so that we can let the mark define its active behavior and call that from the MarkType spec */
+		/* If links are the only type though - then it seems like premature optimization to do that now */
+		const nodeAtPosShift = this.props.editorState.doc.nodeAt(this.props.view.state.selection.from - 1);
+		const otherMenuFromPosShiftMarks = nodeAtPosShift && nodeAtPosShift.marks.reduce((prev, curr)=> {
+			if (curr.type.spec.toEditable) { return true; }
+		}, false);
+
 		const tableSelected = isInTable(this.props.editorState);
-		if (tableSelected) { this.portalRefFunc(); }
+		const showMenu = tableSelected &&
+			!otherMenuFromPosNode &&
+			!otherMenuFromPosMarks &&
+			!otherMenuFromPosShiftMarks;
+
+		if (showMenu) { this.portalRefFunc(); }
 		return (
 			<div className="table-menu">
-				{tableSelected &&
+				{showMenu &&
 					<Portal 
 						node={this.props.optionsContainerRef.current}
 					>
