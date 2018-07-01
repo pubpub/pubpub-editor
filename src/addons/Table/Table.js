@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { Fragment } from "prosemirror-model"
 import { TextSelection } from "prosemirror-state"
 import { keymap }  from "prosemirror-keymap"
-import { tableNodes, columnResizing, tableEditing, goToNextCell, isInTable } from 'prosemirror-tables';
+import { tableNodes, columnResizing, tableEditing, goToNextCell, isInTable, deleteTable, mergeCells, splitCell, addRowBefore, addRowAfter, deleteRow, addColumnBefore, addColumnAfter, deleteColumn, toggleHeaderRow, toggleHeaderColumn, toggleHeaderCell } from 'prosemirror-tables';
 import { Portal } from 'react-portal';
+import { Button } from '@blueprintjs/core';
 
 /* Notes
 It seems like column widths are pixel based, which means they won't adjust responsively
@@ -123,37 +124,148 @@ class Table extends Component {
 
 	portalRefFunc(elem) {
 		/* Used to call onOptioneRender so that optionsBox can be placed */
-		if (elem) {
-			const domAtPos = this.props.view.domAtPos(this.props.view.state.selection.from);
-			const findTableElement = (node)=> {
-				if (node.nodeName === 'BODY') { return undefined; }
-				if (node.nodeName === 'TABLE') { return node; }
-				return findTableElement(node.parentNode);
-			}
-			const nodeDom = findTableElement(domAtPos.node);
-			if (nodeDom) {
-				this.props.onOptionsRender(nodeDom, this.props.optionsContainerRef.current);	
-			}
+		const domAtPos = this.props.view.domAtPos(this.props.view.state.selection.from);
+		const findTableElement = (node)=> {
+			if (node.nodeName === 'BODY') { return undefined; }
+			if (node.nodeName === 'TR') { return node; }
+			return findTableElement(node.parentNode);
+		}
+		const nodeDom = findTableElement(domAtPos.node);
+		if (nodeDom) {
+			this.props.onOptionsRender(nodeDom, this.props.optionsContainerRef.current);	
 		}
 	}
 
 	render() {
-		console.log('isInTable: ', isInTable(this.props.editorState));
+		const tableSelected = isInTable(this.props.editorState);
+		if (tableSelected) { this.portalRefFunc(); }
 		return (
 			<div className="table-menu">
-				{isInTable(this.props.editorState) &&
+				{tableSelected &&
 					<Portal 
-						ref={this.portalRefFunc} 
 						node={this.props.optionsContainerRef.current}
 					>
 						<div className="options-box">
 							<div className="options-title">Table Details</div>
 							
-							{/*  Size Adjustment */}
+							{/*  Row Adjustment */}
 							<label className="form-label">
-								Size
+								Row
 							</label>
-							
+							<div className="pt-button-group pt-fill">
+								<Button
+									disabled={!addRowBefore(this.props.editorState)}
+									onClick={()=> {
+										addRowBefore(this.props.editorState, this.props.view.dispatch);
+									}}
+									text="Add Above"
+								/>
+								<Button
+									disabled={!addRowAfter(this.props.editorState)}
+									onClick={()=> {
+										addRowAfter(this.props.editorState, this.props.view.dispatch);
+									}}
+									text="Add Below"
+								/>
+							</div>
+							<div className="pt-button-group pt-fill">
+								<Button
+									disabled={!toggleHeaderRow(this.props.editorState)}
+									onClick={()=> {
+										toggleHeaderRow(this.props.editorState, this.props.view.dispatch);
+									}}
+									text="Toggle Header"
+								/>
+								<Button
+									disabled={!deleteRow(this.props.editorState)}
+									onClick={()=> {
+										deleteRow(this.props.editorState, this.props.view.dispatch);
+									}}
+									text="Delete"
+								/>
+							</div>
+
+							{/*  Column Adjustment */}
+							<label className="form-label">
+								Column
+							</label>
+							<div className="pt-button-group pt-fill">
+								<Button
+									disabled={!addColumnBefore(this.props.editorState)}
+									onClick={()=> {
+										addColumnBefore(this.props.editorState, this.props.view.dispatch);
+									}}
+									text="Add Left"
+								/>
+								<Button
+									disabled={!addColumnAfter(this.props.editorState)}
+									onClick={()=> {
+										addColumnAfter(this.props.editorState, this.props.view.dispatch);
+									}}
+									text="Add Right"
+								/>
+							</div>
+							<div className="pt-button-group pt-fill">
+								<Button
+									disabled={!toggleHeaderColumn(this.props.editorState)}
+									onClick={()=> {
+										toggleHeaderColumn(this.props.editorState, this.props.view.dispatch);
+									}}
+									text="Toggle Header"
+								/>
+								<Button
+									disabled={!deleteColumn(this.props.editorState)}
+									onClick={()=> {
+										deleteColumn(this.props.editorState, this.props.view.dispatch);
+									}}
+									text="Delete"
+								/>
+							</div>
+
+							{/*  Cell Adjustment */}
+							<label className="form-label">
+								Cell
+							</label>
+							<div className="pt-button-group pt-fill">
+								<Button
+									disabled={!mergeCells(this.props.editorState)}
+									onClick={()=> {
+										mergeCells(this.props.editorState, this.props.view.dispatch);
+									}}
+									text="Merge Cells"
+								/>
+								<Button
+									disabled={!splitCell(this.props.editorState)}
+									onClick={()=> {
+										splitCell(this.props.editorState, this.props.view.dispatch);
+									}}
+									text="Split Cell"
+								/>
+							</div>
+							<div className="pt-button-group pt-fill">
+								<Button
+									disabled={!toggleHeaderCell(this.props.editorState)}
+									onClick={()=> {
+										toggleHeaderCell(this.props.editorState, this.props.view.dispatch);
+									}}
+									text="Toggle Header Cell"
+								/>
+							</div>
+
+							{/*  Table Adjustment */}
+							<label className="form-label">
+								Table
+							</label>
+							<div className="pt-button-group pt-fill">
+								<Button
+									disabled={!deleteTable(this.props.editorState)}
+									onClick={()=> {
+										deleteTable(this.props.editorState, this.props.view.dispatch);
+										this.props.view.focus();
+									}}
+									text="Delete Table"
+								/>
+							</div>
 						</div>
 					</Portal>
 				}

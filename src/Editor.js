@@ -32,7 +32,6 @@ const defaultProps = {
 	showHeaderLinks: false,
 	renderStaticMarkup: false,
 	onOptionsRender: (nodeDom, optionsDom)=>{
-		const nodeDomCoords = nodeDom.getBoundingClientRect();
 		optionsDom.style.top = `${nodeDom.offsetTop}px`;
 		optionsDom.style.left = `${nodeDom.offsetLeft + nodeDom.offsetWidth}px`;
 		optionsDom.style.width = '250px';
