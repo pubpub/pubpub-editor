@@ -39,8 +39,8 @@ const ImageStatic = function(props) {
 			alt={props.caption}
 			onError={(evt)=> {
 				/* If the resizer fails, try using the original url */
-				if (evt.target.src !== this.props.url) {
-					evt.target.src = this.props.url;
+				if (evt.target.src !== props.url) {
+					evt.target.src = props.url;
 				}
 			}}
 		/>
