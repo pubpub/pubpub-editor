@@ -130,7 +130,6 @@ class Editor extends Component {
 		const tr = this.view.state.tr;
 		tr.setSelection(Selection.atStart(this.view.state.doc));
 
-
 		/* Insert each node of newDoc to current doc */
 		/* Note, we don't want to just replaceSelectionWith(newDoc) */
 		/* because it will add a doc within a doc. */

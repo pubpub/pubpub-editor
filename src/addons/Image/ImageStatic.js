@@ -33,7 +33,18 @@ const ImageStatic = function(props) {
 
 	if (!props.url) { return null; }
 	const imageUrl = props.handleResizeUrl ? props.handleResizeUrl(props.url) : props.url;
-	const imgElement = <img src={imageUrl} alt={props.caption} />;
+	const imgElement = (
+		<img
+			src={imageUrl}
+			alt={props.caption}
+			onError={(evt)=> {
+				/* If the resizer fails, try using the original url */
+				if (evt.target.src !== this.props.url) {
+					evt.target.src = this.props.url;
+				}
+			}}
+		/>
+	);
 	return (
 		<div className={'figure-wrapper'}>
 			<figure className={'image'} style={figStyle}>

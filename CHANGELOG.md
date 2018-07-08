@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.12.0] - 2018-06-08
+- fix: Add non-resized fallback in case image resizer fails.
+
 ## [4.11.0] - 2018-06-20
 - feature: Add importHtml function to <Editor />.
 

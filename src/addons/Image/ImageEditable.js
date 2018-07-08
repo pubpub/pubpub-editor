@@ -131,6 +131,12 @@ class ImageEditable extends Component {
 							src={this.state.imageBlob || imageUrl}
 							alt={this.props.caption}
 							style={{ opacity: this.state.uploading ? 0 : 1 }}
+							onError={(evt)=> {
+								/* If the resizer fails, try using the original url */
+								if (evt.target.src !== this.props.url) {
+									evt.target.src = this.props.url;
+								}
+							}}
 						/>
 					}
 					{!this.props.url &&
