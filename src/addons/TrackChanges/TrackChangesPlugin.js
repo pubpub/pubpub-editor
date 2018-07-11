@@ -3,7 +3,7 @@ import { Decoration, DecorationSet } from 'prosemirror-view';
 
 // DONE: Track formatting
 // Track new lines
-// Track nodes
+// Track nodes - this seems to be always done with ReplaceStep. So we need to handle it there.
 // DONE: Restore initial state. If the invert function is equivalent to null - then remove
 // NOPE: Maybe I need to be calling changeset on the stored inverted steps.
 // DONE: blockquote error - when trying to use > to generate a block, same for bullet list
@@ -24,6 +24,45 @@ Mark Deletes:
 	On accept, remove mark
 	On reject, remove markType listed in mark
 */
+
+
+// For diffing arbitrary versions:
+// Get the step number of the base, get the step number of the active.
+// Build the doc up to the step number of the base, use that to init changeset.
+// Get and apply all steps between baseStep and activeStep, render contents from changeset.
+// We could do this on the fly, but we would need to have the stepNumber of each version stored.
+// We may have to go back and try to compute this for all pubs.
+
+
+
+/*
+
+For joining paragraphs and the such, we probably want to check the inverted step.
+When you delete text-paragraph break-text, that will manifest as three changes. Delete text, merge paragraph, delete text.
+Need to store what was replaced - so we can invert properly. e.g. rejecting the replacing of a paragraph with text with an image isn't just removing the image.
+So what - we store the slice of the inverted step?
+Or - we don't need to store deleted slices, since we ar applying the inverse and can simply approve the deletion.
+I could store timestamp on changes, and use that to group items that are from a single event. Would have to take the existing timestamp if it exists, otherwise create new one.
+
+On paragraph delete, we store on the second paragraph a 'merge paragraph' flag in the attrs.
+On paragraph create, store a create flag
+
+
+If replaces a range, check if it is a single node (check if openstart, openend).
+	Apply inverted
+	Find text bits and apply marks
+	Find nodes and apply marks
+	Nodes replacing paragraphs (e.g. inserting an image on a blank line) cause to !== from, so we shouldnt invert that
+If doesn't replace range, 
+	find text bits and apply marks
+	Find nodes and apply marks
+	Mark whether it has openstart/openend, so we know whether to join paragraphs on it's removal
+If change mark, do that step
+If isReplaceAround,
+	Mark the node, and mark what it was beforehand?
+	Keep track of structure
+*/
+
 
 class TrackChangesPlugin extends Plugin {
 	constructor({ pluginKey, isActive, usersData, userId }) {
@@ -67,7 +106,10 @@ class TrackChangesPlugin extends Plugin {
 				}).forEach((transaction)=> {
 					const isInputRulesPlugin = transaction.meta[inputRulesPluginKey];
 					transaction.steps.forEach((step)=> {
-						console.log(step);
+						// const invertedStep = step.invert(oldState.doc);
+						console.log('-------------');
+						console.log(JSON.stringify(step.toJSON(), null, 4));
+						// console.log(JSON.stringify(invertedStep.toJSON(), null, 4));
 						const isInsert = step.from === step.to;
 						const isReplace = step.jsonID === 'replace';
 						const isAddMark = step.jsonID === 'addMark';
@@ -76,6 +118,7 @@ class TrackChangesPlugin extends Plugin {
 						if (isInsert && isReplace) {
 							/* If we're inserting content, wrap it in add mark */
 							/* and make sure it does not have a deletion mark */
+							// console.log(step.slice);
 							newTransaction.addMark(
 								step.from,
 								step.from + step.slice.size,
@@ -86,7 +129,44 @@ class TrackChangesPlugin extends Plugin {
 								step.from + step.slice.size,
 								deletionMarkType
 							);
+
+							step.slice.content.nodesBetween(
+								0,
+								step.slice.size,
+								(node, nodePos)=> {
+									// TODO: Is this sufficient for applying data to new nodes?
+									// Do we want to label every node? Or do we just want to label the top-most node.
+									// Probably every, because table rows that are added, might be tricky to resolve, if
+									// we are otherwise checking for upper nodes. Tends to be tough to navigate upward
+									// through the tree, right? So finding if something is a child might be tricky.
+									// Doesn't hurt to label every node, does it? We just have to figure out why it isn't working
+
+									// console.log(node);
+									if (node.type.name !== 'text') {
+										console.log('in here', node.type.name, nodePos, nodePos);
+										console.log('-----');
+										console.log(transaction.doc.nodeAt(nodePos + step.slice.openStart - 3) && transaction.doc.nodeAt(nodePos + step.slice.openStart - 3).type.name);
+										console.log(transaction.doc.nodeAt(nodePos + step.slice.openStart - 2) && transaction.doc.nodeAt(nodePos + step.slice.openStart - 2).type.name);
+										console.log(transaction.doc.nodeAt(nodePos + step.slice.openStart - 1) && transaction.doc.nodeAt(nodePos + step.slice.openStart - 1).type.name);
+										console.log(transaction.doc.nodeAt(nodePos + step.slice.openStart) && transaction.doc.nodeAt(nodePos + step.slice.openStart).type.name);
+										console.log(transaction.doc.nodeAt(nodePos + step.slice.openStart + 1) && transaction.doc.nodeAt(nodePos + step.slice.openStart + 1).type.name);
+										console.log(transaction.doc.nodeAt(nodePos + step.slice.openStart + 2) && transaction.doc.nodeAt(nodePos + step.slice.openStart + 2).type.name);
+										console.log(transaction.doc.nodeAt(nodePos + step.slice.openStart + 3) && transaction.doc.nodeAt(nodePos + step.slice.openStart + 3).type.name);
+										console.log('-----');
+										
+										newTransaction.setNodeMarkup(nodePos + step.slice.openStart, null, { ...node.attrs, trackChangesData: { userId: userId } }, []);
+									}
+									// return false;
+								},
+								step.from
+							);
 						} else if (isReplace && !isInputRulesPlugin) {
+							// TODO: It seems that some inserts are not isInsert.
+							// Inserting an image into a blank paragraph is actually replacing
+							// the paragraph - causing step.to !== step.from
+							// We need to handle marking nodes when this is the case.
+
+
 							/* If we are deleting content... */
 							/* First invert the step to 'undo' the change */
 							/* and then apply the deletion marker */
@@ -114,6 +194,20 @@ class TrackChangesPlugin extends Plugin {
 											}, false);
 
 											if (hasInsertionMark) {
+												newTransaction.delete(
+													appendedStep.from + runningOffset,
+													appendedStep.from + runningOffset + node.nodeSize
+												);
+											} else {
+												runningOffset += node.nodeSize;
+											}
+										} else {
+											// TODO: is this enough to remove inserted nodes?
+											// If so, it can be merged with the statement above.
+											// Do isInsertion = type === 'text' ? code : code;
+											// And then the deletion, or offset update is the same
+											const hasInsertionData = !!node.attrs.trackChangesData.userId;
+											if (hasInsertionData) {
 												newTransaction.delete(
 													appendedStep.from + runningOffset,
 													appendedStep.from + runningOffset + node.nodeSize
@@ -221,7 +315,7 @@ class TrackChangesPlugin extends Plugin {
 								}
 							);
 						} else if (isReplaceAround) {
-							console.log('Ya we replace around!');
+							// console.log('Ya we replace around!');
 							// It seems for these we want to use decorations to style the nodes.
 							// we can pass some data through attrs that are applied on each node?
 							// Currently this is in schema setup - can we do this in this plugin?
@@ -232,7 +326,7 @@ class TrackChangesPlugin extends Plugin {
 							// 	newTransaction.setNodeMarkup(offset, null, { ...node.attrs, class: 'cat', trackChangesData: { userId: userId } }, []);
 							// });
 							const newNode = newTransaction.doc.nodeAt(step.from);
-							console.log('newNode', newNode);
+							// console.log('newNode', newNode);
 							newTransaction.setNodeMarkup(step.from, null, { ...newNode.attrs, trackChangesData: { userId: userId } }, []);
 							// transaction.doc.nodesBetween(
 							// 	step.from,
@@ -242,6 +336,8 @@ class TrackChangesPlugin extends Plugin {
 							// 		return false;
 							// 	},
 							// );
+						} else {
+							console.error('Danger! We got a step we dont have trackChanges support for: ', step);
 						}
 					});
 				});
@@ -253,7 +349,7 @@ class TrackChangesPlugin extends Plugin {
 			decorations: (editorState)=> {
 				const decorations = [];
 				editorState.doc.forEach((node, offset)=> {
-					console.log(node.attrs);
+					// console.log(node.attrs);
 					if (node.attrs.trackChangesData.userId) {
 						const decoration = Decoration.node(
 							offset,

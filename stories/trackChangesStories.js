@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import { storiesOf } from '@storybook/react';
 import { Editor } from 'index';
+import HeaderMenu from 'addons/HeaderMenu/HeaderMenu';
 import TrackChanges from 'addons/TrackChanges/TrackChanges';
-import { editorWrapperStyle } from './_utilities';
+import Image from 'addons/Image/Image';
+import Latex from 'addons/Latex/Latex';
+import Table from 'addons/Table/Table';
+import { editorWrapperStyle, s3Upload, renderLatex } from './_utilities';
 import plainDoc from './initialDocs/plainDoc';
 
 storiesOf('TrackChanges', module)
@@ -36,6 +40,10 @@ class Wrapper extends Component {
 						placeholder="Begin writing..."
 						initialContent={plainDoc}
 					>
+						<HeaderMenu />
+						<Latex renderFunction={renderLatex} />
+						<Image handleFileUpload={s3Upload} />
+						<Table />
 						<TrackChanges
 							isActive={()=> { return this.state.isActive; }}
 							userId={this.state.userId}

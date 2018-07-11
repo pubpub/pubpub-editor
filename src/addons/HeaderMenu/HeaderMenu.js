@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Portal } from 'react-portal';
 import { Popover, PopoverInteractionKind, Position } from '@blueprintjs/core';
 import getMenuItems from './headerMenuConfig';
 import { getMenuItems as getInsertItems, canUseInsertMenu } from '../InsertMenu/insertMenuConfig';
@@ -11,6 +12,7 @@ const propTypes = {
 	containerId: PropTypes.string,
 	view: PropTypes.object,
 	editorState: PropTypes.object,
+	wrapperDomNode: PropTypes.object,
 };
 
 const defaultProps = {
@@ -18,6 +20,7 @@ const defaultProps = {
 	containerId: undefined,
 	view: undefined,
 	editorState: undefined,
+	wrapperDomNode: undefined,
 };
 
 
@@ -45,10 +48,9 @@ class HeaderMenu extends Component {
 			if (this.props.include.length === 0) { return true; }
 			return this.props.include.indexOf(item.title) > -1;
 		});
-
 		const insertItems = getInsertItems(this.props.view);
 
-		return (
+		const menu = (
 			<div className="header-menu">
 				{menuItems.map((item)=> {
 					const onClick = ()=> {
@@ -112,6 +114,11 @@ class HeaderMenu extends Component {
 				</Popover>
 			</div>
 		);
+
+		if (this.props.wrapperDomNode) {
+			return <Portal node={this.props.wrapperDomNode}>{menu}</Portal>
+		}
+		return menu;
 	}
 }
 
