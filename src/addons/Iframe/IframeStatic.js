@@ -39,11 +39,11 @@ const IframeStatic = function(props) {
 					src={props.url}
 					height={`${props.height}px`}
 					allowFullScreen
-					frameBorder={'0'}
+					frameBorder="0"
 				/>
-				<figcaption>
-					{props.caption}
-				</figcaption>
+				{props.caption &&
+					<figcaption dangerouslySetInnerHTML={{ __html: props.caption }} />
+				}
 			</figure>
 		</div>
 	);

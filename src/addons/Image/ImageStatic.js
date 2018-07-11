@@ -45,7 +45,9 @@ const ImageStatic = function(props) {
 				{!props.linkToSrc &&
 					imgElement
 				}
-				<figcaption dangerouslySetInnerHTML={{ __html: props.caption }} />
+				{props.caption &&
+					<figcaption dangerouslySetInnerHTML={{ __html: props.caption }} />
+				}
 			</figure>
 		</div>
 	);

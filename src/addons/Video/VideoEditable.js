@@ -126,7 +126,9 @@ class VideoEditable extends Component {
 							/>
 						</label>
 					}
-					<figcaption dangerouslySetInnerHTML={{ __html: this.props.caption }} />
+					{this.props.caption &&
+						<figcaption dangerouslySetInnerHTML={{ __html: this.props.caption }} />
+					}
 				</figure>
 				{this.props.isSelected && this.props.url &&
 					<Portal 

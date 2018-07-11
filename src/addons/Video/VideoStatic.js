@@ -37,9 +37,9 @@ const VideoStatic = function(props) {
 					src={props.url}
 					preload="metadata"
 				/>
-				<figcaption>
-					{props.caption}
-				</figcaption>
+				{props.caption &&
+					<figcaption dangerouslySetInnerHTML={{ __html: props.caption }} />
+				}
 			</figure>
 		</div>
 	);

@@ -31,9 +31,9 @@ const ImageStatic = function(props) {
 					<div className={'file-size'} >{props.fileSize}</div>
 					<a className={'pt-button pt-icon-download'} href={props.url} target={'_blank'} />
 				</div>
-				<figcaption>
-					{props.caption}
-				</figcaption>
+				{props.caption &&
+					<figcaption dangerouslySetInnerHTML={{ __html: props.caption }} />
+				}
 			</div>
 		</div>
 	);

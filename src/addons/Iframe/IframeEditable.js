@@ -98,7 +98,9 @@ class IframeEditable extends Component {
 							Enter Source URL
 						</label>
 					}
-					<figcaption dangerouslySetInnerHTML={{ __html: this.props.caption }} />
+					{this.props.caption &&
+						<figcaption dangerouslySetInnerHTML={{ __html: this.props.caption }} />
+					}
 				</figure>
 				{this.props.isSelected &&
 					<Portal 
