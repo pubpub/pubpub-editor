@@ -107,7 +107,7 @@ class HeaderMenu extends Component {
 						</ul>
 					}
 				>
-					<button type="button" className="dropdown-button pt-button pt-minimal">
+					<button type="button" className="dropdown-button pt-button pt-minimal pt-small">
 						Insert
 						<span className="pt-icon-standard pt-icon-caret-down pt-align-right" />
 					</button>
