@@ -54,8 +54,8 @@ storiesOf('HighlightMenu', module)
 				onNewDiscussion={(data)=>{
 					console.log('New discussion', data);
 				}}
-				onDotClick={(thing)=> {
-					console.log('Clicked selection ', thing);
+				onDotClick={(thing, targetNode)=> {
+					console.log('Clicked selection ', thing, targetNode);
 				}}
 				// versionId={'1233-asd3-as23-asf3'}
 			/>

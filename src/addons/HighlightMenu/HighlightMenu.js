@@ -337,8 +337,8 @@ class HighlightMenu extends Component {
 									style={{ top: item.top + ((stringHash(item.id) % 10)) }}
 									onMouseEnter={()=> { this.handleMouseEnter(item.id); }}
 									onMouseLeave={()=> { this.handleMouseLeave(item.id); }}
-									onClick={()=> {
-										this.props.onDotClick(item.id);
+									onClick={(evt)=> {
+										this.props.onDotClick(item.id, evt.target);
 									}}
 								>
 									{this.state.activeHover === item.id &&
