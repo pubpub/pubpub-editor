@@ -9,8 +9,17 @@
 	border: 1px solid #ddd;
 	padding: 3px 5px;
 }
+/* This clunky table, tableWrapper thing is because */
+/* isReadOnly removes the wrapping div, so margins don't */
+/* collapse as expected in all situations. */
+.ProseMirror table {
+	margin: 1em 0;
+}
 .ProseMirror .tableWrapper {
 	margin: 1em 0;
+	table {
+		margin: 0em;
+	}
 }
 .ProseMirror th {
 	font-weight: bold;

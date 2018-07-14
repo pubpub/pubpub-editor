@@ -221,6 +221,7 @@ class Editor extends Component {
 						...child.props,
 						pluginKey: key,
 						getPlugin: this.getPlugin,
+						isReadOnly: this.props.isReadOnly,
 					});
 					plugins = plugins.concat(addonPlugins);
 				}
@@ -316,6 +317,7 @@ class Editor extends Component {
 							pluginKey: this.state.pluginKeys[child.type.pluginName],
 							optionsContainerRef: this.optionsContainerRef,
 							onOptionsRender: this.props.onOptionsRender,
+							isReadOnly: this.props.isReadOnly,
 						});
 					})
 					: null

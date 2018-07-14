@@ -20,6 +20,7 @@ const propTypes = {
 	editorState: PropTypes.object,
 	onOptionsRender: PropTypes.func.isRequired,
 	optionsContainerRef: PropTypes.object.isRequired,
+	isReadOnly: PropTypes.bool.isRequired,
 };
 
 const defaultProps = {
@@ -47,15 +48,17 @@ return (
 class Table extends Component {
 	static pluginName = 'Table';
 
-	static getPlugins({ pluginKey, isActive, usersData, userId }) {
-		return [
-			columnResizing(),
-			tableEditing(),
-			keymap({
-				"Tab": goToNextCell(1),
-				"Shift-Tab": goToNextCell(-1)
-			})
-		];
+	static getPlugins({ pluginKey, isReadOnly }) {
+		return isReadOnly
+			? []
+			: [
+				columnResizing(),
+				tableEditing(),
+				keymap({
+					"Tab": goToNextCell(1),
+					"Shift-Tab": goToNextCell(-1)
+				})
+			];
 	}
 
 	static schema = (props)=> {
@@ -137,6 +140,8 @@ class Table extends Component {
 	}
 
 	render() {
+		if (this.props.isReadOnly) { return null; }
+
 		const nodeAtPos = this.props.editorState.doc.nodeAt(this.props.view.state.selection.from);
 		const otherMenuFromPosNode = nodeAtPos && !!nodeAtPos.type.spec.toEditable;
 		const otherMenuFromPosMarks = nodeAtPos && nodeAtPos.marks.reduce((prev, curr)=> {

@@ -79,7 +79,7 @@ import { Plugin } from 'prosemirror-state';
 
 class NewAddon extends Component {
     static pluginName = 'newAddonPlugin';
-    static getPlugins({ pluginKey }) {
+    static getPlugins({ pluginKey, isReadOnly }) {
         return [new Plugin({
             key: pluginKey,
             view: function() { }
@@ -91,7 +91,7 @@ class NewAddon extends Component {
     }
 }
 ```
-The `getPlugins` function is passed the pluginKey (which can be used to access the plugin - see [ProseMirror docs](https://prosemirror.net/docs/ref/#state.PluginKey)) in addition to any original props passed to the addon component when instantiated.
+The `getPlugins` function is passed the pluginKey (which can be used to access the plugin - see [ProseMirror docs](https://prosemirror.net/docs/ref/#state.PluginKey)) and the Editor's isReadOnly prop, in addition to any original props passed to the addon component when instantiated.
 
 #### ProseMirror NodeView 
 Addons can take advantage of [ProseMirror's NodeView interface](https://prosemirror.net/docs/ref/#view.NodeView) to create custom editable elements inside the document. Addons are able to add a schema element to the [ProseMirror schema](https://prosemirror.net/docs/ref/#model.Schema) that will render as a React component of your design.
