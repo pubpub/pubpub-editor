@@ -10,25 +10,9 @@
 		user-select: none;
 	}
 	h1, h2, h3, h4, h5, h6 {
-		position: relative;
-		.header-link {
-			position: absolute;
-			display: inline;
-			opacity: 0;
-			transition: .1s linear opacity;
-			height: 1em;
-			width: 1em;
-			right: 100%;
-			top: 0;
-		}
-		&:hover {
-			.header-link {
-				opacity: 0.5;
-				&:hover {
-					opacity: 1;
-					background-color: transparent;
-				}
-			}
+		a {
+			text-decoration: none;
+			color: inherit;
 		}
 	}
 }

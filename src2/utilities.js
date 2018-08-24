@@ -14,7 +14,6 @@ export const renderStatic = (schema, nodeArray, editorProps)=> {
 
 		const nodeWithIndex = node;
 		nodeWithIndex.currIndex = index;
-		// const NodeComponent = schema.nodes[node.type].spec.toStatic(nodeWithIndex, children, this.props);
 		const customOptions = editorProps.nodeOptions[node.type] || {};
 		const mergedOptions = { ...schema.nodes[node.type].defaultOptions, ...customOptions };
 		const NodeComponent = schema.nodes[node.type].spec.toStatic(nodeWithIndex, mergedOptions, false, false, editorProps, children);

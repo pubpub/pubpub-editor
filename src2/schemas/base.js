@@ -77,18 +77,18 @@ export const baseNodes = {
 			if (!node.attrs.id) {
 				return [`h${node.attrs.level}`, { id: node.attrs.id }, 0];
 			}
-			return [`h${node.attrs.level}`, { id: node.attrs.id }, ['span', 0], ['a', { href: `#${node.attrs.id}`, contenteditable: 'false', class: 'header-link pt-button pt-minimal pt-icon-link' }]];
+			return [`h${node.attrs.level}`, { id: node.attrs.id }, ['a', { href: `#${node.attrs.id}` }, 0]];
 		},
 		toStatic(node, options, isSelected, isEditable, editorProps, children) {
-			const headerLink = node.attrs.id && editorProps.showHeaderLinks
-				? <a href={`#${node.attrs.id}`} contentEditable="false" className="header-link pt-button pt-minimal pt-icon-link" />
-				: null;
-			if (node.attrs.level === 1) { return <h1 key={node.currIndex} id={node.attrs.id}>{children}{headerLink}</h1>; }
-			if (node.attrs.level === 2) { return <h2 key={node.currIndex} id={node.attrs.id}>{children}{headerLink}</h2>; }
-			if (node.attrs.level === 3) { return <h3 key={node.currIndex} id={node.attrs.id}>{children}{headerLink}</h3>; }
-			if (node.attrs.level === 4) { return <h4 key={node.currIndex} id={node.attrs.id}>{children}{headerLink}</h4>; }
-			if (node.attrs.level === 5) { return <h5 key={node.currIndex} id={node.attrs.id}>{children}{headerLink}</h5>; }
-			if (node.attrs.level === 6) { return <h6 key={node.currIndex} id={node.attrs.id}>{children}{headerLink}</h6>; }
+			const childContent = node.attrs.id
+				? <a href={`#${node.attrs.id}`}>{children}</a>
+				: children;
+			if (node.attrs.level === 1) { return <h1 key={node.currIndex} id={node.attrs.id}>{childContent}</h1>; }
+			if (node.attrs.level === 2) { return <h2 key={node.currIndex} id={node.attrs.id}>{childContent}</h2>; }
+			if (node.attrs.level === 3) { return <h3 key={node.currIndex} id={node.attrs.id}>{childContent}</h3>; }
+			if (node.attrs.level === 4) { return <h4 key={node.currIndex} id={node.attrs.id}>{childContent}</h4>; }
+			if (node.attrs.level === 5) { return <h5 key={node.currIndex} id={node.attrs.id}>{childContent}</h5>; }
+			if (node.attrs.level === 6) { return <h6 key={node.currIndex} id={node.attrs.id}>{childContent}</h6>; }
 			return null;
 		}
 	},
