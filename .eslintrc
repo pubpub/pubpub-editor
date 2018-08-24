@@ -26,6 +26,7 @@
 		"object-shorthand": 0,
 		"object-curly-newline": 0,
 		"operator-linebreak": 0,
+		"prefer-destructuring": 0,
 		"max-len": 0,
 		"no-tabs": 0,
 		"no-underscore-dangle": 0,

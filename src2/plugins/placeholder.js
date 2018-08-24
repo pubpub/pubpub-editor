@@ -1,15 +1,15 @@
 import { Plugin } from 'prosemirror-state';
 import { DecorationSet, Decoration } from 'prosemirror-view';
 
-const generatePlaceholderPlugin = (text)=> {
+export default (schema, props)=> {
 	return new Plugin({
 		props: {
-			decorations(editorState) {
-				const doc = editorState.doc;
+			decorations(state) {
+				const doc = state.doc;
 				if (doc.childCount === 0 || (doc.childCount === 1 && doc.firstChild.isTextblock && doc.firstChild.content.size === 0)) {
 					const placeHolderElem = document.createElement('span');
 					placeHolderElem.className = 'prosemirror-placeholder';
-					placeHolderElem.innerHTML = text;
+					placeHolderElem.innerHTML = props.placeholder;
 					return DecorationSet.create(doc, [Decoration.widget(doc.childCount, placeHolderElem)]);
 				}
 				return null;
@@ -17,5 +17,3 @@ const generatePlaceholderPlugin = (text)=> {
 		}
 	});
 };
-
-export default generatePlaceholderPlugin;
