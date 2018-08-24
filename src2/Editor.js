@@ -10,6 +10,12 @@ import { requiredPlugins, optionalPlugins } from './plugins';
 import NodeViewReact from './nodeViewReact';
 import { renderStatic } from './utilities';
 
+// TODO - next steps
+// Update insert menu in schema
+// Get all menu items, available, runFuncs, etc and pass them in the onChange object
+// Migrate all plugins
+// 
+
 require('./style.scss');
 
 const propTypes = {

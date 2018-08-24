@@ -11,6 +11,8 @@ storiesOf('Editor2', module)
 			placeholder="Begin writing..."
 			initialContent={initialContent}
 			onChange={(changeObject)=> {
+				console.log(changeObject);
+				debugger;
 				if (changeObject.updateNode && changeObject.selectedNode.attrs.size === 50) {
 					changeObject.updateNode({ size: 65 });
 				}

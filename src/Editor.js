@@ -259,6 +259,7 @@ class Editor extends Component {
 	}
 
 	_onAction(transaction) {
+		console.log(this.view);
 		if (this.view && this.view.state && this._isMounted) {
 			const newState = this.view.state.apply(transaction);
 			this.view.updateState(newState);
