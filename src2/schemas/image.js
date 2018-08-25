@@ -32,16 +32,13 @@ export default {
 		inline: false,
 		group: 'block',
 		draggable: true,
-		insertMenu: { // TODO: probably replace this with just onInsert(). icon and label should not be determined by library.
-			label: 'Image',
-			icon: 'pt-icon-media',
-			onInsert: (view) => {
-				const imageNode = view.state.schema.nodes.image.create();
-				const transaction = view.state.tr.replaceSelectionWith(imageNode);
-				view.dispatch(transaction);
-			},
-		},
+		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
 		isNodeView: true,
+		onInsert: (view, attrs)=> {
+			const imageNode = view.state.schema.nodes.image.create(attrs);
+			const transaction = view.state.tr.replaceSelectionWith(imageNode);
+			view.dispatch(transaction);
+		},
 		defaultOptions: {
 			onResizeUrl: (url)=> { return url; },
 			linkToSrc: true,

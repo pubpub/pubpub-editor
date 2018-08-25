@@ -29,11 +29,25 @@ export default (schema, props)=> {
 					};
 
 					const isNodeView = !!editorView.state.selection.node;
+
+					/* Gather all node insert functions. These will be used to populate menus. */
+					const insertFunctions = Object.values(editorView.state.schema.nodes).filter((node)=> {
+						return node.spec.onInsert;
+					}).reduce((prev, curr)=> {
+						return {
+							...prev,
+							[curr.name]: (attrs)=> {
+								curr.spec.onInsert(editorView, attrs);
+							}
+						};
+					}, {});
+
 					props.onChange({
 						view: editorView,
 						selection: editorView.state.selection,
 						selectedNode: isNodeView ? editorView.state.selection.node : undefined,
 						updateNode: isNodeView ? updateAttrs : undefined,
+						insertFunctions: insertFunctions,
 					});
 				}
 			};

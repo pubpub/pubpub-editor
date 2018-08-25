@@ -14,7 +14,7 @@ import { renderStatic } from './utilities';
 // Update insert menu in schema
 // Get all menu items, available, runFuncs, etc and pass them in the onChange object
 // Migrate all plugins
-// 
+// Send out highlight locations in changeObject. Use editorView.docView.innerDeco
 
 require('./style.scss');
 
@@ -83,7 +83,12 @@ class Editor extends Component {
 
 		return Object.keys(allPlugins).filter((key)=> {
 			return !!allPlugins[key];
+		}).sort((foo, bar)=> {
+			if (foo === 'onChange') { return 1; }
+			if (bar === 'onChange') { return -1; }
+			return 0;
 		}).map((key)=> {
+			console.log(key);
 			const passedProps = {
 				onChange: this.props.onChange,
 				placeholder: this.props.placeholder,

@@ -4,6 +4,8 @@ import Editor from '../src2/index';
 import { editorWrapperStyle } from './_utilities';
 import initialContent from './initialDocs/imageDoc';
 
+let thing = false;
+
 storiesOf('Editor2', module)
 .add('default', () => (
 	<div style={editorWrapperStyle}>
@@ -11,11 +13,21 @@ storiesOf('Editor2', module)
 			placeholder="Begin writing..."
 			initialContent={initialContent}
 			onChange={(changeObject)=> {
-				console.log(changeObject);
-				debugger;
+				console.log('========');
+				console.log(changeObject.view.hasFocus());
+				changeObject.view.state.doc.forEach((node, offset)=> {
+					if (node.type.name === 'heading') {
+						console.log(node.attrs);
+					}
+				});
 				if (changeObject.updateNode && changeObject.selectedNode.attrs.size === 50) {
 					changeObject.updateNode({ size: 65 });
 				}
+
+				// if (thing === false) {
+				// 	thing = true;
+				// 	changeObject.insertFunctions.image({ url: 'https://www.cesarsway.com/sites/newcesarsway/files/styles/large_article_preview/public/All-about-puppies--Cesar%E2%80%99s-tips%2C-tricks-and-advice.jpg?itok=bi9xUvwe' });
+				// }
 			}}
 		/>
 	</div>
