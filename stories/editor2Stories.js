@@ -13,6 +13,8 @@ storiesOf('Editor2', module)
 			placeholder="Begin writing..."
 			initialContent={initialContent}
 			onChange={(changeObject)=> {
+				// console.log('====');
+				console.log(changeObject);
 				if (changeObject.updateNode && changeObject.selectedNode.attrs.size === 50) {
 					changeObject.updateNode({ size: 65 });
 				}
@@ -21,6 +23,20 @@ storiesOf('Editor2', module)
 				// 	thing = true;
 				// 	changeObject.insertFunctions.image({ url: 'https://www.cesarsway.com/sites/newcesarsway/files/styles/large_article_preview/public/All-about-puppies--Cesar%E2%80%99s-tips%2C-tricks-and-advice.jpg?itok=bi9xUvwe' });
 				// }
+			}}
+			getHighlights={()=> {
+				return [
+					{
+						exact: 'Introduction',
+						from: '25',
+						id: 'abcdefg',
+						permanent: false,
+						// prefix: 'Hello ',
+						// suffix: ' and',
+						to: '30',
+						version: undefined,
+					}
+				];
 			}}
 		/>
 	</div>

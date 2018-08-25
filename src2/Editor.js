@@ -11,10 +11,8 @@ import NodeViewReact from './nodeViewReact';
 import { renderStatic } from './utilities';
 
 // TODO - next steps
-// Update insert menu in schema
-// Get all menu items, available, runFuncs, etc and pass them in the onChange object
-// Migrate all plugins
 // Send out highlight locations in changeObject. Use editorView.docView.innerDeco
+// Migrate all plugins
 
 require('./style.scss');
 
@@ -27,6 +25,7 @@ const propTypes = {
 	initialContent: PropTypes.object,
 	placeholder: PropTypes.string,
 	isReadOnly: PropTypes.bool,
+	getHighlights: PropTypes.func,		/* Function that returns an array of active highlights */
 };
 
 const defaultProps = {
@@ -38,6 +37,7 @@ const defaultProps = {
 	initialContent: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] },
 	placeholder: '',
 	isReadOnly: false,
+	getHighlights: ()=> { return []; }
 };
 
 class Editor extends Component {
@@ -52,13 +52,18 @@ class Editor extends Component {
 
 		this.editorRef = React.createRef();
 		this.schema = this.configureSchema();
-		this.plugins = this.configurePlugins();
-		this.nodeViews = this.configureNodeViews();
+		this.plugins = undefined;
+		this.nodeViews = undefined;
 	}
 
 	componentDidMount() {
+		this.plugins = this.configurePlugins();
+		this.nodeViews = this.configureNodeViews();
 		this.createEditor();
 	}
+
+	// TODO: When props change, we should trigger a transaction so plugins run. 
+	// Mostly for highlights
 
 	configureSchema() {
 		return new Schema({
@@ -89,9 +94,11 @@ class Editor extends Component {
 			return 0;
 		}).map((key)=> {
 			const passedProps = {
+				container: this.editorRef.current,
 				onChange: this.props.onChange,
 				placeholder: this.props.placeholder,
 				isReadOnly: this.props.isReadOnly,
+				getHighlights: this.props.getHighlights,
 			};
 			return allPlugins[key](this.schema, passedProps);
 		});

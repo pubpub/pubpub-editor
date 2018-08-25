@@ -57,7 +57,7 @@ class HighlightMenu extends Component {
 					if (!newSelectionHighlights) {
 						return { formattedHighlights: newDecoSet.map(transaction.mapping, transaction.doc) };
 					}
-
+					console.log(newSelectionHighlights);
 					newSelectionHighlights.forEach((newHighlightData)=> {
 						let posBasedExact;
 						let stillInTact = false;

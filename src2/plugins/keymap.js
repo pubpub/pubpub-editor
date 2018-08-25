@@ -1,4 +1,4 @@
-import { baseKeymap, wrapIn, setBlockType, chainCommands, toggleMark, exitCode, joinUp, joinDown, lift, selectParentNode } from 'prosemirror-commands';
+import { wrapIn, setBlockType, chainCommands, toggleMark, exitCode, joinUp, joinDown, lift, selectParentNode } from 'prosemirror-commands';
 import { wrapInList, splitListItem, liftListItem, sinkListItem } from 'prosemirror-schema-list';
 import { undo, redo } from 'prosemirror-history';
 import { undoInputRule } from 'prosemirror-inputrules';
@@ -30,9 +30,8 @@ const mac = typeof navigator !== 'undefined' ? /Mac/.test(navigator.platform) : 
 // * **Alt-ArrowDown** to `joinDown`
 // * **Mod-BracketLeft** to `lift`
 // * **Escape** to `selectParentNode`
-//
 
-const generateKeys = (schema)=> {
+export default (schema)=> {
 	const keys = {};
 	const bind = (key, cmd)=> {
 		keys[key] = cmd;
@@ -114,9 +113,5 @@ const generateKeys = (schema)=> {
 		});
 	}
 
-	return keys;
-};
-
-export default (schema)=> {
-	return keymap({ ...generateKeys(schema), ...baseKeymap });
+	return keymap(keys);
 };
