@@ -11,7 +11,6 @@ import NodeViewReact from './nodeViewReact';
 import { renderStatic } from './utilities';
 
 // TODO - next steps
-// Send out highlight locations in changeObject. Use editorView.docView.innerDeco
 // Migrate all plugins
 
 require('./style.scss');
@@ -62,7 +61,7 @@ class Editor extends Component {
 		this.createEditor();
 	}
 
-	// TODO: When props change, we should trigger a transaction so plugins run. 
+	// TODO: When props change, we should trigger a transaction so plugins run.
 	// Mostly for highlights
 
 	configureSchema() {

@@ -37,8 +37,6 @@ const getMenuItems = (editorView)=> {
 		const toggleFunction = toggleMark(mark, attrs);
 		toggleFunction(editorView.state, editorView.dispatch);
 	}
-	/* -------------- */
-	/* -------------- */
 
 
 	/* Blocks */
@@ -78,8 +76,6 @@ const getMenuItems = (editorView)=> {
 		const setBlockFunction = setBlockType(newNodeType, attrs);
 		return setBlockFunction(editorView.state, editorView.dispatch);
 	}
-	/* -------------- */
-	/* -------------- */
 
 
 	/* Wraps */
@@ -91,8 +87,6 @@ const getMenuItems = (editorView)=> {
 		const wrapFunction = wrapIn(type);
 		return wrapFunction(editorView.state, editorView.dispatch);
 	}
-	/* -------------- */
-	/* -------------- */
 
 
 	/* List Wraps */
@@ -104,10 +98,8 @@ const getMenuItems = (editorView)=> {
 		const wrapFunction = wrapInList(type);
 		return wrapFunction(editorView.state, editorView.dispatch);
 	}
-	/* -------------- */
-	/* -------------- */
 
-	const menuItems = [
+	return [
 		{
 			title: 'header1',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 1 }),
@@ -190,8 +182,6 @@ const getMenuItems = (editorView)=> {
 			isActive: markIsActive(schema.marks.link),
 		},
 	];
-
-	return menuItems;
 };
 
 const getRangeBoundingBox = (editorView, fromPos, toPos)=> {
@@ -206,8 +196,7 @@ const getRangeBoundingBox = (editorView, fromPos, toPos)=> {
 };
 
 const getDecorations = (editorView)=> {
-	const decorations = editorView.docView.innerDeco;
-	return decorations.find().map((decoration)=> {
+	return editorView.docView.innerDeco.find().map((decoration)=> {
 		return {
 			from: decoration.from,
 			to: decoration.to,
@@ -216,6 +205,24 @@ const getDecorations = (editorView)=> {
 		};
 	});
 };
+
+const getSelectedText = (editorView)=> {
+	if (editorView.state.selection.empty) {
+		return undefined;
+	}
+
+	const fromPos = editorView.state.selection.from;
+	const toPos = editorView.state.selection.to;
+	const exact = editorView.state.doc.textBetween(fromPos, toPos);
+	const prefix = editorView.state.doc.textBetween(Math.max(0, fromPos - 10), Math.max(0, fromPos));
+	const suffix = editorView.state.doc.textBetween(Math.min(editorView.state.doc.nodeSize - 2, toPos), Math.min(editorView.state.doc.nodeSize - 2, toPos + 10));
+	return {
+		exact: exact,
+		prefix: prefix,
+		suffix: suffix,
+	};
+};
+
 
 /* This plugin is used to call onChange with */
 /* all of the new editor values. */
@@ -252,6 +259,8 @@ export default (schema, props)=> {
 						selection: editorView.state.selection,
 						/* The bounding box for the active selection. */
 						selectionBoundingBox: getRangeBoundingBox(editorView, editorView.state.selection.from, editorView.state.selection.to),
+						/* The text, prefix, and suffix of the current selection */
+						selectedText: getSelectedText(editorView),
 						/* If the active selection is of a NodeView, provide the selected node. */
 						selectedNode: isNodeView ? editorView.state.selection.node : undefined,
 						/* If the active selection is of a NodeView, provide a function update the selected node. */

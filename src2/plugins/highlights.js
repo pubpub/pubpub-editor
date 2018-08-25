@@ -5,7 +5,6 @@ import * as textQuote from 'dom-anchor-text-quote';
 const highlightPluginKey = new PluginKey();
 
 export default (schema, props)=> {
-	console.log('props is', props);
 	return new Plugin({
 		key: highlightPluginKey,
 		state: {
@@ -19,7 +18,7 @@ export default (schema, props)=> {
 				const oldDecorationSet = pluginState.activeDecorationSet;
 				const decorationsToRemove = transaction.meta.highlightsToRemove || [];
 				const mappedDecorationSet = oldDecorationSet.remove(decorationsToRemove).map(transaction.mapping, transaction.doc);
-				console.log(editorState);
+				
 				/* If there is no new highlight data, simply return the mapped decorations. */
 				if (!transaction.meta.newHighlightsData) {
 					return {
@@ -69,6 +68,8 @@ export default (schema, props)=> {
 						return Decoration.inline(resolvedFrom, resolvedTo, { class: highlightClassName });
 					}
 
+					/* If the contentAtSpecifiedRange doesn't match exact, and we */
+					/* can't find a good match, return null. */
 					return null;
 				}).filter((decoration)=> {
 					/* Invalid decorations are returned as null. Filter those out. */
