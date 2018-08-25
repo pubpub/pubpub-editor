@@ -74,21 +74,15 @@ export const baseNodes = {
 			{ tag: 'h6', getAttrs(dom) { return { level: 6, id: dom.getAttribute('id') }; } },
 		],
 		toDOM(node) {
-			if (!node.attrs.id) {
-				return [`h${node.attrs.level}`, { id: node.attrs.id }, 0];
-			}
-			return [`h${node.attrs.level}`, { id: node.attrs.id }, ['a', { href: `#${node.attrs.id}` }, 0]];
+			return [`h${node.attrs.level}`, { id: node.attrs.id }, 0];
 		},
 		toStatic(node, options, isSelected, isEditable, editorProps, children) {
-			const childContent = node.attrs.id
-				? <a href={`#${node.attrs.id}`}>{children}</a>
-				: children;
-			if (node.attrs.level === 1) { return <h1 key={node.currIndex} id={node.attrs.id}>{childContent}</h1>; }
-			if (node.attrs.level === 2) { return <h2 key={node.currIndex} id={node.attrs.id}>{childContent}</h2>; }
-			if (node.attrs.level === 3) { return <h3 key={node.currIndex} id={node.attrs.id}>{childContent}</h3>; }
-			if (node.attrs.level === 4) { return <h4 key={node.currIndex} id={node.attrs.id}>{childContent}</h4>; }
-			if (node.attrs.level === 5) { return <h5 key={node.currIndex} id={node.attrs.id}>{childContent}</h5>; }
-			if (node.attrs.level === 6) { return <h6 key={node.currIndex} id={node.attrs.id}>{childContent}</h6>; }
+			if (node.attrs.level === 1) { return <h1 key={node.currIndex} id={node.attrs.id}>{children}</h1>; }
+			if (node.attrs.level === 2) { return <h2 key={node.currIndex} id={node.attrs.id}>{children}</h2>; }
+			if (node.attrs.level === 3) { return <h3 key={node.currIndex} id={node.attrs.id}>{children}</h3>; }
+			if (node.attrs.level === 4) { return <h4 key={node.currIndex} id={node.attrs.id}>{children}</h4>; }
+			if (node.attrs.level === 5) { return <h5 key={node.currIndex} id={node.attrs.id}>{children}</h5>; }
+			if (node.attrs.level === 6) { return <h6 key={node.currIndex} id={node.attrs.id}>{children}</h6>; }
 			return null;
 		}
 	},

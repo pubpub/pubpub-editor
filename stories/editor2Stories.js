@@ -4,7 +4,7 @@ import Editor from '../src2/index';
 import { editorWrapperStyle } from './_utilities';
 import initialContent from './initialDocs/imageDoc';
 
-let thing = false;
+// let thing = false;
 
 storiesOf('Editor2', module)
 .add('default', () => (
@@ -13,13 +13,6 @@ storiesOf('Editor2', module)
 			placeholder="Begin writing..."
 			initialContent={initialContent}
 			onChange={(changeObject)=> {
-				console.log('========');
-				console.log(changeObject.view.hasFocus());
-				changeObject.view.state.doc.forEach((node, offset)=> {
-					if (node.type.name === 'heading') {
-						console.log(node.attrs);
-					}
-				});
 				if (changeObject.updateNode && changeObject.selectedNode.attrs.size === 50) {
 					changeObject.updateNode({ size: 65 });
 				}

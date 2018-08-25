@@ -88,7 +88,6 @@ class Editor extends Component {
 			if (bar === 'onChange') { return -1; }
 			return 0;
 		}).map((key)=> {
-			console.log(key);
 			const passedProps = {
 				onChange: this.props.onChange,
 				placeholder: this.props.placeholder,
