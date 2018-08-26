@@ -13,12 +13,16 @@ storiesOf('Editor2', module)
 			placeholder="Begin writing..."
 			initialContent={initialContent}
 			onChange={(changeObject)=> {
-				// console.log('====');
-				console.log(changeObject);
+				console.log('====');
+				console.log(changeObject.shortcutValues.boundingBox);
 				if (changeObject.updateNode && changeObject.selectedNode.attrs.size === 50) {
 					changeObject.updateNode({ size: 65 });
 				}
 
+				if (changeObject.shortcutValues['@'] === 'dog' && changeObject.selection.empty) {
+					changeObject.shortcutValues.selectShortCut();
+					changeObject.insertFunctions.image({ url: 'https://www.cesarsway.com/sites/newcesarsway/files/styles/large_article_preview/public/All-about-puppies--Cesar%E2%80%99s-tips%2C-tricks-and-advice.jpg?itok=bi9xUvwe' });
+				}
 				// if (thing === false) {
 				// 	thing = true;
 				// 	changeObject.insertFunctions.image({ url: 'https://www.cesarsway.com/sites/newcesarsway/files/styles/large_article_preview/public/All-about-puppies--Cesar%E2%80%99s-tips%2C-tricks-and-advice.jpg?itok=bi9xUvwe' });

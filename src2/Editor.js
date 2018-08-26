@@ -12,6 +12,7 @@ import { renderStatic } from './utilities';
 
 // TODO - next steps
 // Migrate all plugins
+// Trigger transaction on props change.
 
 require('./style.scss');
 

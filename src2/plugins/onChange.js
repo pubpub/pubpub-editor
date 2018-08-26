@@ -1,4 +1,4 @@
-import { Plugin, NodeSelection } from 'prosemirror-state';
+import { Plugin, NodeSelection, TextSelection } from 'prosemirror-state';
 import { lift, setBlockType, toggleMark, wrapIn } from 'prosemirror-commands';
 import { wrapInList } from 'prosemirror-schema-list';
 
@@ -223,6 +223,69 @@ const getSelectedText = (editorView)=> {
 	};
 };
 
+const getShortcutValues = (editorView)=> {
+	// TODO: Clean up this function!
+	const editorState = editorView.state;
+	const toPos = editorState.selection.to;
+	const currentNode = editorState.doc.nodeAt(toPos - 1);
+	const text = currentNode && currentNode.textContent ? currentNode.textContent : '';
+	const currentLine = text.replace(/\s/g, ' ');
+	let parentOffset = editorState.selection.$to.parentOffset;
+	// sometimes the parent offset may not be describing the offset into the text node
+	// if so, we need to correct for this.
+	if (currentNode !== editorState.selection.$to.parent) {
+		const child = editorState.selection.$to.parent.childAfter(editorState.selection.$to.parentOffset - 1);
+		if (child.node === currentNode) {
+			parentOffset -= child.offset;
+		}
+	}
+	const nextChIndex = parentOffset;
+	const nextCh = currentLine.length > nextChIndex ? currentLine.charAt(nextChIndex) : ' ';
+	const prevChars = currentLine.substring(0, parentOffset);
+	const startIndex = prevChars.lastIndexOf(' ') + 1;
+	const startLetter = currentLine.charAt(startIndex);
+
+	const shortcutChars = ['?', '/', '+', '@'];
+	const output = shortcutChars.reduce((prev, curr)=> {
+		const charsAreCorrect = startLetter === curr && nextCh.charCodeAt(0) === 32;
+		const substring = currentLine.substring(startIndex + 1, nextChIndex) || '';
+		const start = toPos - parentOffset + startIndex;
+		const end = toPos - parentOffset + startIndex + 1 + substring.length;
+		return {
+			...prev,
+			[curr]: charsAreCorrect ? substring : undefined,
+			selectShortCut: charsAreCorrect
+				? ()=> {
+					/* Useful for selecting the entire shortcut text */
+					/* right before inserting/replacing with a node or */
+					/* other content. */
+					const selectionnew = new TextSelection(
+						editorState.doc.resolve(start),
+						editorState.doc.resolve(end),
+					);
+					const transaction = editorState.tr;
+					transaction.setSelection(selectionnew);
+					editorView.dispatch(transaction);
+				}
+				: undefined,
+			boundingBox: charsAreCorrect
+				? getRangeBoundingBox(editorView, start, end)
+				: undefined,
+		};
+	}, {});
+
+	return output;
+
+	// return {
+	// 	isActive: sel.empty && canUse && charsAreCorrect,
+	// 	start: start,
+	// 	end: end,
+	// 	positionNumber: currentPos.pos,
+	// 	parentOffset: sel.$to.parentOffset,
+	// 	emptyLine: currentLine.length === 0,
+	// 	substring: substring,
+	// };
+};
 
 /* This plugin is used to call onChange with */
 /* all of the new editor values. */
@@ -274,6 +337,9 @@ export default (schema, props)=> {
 						menuItems: getMenuItems(editorView),
 						/* The full list of decorations and their bounding boxes */
 						decorations: getDecorations(editorView),
+						/* The list of shortcut keys and the text following them. */
+						/* Useful for inline insert menus and autocompletes. */
+						shortcutValues: getShortcutValues(editorView),
 					});
 				}
 			};
