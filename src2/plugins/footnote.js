@@ -1,7 +1,5 @@
 import { Plugin } from 'prosemirror-state';
 
-/* This plugin adds an id attribute to each header node. */
-/* This id can be used for in-page routing. */
 export default (schema)=> {
 	if (!schema.nodes.footnote) { return []; }
 	return new Plugin({

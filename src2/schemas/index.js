@@ -6,6 +6,7 @@ import iframe from './iframe';
 import image from './image';
 import table from './table';
 import video from './video';
+import highlightQuote from './highlightQuote';
 
 export const nodes = {
 	...baseNodes,
@@ -16,6 +17,7 @@ export const nodes = {
 	...image,
 	...table,
 	...video,
+	...highlightQuote,
 
 };
 

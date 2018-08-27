@@ -27,6 +27,7 @@ const propTypes = {
 	placeholder: PropTypes.string,
 	isReadOnly: PropTypes.bool,
 	getHighlights: PropTypes.func,		/* Function that returns an array of active highlights */
+	getHighlightContent: PropTypes.func,
 };
 
 const defaultProps = {
@@ -39,7 +40,8 @@ const defaultProps = {
 	initialContent: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] },
 	placeholder: '',
 	isReadOnly: false,
-	getHighlights: ()=> { return []; }
+	getHighlights: ()=> { return []; },
+	getHighlightContent: ()=>{},
 };
 
 class Editor extends Component {
@@ -102,6 +104,7 @@ class Editor extends Component {
 				placeholder: this.props.placeholder,
 				isReadOnly: this.props.isReadOnly,
 				getHighlights: this.props.getHighlights,
+				getHighlightContent: this.props.getHighlightContent,
 			};
 			return allPlugins[key](this.schema, passedProps);
 		}).reduce((prev, curr)=> {

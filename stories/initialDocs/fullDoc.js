@@ -38,6 +38,15 @@ const doc = {
 			},
 		},
 		{
+			type: 'highlightQuote',
+			attrs: {
+				prefix: 'Well then that is it. ',
+				exact: 'This is my highlight.',
+				suffix: ' Surely this comes after.',
+				id: 'initfakeid1',
+			}
+		},
+		{
 			type: 'heading',
 			attrs: {
 				level: 2,
