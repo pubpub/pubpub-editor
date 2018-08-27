@@ -1,5 +1,6 @@
 import { baseNodes, baseMarks } from './base';
 import citation from './citation';
+import equation from './equation';
 import file from './file';
 import footnote from './footnote';
 import iframe from './iframe';
@@ -11,6 +12,7 @@ import highlightQuote from './highlightQuote';
 export const nodes = {
 	...baseNodes,
 	...citation,
+	...equation,
 	...file,
 	...footnote,
 	...iframe,
