@@ -9,7 +9,6 @@ export default (schema, props)=> {
 		key: highlightPluginKey,
 		state: {
 			init(config, editorState) {
-				console.log(config);
 				return {
 					activeDecorationSet: DecorationSet.create(editorState.doc, [])
 				};

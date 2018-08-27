@@ -15,7 +15,7 @@ const SAVE_EVERY_N_STEPS = 100;
 
 export default (schema, props)=> {
 	const collabOptions = props.collaborativeOptions;
-
+	if (!collabOptions.firebaseConfig) { return []; }
 
 	const possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
 	let clientHash = '';
@@ -23,9 +23,6 @@ export default (schema, props)=> {
 		clientHash += possible.charAt(Math.floor(Math.random() * possible.length));
 	}
 	const localClientId = `clientId-${collabOptions.clientData.id}-${clientHash}`;
-	if (!collabOptions.firebaseConfig) { return []; }
-
-	// console.log(collabOptions.clientData);
 
 	return [
 		new CollaborativePlugin({
@@ -65,8 +62,9 @@ class CollaborativePlugin extends Plugin {
 		this.localClientData = localClientData;
 		this.localClientId = localClientId;
 		this.editorKey = editorKey;
-		this.onClientChange = onClientChange;
-		this.onStatusChange = onStatusChange;
+		const emptyFunc = ()=>{};
+		this.onClientChange = onClientChange || emptyFunc;
+		this.onStatusChange = onStatusChange || emptyFunc;
 
 		/* Init plugin variables */
 		this.startedLoad = false;
@@ -291,9 +289,8 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	sendCollabChanges(transaction, newState) {
-		console.log('newState', newState);
-		console.log('in sendCollabChanges');
-		console.log(transaction);
+		// TODO: Rather than exclude - we should probably explicitly list the types of transactions we accept.
+		// Exluding only will break when others add custom plugin transactions.
 		const meta = transaction.meta;
 		if (meta.collab$ || meta.rebase || meta.footnote || meta.highlightsToRemove || meta.newHighlightsData) {
 			return null;
@@ -376,7 +373,6 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	apply(transaction, state, prevEditorState, editorState) {
-		console.log('in appply');
 		/* Remove Stale Selections */
 		Object.keys(this.selections).forEach((clientId)=> {
 			const originalClientData = this.selections[clientId] ? this.selections[clientId].data : {};
@@ -430,6 +426,7 @@ class CollaborativePlugin extends Plugin {
 			}
 		}
 		/* Send Collab Changes */
+		// TODO: this isn't perfect. we may need a timeout or something. Something isn't firing.
 		this.sendCollabChanges(transaction, prevEditorState);
 	}
 

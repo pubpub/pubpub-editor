@@ -282,16 +282,6 @@ const getShortcutValues = (editorView)=> {
 	}, {});
 
 	return output;
-
-	// return {
-	// 	isActive: sel.empty && canUse && charsAreCorrect,
-	// 	start: start,
-	// 	end: end,
-	// 	positionNumber: currentPos.pos,
-	// 	parentOffset: sel.$to.parentOffset,
-	// 	emptyLine: currentLine.length === 0,
-	// 	substring: substring,
-	// };
 };
 
 /* This plugin is used to call onChange with */

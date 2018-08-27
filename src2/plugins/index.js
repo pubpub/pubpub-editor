@@ -9,6 +9,7 @@ import buildPlaceholder from './placeholder';
 import buildHighlights from './highlights';
 import buildTable from './table';
 import buildCollaborative from './collaborative';
+import buildCitation from './citation';
 
 const buildHistory = ()=> {
 	return history();
@@ -25,6 +26,7 @@ export const requiredPlugins = {
 	keymap: buildKeymap,
 	table: buildTable,
 	collaborative: buildCollaborative,
+	citation: buildCitation,
 };
 
 export const optionalPlugins = {
