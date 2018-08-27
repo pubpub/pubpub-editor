@@ -77,6 +77,15 @@ const doc = {
 				height: 350,
 			},
 		},
+		{
+			type: 'file',
+			attrs: {
+				url: 'https://assets.pubpub.org/_testing/41517872250621.png',
+				fileName: 'myGreatFile.zip',
+				fileSize: '29kb',
+				caption: 'Super duper volcano expert opinion.',
+			},
+		},
 	]
 };
 

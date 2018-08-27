@@ -1,0 +1,59 @@
+@import "./fileicon.scss";
+
+.figure-wrapper {
+	text-align: center;
+	pointer-events: none;
+	a {
+		text-decoration: none !important;
+	}
+	figure.file {
+		position: relative;
+		text-align: center;
+		display: inline-block;
+		pointer-events: auto;
+		width: 65%;
+		.details {
+			display: flex;
+			align-items: center;
+			text-align: left;
+			.extension {
+				text-transform: uppercase;
+				font-family: 'Courier', monospace;
+				font-weight: 600;
+				font-size: 1.5em;
+			}
+			.file-name {
+				flex-grow: 1;
+				flex-shrink: 1;
+				margin: 0em 1em;
+				a {
+					color: inherit;
+					&:hover {
+						cursor: pointer;
+						text-decoration: underline !important;
+					}	
+				}
+			}
+			.file-size {
+				margin: 0em 1em;
+			}
+		}
+		figcaption {
+			opacity: 0.75;
+			padding: 5px 0px;
+			p {
+				margin-bottom: 0em;
+			}
+		}
+	}	
+}
+
+@media only screen and (max-width: 720px) {
+	.figure-wrapper {
+		figure.file {
+			margin: 1em 0em !important;
+			width: 100% !important;
+			float: none !important;
+		}
+	}
+}

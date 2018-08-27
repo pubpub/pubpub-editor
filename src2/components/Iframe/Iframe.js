@@ -11,7 +11,7 @@ const propTypes = {
 	isEditable: PropTypes.bool.isRequired,
 };
 
-const Image = (props)=> {
+const Iframe = (props)=> {
 	const attrs = props.attrs;
 	const figFloat = attrs.align === 'left' || attrs.align === 'right'
 		? attrs.align
@@ -53,5 +53,5 @@ const Image = (props)=> {
 	);
 };
 
-Image.propTypes = propTypes;
-export default Image;
+Iframe.propTypes = propTypes;
+export default Iframe;
