@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-require('./citation.scss');
+require('./footnote.scss');
 
 const propTypes = {
 	attrs: PropTypes.object.isRequired,
@@ -11,22 +11,22 @@ const propTypes = {
 	// isEditable: PropTypes.bool.isRequired,
 };
 
-const Citation = (props)=> {
+const Footnote = (props)=> {
 	const attrs = props.attrs;
 
 	return (
-		<div className="citation-wrapper">
+		<div className="footnote-wrapper">
 			<span className={`count-wrapper ${props.isSelected ? 'isSelected' : ''}`}>
-				<span className="citation">[{attrs.count}]</span>
+				<sup className="footnote">{attrs.count}</sup>
 			</span>
 
 			<div className="render-wrapper">
 				{attrs.value &&
-					<div dangerouslySetInnerHTML={{ __html: attrs.html }} />
+					<div dangerouslySetInnerHTML={{ __html: attrs.value }} />
 				}
 				{!attrs.value &&
 					<div className="empty-text">
-						No Citation text entered...
+						No Footnote text entered...
 					</div>
 				}
 			</div>
@@ -34,5 +34,5 @@ const Citation = (props)=> {
 	);
 };
 
-Citation.propTypes = propTypes;
-export default Citation;
+Footnote.propTypes = propTypes;
+export default Footnote;

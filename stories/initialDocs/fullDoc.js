@@ -128,6 +128,35 @@ const doc = {
 			attrs: { listItems: [] }
 		},
 		{
+			type: 'paragraph',
+			content: [
+				{
+					type: 'text',
+					text: 'Hello'
+				},
+				{
+					text: 'And some paragraph text ',
+					type: 'text'
+				},
+				{
+					type: 'footnote',
+					attrs: {
+						value: 'This here is some text!',
+						count: 0,
+						id: 'ah8f01je8ja7bfh1',
+					},
+				},
+				{
+					type: 'text',
+					text: 'Hello, how are you?'
+				},
+			]
+		},
+		{
+			type: 'footnoteList',
+			attrs: { listItems: [] }
+		},
+		{
 			type: 'table',
 			content: [
 				{

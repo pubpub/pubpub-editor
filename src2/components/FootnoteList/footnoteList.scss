@@ -1,0 +1,18 @@
+.footnote-list-wrapper {
+	list-style: none;
+	padding: 0 !important;
+	margin: 0 !important;
+	.rendered-footnote {
+		display: inline;
+		white-space: normal;
+		vertical-align: top;
+	}
+	.count {
+		font-weight: bold;
+		padding-right: 1em;
+	}
+	.empty-state {
+		text-align: center;
+		padding: 2em 0em;
+	}
+}

@@ -10,6 +10,7 @@ import buildHighlights from './highlights';
 import buildTable from './table';
 import buildCollaborative from './collaborative';
 import buildCitation from './citation';
+import buildFootnote from './footnote';
 
 const buildHistory = ()=> {
 	return history();
@@ -27,6 +28,7 @@ export const requiredPlugins = {
 	table: buildTable,
 	collaborative: buildCollaborative,
 	citation: buildCitation,
+	footnote: buildFootnote,
 };
 
 export const optionalPlugins = {

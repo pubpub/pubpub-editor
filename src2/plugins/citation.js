@@ -2,7 +2,7 @@ import { Plugin } from 'prosemirror-state';
 
 /* This plugin adds an id attribute to each header node. */
 /* This id can be used for in-page routing. */
-export default (schema, props)=> {
+export default (schema)=> {
 	if (!schema.nodes.citation) { return []; }
 	return new Plugin({
 		appendTransaction: (transactions, oldState, newState)=> {
@@ -72,7 +72,7 @@ export default (schema, props)=> {
 							const listItems = Object.keys(counts).sort((foo, bar)=> {
 								if (counts[foo].count < counts[bar].count) { return -1; }
 								if (counts[foo].count > counts[bar].count) { return 1; }
-								return 0
+								return 0;
 							}).map((key)=> {
 								return { html: key, value: counts[key].value, count: counts[key].count };
 							});
