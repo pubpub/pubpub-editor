@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import Editor from '../src2/index';
 import { editorWrapperStyle } from './_utilities';
-import initialContent from './initialDocs/imageDoc';
+import initialContent from './initialDocs/fullDoc';
 
 // let thing = false;
 

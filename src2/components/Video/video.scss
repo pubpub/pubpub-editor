@@ -9,7 +9,7 @@
 		text-align: center;
 		display: inline-block;
 		pointer-events: auto;
-		img {
+		video {
 			display: block;
 			width: 100%;
 		}
@@ -25,7 +25,7 @@
 
 @media only screen and (max-width: 720px) {
 	.figure-wrapper {
-		figure.image {
+		figure.video {
 			margin: 1em 0em !important;
 			width: 100% !important;
 			float: none !important;
