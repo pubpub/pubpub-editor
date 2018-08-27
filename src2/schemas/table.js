@@ -34,7 +34,6 @@ pmTableNodes.table.insertMenu = {
 	},
 },
 pmTableNodes.table.toStatic = (node, options, isSelected, isEditable, editorProps, children)=> {
-	console.log(children);
 	return (
 		<table key={node.currIndex}>
 			<tbody>
@@ -53,5 +52,4 @@ pmTableNodes.table_row.toStatic = (node, options, isSelected, isEditable, editor
 	return <tr key={node.currIndex}>{children}</tr>;
 };
 
-console.log(pmTableNodes);
 export default pmTableNodes;

@@ -8,6 +8,7 @@ import buildHeaderIds from './headerIds';
 import buildPlaceholder from './placeholder';
 import buildHighlights from './highlights';
 import buildTable from './table';
+import buildCollaborative from './collaborative';
 
 const buildHistory = ()=> {
 	return history();
@@ -23,6 +24,7 @@ export const requiredPlugins = {
 	baseKeymap: buildBaseKeymap,
 	keymap: buildKeymap,
 	table: buildTable,
+	collaborative: buildCollaborative,
 };
 
 export const optionalPlugins = {

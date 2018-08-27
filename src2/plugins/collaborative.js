@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
-import { AllSelection, EditorState, Plugin, Selection } from 'prosemirror-state';
+import { collab } from 'prosemirror-collab';
+import { AllSelection, EditorState, Plugin, Selection, PluginKey } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 import { receiveTransaction, sendableSteps } from 'prosemirror-collab';
 import { Step } from 'prosemirror-transform';
@@ -13,9 +13,39 @@ require('@firebase/database');
 const TIMESTAMP = { '.sv': 'timestamp' };
 const SAVE_EVERY_N_STEPS = 100;
 
+export default (schema, props)=> {
+	const collabOptions = props.collaborativeOptions;
+
+
+	const possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
+	let clientHash = '';
+	for (let index = 0; index < 6; index += 1) {
+		clientHash += possible.charAt(Math.floor(Math.random() * possible.length));
+	}
+	const localClientId = `clientId-${collabOptions.clientData.id}-${clientHash}`;
+	if (!collabOptions.firebaseConfig) { return []; }
+
+	// console.log(collabOptions.clientData);
+
+	return [
+		new CollaborativePlugin({
+			firebaseConfig: collabOptions.firebaseConfig,
+			localClientData: collabOptions.clientData,
+			localClientId: localClientId,
+			editorKey: collabOptions.editorKey,
+			onClientChange: collabOptions.onClientChange,
+			onStatusChange: collabOptions.onStatusChange,
+		}),
+		collab({
+			clientID: localClientId
+		})
+	];
+};
+
 class CollaborativePlugin extends Plugin {
-	constructor({ pluginKey, firebaseConfig, localClientData, localClientId, editorKey, onClientChange, onStatusChange }) {
-		super({ key: pluginKey });
+	constructor({ firebaseConfig, localClientData, localClientId, editorKey, onClientChange, onStatusChange }) {
+		super({ key: new PluginKey() });
+
 		/* Bind plugin functions */
 		this.loadDocument = this.loadDocument.bind(this);
 		this.sendCollabChanges = this.sendCollabChanges.bind(this);
@@ -263,8 +293,9 @@ class CollaborativePlugin extends Plugin {
 	sendCollabChanges(transaction, newState) {
 		console.log('newState', newState);
 		console.log('in sendCollabChanges');
+		console.log(transaction);
 		const meta = transaction.meta;
-		if (meta.collab$ || meta.rebase || meta.footnote || meta.newSelection || meta.clearTempSelection) {
+		if (meta.collab$ || meta.rebase || meta.footnote || meta.highlightsToRemove || meta.newHighlightsData) {
 			return null;
 		}
 
@@ -551,5 +582,3 @@ class CollaborativePlugin extends Plugin {
 		}));
 	}
 }
-
-export default CollaborativePlugin;

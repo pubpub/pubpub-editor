@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react';
 import Editor from '../src2/index';
 import { editorWrapperStyle } from './_utilities';
 import initialContent from './initialDocs/fullDoc';
-
+import { firebaseConfig, clientData } from './_utilities';
 // let thing = false;
 
 storiesOf('Editor2', module)
@@ -14,7 +14,7 @@ storiesOf('Editor2', module)
 			initialContent={initialContent}
 			onChange={(changeObject)=> {
 				console.log('====');
-				console.log(JSON.stringify(changeObject.view.state.doc.toJSON(), null, 4));
+				// console.log(changeObject.view.state.doc.toJSON(), null, 4));
 				if (changeObject.updateNode && changeObject.selectedNode.attrs.size === 50) {
 					changeObject.updateNode({ size: 65 });
 				}
@@ -27,6 +27,13 @@ storiesOf('Editor2', module)
 				// 	thing = true;
 				// 	changeObject.insertFunctions.image({ url: 'https://www.cesarsway.com/sites/newcesarsway/files/styles/large_article_preview/public/All-about-puppies--Cesar%E2%80%99s-tips%2C-tricks-and-advice.jpg?itok=bi9xUvwe' });
 				// }
+			}}
+			collaborativeOptions={{
+				firebaseConfig: firebaseConfig,
+				editorKey: 'storybook-editor-v22',
+				clientData: clientData,
+				onClientChange: (val)=> { console.log('clientChange ', val); },
+				onStatusChange: (val)=> { console.log('statusChagnge ', val); },
 			}}
 			getHighlights={()=> {
 				return [

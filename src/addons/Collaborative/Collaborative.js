@@ -109,7 +109,8 @@ class Collaborative extends Component {
 			&& nextProps.transaction
 			&& plugin
 		) {
-			plugin.sendCollabChanges(nextProps.transaction, nextProps.editorState);
+			// console.log('About to sendCollabChanges');
+			// plugin.sendCollabChanges(nextProps.transaction, nextProps.editorState);
 		}
 	}
 	componentWillUnmount() {

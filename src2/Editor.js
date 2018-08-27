@@ -21,6 +21,7 @@ const propTypes = {
 	customMarks: PropTypes.object,
 	customPlugins: PropTypes.object, 	/* All customPlugins values should be a function, which is passed schema and props - and returns a Plugin */
 	nodeOptions: PropTypes.object, 		/* An object with nodeName keys and values of objects of overriding options. For example: nodeOptions = { image: { linkToSrc: false } } */
+	collaborativeOptions: PropTypes.object,
 	onChange: PropTypes.func,
 	initialContent: PropTypes.object,
 	placeholder: PropTypes.string,
@@ -33,6 +34,7 @@ const defaultProps = {
 	customMarks: {}, 	/* defaults: 'em', 'strong', 'link', 'sub', 'sup', 'strike', 'code' */
 	customPlugins: {}, 	/* defaults: inputRules, keymap, headerIds, placeholder */
 	nodeOptions: {},
+	collaborativeOptions: {},
 	onChange: ()=>{},
 	initialContent: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] },
 	placeholder: '',
@@ -96,6 +98,7 @@ class Editor extends Component {
 			const passedProps = {
 				container: this.editorRef.current,
 				onChange: this.props.onChange,
+				collaborativeOptions: this.props.collaborativeOptions,
 				placeholder: this.props.placeholder,
 				isReadOnly: this.props.isReadOnly,
 				getHighlights: this.props.getHighlights,
