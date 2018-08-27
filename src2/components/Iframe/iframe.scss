@@ -1,0 +1,46 @@
+.figure-wrapper {
+	text-align: center;
+	pointer-events: none;
+	a {
+		text-decoration: none !important;
+	}
+	figure.iframe {
+		position: relative;
+		text-align: center;
+		display: inline-block;
+		pointer-events: auto;
+		.empty-iframe {
+			background-color: #F0F0F0;
+			border-radius: 2px;
+			display: block;
+			padding: 2em;
+		}
+		iframe {
+			display: block;
+			width: 100%;
+		}
+		figcaption {
+			opacity: 0.75;
+			padding: 5px 0px;
+			p {
+				margin-bottom: 0em;
+			}
+		}
+		&.isEditable {
+			pointer-events: none;
+			&.isSelected {
+				pointer-events: auto;
+			}
+		}
+	}	
+}
+
+@media only screen and (max-width: 720px) {
+	.figure-wrapper {
+		figure.iframe {
+			margin: 1em 0em !important;
+			width: 100% !important;
+			float: none !important;
+		}
+	}
+}
