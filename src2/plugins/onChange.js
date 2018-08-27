@@ -284,6 +284,87 @@ const getShortcutValues = (editorView)=> {
 	return output;
 };
 
+const getActiveLink = (editorView)=> {
+	const editorState = editorView.state;
+	const linkMarkType = editorState.schema.marks.link;
+	const { from, $from, to, $to, empty } = editorState.selection;
+	const shiftedFrom = editorState.doc.resolve(from - 1);
+	const shiftedTo = editorState.doc.resolve(to - 1);
+
+	/* Because we set link marks to not be inclusive, we need to do */
+	/* some shifted so the dialog will appear at the start and end */
+	/* of the link text */
+	const getMarks = (open, close)=> {
+		return open.marksAcross(close) || [];
+	};
+	const foundMarks = empty
+		? getMarks($from, $to).length ? getMarks($from, $to) : getMarks(shiftedFrom, shiftedTo)
+		: getMarks($from, shiftedTo);
+
+	const activeLinkMark = foundMarks.reduce((prev, curr)=> {
+		if (curr.type.name === 'link') { return curr; }
+		return prev;
+	}, undefined);
+
+	if (!activeLinkMark) {
+		return undefined;
+	}
+
+	/* Note - this start and end will cause directly adjacent */
+	/* links to be merged into a single link on edit. Adjacent */
+	/* links with different URLs seems like a worse UI experience */
+	/* than having two links merge on edit. So, perhaps we simply */
+	/* leave this 'bug'. We can revisit later. */
+	let startPos = from - 1;
+	let foundStart = false;
+	while (!foundStart) {
+		if (startPos === 0) { foundStart = true; }
+		if (editorState.doc.rangeHasMark(startPos, startPos + 1, linkMarkType)) {
+			startPos -= 1;
+		} else {
+			foundStart = true;
+		}
+	}
+	let endPos = from;
+	let foundEnd = false;
+	while (!foundEnd) {
+		if (endPos === 0) { foundEnd = true; }
+		if (editorState.doc.rangeHasMark(endPos, endPos + 1, linkMarkType)) {
+			endPos += 1;
+		} else {
+			foundEnd = true;
+		}
+	}
+
+	return {
+		attrs: activeLinkMark.attrs,
+		updateAttrs: (newAttrs)=>{
+			const oldNodeAttrs = activeLinkMark.attrs;
+			const transaction = editorView.state.tr;
+			transaction.removeMark(
+				startPos + 1,
+				endPos,
+				editorView.state.schema.marks.link,
+			);
+			transaction.addMark(
+				startPos + 1,
+				endPos,
+				editorView.state.schema.marks.link.create({ ...oldNodeAttrs, ...newAttrs }),
+			);
+			editorView.dispatch(transaction);
+		},
+		removeLink: ()=>{
+			const transaction = editorView.state.tr;
+			transaction.removeMark(
+				startPos + 1,
+				endPos,
+				editorView.state.schema.marks.link,
+			);
+			editorView.dispatch(transaction);
+		},
+	};
+};
+
 /* This plugin is used to call onChange with */
 /* all of the new editor values. */
 export default (schema, props)=> {
@@ -337,6 +418,8 @@ export default (schema, props)=> {
 						/* The list of shortcut keys and the text following them. */
 						/* Useful for inline insert menus and autocompletes. */
 						shortcutValues: getShortcutValues(editorView),
+						/* activeLink is useful for displaying a link editing interface. */
+						activeLink: getActiveLink(editorView),
 					});
 				}
 			};

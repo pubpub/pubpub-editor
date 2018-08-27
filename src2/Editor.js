@@ -151,7 +151,7 @@ class Editor extends Component {
 				'Mod-s': ()=>{
 					return true;
 				},
-				// TODO: We need something here that allows the dev to 
+				// TODO: We need something here that allows the dev to
 				// disable certain keys when a inline-menu is open for example
 			})
 		});
