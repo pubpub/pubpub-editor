@@ -196,14 +196,21 @@ const getRangeBoundingBox = (editorView, fromPos, toPos)=> {
 };
 
 const getDecorations = (editorView)=> {
-	return editorView.docView.innerDeco.find().map((decoration)=> {
-		return {
-			from: decoration.from,
-			to: decoration.to,
-			boundingBox: getRangeBoundingBox(editorView, decoration.from, decoration.to),
-			attrs: decoration.type.attrs,
-		};
-	});
+	const decorationSets = editorView.docView.innerDeco.members
+		? editorView.docView.innerDeco.members
+		: [editorView.docView.innerDeco];
+
+	return decorationSets.reduce((prev, curr)=> {
+		const decorations = curr.find().map((decoration)=> {
+			return {
+				from: decoration.from,
+				to: decoration.to,
+				boundingBox: getRangeBoundingBox(editorView, decoration.from, decoration.to),
+				attrs: decoration.type.attrs,
+			};
+		});
+		return [...prev, ...decorations];
+	}, []);
 };
 
 const getSelectedText = (editorView)=> {

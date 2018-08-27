@@ -7,6 +7,7 @@ import buildKeymap from './keymap';
 import buildHeaderIds from './headerIds';
 import buildPlaceholder from './placeholder';
 import buildHighlights from './highlights';
+import buildTable from './table';
 
 const buildHistory = ()=> {
 	return history();
@@ -20,11 +21,12 @@ export const requiredPlugins = {
 	onChange: buildOnChange,
 	history: buildHistory,
 	baseKeymap: buildBaseKeymap,
+	keymap: buildKeymap,
+	table: buildTable,
 };
 
 export const optionalPlugins = {
 	inputRules: buildInputRules,
-	keymap: buildKeymap,
 	headerIds: buildHeaderIds,
 	placeholder: buildPlaceholder,
 	highlights: buildHighlights,

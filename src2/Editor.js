@@ -101,7 +101,11 @@ class Editor extends Component {
 				getHighlights: this.props.getHighlights,
 			};
 			return allPlugins[key](this.schema, passedProps);
-		});
+		}).reduce((prev, curr)=> {
+			/* Some plugin generation functions return an */
+			/* array of plugins. Flatten those cases. */
+			return prev.concat(curr);
+		}, []);
 	}
 
 	configureNodeViews() {

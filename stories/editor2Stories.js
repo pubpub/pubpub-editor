@@ -14,7 +14,7 @@ storiesOf('Editor2', module)
 			initialContent={initialContent}
 			onChange={(changeObject)=> {
 				console.log('====');
-				console.log(changeObject.shortcutValues.boundingBox);
+				console.log(JSON.stringify(changeObject.view.state.doc.toJSON(), null, 4));
 				if (changeObject.updateNode && changeObject.selectedNode.attrs.size === 50) {
 					changeObject.updateNode({ size: 65 });
 				}
