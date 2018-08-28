@@ -104,82 +104,82 @@ const getMenuItems = (editorView)=> {
 		{
 			title: 'header1',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 1 }),
-			isActive: blockTypeIsActive(schema.nodes.heading, { level: 1 }),
+			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 1 }),
 		},
 		{
 			title: 'header2',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 2 }),
-			isActive: blockTypeIsActive(schema.nodes.heading, { level: 2 }),
+			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 2 }),
 		},
 		{
 			title: 'header3',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 3 }),
-			isActive: blockTypeIsActive(schema.nodes.heading, { level: 3 }),
+			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 3 }),
 		},
 		{
 			title: 'header4',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 4 }),
-			isActive: blockTypeIsActive(schema.nodes.heading, { level: 4 }),
+			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 4 }),
 		},
 		{
 			title: 'header5',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 5 }),
-			isActive: blockTypeIsActive(schema.nodes.heading, { level: 5 }),
+			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 5 }),
 		},
 		{
 			title: 'header6',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 6 }),
-			isActive: blockTypeIsActive(schema.nodes.heading, { level: 6 }),
+			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 6 }),
 		},
 		{
 			title: 'strong',
 			run: applyToggleMark.bind(this, schema.marks.strong),
-			isActive: markIsActive(schema.marks.strong),
+			isActive: schema.marks.strong && markIsActive(schema.marks.strong),
 		},
 		{
 			title: 'em',
 			run: applyToggleMark.bind(this, schema.marks.em),
-			isActive: markIsActive(schema.marks.em),
+			isActive: schema.marks.em && markIsActive(schema.marks.em),
 		},
 		{
 			title: 'code',
 			run: applyToggleMark.bind(this, schema.marks.code),
-			isActive: markIsActive(schema.marks.code),
+			isActive: schema.marks.code && markIsActive(schema.marks.code),
 		},
 		{
 			title: 'subscript',
 			run: applyToggleMark.bind(this, schema.marks.sub),
-			isActive: markIsActive(schema.marks.sub),
+			isActive: schema.marks.sub && markIsActive(schema.marks.sub),
 		},
 		{
 			title: 'superscript',
 			run: applyToggleMark.bind(this, schema.marks.sup),
-			isActive: markIsActive(schema.marks.sup),
+			isActive: schema.marks.sup && markIsActive(schema.marks.sup),
 		},
 		{
 			title: 'strikethrough',
 			run: applyToggleMark.bind(this, schema.marks.strike),
-			isActive: markIsActive(schema.marks.strike),
+			isActive: schema.marks.strike && markIsActive(schema.marks.strike),
 		},
 		{
 			title: 'blockquote',
 			run: toggleWrap.bind(this, schema.nodes.blockquote),
-			isActive: blockTypeIsActive(schema.nodes.blockquote),
+			isActive: schema.nodes.blockquote && blockTypeIsActive(schema.nodes.blockquote),
 		},
 		{
 			title: 'bullet-list',
 			run: toggleWrapList.bind(this, schema.nodes.bullet_list),
-			isActive: blockTypeIsActive(schema.nodes.bullet_list),
+			isActive: schema.nodes.bullet_list && blockTypeIsActive(schema.nodes.bullet_list),
 		},
 		{
 			title: 'numbered-list',
 			run: toggleWrapList.bind(this, schema.nodes.ordered_list),
-			isActive: blockTypeIsActive(schema.nodes.ordered_list),
+			isActive: schema.nodes.ordered_list && blockTypeIsActive(schema.nodes.ordered_list),
 		},
 		{
 			title: 'link',
 			run: applyToggleMark.bind(this, schema.marks.link),
-			isActive: markIsActive(schema.marks.link),
+			isActive: schema.marks.link && markIsActive(schema.marks.link),
 		},
 	];
 	const tableItems = !schema.nodes.table || !isInTable(editorView.state)
@@ -404,6 +404,7 @@ const getActiveLink = (editorView)=> {
 
 	return {
 		attrs: activeLinkMark.attrs,
+		boundingBox: getRangeBoundingBox(editorView, startPos, endPos),
 		updateAttrs: (newAttrs)=>{
 			const oldNodeAttrs = activeLinkMark.attrs;
 			const transaction = editorView.state.tr;

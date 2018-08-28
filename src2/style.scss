@@ -1,3 +1,6 @@
+@import "~prosemirror-view/style/prosemirror.css";
+@import "~prosemirror-gapcursor/style/gapcursor.css";
+
 .editor {
 	.prosemirror-placeholder {
 		opacity: 0.5;
@@ -14,6 +17,9 @@
 			text-decoration: none;
 			color: inherit;
 		}
+	}
+	.ProseMirror-selectednode, .isSelected {
+		outline: 2px solid #BBBDC0;
 	}
 }
 

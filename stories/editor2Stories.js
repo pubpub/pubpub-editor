@@ -43,13 +43,13 @@ storiesOf('Editor2', module)
 				// 	changeObject.insertFunctions.image({ url: 'https://www.cesarsway.com/sites/newcesarsway/files/styles/large_article_preview/public/All-about-puppies--Cesar%E2%80%99s-tips%2C-tricks-and-advice.jpg?itok=bi9xUvwe' });
 				// }
 			}}
-			collaborativeOptions={{
-				firebaseConfig: firebaseConfig,
-				editorKey: 'storybook-editor-v22',
-				clientData: clientData,
-				// onClientChange: (val)=> { console.log('clientChange ', val); },
-				// onStatusChange: (val)=> { console.log('statusChagnge ', val); },
-			}}
+			// collaborativeOptions={{
+			// 	firebaseConfig: firebaseConfig,
+			// 	editorKey: 'storybook-editor-v22',
+			// 	clientData: clientData,
+			// 	// onClientChange: (val)=> { console.log('clientChange ', val); },
+			// 	// onStatusChange: (val)=> { console.log('statusChagnge ', val); },
+			// }}
 			getHighlights={()=> {
 				return [
 					{

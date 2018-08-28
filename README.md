@@ -179,3 +179,4 @@ onMouseDown={(evt)=> {
     evt.preventDefault();
 }}
 ```
+- onChange is fired on initalization

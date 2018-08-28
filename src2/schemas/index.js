@@ -20,7 +20,6 @@ export const nodes = {
 	...table,
 	...video,
 	...highlightQuote,
-
 };
 
 export const marks = {

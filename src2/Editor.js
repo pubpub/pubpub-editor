@@ -1,4 +1,3 @@
-/* eslint-disable no-new */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { EditorState } from 'prosemirror-state';
@@ -70,15 +69,26 @@ class Editor extends Component {
 	// Mostly for highlights
 
 	configureSchema() {
+		const schemaNodes = {
+			...nodes,
+			...this.props.customNodes
+		};
+		const schemaMarks = {
+			...marks,
+			...this.props.customMarks
+		};
+
+		/* Filter out undefined (e.g. overwritten) nodes and marks */
+		Object.keys(schemaNodes).forEach((nodeKey)=> {
+			if (!schemaNodes[nodeKey]) { delete schemaNodes[nodeKey]; }
+		});
+		Object.keys(schemaMarks).forEach((markKey)=> {
+			if (!schemaMarks[markKey]) { delete schemaMarks[markKey]; }
+		});
+
 		return new Schema({
-			nodes: {
-				...nodes,
-				...this.props.customNodes
-			},
-			marks: {
-				...marks,
-				...this.props.customMarks
-			},
+			nodes: schemaNodes,
+			marks: schemaMarks,
 			topNode: 'doc'
 		});
 	}
@@ -141,7 +151,7 @@ class Editor extends Component {
 		});
 
 		/* Create and editorView and mount it into the editorRef node */
-		new EditorView({ mount: this.editorRef.current }, {
+		const editorView = new EditorView({ mount: this.editorRef.current }, {
 			state: state,
 			spellcheck: true,
 			editable: () => { return !this.props.isReadOnly; },
@@ -155,6 +165,9 @@ class Editor extends Component {
 				// disable certain keys when a inline-menu is open for example
 			})
 		});
+
+		const emptyInitTransaction = editorView.state.tr;
+		editorView.dispatch(emptyInitTransaction);
 	}
 
 	render() {

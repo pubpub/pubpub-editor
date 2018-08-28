@@ -65,7 +65,7 @@ export const importHtml = (editorView, htmlString)=> {
 	});
 
 	/* Dispatch transaction to setSelection and insert content */
-	this.view.dispatch(tr);
+	editorView.dispatch(tr);
 };
 
 export const focus = (editorView)=> {
