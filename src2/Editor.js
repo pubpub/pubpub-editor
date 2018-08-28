@@ -11,8 +11,8 @@ import NodeViewReact from './nodeViewReact';
 import { renderStatic } from './utilities';
 
 // TODO - next steps
-// Migrate all plugins
 // Trigger transaction on props change.
+// Show collaborative loading bars somehow.
 
 require('./style.scss');
 

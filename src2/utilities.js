@@ -1,3 +1,6 @@
+import { Selection } from 'prosemirror-state';
+import { DOMParser } from 'prosemirror-model';
+
 export const renderStatic = (schema, nodeArray, editorProps)=> {
 	return nodeArray.map((node, index)=> {
 		let children;
@@ -21,4 +24,50 @@ export const renderStatic = (schema, nodeArray, editorProps)=> {
 	});
 };
 
-export const thing = 5;
+export const getJSON = (editorView)=> {
+	return editorView.state.doc.toJSON();
+};
+
+export const getText = (editorView, separator = '\n')=> {
+	return editorView.state.doc.textBetween(0, editorView.state.doc.nodeSize - 2, separator);
+};
+
+export const getCollabJSONs = (editorView, collabIds)=> {
+	const collabPlugin = editorView.state.plugins.reduce((prev, curr)=> {
+		if (curr.constructor.name === 'CollaborativePlugin') { return curr; }
+		return prev;
+	}, undefined);
+
+	return collabPlugin
+		? collabPlugin.getJSONs(collabIds)
+		: null;
+};
+
+export const importHtml = (editorView, htmlString)=> {
+	/* Create wrapper DOM node */
+	const wrapperElem = document.createElement('div');
+
+	/* Insert htmlString into wrapperElem to generate full DOM tree */
+	wrapperElem.innerHTML = htmlString;
+
+	/* Generate new ProseMirror doc from DOM node */
+	const newDoc = DOMParser.fromSchema(editorView.state.schema).parse(wrapperElem);
+
+	/* Create transaction and set selection to the beginning of the doc */
+	const tr = editorView.state.tr;
+	tr.setSelection(Selection.atStart(editorView.state.doc));
+
+	/* Insert each node of newDoc to current doc */
+	/* Note, we don't want to just replaceSelectionWith(newDoc) */
+	/* because it will add a doc within a doc. */
+	newDoc.content.content.forEach((node)=> {
+		tr.replaceSelectionWith(node);
+	});
+
+	/* Dispatch transaction to setSelection and insert content */
+	this.view.dispatch(tr);
+};
+
+export const focus = (editorView)=> {
+	editorView.focus();
+};
