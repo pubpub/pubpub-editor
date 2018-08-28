@@ -170,3 +170,12 @@ The `toEditable` and `toStatic` functions are passed the following parameters:
     helperFunctions: object, // an object with the following functions that can be helpful when interacting with ProseMirror: updateAttrs, changeNode, updateContent, getPos
 }
 ```
+
+### Menus
+
+- Make note that menu buttons should use
+```
+onMouseDown={(evt)=> {
+    evt.preventDefault();
+}}
+```

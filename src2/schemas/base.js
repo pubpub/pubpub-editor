@@ -46,12 +46,8 @@ export const baseNodes = {
 		group: 'block',
 		parseDOM: [{ tag: 'hr' }],
 		toDOM() { return ['div', ['hr']]; },
-		insertMenu: {
-			label: 'Horizontal Line',
-			icon: 'pt-icon-minus',
-			onInsert: (view) => {
-				view.dispatch(view.state.tr.replaceSelectionWith(view.state.schema.nodes.horizontal_rule.create()));
-			},
+		onInsert: (view) => {
+			view.dispatch(view.state.tr.replaceSelectionWith(view.state.schema.nodes.horizontal_rule.create()));
 		},
 		toStatic(node) {
 			return <hr key={node.currIndex} />;
@@ -128,12 +124,8 @@ export const baseNodes = {
 		code: true,
 		parseDOM: [{ tag: 'pre', preserveWhitespace: true }],
 		toDOM() { return ['pre', ['code', 0]]; },
-		insertMenu: {
-			label: 'Code Block',
-			icon: 'pt-icon-code',
-			onInsert: (view) => {
-				view.dispatch(view.state.tr.replaceSelectionWith(view.state.schema.nodes.code_block.create()));
-			},
+		onInsert: (view) => {
+			view.dispatch(view.state.tr.replaceSelectionWith(view.state.schema.nodes.code_block.create()));
 		},
 		toStatic(node, options, isSelected, isEditable, editorProps, children) {
 			return <pre key={node.currIndex}><code>{children}</code></pre>;

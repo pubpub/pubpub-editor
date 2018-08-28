@@ -132,12 +132,12 @@ const getMenuItems = (editorView)=> {
 			isActive: blockTypeIsActive(schema.nodes.heading, { level: 6 }),
 		},
 		{
-			title: 'bold',
+			title: 'strong',
 			run: applyToggleMark.bind(this, schema.marks.strong),
 			isActive: markIsActive(schema.marks.strong),
 		},
 		{
-			title: 'italic',
+			title: 'em',
 			run: applyToggleMark.bind(this, schema.marks.em),
 			isActive: markIsActive(schema.marks.em),
 		},
@@ -187,62 +187,62 @@ const getMenuItems = (editorView)=> {
 		: [
 			{
 				title: 'table-delete',
-				run: deleteTable.bind(this, editorView.state, editorView.dispatch),
+				run: deleteTable.bind(this, editorView.statei, editorView.dispatch),
 				isActive: false,
 			},
 			{
 				title: 'table-merge-cells',
-				run: mergeCells.bind(this, editorView.state, editorView.dispatch),
+				run: mergeCells.bind(this, editorView.statei, editorView.dispatch),
 				isActive: false,
 			},
 			{
 				title: 'table-split-cell',
-				run: splitCell.bind(this, editorView.state, editorView.dispatch),
+				run: splitCell.bind(this, editorView.statei, editorView.dispatch),
 				isActive: false,
 			},
 			{
 				title: 'table-add-row-before',
-				run: addRowBefore.bind(this, editorView.state, editorView.dispatch),
+				run: addRowBefore.bind(this, editorView.statei, editorView.dispatch),
 				isActive: false,
 			},
 			{
 				title: 'table-add-row-after',
-				run: addRowAfter.bind(this, editorView.state, editorView.dispatch),
+				run: addRowAfter.bind(this, editorView.statei, editorView.dispatch),
 				isActive: false,
 			},
 			{
 				title: 'table-delete-row',
-				run: deleteRow.bind(this, editorView.state, editorView.dispatch),
+				run: deleteRow.bind(this, editorView.statei, editorView.dispatch),
 				isActive: false,
 			},
 			{
 				title: 'table-add-column-before',
-				run: addColumnBefore.bind(this, editorView.state, editorView.dispatch),
+				run: addColumnBefore.bind(this, editorView.statei, editorView.dispatch),
 				isActive: false,
 			},
 			{
 				title: 'table-add-column-after',
-				run: addColumnAfter.bind(this, editorView.state, editorView.dispatch),
+				run: addColumnAfter.bind(this, editorView.statei, editorView.dispatch),
 				isActive: false,
 			},
 			{
 				title: 'table-delete-column',
-				run: deleteColumn.bind(this, editorView.state, editorView.dispatch),
+				run: deleteColumn.bind(this, editorView.statei, editorView.dispatch),
 				isActive: false,
 			},
 			{
 				title: 'table-toggle-header-row',
-				run: toggleHeaderRow.bind(this, editorView.state, editorView.dispatch),
+				run: toggleHeaderRow.bind(this, editorView.statei, editorView.dispatch),
 				isActive: false,
 			},
 			{
 				title: 'table-toggle-header-column',
-				run: toggleHeaderColumn.bind(this, editorView.state, editorView.dispatch),
+				run: toggleHeaderColumn.bind(this, editorView.statei, editorView.dispatch),
 				isActive: false,
 			},
 			{
 				title: 'table-toggle-header-cell',
-				run: toggleHeaderCell.bind(this, editorView.state, editorView.dispatch),
+				run: toggleHeaderCell.bind(this, editorView.statei, editorView.dispatch),
 				isActive: false,
 			},
 		];

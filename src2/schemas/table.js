@@ -13,26 +13,22 @@ const pmTableNodes = tableNodes({
 	}
 });
 
-pmTableNodes.table.insertMenu = {
-	label: 'Table',
-	icon: 'pt-icon-th',
-	onInsert: (view) => {
-		const numRows = 3;
-		const numCols = 3;
-		const { tr, schema } = view.state;
-		const tableType = schema.nodes.table;
-		const rowType = schema.nodes.table_row;
-		const cellType = schema.nodes.table_cell;
-		const cellNode = cellType.createAndFill({});
-		const cells = [];
-		for (let i = 0; i < numCols; i += 1) cells.push(cellNode);
-		const rowNode = rowType.create(null, Fragment.from(cells));
-		const rows = [];
-		for (let i = 0; i < numRows; i += 1) rows.push(rowNode);
-		const tableNode = tableType.create(null, Fragment.from(rows));
-		view.dispatch(tr.replaceSelectionWith(tableNode).scrollIntoView());
-	},
-},
+pmTableNodes.table.onInsert = (view) => {
+	const numRows = 3;
+	const numCols = 3;
+	const { tr, schema } = view.state;
+	const tableType = schema.nodes.table;
+	const rowType = schema.nodes.table_row;
+	const cellType = schema.nodes.table_cell;
+	const cellNode = cellType.createAndFill({});
+	const cells = [];
+	for (let i = 0; i < numCols; i += 1) cells.push(cellNode);
+	const rowNode = rowType.create(null, Fragment.from(cells));
+	const rows = [];
+	for (let i = 0; i < numRows; i += 1) rows.push(rowNode);
+	const tableNode = tableType.create(null, Fragment.from(rows));
+	view.dispatch(tr.replaceSelectionWith(tableNode).scrollIntoView());
+};
 pmTableNodes.table.toStatic = (node, options, isSelected, isEditable, editorProps, children)=> {
 	return (
 		<table key={node.currIndex}>
