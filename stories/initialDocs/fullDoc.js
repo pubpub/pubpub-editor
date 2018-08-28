@@ -179,7 +179,7 @@ const doc = {
 			type: 'footnoteList',
 			attrs: { listItems: [] }
 		},
-		/*{
+		{
 			type: 'table',
 			content: [
 				{
@@ -405,7 +405,7 @@ const doc = {
 					]
 				}
 			]
-		},*/
+		},
 	]
 };
 

@@ -16,7 +16,7 @@ storiesOf('Editor2', module)
 			onChange={(changeObject)=> {
 				console.log('====');
 				// console.log(changeObject.view.state.doc.toJSON(), null, 4));
-				// console.log(changeObject.activeLink);
+				console.log(changeObject.menuItems);
 				// console.log(getCollabJSONs(changeObject.view));
 				if (changeObject.updateNode && changeObject.selectedNode.attrs.size === 50) {
 					changeObject.updateNode({ size: 65 });
@@ -26,6 +26,7 @@ storiesOf('Editor2', module)
 					changeObject.shortcutValues.selectShortCut();
 					changeObject.insertFunctions.image({ url: 'https://www.cesarsway.com/sites/newcesarsway/files/styles/large_article_preview/public/All-about-puppies--Cesar%E2%80%99s-tips%2C-tricks-and-advice.jpg?itok=bi9xUvwe' });
 				}
+
 				// if ()
 				// if (changeObject.activeLink && changeObject.activeLink.attrs.href === '') {
 				// 	setTimeout(()=> {

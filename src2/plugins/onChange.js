@@ -1,6 +1,7 @@
 import { Plugin, NodeSelection, TextSelection } from 'prosemirror-state';
 import { lift, setBlockType, toggleMark, wrapIn } from 'prosemirror-commands';
 import { wrapInList } from 'prosemirror-schema-list';
+import { isInTable, deleteTable, mergeCells, splitCell, addRowBefore, addRowAfter, deleteRow, addColumnBefore, addColumnAfter, deleteColumn, toggleHeaderRow, toggleHeaderColumn, toggleHeaderCell } from 'prosemirror-tables';
 
 const getInsertFunctions = (editorView)=> {
 	/* Gather all node insert functions. These will be used to populate menus. */
@@ -99,7 +100,7 @@ const getMenuItems = (editorView)=> {
 		return wrapFunction(editorView.state, editorView.dispatch);
 	}
 
-	return [
+	const formattingItems = [
 		{
 			title: 'header1',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 1 }),
@@ -177,11 +178,76 @@ const getMenuItems = (editorView)=> {
 		},
 		{
 			title: 'link',
-			input: 'text',
 			run: applyToggleMark.bind(this, schema.marks.link),
 			isActive: markIsActive(schema.marks.link),
 		},
 	];
+	const tableItems = !schema.nodes.table || !isInTable(editorView.state)
+		? []
+		: [
+			{
+				title: 'table-delete',
+				run: deleteTable.bind(this, editorView.state, editorView.dispatch),
+				isActive: false,
+			},
+			{
+				title: 'table-merge-cells',
+				run: mergeCells.bind(this, editorView.state, editorView.dispatch),
+				isActive: false,
+			},
+			{
+				title: 'table-split-cell',
+				run: splitCell.bind(this, editorView.state, editorView.dispatch),
+				isActive: false,
+			},
+			{
+				title: 'table-add-row-before',
+				run: addRowBefore.bind(this, editorView.state, editorView.dispatch),
+				isActive: false,
+			},
+			{
+				title: 'table-add-row-after',
+				run: addRowAfter.bind(this, editorView.state, editorView.dispatch),
+				isActive: false,
+			},
+			{
+				title: 'table-delete-row',
+				run: deleteRow.bind(this, editorView.state, editorView.dispatch),
+				isActive: false,
+			},
+			{
+				title: 'table-add-column-before',
+				run: addColumnBefore.bind(this, editorView.state, editorView.dispatch),
+				isActive: false,
+			},
+			{
+				title: 'table-add-column-after',
+				run: addColumnAfter.bind(this, editorView.state, editorView.dispatch),
+				isActive: false,
+			},
+			{
+				title: 'table-delete-column',
+				run: deleteColumn.bind(this, editorView.state, editorView.dispatch),
+				isActive: false,
+			},
+			{
+				title: 'table-toggle-header-row',
+				run: toggleHeaderRow.bind(this, editorView.state, editorView.dispatch),
+				isActive: false,
+			},
+			{
+				title: 'table-toggle-header-column',
+				run: toggleHeaderColumn.bind(this, editorView.state, editorView.dispatch),
+				isActive: false,
+			},
+			{
+				title: 'table-toggle-header-cell',
+				run: toggleHeaderCell.bind(this, editorView.state, editorView.dispatch),
+				isActive: false,
+			},
+		];
+
+	return [...formattingItems, ...tableItems];
 };
 
 const getRangeBoundingBox = (editorView, fromPos, toPos)=> {
