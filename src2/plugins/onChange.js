@@ -187,63 +187,63 @@ const getMenuItems = (editorView)=> {
 		: [
 			{
 				title: 'table-delete',
-				run: deleteTable.bind(this, editorView.statei, editorView.dispatch),
-				isActive: false,
+				run: deleteTable.bind(this, editorView.state, editorView.dispatch),
+				isActive: deleteTable.bind(this, editorView.state),
 			},
 			{
 				title: 'table-merge-cells',
-				run: mergeCells.bind(this, editorView.statei, editorView.dispatch),
-				isActive: false,
+				run: mergeCells.bind(this, editorView.state, editorView.dispatch),
+				isActive: mergeCells.bind(this, editorView.state),
 			},
 			{
 				title: 'table-split-cell',
-				run: splitCell.bind(this, editorView.statei, editorView.dispatch),
-				isActive: false,
+				run: splitCell.bind(this, editorView.state, editorView.dispatch),
+				isActive: splitCell.bind(this, editorView.state),
 			},
 			{
 				title: 'table-add-row-before',
-				run: addRowBefore.bind(this, editorView.statei, editorView.dispatch),
-				isActive: false,
+				run: addRowBefore.bind(this, editorView.state, editorView.dispatch),
+				isActive: addRowBefore.bind(this, editorView.state),
 			},
 			{
 				title: 'table-add-row-after',
-				run: addRowAfter.bind(this, editorView.statei, editorView.dispatch),
-				isActive: false,
+				run: addRowAfter.bind(this, editorView.state, editorView.dispatch),
+				isActive: addRowAfter.bind(this, editorView.state),
 			},
 			{
 				title: 'table-delete-row',
-				run: deleteRow.bind(this, editorView.statei, editorView.dispatch),
-				isActive: false,
+				run: deleteRow.bind(this, editorView.state, editorView.dispatch),
+				isActive: deleteRow.bind(this, editorView.state),
 			},
 			{
 				title: 'table-add-column-before',
-				run: addColumnBefore.bind(this, editorView.statei, editorView.dispatch),
-				isActive: false,
+				run: addColumnBefore.bind(this, editorView.state, editorView.dispatch),
+				isActive: addColumnBefore.bind(this, editorView.state),
 			},
 			{
 				title: 'table-add-column-after',
-				run: addColumnAfter.bind(this, editorView.statei, editorView.dispatch),
-				isActive: false,
+				run: addColumnAfter.bind(this, editorView.state, editorView.dispatch),
+				isActive: addColumnAfter.bind(this, editorView.state),
 			},
 			{
 				title: 'table-delete-column',
-				run: deleteColumn.bind(this, editorView.statei, editorView.dispatch),
-				isActive: false,
+				run: deleteColumn.bind(this, editorView.state, editorView.dispatch),
+				isActive: deleteColumn.bind(this, editorView.state),
 			},
 			{
 				title: 'table-toggle-header-row',
-				run: toggleHeaderRow.bind(this, editorView.statei, editorView.dispatch),
-				isActive: false,
+				run: toggleHeaderRow.bind(this, editorView.state, editorView.dispatch),
+				isActive: toggleHeaderRow.bind(this, editorView.state),
 			},
 			{
 				title: 'table-toggle-header-column',
-				run: toggleHeaderColumn.bind(this, editorView.statei, editorView.dispatch),
-				isActive: false,
+				run: toggleHeaderColumn.bind(this, editorView.state, editorView.dispatch),
+				isActive: toggleHeaderColumn.bind(this, editorView.state),
 			},
 			{
 				title: 'table-toggle-header-cell',
-				run: toggleHeaderCell.bind(this, editorView.statei, editorView.dispatch),
-				isActive: false,
+				run: toggleHeaderCell.bind(this, editorView.state, editorView.dispatch),
+				isActive: toggleHeaderCell.bind(this, editorView.state),
 			},
 		];
 
@@ -354,8 +354,8 @@ const getActiveLink = (editorView)=> {
 	const editorState = editorView.state;
 	const linkMarkType = editorState.schema.marks.link;
 	const { from, $from, to, $to, empty } = editorState.selection;
-	const shiftedFrom = editorState.doc.resolve(from - 1);
-	const shiftedTo = editorState.doc.resolve(to - 1);
+	const shiftedFrom = editorState.doc.resolve(Math.max(from - 1, 0));
+	const shiftedTo = editorState.doc.resolve(Math.max(to - 1, 0));
 
 	/* Because we set link marks to not be inclusive, we need to do */
 	/* some shifted so the dialog will appear at the start and end */

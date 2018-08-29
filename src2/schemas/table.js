@@ -1,5 +1,6 @@
 import React from 'react';
 import { tableNodes } from 'prosemirror-tables';
+import { Fragment } from "prosemirror-model";
 
 const pmTableNodes = tableNodes({
 	tableGroup: "block",

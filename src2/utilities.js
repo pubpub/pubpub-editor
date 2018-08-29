@@ -1,6 +1,11 @@
 import { Selection } from 'prosemirror-state';
 import { DOMParser } from 'prosemirror-model';
 
+export const dispatchEmptyTransaction = (editorView)=> {
+	const emptyInitTransaction = editorView.state.tr;
+	editorView.dispatch(emptyInitTransaction);
+};
+
 export const renderStatic = (schema, nodeArray, editorProps)=> {
 	return nodeArray.map((node, index)=> {
 		let children;

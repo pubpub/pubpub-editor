@@ -16,7 +16,7 @@ storiesOf('Editor2', module)
 			onChange={(changeObject)=> {
 				console.log('====');
 				// console.log(changeObject.view.state.doc.toJSON(), null, 4));
-				console.log(changeObject.menuItems);
+				// console.log(changeObject.menuItems);
 				// console.log(getCollabJSONs(changeObject.view));
 				if (changeObject.updateNode && changeObject.selectedNode.attrs.size === 50) {
 					changeObject.updateNode({ size: 65 });
@@ -43,27 +43,25 @@ storiesOf('Editor2', module)
 				// 	changeObject.insertFunctions.image({ url: 'https://www.cesarsway.com/sites/newcesarsway/files/styles/large_article_preview/public/All-about-puppies--Cesar%E2%80%99s-tips%2C-tricks-and-advice.jpg?itok=bi9xUvwe' });
 				// }
 			}}
-			// collaborativeOptions={{
-			// 	firebaseConfig: firebaseConfig,
-			// 	editorKey: 'storybook-editor-v22',
-			// 	clientData: clientData,
-			// 	// onClientChange: (val)=> { console.log('clientChange ', val); },
-			// 	// onStatusChange: (val)=> { console.log('statusChagnge ', val); },
-			// }}
-			getHighlights={()=> {
-				return [
-					{
-						exact: 'Introduction',
-						from: '25',
-						id: 'abcdefg',
-						permanent: false,
-						// prefix: 'Hello ',
-						// suffix: ' and',
-						to: '30',
-						version: undefined,
-					}
-				];
+			collaborativeOptions={{
+				firebaseConfig: firebaseConfig,
+				editorKey: 'storybook-editor-v22',
+				clientData: clientData,
+				// onClientChange: (val)=> { console.log('clientChange ', val); },
+				// onStatusChange: (val)=> { console.log('statusChagnge ', val); },
 			}}
+			highlights={[
+				{
+					exact: 'Introduction',
+					from: '25',
+					id: 'abcdefg',
+					permanent: false,
+					// prefix: 'Hello ',
+					// suffix: ' and',
+					to: '30',
+					version: undefined,
+				}
+			]}
 		/>
 	</div>
 ));

@@ -10,7 +10,6 @@ import NodeViewReact from './nodeViewReact';
 import { renderStatic } from './utilities';
 
 // TODO - next steps
-// Trigger transaction on props change.
 // Show collaborative loading bars somehow.
 
 require('./style.scss');
@@ -25,7 +24,7 @@ const propTypes = {
 	initialContent: PropTypes.object,
 	placeholder: PropTypes.string,
 	isReadOnly: PropTypes.bool,
-	getHighlights: PropTypes.func,		/* Function that returns an array of active highlights */
+	highlights: PropTypes.array,
 	getHighlightContent: PropTypes.func,
 };
 
@@ -39,7 +38,7 @@ const defaultProps = {
 	initialContent: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] },
 	placeholder: '',
 	isReadOnly: false,
-	getHighlights: ()=> { return []; },
+	highlights: [],
 	getHighlightContent: ()=>{},
 };
 
@@ -64,9 +63,6 @@ class Editor extends Component {
 		this.nodeViews = this.configureNodeViews();
 		this.createEditor();
 	}
-
-	// TODO: When props change, we should trigger a transaction so plugins run.
-	// Mostly for highlights
 
 	configureSchema() {
 		const schemaNodes = {
@@ -113,7 +109,9 @@ class Editor extends Component {
 				collaborativeOptions: this.props.collaborativeOptions,
 				placeholder: this.props.placeholder,
 				isReadOnly: this.props.isReadOnly,
-				getHighlights: this.props.getHighlights,
+				getHighlights: ()=> {
+					return this.props.highlights;
+				},
 				getHighlightContent: this.props.getHighlightContent,
 			};
 			return allPlugins[key](this.schema, passedProps);
