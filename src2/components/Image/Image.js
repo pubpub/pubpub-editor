@@ -14,8 +14,8 @@ const propTypes = {
 const Image = (props)=> {
 	const attrs = props.attrs;
 	const options = props.options;
-	const imageUrl = attrs.url && props.options.handleResizeUrl
-		? props.options.handleResizeUrl(attrs.url)
+	const imageUrl = attrs.url && props.options.onResizeUrl
+		? props.options.onResizeUrl(attrs.url)
 		: attrs.url;
 	const figFloat = attrs.align === 'left' || attrs.align === 'right'
 		? attrs.align
