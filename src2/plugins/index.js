@@ -1,6 +1,6 @@
 import { history } from 'prosemirror-history';
-import { baseKeymap } from 'prosemirror-commands';
-import { keymap } from 'prosemirror-keymap';
+// import { baseKeymap } from 'prosemirror-commands';
+// import { keymap } from 'prosemirror-keymap';
 import { gapCursor } from 'prosemirror-gapcursor';
 import buildOnChange from './onChange';
 import buildInputRules from './inputRules';
@@ -21,15 +21,15 @@ const buildHistory = ()=> {
 	return history();
 };
 
-const buildBaseKeymap = ()=> {
-	return keymap(baseKeymap);
-};
+// const buildBaseKeymap = ()=> {
+// 	return keymap(baseKeymap);
+// };
 
 export const requiredPlugins = {
 	onChange: buildOnChange,
 	gapCursor: buildGapCursor,
 	history: buildHistory,
-	baseKeymap: buildBaseKeymap,
+	// baseKeymap: buildBaseKeymap,
 	keymap: buildKeymap,
 	table: buildTable,
 	collaborative: buildCollaborative,

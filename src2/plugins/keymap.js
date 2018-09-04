@@ -1,4 +1,4 @@
-import { wrapIn, setBlockType, chainCommands, toggleMark, exitCode, joinUp, joinDown, lift, selectParentNode } from 'prosemirror-commands';
+import { baseKeymap, wrapIn, setBlockType, chainCommands, toggleMark, exitCode, joinUp, joinDown, lift, selectParentNode } from 'prosemirror-commands';
 import { wrapInList, splitListItem, liftListItem, sinkListItem } from 'prosemirror-schema-list';
 import { undo, redo } from 'prosemirror-history';
 import { undoInputRule } from 'prosemirror-inputrules';
@@ -113,5 +113,8 @@ export default (schema)=> {
 		});
 	}
 
-	return keymap(keys);
+	return [
+		keymap(keys),
+		keymap(baseKeymap),
+	];
 };
