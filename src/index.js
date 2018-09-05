@@ -1,2 +1,2 @@
-export Editor from './Editor';
-export SimpleEditor from './SimpleEditor';
+export default from './Editor';
+export * from './utilities';

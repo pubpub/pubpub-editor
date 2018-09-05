@@ -1,201 +1,137 @@
 import React, { Component } from 'react';
-import { EditorState, PluginKey, Selection } from 'prosemirror-state';
-import { EditorView } from 'prosemirror-view';
-import { DOMParser } from 'prosemirror-model';
-import { keydownHandler } from 'prosemirror-keymap';
 import PropTypes from 'prop-types';
-import ReactView from './schema/reactView';
-import createSchema from './schema';
-import { getBasePlugins } from './schema/setup';
+import { EditorState } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
+import { Schema } from 'prosemirror-model';
+import { keydownHandler } from 'prosemirror-keymap';
+import { nodes, marks } from './schemas';
+import { requiredPlugins, optionalPlugins } from './plugins';
+import NodeViewReact from './nodeViewReact';
+import { renderStatic } from './utilities';
+
+// TODO - next steps
+// Show collaborative loading bars somehow.
 
 require('./style.scss');
 
 const propTypes = {
-	initialContent: PropTypes.object,
-	editorId: PropTypes.string,
+	customNodes: PropTypes.object, 		/* Object of custom nodes. To remove default node, override. For example, { image: null, header: null } */
+	customMarks: PropTypes.object,
+	customPlugins: PropTypes.object, 	/* All customPlugins values should be a function, which is passed schema and props - and returns a Plugin */
+	nodeOptions: PropTypes.object, 		/* An object with nodeName keys and values of objects of overriding options. For example: nodeOptions = { image: { linkToSrc: false } } */
+	collaborativeOptions: PropTypes.object,
 	onChange: PropTypes.func,
-	children: PropTypes.node,
+	initialContent: PropTypes.object,
 	placeholder: PropTypes.string,
 	isReadOnly: PropTypes.bool,
-	showHeaderLinks: PropTypes.bool,
-	renderStaticMarkup: PropTypes.bool,
-	onOptionsRender: PropTypes.func,
+	highlights: PropTypes.array,
+	getHighlightContent: PropTypes.func,
 };
 
 const defaultProps = {
+	customNodes: {}, 	/* defaults: 'blockquote', 'horizontal_rule', 'heading', 'ordered_list', 'bullet_list', 'list_item', 'code_block', 'text', 'hard_break', 'image' */
+	customMarks: {}, 	/* defaults: 'em', 'strong', 'link', 'sub', 'sup', 'strike', 'code' */
+	customPlugins: {}, 	/* defaults: inputRules, keymap, headerIds, placeholder */
+	nodeOptions: {},
+	collaborativeOptions: {},
+	onChange: ()=>{},
 	initialContent: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] },
-	editorId: undefined,
-	onChange: undefined,
-	children: undefined,
-	placeholder: undefined,
+	placeholder: '',
 	isReadOnly: false,
-	showHeaderLinks: false,
-	renderStaticMarkup: false,
-	onOptionsRender: (nodeDom, optionsDom)=>{
-		const getOffsetTop = (node, runningOffset)=> {
-			if (node.offsetParent.className.split(' ').indexOf('ProseMirror') > -1) {
-				return node.offsetTop + runningOffset;
-			}
-			return getOffsetTop(node.parentNode, node.offsetTop + runningOffset);
-		};
-
-		optionsDom.style.top = `${getOffsetTop(nodeDom, 0)}px`;
-		optionsDom.style.left = `${nodeDom.offsetLeft + nodeDom.offsetWidth}px`;
-		optionsDom.style.width = '250px';
-	}
+	highlights: [],
+	getHighlightContent: ()=>{},
 };
 
-
-/**
- * @module Components
- */
-
-/**
-* @component
-*
-* The main Editor component, by itself it acts largely as plain textEditor. Nesting plugins enables greater functionality.
-*
-* @prop {object} initialContent A JSON document representing the initial content. This JSON should be of the form that comes from the 'toJSON' function
-* @prop {func} onChange Fired whenever the document is changed.
-* @prop {String} placeholder A placeholder string that will appear if there is no content.
-* @prop {bool} isReadOnly Set to true to disallow editing, both in text and modifying or inserting add ons.
-* @prop {bool} showHeaderLinks Set to true to show links next to headers
-* @prop {bool} renderStaticMarkup Set to true to render only static markup on the server.
-* @prop {func} onOptionsRender Function that is called by nodeViews and menus when an options container is opened. It will be passed `nodeDom` and `optionsDom`, allowing the options block to be positioned.
-*
-* @example
-return <Editor />
-*/
 class Editor extends Component {
 	constructor(props) {
 		super(props);
-		this.containerId = props.editorId
-			? `pubpub-editor-container-${props.editorId}`
-			: `pubpub-editor-container-${Math.round(Math.random() * 10000)}`;
-		this.getJSON = this.getJSON.bind(this);
-		this.getPlugin = this.getPlugin.bind(this);
 
 		this.configureSchema = this.configureSchema.bind(this);
 		this.configurePlugins = this.configurePlugins.bind(this);
+		this.configureNodeViews = this.configureNodeViews.bind(this);
+
 		this.createEditor = this.createEditor.bind(this);
-		this.renderStatic = this.renderStatic.bind(this);
 
-		this._isMounted = false;
-		this._onAction = this._onAction.bind(this);
-
-		this.optionsContainerRef = React.createRef();
+		this.editorRef = React.createRef();
 		this.schema = this.configureSchema();
-		this.pluginsObject = this.configurePlugins(this.schema);
-		this.nodeViews = this.configureNodeViews(this.schema);
-
-		const componentChildren = React.Children.map(this.props.children, (child)=> {
-			return child ? child.type.pluginName : null;
-		}) || [];
-		this.state = {
-			collabLoading: componentChildren.indexOf('Collaborative') > -1,
-		};
+		this.plugins = undefined;
+		this.nodeViews = undefined;
 	}
 
 	componentDidMount() {
-		this._isMounted = true;
+		this.plugins = this.configurePlugins();
+		this.nodeViews = this.configureNodeViews();
 		this.createEditor();
-	}
-	componentWillUnmount() {
-		this._isMounted = false;
-	}
-	/**
-	 * Get JSON
-	 * @return {json} The JSON structure of the document, useful for saving documents for use in initialContent.
-	 */
-	getJSON() {
-		return this.view.state.doc.toJSON();
-	}
-	/**
-	 * Get Text
-	 * @return {string} The plain text content of an editor instance
-	 */
-	getText() {
-		// https://prosemirror.net/docs/ref/#model.Node.textBetween might be better.
-		// We can pass a 'blockSeparator' to avoid the spaceless paragraph break issue.
-		return this.view.state.doc.textContent;
-	}
-	getCollabJSONs(collabIds) {
-		if (this.state.pluginKeys.Collaborative) {
-			const collabPlugin = this.state.pluginKeys.Collaborative.get(this.view.state);
-			return collabPlugin.getJSONs(collabIds);
-		}
-		return null;
-	}
-	getPlugin(key) {
-		if (this.state.pluginKeys[key]) {
-			return this.state.pluginKeys[key].get(this.state.editorState);
-		}
-		return null;
-	}
-	/**
-	 * Import HTML
-	 * {string} Imports a string of HTML into the document
-	 */
-	importHtml(htmlString) {
-		/* Create wrapper DOM node */
-		const wrapperElem = document.createElement('div');
-
-		/* Insert htmlString into wrapperElem to generate full DOM tree */
-		wrapperElem.innerHTML = htmlString;
-
-		/* Generate new ProseMirror doc from DOM node */
-		const newDoc = DOMParser.fromSchema(this.schema).parse(wrapperElem);
-
-		/* Create transaction and set selection to the beginning of the doc */
-		const tr = this.view.state.tr;
-		tr.setSelection(Selection.atStart(this.view.state.doc));
-
-		/* Insert each node of newDoc to current doc */
-		/* Note, we don't want to just replaceSelectionWith(newDoc) */
-		/* because it will add a doc within a doc. */
-		newDoc.content.content.forEach((node)=> {
-			tr.replaceSelectionWith(node);
-		});
-
-		/* Dispatch transaction to setSelection and insert content */
-		this.view.dispatch(tr);
-	}
-	focus() {
-		this.view.focus();
 	}
 
 	configureSchema() {
-		const schemaNodes = {};
-		const schemaMarks = {};
-		if (this.props.children) {
-			React.Children.forEach(this.props.children, (child)=> {
-				if (child && child.type.schema) {
-					const { nodes, marks } = child.type.schema({
-						...child.props,
-						optionsContainerRef: this.optionsContainerRef,
-						onOptionsRender: this.props.onOptionsRender,
-					});
-					Object.keys(nodes || {}).forEach((key) => {
-						schemaNodes[key] = nodes[key];
-					});
-					Object.keys(marks || {}).forEach((key) => {
-						schemaMarks[key] = marks[key];
-					});
-				}
-			});
-		}
-		const schema = createSchema(schemaNodes, schemaMarks);
-		return schema;
+		const schemaNodes = {
+			...nodes,
+			...this.props.customNodes
+		};
+		const schemaMarks = {
+			...marks,
+			...this.props.customMarks
+		};
+
+		/* Filter out undefined (e.g. overwritten) nodes and marks */
+		Object.keys(schemaNodes).forEach((nodeKey)=> {
+			if (!schemaNodes[nodeKey]) { delete schemaNodes[nodeKey]; }
+		});
+		Object.keys(schemaMarks).forEach((markKey)=> {
+			if (!schemaMarks[markKey]) { delete schemaMarks[markKey]; }
+		});
+
+		return new Schema({
+			nodes: schemaNodes,
+			marks: schemaMarks,
+			topNode: 'doc'
+		});
 	}
 
-	configureNodeViews(schema) {
+	configurePlugins() {
+		const allPlugins = {
+			...optionalPlugins,
+			...this.props.customPlugins,
+			...requiredPlugins,
+		};
+
+		return Object.keys(allPlugins).filter((key)=> {
+			return !!allPlugins[key];
+		}).sort((foo, bar)=> {
+			if (foo === 'onChange') { return 1; }
+			if (bar === 'onChange') { return -1; }
+			return 0;
+		}).map((key)=> {
+			const passedProps = {
+				container: this.editorRef.current,
+				onChange: this.props.onChange,
+				collaborativeOptions: this.props.collaborativeOptions,
+				placeholder: this.props.placeholder,
+				isReadOnly: this.props.isReadOnly,
+				getHighlights: ()=> {
+					return this.props.highlights;
+				},
+				getHighlightContent: this.props.getHighlightContent,
+			};
+			return allPlugins[key](this.schema, passedProps);
+		}).reduce((prev, curr)=> {
+			/* Some plugin generation functions return an */
+			/* array of plugins. Flatten those cases. */
+			return prev.concat(curr);
+		}, []);
+	}
+
+	configureNodeViews() {
 		const nodeViews = {};
-		const nodes = schema.nodes;
-		Object.keys(nodes).forEach((nodeName) => {
-			const nodeSpec = nodes[nodeName].spec;
-			if (nodeSpec.toEditable) {
-				nodeViews[nodeName] = (node, view, getPos, decorations) => {
-					return new ReactView(node, view, getPos, decorations, this.props.isReadOnly);
+		const usedNodes = this.schema.nodes;
+		Object.keys(usedNodes).forEach((nodeName) => {
+			const nodeSpec = usedNodes[nodeName].spec;
+			if (nodeSpec.isNodeView) {
+				nodeViews[nodeName] = (node, view, getPos, decorations)=>{
+					const customOptions = this.props.nodeOptions[nodeName] || {};
+					const mergedOptions = { ...nodeSpec.defaultOptions, ...customOptions };
+					return new NodeViewReact(node, view, getPos, decorations, mergedOptions);
 				};
 			}
 		});
@@ -203,150 +139,45 @@ class Editor extends Component {
 		return nodeViews;
 	}
 
-	configurePlugins(schema) {
-		const pluginKeys = {};
-
-		let plugins = getBasePlugins({
-			schema,
-			isReadOnly: this.props.isReadOnly,
-			placeholder: this.props.placeholder
-		});
-
-		if (this.props.children) {
-			React.Children.forEach(this.props.children, (child) => {
-				if (child && child.type.getPlugins) {
-					const key = new PluginKey(child.type.pluginName);
-					pluginKeys[child.type.pluginName] = key;
-					const addonPlugins = child.type.getPlugins({
-						...child.props,
-						pluginKey: key,
-						getPlugin: this.getPlugin,
-						isReadOnly: this.props.isReadOnly,
-					});
-					plugins = plugins.concat(addonPlugins);
-				}
-			});
-		}
-		return { plugins, pluginKeys };
-	}
 
 	createEditor() {
-		this.state = EditorState.create({
+		/* Create the Editor State */
+		const state = EditorState.create({
 			doc: this.schema.nodeFromJSON(this.props.initialContent),
 			schema: this.schema,
-			plugins: this.pluginsObject.plugins,
+			plugins: this.plugins,
 		});
 
-		this.view = new EditorView(this.editorElement, {
-			state: this.state,
-			dispatchTransaction: this._onAction,
+		/* Create and editorView and mount it into the editorRef node */
+		const editorView = new EditorView({ mount: this.editorRef.current }, {
+			state: state,
 			spellcheck: true,
-			editable: () => (!this.props.isReadOnly),
+			editable: () => { return !this.props.isReadOnly; },
 			nodeViews: this.nodeViews,
 			handleKeyDown: keydownHandler({
-				'Mod-s': (view, evt)=>{
-					/* Block Ctrl-S from launching the browser Save window */
+				/* Block Ctrl-S from launching the browser Save window */
+				'Mod-s': ()=>{
 					return true;
 				},
+				// TODO: We need something here that allows the dev to
+				// disable certain keys when a inline-menu is open for example
 			})
 		});
 
-		this.setState({
-			view: this.view,
-			editorState: this.state,
-			pluginKeys: this.pluginsObject.pluginKeys
-		});
-	}
-
-	_onAction(transaction) {
-		console.log(this.view);
-		if (this.view && this.view.state && this._isMounted) {
-			const newState = this.view.state.apply(transaction);
-			this.view.updateState(newState);
-			this.setState({ editorState: newState, transaction: transaction }, ()=> {
-				if (this.state.collabLoading) {
-					this.setState({ collabLoading: false });
-				}
-			});
-			if (this.props.onChange && transaction.docChanged) {
-				this.props.onChange(this.view.state.doc.toJSON());
-			}
-		}
-	}
-
-	renderStatic(nodeArray) {
-		return nodeArray.map((node, index)=> {
-			let children;
-			if (node.content) {
-				children = this.renderStatic(node.content);
-			}
-			if (node.type === 'text') {
-				const marks = node.marks || [];
-				children = marks.reduce((prev, curr)=> {
-					const MarkComponent = this.schema.marks[curr.type].spec.toStatic(curr, prev);
-					return MarkComponent;
-				}, node.text);
-			}
-
-			const nodeWithIndex = node;
-			nodeWithIndex.currIndex = index;
-			const NodeComponent = this.schema.nodes[node.type].spec.toStatic(nodeWithIndex, children, this.props);
-			return NodeComponent;
-		});
+		const emptyInitTransaction = editorView.state.tr;
+		editorView.dispatch(emptyInitTransaction);
 	}
 
 	render() {
-		if (!this._isMounted && this.props.renderStaticMarkup) {
-			return this.renderStatic(this.props.initialContent.content);
-		}
-
-		const wrapperClasses = `pubpub-editor ${this.props.showHeaderLinks ? 'show-header-links' : ''}`;
-		const optionsContainerId = `${this.containerId}-options`;
+		/* Before createEditor is called from componentDidMount, we */
+		/* render a static version of the doc for server-side */
+		/* friendliness. This static version is overwritten when the */
+		/* editorView is mounted into the editor dom node. */
 		return (
-			<div style={{ position: 'relative' }} id={this.containerId} className={this.state.collabLoading ? 'editor-loading' : ''}>
-				
-				{/* Clone all child elements and pass them important new props*/}
-				{this.state.view
-					? React.Children.map(this.props.children, (child) => {
-						if (!child) { return null; }
-
-						return React.cloneElement(child, {
-							view: this.state.view,
-							editorState: this.state.editorState,
-							transaction: this.state.transaction,
-							containerId: this.containerId,
-							pluginKey: this.state.pluginKeys[child.type.pluginName],
-							optionsContainerRef: this.optionsContainerRef,
-							onOptionsRender: this.props.onOptionsRender,
-							isReadOnly: this.props.isReadOnly,
-						});
-					})
-					: null
-				}
-
-				{/* Loading section displayed when collab is loading */}
-				<div className="editor-loading-bars">
-					<div className="loading pt-skeleton" style={{ width: '95%', height: '1.2em', marginBottom: '1em' }} />
-					<div className="loading pt-skeleton" style={{ width: '85%', height: '1.2em', marginBottom: '1em' }} />
-					<div className="loading pt-skeleton" style={{ width: '90%', height: '1.2em', marginBottom: '1em' }} />
-					<div className="loading pt-skeleton" style={{ width: '80%', height: '1.2em', marginBottom: '1em' }} />
-					<div className="loading pt-skeleton" style={{ width: '82%', height: '1.2em', marginBottom: '1em' }} />
+			<div className="editor" ref={this.editorRef}>
+				<div className="ProseMirror">
+					{renderStatic(this.schema, this.props.initialContent.content, this.props)}
 				</div>
-
-				{/* If not yet mounted, render a static server-side friendly version of the content */}
-				{!this._isMounted &&
-					<div className={wrapperClasses}>
-						<div className="ProseMirror">
-							{this.renderStatic(this.props.initialContent.content)}
-						</div>
-					</div>
-				}
-
-				{/* Element the ProseMirror instance will be mounted into */}
-				<div ref={(elem)=> { this.editorElement = elem; }} className={wrapperClasses} />
-
-				{/* Element that options content will be mounted into */}
-				<div id={optionsContainerId} ref={this.optionsContainerRef} className="options-container" />
 			</div>
 		);
 	}

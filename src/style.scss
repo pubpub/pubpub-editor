@@ -1,170 +1,53 @@
 @import "~prosemirror-view/style/prosemirror.css";
 @import "~prosemirror-gapcursor/style/gapcursor.css";
+@import "~prosemirror-tables/style/tables.css";
 
-.ProseMirror-gapcursor:after {
-	width: 1px;
-	height: 1.2em;
-	top: 0px;
-	border-left: 1px solid black;
-}
-.prosemirror-placeholder {
-	opacity: 0.5;
-	width: 0;
-	display: inline-block;
-	overflow: visible;
-	white-space: nowrap;
-	position: absolute;
-	pointer-events: none;
-	user-select: none;
-}
-.prosemirror-link-url {
-	position: absolute;
-	transform: translateY(1.5em);
-	background-color: white;
-	padding: 2px 5px;
-	box-shadow: 0px 2px 4px rgba(50, 50, 50, 0.2);
-	border-radius: 1px;
-	border: 1px solid #CCC;
-	z-index: 2;
-	word-break: break-all;
-	&:after {
-		font-family: 'Courier', monospace;
-		font-size: 14px;
-		color: rgba(51, 51, 51, 0.75);
+.editor {
+	.prosemirror-placeholder {
+		opacity: 0.5;
+		width: 0;
+		display: inline-block;
+		overflow: visible;
+		white-space: nowrap;
+		position: absolute;
+		pointer-events: none;
+		user-select: none;
 	}
-	
-}
-
-.ProseMirror:focus {
-	outline: 0px;
-}
-
-/* Weird bug with blueprint editable text empty on default*/
-.pt-editable-text:not(.pt-editable-editing) .pt-editable-content {
-  height: auto !important;
-}
-
-.ProseMirror-selectednode, .isSelected {
-	outline: 2px solid #BBBDC0;
-}
-
-.pubpub-editor {
 	h1, h2, h3, h4, h5, h6 {
-		position: relative;
-		.header-link {
-			position: absolute;
-			display: none;
-			opacity: 0;
-			transition: .1s linear opacity;
-			height: 1em;
-			width: 1em;
-			right: 100%;
-			top: 0;
-		}
-		&:hover {
-			.header-link {
-				opacity: 0.5;
-				&:hover {
-					opacity: 1;
-					background-color: transparent;
-				}
-			}
+		a {
+			text-decoration: none;
+			color: inherit;
 		}
 	}
-	&.show-header-links {
-		h1, h2, h3, h4, h5, h6 {
-			.header-link {
-				display: inline;
-			}
+	.ProseMirror-selectednode, .isSelected {
+		outline: 2px solid #BBBDC0;
+	}
+	table {
+		margin: 0;
+		max-width: 100%;
+	}
+	th, td {
+		min-width: 1em;
+		border: 1px solid #ddd;
+		padding: 3px 5px;
+	}
+	/* This clunky table, tableWrapper thing is because */
+	/* isReadOnly removes the wrapping div, so margins don't */
+	/* collapse as expected in all situations. */
+	table {
+		margin: 1em 0;
+	}
+	.tableWrapper {
+		margin: 1em 0;
+		table {
+			margin: 0em;
 		}
+	}
+	th {
+		font-weight: bold;
+		text-align: left;
+		background-color: #F0F0F4;
 	}
 }
 
-.ProseMirror {
-	&:after {
-		content: "";
-		display: table;
-		clear: both;
-	}
-	pre {
-	    border-radius: 2px;
-	    background: rgba(27,31,35,0.05);
-	    color: inherit;
-	    code {
-	    	box-shadow: none;
-	    	background: none;
-	    }
-	}
-
-	code {
-		font-size: .85em;
-	    box-shadow: inset 0 0 0 1px rgba(16, 22, 26, 0.2);
-	    padding: 0.2em 0.4em;
-	    margin: 0;
-	    border-radius: 2px;
-	    background: rgba(27,31,35,0.05);
-	    color: inherit;
-	}
-}
-.editor-loading-bars {
-	width: 100%;
-	display: none;
-	position: absolute;
-}
-
-.editor-loading {
-	.pubpub-editor {
-		opacity: 0;
-	}
-	.editor-loading-bars {
-		display: block;
-	}
-}
-
-.options-container {
-	position: absolute;
-}
-.options-box {
-	background: #F7F7F9;
-	padding: 1em;
-	// box-shadow: 0 0 0 1px rgba(16,22,26,.1), 0 1px 1px rgba(16,22,26,.2), 0 2px 6px rgba(16,22,26,.2);
-	box-shadow: 0 0 0 1px rgba(16,22,26,.1), 0 0 0 rgba(16,22,26,0), 0 1px 1px rgba(16,22,26,.2);
-	border-radius: 2px;
-	.options-title {
-		font-weight: 600;
-		background: #f0f0f2;
-		position: relative;
-		top: -1em;
-		left: -1em;
-		width: calc(100% + 2em);
-		padding: 0.5em 1em;
-		border-bottom: 1px solid #DDD;
-		text-align: center;
-	}
-	label.form-label {
-		display: block;
-		font-weight: 600;
-		margin-bottom: 0.5em;
-		&:not(:first-of-type) {
-			padding-top: 1em;
-			margin-top: 1em;
-			position: relative;
-			&:before {
-				content: "";
-				position: absolute;
-				width: calc(100% + 2em);
-				top: 0;
-				left: -1em;
-				height: 1px;
-				background-color: #DDD;
-				display: block;
-			}
-		}
-	}
-	.simple-editor-wrapper {
-		border-radius: 3px;
-		box-shadow: 0 0 0 0 rgba(19,124,189,0), 0 0 0 0 rgba(19,124,189,0), inset 0 0 0 1px rgba(16,22,26,.15), inset 0 1px 1px rgba(16,22,26,.2);
-		padding: 0.5em;
-		background: white;
-	}
-}
+@import "./collab.scss";

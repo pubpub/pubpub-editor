@@ -1,60 +1,87 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { Editor } from 'index';
-import FormattingMenu from 'addons/FormattingMenu/FormattingMenu';
-import HeaderMenu from 'addons/HeaderMenu/HeaderMenu';
-import LinkMenu from 'addons/LinkMenu/LinkMenu';
-import Image from 'addons/Image/Image';
-import Latex from 'addons/Latex/Latex';
-import Table from 'addons/Table/Table';
-import plainDoc from './initialDocs/plainDoc';
-import imageDoc from './initialDocs/imageDoc';
-import { editorWrapperStyle, s3Upload, renderLatex } from './_utilities';
+import Editor from '../src/index';
+import { editorWrapperStyle, firebaseConfig, clientData } from './_utilities';
+import initialContent from './initialDocs/fullDoc';
 
 storiesOf('Editor', module)
 .add('default', () => (
 	<div style={editorWrapperStyle}>
-		<Editor placeholder="Begin writing..." />
+		<Editor
+			placeholder="Begin writing..."
+			initialContent={initialContent}
+			// isReadOnly={true}
+			onChange={(changeObject)=> {
+				console.log('====');
+				// console.log(changeObject.view.state.doc.toJSON(), null, 4));
+				console.log(changeObject.view);
+				// console.log(getCollabJSONs(changeObject.view));
+				if (changeObject.updateNode && changeObject.selectedNode.attrs.size === 50) {
+					changeObject.updateNode({ size: 65 });
+				}
+
+				if (changeObject.shortcutValues['@'] === 'dog' && changeObject.selection.empty) {
+					changeObject.shortcutValues.selectShortCut();
+					changeObject.insertFunctions.image({ url: 'https://www.cesarsway.com/sites/newcesarsway/files/styles/large_article_preview/public/All-about-puppies--Cesar%E2%80%99s-tips%2C-tricks-and-advice.jpg?itok=bi9xUvwe' });
+				}
+
+				// if ()
+				// if (changeObject.activeLink && changeObject.activeLink.attrs.href === '') {
+				// 	setTimeout(()=> {
+				// 		changeObject.activeLink.updateAttrs({ href: 'https://www.pubpub.org' });
+				// 	}, 2000);
+				// }
+				// if (changeObject.activeLink && changeObject.activeLink.attrs.href === 'https://www.pubpub.org') {
+				// 	setTimeout(()=> {
+				// 		changeObject.activeLink.removeLink();
+				// 	}, 2000);
+				// }
+				// if (thing === false) {
+				// 	thing = true;
+				// 	changeObject.insertFunctions.image({ url: 'https://www.cesarsway.com/sites/newcesarsway/files/styles/large_article_preview/public/All-about-puppies--Cesar%E2%80%99s-tips%2C-tricks-and-advice.jpg?itok=bi9xUvwe' });
+				// }
+			}}
+			highlights={[
+				{
+					exact: 'Introduction',
+					from: '25',
+					id: 'abcdefg',
+					permanent: false,
+					// prefix: 'Hello ',
+					// suffix: ' and',
+					to: '30',
+					version: undefined,
+				}
+			]}
+		/>
 	</div>
 ))
-.add('Formatting Menu', () => (
+.add('collaborative', () => (
 	<div style={editorWrapperStyle}>
-		<Editor placeholder="Begin writing...">
-			<FormattingMenu />
-		</Editor>
+		<Editor
+			placeholder="Begin writing..."
+			onChange={(changeObject)=> {
+				console.log(changeObject.view);
+			}}
+			collaborativeOptions={{
+				firebaseConfig: firebaseConfig,
+				editorKey: 'storybook-editor-v22',
+				clientData: clientData,
+				// onClientChange: (val)=> { console.log('clientChange ', val); },
+				// onStatusChange: (val)=> { console.log('statusChagnge ', val); },
+			}}
+		/>
 	</div>
 ))
-.add('Header Menu', () => (
+.add('readOnly', () => (
 	<div style={editorWrapperStyle}>
-		<Editor placeholder="Begin writing..." initialContent={plainDoc}>
-			<HeaderMenu />
-			<Latex renderFunction={renderLatex} />
-			<Image handleFileUpload={s3Upload} />
-			<LinkMenu />
-			<Table />
-		</Editor>
-	</div>
-))
-.add('Multiple Editors', () => (
-	<div>
-		<div className="editor-1" style={editorWrapperStyle}>
-			<Editor placeholder="Begin writing...">
-				<FormattingMenu />
-				<Latex renderFunction={renderLatex} />
-			</Editor>
-		</div>
-		<div className="editor-2" style={editorWrapperStyle}>
-			<Editor placeholder="Begin writing...">
-				<FormattingMenu />
-				<Latex renderFunction={renderLatex} />
-			</Editor>
-		</div>
-	</div>
-))
-.add('Reduced Formatting Menu', () => (
-	<div style={editorWrapperStyle}>
-		<Editor placeholder="Begin writing...">
-			<FormattingMenu include={['link', 'bold', 'italic']} />
-		</Editor>
+		<Editor
+			placeholder="Begin writing..."
+			initialContent={initialContent}
+			isReadOnly={true}
+			onChange={(changeObject)=> {
+				console.log(changeObject.view);
+			}}
+		/>
 	</div>
 ));
