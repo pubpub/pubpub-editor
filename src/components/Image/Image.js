@@ -35,6 +35,12 @@ const Image = (props)=> {
 		<img
 			src={imageUrl}
 			alt={attrs.caption}
+			onError={(evt)=> {
+				/* If the resizer fails, try using the original url */
+				if (evt.target.src !== attrs.url) {
+					evt.target.src = attrs.url;
+				}
+			}}
 		/>
 	);
 	const useLink = !props.isEditable && options.linkToSrc;
