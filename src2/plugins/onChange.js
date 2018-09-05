@@ -458,6 +458,21 @@ export default (schema, props)=> {
 						}
 					};
 
+					const changeNode = (nodeType, attrs, content)=> {
+						const newNode = nodeType.create({
+							...attrs,
+						}, content);
+						const start = editorView.state.selection.from;
+						const end = editorView.state.selection.to;
+						const transaction = editorView.state.tr.replaceRangeWith(start, end, newNode);
+						editorView.dispatch(transaction);
+						// this.view.focus();
+						/* Changing a node between inline and block will cause it to lose focus */
+						/* Attempting to regain that focus seems difficult due to the fuzzy nature */
+						/* of replaceRangeWith. For the moment, changing from inline to block will */
+						/* simply result in losing focus. */
+					};
+
 					const isNodeView = !!editorView.state.selection.node;
 
 					props.onChange({
@@ -471,9 +486,11 @@ export default (schema, props)=> {
 						selectedText: getSelectedText(editorView),
 						/* If the active selection is of a NodeView, provide the selected node. */
 						selectedNode: isNodeView ? editorView.state.selection.node : undefined,
-						/* If the active selection is of a NodeView, provide a function update the selected node. */
+						/* If the active selection is of a NodeView, provide a function to update the selected node. */
 						/* The updateNode function expects an object of attrs as its sole input */
 						updateNode: isNodeView ? updateAttrs : undefined,
+						/* If the active selection is of a NodeView, provide a function to change the selected node. */
+						changeNode: isNodeView ? changeNode : undefined,
 						/* The full list of available node insert functions. */
 						/* Each insert function expect an object of attrs as */
 						/* its sole input. */

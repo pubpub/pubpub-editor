@@ -16,7 +16,7 @@ storiesOf('Editor2', module)
 			onChange={(changeObject)=> {
 				console.log('====');
 				// console.log(changeObject.view.state.doc.toJSON(), null, 4));
-				// console.log(changeObject.menuItems);
+				console.log(changeObject.view);
 				// console.log(getCollabJSONs(changeObject.view));
 				if (changeObject.updateNode && changeObject.selectedNode.attrs.size === 50) {
 					changeObject.updateNode({ size: 65 });
