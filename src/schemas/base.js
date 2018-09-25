@@ -212,7 +212,16 @@ export const baseMarks = {
 				}
 			}
 		],
-		toDOM(node) { return ['a', node.attrs]; },
+		toDOM(node) {
+			/* Links seem to be recieving a target attr that is a dom element */
+			/* coming from the wrong source in some interfaces. This ensures */
+			/* only strings can be a target attr. */
+			const attrs = node.attrs;
+			if (attrs.target && typeof attrs.target !== 'string') {
+				attrs.target = null;
+			}
+			return ['a', attrs];
+		},
 		toStatic(mark, children) {
 			return (
 				<a
