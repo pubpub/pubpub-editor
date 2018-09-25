@@ -1,7 +1,6 @@
-import { collab } from 'prosemirror-collab';
 import { AllSelection, EditorState, Plugin, Selection, PluginKey } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
-import { receiveTransaction, sendableSteps } from 'prosemirror-collab';
+import { collab, receiveTransaction, sendableSteps } from 'prosemirror-collab';
 import { Step } from 'prosemirror-transform';
 import { Node } from 'prosemirror-model';
 import { compressSelectionJSON, compressStateJSON, compressStepJSON, uncompressSelectionJSON, uncompressStateJSON, uncompressStepJSON } from 'prosemirror-compress';
@@ -25,6 +24,9 @@ export default (schema, props)=> {
 	const localClientId = `clientId-${collabOptions.clientData.id}-${clientHash}`;
 
 	return [
+		collab({
+			clientID: localClientId
+		}),
 		new CollaborativePlugin({
 			firebaseConfig: collabOptions.firebaseConfig,
 			localClientData: collabOptions.clientData,
@@ -32,9 +34,6 @@ export default (schema, props)=> {
 			editorKey: collabOptions.editorKey,
 			onClientChange: collabOptions.onClientChange,
 			onStatusChange: collabOptions.onStatusChange,
-		}),
-		collab({
-			clientID: localClientId
 		})
 	];
 };
@@ -307,7 +306,7 @@ class CollaborativePlugin extends Plugin {
 		if (!sendable) { return null; }
 
 		if (this.ongoingTransaction) {
-			/* We only allow one outgoing transaction at a time. Sometimes the 
+			/* We only allow one outgoing transaction at a time. Sometimes the
 			local view is updated before an ongoing transaction is finished. If this
 			is the case, we abort the newly triggered outgoing transaction. If we do
 			that, we need to ensure we eventually send the most recent state for
@@ -426,8 +425,7 @@ class CollaborativePlugin extends Plugin {
 			}
 		}
 		/* Send Collab Changes */
-		// TODO: this isn't perfect. we may need a timeout or something. Something isn't firing.
-		this.sendCollabChanges(transaction, prevEditorState);
+		this.sendCollabChanges(transaction, editorState);
 	}
 
 	issueEmptyTransaction() {
