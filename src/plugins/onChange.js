@@ -133,32 +133,32 @@ const getMenuItems = (editorView)=> {
 		},
 		{
 			title: 'strong',
-			run: applyToggleMark.bind(this, schema.marks.strong),
+			run: applyToggleMark.bind(this, schema.marks.strong, {}),
 			isActive: schema.marks.strong && markIsActive(schema.marks.strong),
 		},
 		{
 			title: 'em',
-			run: applyToggleMark.bind(this, schema.marks.em),
+			run: applyToggleMark.bind(this, schema.marks.em, {}),
 			isActive: schema.marks.em && markIsActive(schema.marks.em),
 		},
 		{
 			title: 'code',
-			run: applyToggleMark.bind(this, schema.marks.code),
+			run: applyToggleMark.bind(this, schema.marks.code, {}),
 			isActive: schema.marks.code && markIsActive(schema.marks.code),
 		},
 		{
 			title: 'subscript',
-			run: applyToggleMark.bind(this, schema.marks.sub),
+			run: applyToggleMark.bind(this, schema.marks.sub, {}),
 			isActive: schema.marks.sub && markIsActive(schema.marks.sub),
 		},
 		{
 			title: 'superscript',
-			run: applyToggleMark.bind(this, schema.marks.sup),
+			run: applyToggleMark.bind(this, schema.marks.sup, {}),
 			isActive: schema.marks.sup && markIsActive(schema.marks.sup),
 		},
 		{
 			title: 'strikethrough',
-			run: applyToggleMark.bind(this, schema.marks.strike),
+			run: applyToggleMark.bind(this, schema.marks.strike, {}),
 			isActive: schema.marks.strike && markIsActive(schema.marks.strike),
 		},
 		{
@@ -178,7 +178,7 @@ const getMenuItems = (editorView)=> {
 		},
 		{
 			title: 'link',
-			run: applyToggleMark.bind(this, schema.marks.link),
+			run: applyToggleMark.bind(this, schema.marks.link, {}),
 			isActive: schema.marks.link && markIsActive(schema.marks.link),
 		},
 	];
