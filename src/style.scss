@@ -3,6 +3,9 @@
 @import "~prosemirror-tables/style/tables.css";
 
 .editor {
+	&:focus {
+		outline: none !important;
+	}
 	.prosemirror-placeholder {
 		opacity: 0.5;
 		width: 0;

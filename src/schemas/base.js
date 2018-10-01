@@ -111,9 +111,9 @@ export const baseNodes = {
 	},
 	list_item: {
 		content: 'paragraph block*',
+		defining: true,
 		parseDOM: [{ tag: 'li' }],
 		toDOM() { return ['li', 0]; },
-		defining: true,
 		toStatic(node, options, isSelected, isEditable, editorProps, children) {
 			return <li key={node.currIndex}>{children}</li>;
 		}
