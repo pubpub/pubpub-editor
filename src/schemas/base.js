@@ -132,6 +132,7 @@ export const baseNodes = {
 		}
 	},
 	text: {
+		inline: true,
 		group: 'inline',
 		toDOM(node) { return node.text; },
 		toStatic(node, options, isSelected, isEditable, editorProps, children) {

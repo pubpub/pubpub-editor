@@ -504,6 +504,10 @@ export default (schema, props)=> {
 						shortcutValues: getShortcutValues(editorView),
 						/* activeLink is useful for displaying a link editing interface. */
 						activeLink: getActiveLink(editorView),
+						/* boolean alerting whether the collab plugin has finished loading */
+						isCollabLoaded: editorView.state.collaborative$
+							? editorView.state.collaborative$.isLoaded
+							: false,
 					});
 				}
 			};

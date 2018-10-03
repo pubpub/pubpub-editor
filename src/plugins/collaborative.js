@@ -40,7 +40,7 @@ export default (schema, props)=> {
 
 class CollaborativePlugin extends Plugin {
 	constructor({ firebaseConfig, localClientData, localClientId, editorKey, onClientChange, onStatusChange }) {
-		super({ key: new PluginKey() });
+		super({ key: new PluginKey('collaborative') });
 
 		/* Bind plugin functions */
 		this.loadDocument = this.loadDocument.bind(this);
@@ -77,7 +77,9 @@ class CollaborativePlugin extends Plugin {
 		this.spec = {
 			view: this.updateView,
 			state: {
-				init: ()=>{},
+				init: ()=> {
+					return { isLoaded: false };
+				},
 				apply: this.apply
 			},
 		};
@@ -235,6 +237,10 @@ class CollaborativePlugin extends Plugin {
 			selectionsRef.on('child_changed', this.updateClientSelection);
 			selectionsRef.on('child_removed', this.deleteClientSelection);
 
+			const finishedLoadingTrans = this.view.state.tr;
+			finishedLoadingTrans.setMeta('finishedLoading', true);
+			this.view.dispatch(finishedLoadingTrans);
+
 			/* Listen to Changes */
 			return this.firebaseRef.child('changes')
 			.orderByKey()
@@ -291,7 +297,7 @@ class CollaborativePlugin extends Plugin {
 		// TODO: Rather than exclude - we should probably explicitly list the types of transactions we accept.
 		// Exluding only will break when others add custom plugin transactions.
 		const meta = transaction.meta;
-		if (meta.collab$ || meta.rebase || meta.footnote || meta.highlightsToRemove || meta.newHighlightsData || meta.appendedTransaction) {
+		if (meta.finishedLoading || meta.collab$ || meta.rebase || meta.footnote || meta.highlightsToRemove || meta.newHighlightsData || meta.appendedTransaction) {
 			return null;
 		}
 
@@ -426,6 +432,11 @@ class CollaborativePlugin extends Plugin {
 		}
 		/* Send Collab Changes */
 		this.sendCollabChanges(transaction, editorState);
+
+		if (transaction.meta.finishedLoading) {
+			return { isLoaded: true };
+		}
+		return state;
 	}
 
 	issueEmptyTransaction() {
