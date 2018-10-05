@@ -297,7 +297,7 @@ class CollaborativePlugin extends Plugin {
 		// TODO: Rather than exclude - we should probably explicitly list the types of transactions we accept.
 		// Exluding only will break when others add custom plugin transactions.
 		const meta = transaction.meta;
-		if (meta.finishedLoading || meta.collab$ || meta.rebase || meta.footnote || meta.highlightsToRemove || meta.newHighlightsData || meta.appendedTransaction) {
+		if (meta.buildingJSON || meta.finishedLoading || meta.collab$ || meta.rebase || meta.footnote || meta.highlightsToRemove || meta.newHighlightsData || meta.appendedTransaction) {
 			return null;
 		}
 
