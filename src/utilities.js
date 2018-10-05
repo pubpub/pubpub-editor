@@ -70,7 +70,7 @@ export const getText = (editorView, separator = '\n')=> {
 
 export const getCollabJSONs = (editorView, collabIds)=> {
 	const collabPlugin = editorView.state.plugins.reduce((prev, curr)=> {
-		if (curr.constructor.name === 'CollaborativePlugin') { return curr; }
+		if (curr.key === 'collaborative$') { return curr; }
 		return prev;
 	}, undefined);
 
