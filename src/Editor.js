@@ -2,15 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
-import { Schema } from 'prosemirror-model';
 import { keydownHandler } from 'prosemirror-keymap';
-import { nodes, marks } from './schemas';
 import { requiredPlugins, optionalPlugins } from './plugins';
 import NodeViewReact from './nodeViewReact';
-import { renderStatic } from './utilities';
-
-// TODO - next steps
-// Show collaborative loading bars somehow.
+import { renderStatic, buildSchema } from './utilities';
 
 require('./style.scss');
 
@@ -46,14 +41,12 @@ class Editor extends Component {
 	constructor(props) {
 		super(props);
 
-		this.configureSchema = this.configureSchema.bind(this);
 		this.configurePlugins = this.configurePlugins.bind(this);
 		this.configureNodeViews = this.configureNodeViews.bind(this);
-
 		this.createEditor = this.createEditor.bind(this);
 
 		this.editorRef = React.createRef();
-		this.schema = this.configureSchema();
+		this.schema = buildSchema(this.props.customNodes, this.props.customMarks);
 		this.plugins = undefined;
 		this.nodeViews = undefined;
 	}
@@ -62,31 +55,6 @@ class Editor extends Component {
 		this.plugins = this.configurePlugins();
 		this.nodeViews = this.configureNodeViews();
 		this.createEditor();
-	}
-
-	configureSchema() {
-		const schemaNodes = {
-			...nodes,
-			...this.props.customNodes
-		};
-		const schemaMarks = {
-			...marks,
-			...this.props.customMarks
-		};
-
-		/* Filter out undefined (e.g. overwritten) nodes and marks */
-		Object.keys(schemaNodes).forEach((nodeKey)=> {
-			if (!schemaNodes[nodeKey]) { delete schemaNodes[nodeKey]; }
-		});
-		Object.keys(schemaMarks).forEach((markKey)=> {
-			if (!schemaMarks[markKey]) { delete schemaMarks[markKey]; }
-		});
-
-		return new Schema({
-			nodes: schemaNodes,
-			marks: schemaMarks,
-			topNode: 'doc'
-		});
 	}
 
 	configurePlugins() {

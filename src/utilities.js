@@ -1,5 +1,6 @@
 import { Selection } from 'prosemirror-state';
-import { DOMParser } from 'prosemirror-model';
+import { DOMParser, Schema } from 'prosemirror-model';
+import { defaultNodes, defaultMarks } from './schemas';
 
 export const docIsEmpty = (doc)=> {
 	return doc.childCount === 0 || (doc.childCount === 1 && doc.firstChild.isTextblock && doc.firstChild.content.size === 0);
@@ -10,7 +11,32 @@ export const dispatchEmptyTransaction = (editorView)=> {
 	editorView.dispatch(emptyInitTransaction);
 };
 
-export const renderStatic = (schema, nodeArray, editorProps)=> {
+export const buildSchema = (customNodes = {}, customMarks = {})=> {
+	const schemaNodes = {
+		...defaultNodes,
+		...customNodes
+	};
+	const schemaMarks = {
+		...defaultMarks,
+		...customMarks
+	};
+
+	/* Filter out undefined (e.g. overwritten) nodes and marks */
+	Object.keys(schemaNodes).forEach((nodeKey)=> {
+		if (!schemaNodes[nodeKey]) { delete schemaNodes[nodeKey]; }
+	});
+	Object.keys(schemaMarks).forEach((markKey)=> {
+		if (!schemaMarks[markKey]) { delete schemaMarks[markKey]; }
+	});
+
+	return new Schema({
+		nodes: schemaNodes,
+		marks: schemaMarks,
+		topNode: 'doc'
+	});
+};
+
+export const renderStatic = (schema = buildSchema(), nodeArray, editorProps)=> {
 	return nodeArray.map((node, index)=> {
 		let children;
 		if (node.content) {
@@ -28,7 +54,7 @@ export const renderStatic = (schema, nodeArray, editorProps)=> {
 		nodeWithIndex.currIndex = index;
 		const customOptions = editorProps.nodeOptions[node.type] || {};
 		const mergedOptions = { ...schema.nodes[node.type].defaultOptions, ...customOptions };
-		const NodeComponent = schema.nodes[node.type].spec.toStatic(nodeWithIndex, mergedOptions, false, false, editorProps, children);
+		const NodeComponent = schema.nodes[node.type].spec.toStatic(nodeWithIndex, mergedOptions, false, false, { ...editorProps, renderStaticMarkup: true }, children);
 		return NodeComponent;
 	});
 };

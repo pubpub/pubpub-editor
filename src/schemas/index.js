@@ -9,7 +9,7 @@ import table from './table';
 import video from './video';
 import highlightQuote from './highlightQuote';
 
-export const nodes = {
+export const defaultNodes = {
 	...baseNodes,
 	...citation,
 	...equation,
@@ -22,6 +22,6 @@ export const nodes = {
 	...highlightQuote,
 };
 
-export const marks = {
+export const defaultMarks = {
 	...baseMarks,
 };
