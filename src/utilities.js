@@ -1,6 +1,10 @@
 import { Selection } from 'prosemirror-state';
 import { DOMParser } from 'prosemirror-model';
 
+export const docIsEmpty = (doc)=> {
+	return doc.childCount === 0 || (doc.childCount === 1 && doc.firstChild.isTextblock && doc.firstChild.content.size === 0);
+};
+
 export const dispatchEmptyTransaction = (editorView)=> {
 	const emptyInitTransaction = editorView.state.tr;
 	editorView.dispatch(emptyInitTransaction);
