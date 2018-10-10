@@ -142,7 +142,7 @@ class Editor extends Component {
 		/* friendliness. This static version is overwritten when the */
 		/* editorView is mounted into the editor dom node. */
 		return (
-			<div className="editor Prosemirror" ref={this.editorRef}>
+			<div className={`editor ProseMirror ${this.props.isReadOnly ? 'read-only' : ''}`} ref={this.editorRef}>
 				{renderStatic(this.schema, this.props.initialContent.content, this.props)}
 			</div>
 		);
