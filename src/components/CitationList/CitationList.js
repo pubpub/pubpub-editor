@@ -13,9 +13,10 @@ const propTypes = {
 
 const CitationList = (props)=> {
 	const attrs = props.attrs;
+	const listItems = attrs.listItems || [];
 	return (
 		<ol className={`citation-list-wrapper ${props.isSelected ? 'isSelected' : ''}`}>
-			{attrs.listItems.map((item)=> {
+			{listItems.map((item)=> {
 				return (
 					<li key={`citation-list-item-${item.count}`} className="citation-list-item">
 						<span className="count">
@@ -28,7 +29,7 @@ const CitationList = (props)=> {
 					</li>
 				);
 			})}
-			{!attrs.listItems.length &&
+			{!listItems.length &&
 				<div className="empty-state">
 					<p><b>No Citations</b></p>
 					<p>This pub does not have any citations to list.</p>
