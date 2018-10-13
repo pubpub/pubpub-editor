@@ -17,14 +17,14 @@ export default (schema, props)=> {
 				const oldDecorationSet = pluginState.activeDecorationSet;
 				const decorationsToRemove = transaction.meta.highlightsToRemove || [];
 				const mappedDecorationSet = oldDecorationSet.remove(decorationsToRemove).map(transaction.mapping, transaction.doc);
-				
+
 				/* If there is no new highlight data, simply return the mapped decorations. */
 				if (!transaction.meta.newHighlightsData) {
 					return {
 						activeDecorationSet: mappedDecorationSet
 					};
 				}
-				
+
 				/* If there is new highlight data, iterate over the data and */
 				/* generate the new Decoration objects. */
 				const newDecorations = transaction.meta.newHighlightsData.map((highlightData)=> {
@@ -61,7 +61,14 @@ export default (schema, props)=> {
 							resolvedEndContainer = resolvedEndContainer.parentElement;
 						}
 					}
-					if (range && resolvedStartContainer && resolvedStartContainer.pmViewDesc && resolvedEndContainer && resolvedEndContainer.pmViewDesc) {
+					if (range
+						&& resolvedStartContainer
+						&& resolvedStartContainer.pmViewDesc
+						// TODO: This placeholder line is just a quick fix. We need to make sure we don't apply any highlight before the doc is loaded, or that is larger than the doc size
+						&& resolvedStartContainer.pmViewDesc.dom.className !== 'prosemirror-placeholder ProseMirror-widget'
+						&& resolvedEndContainer
+						&& resolvedEndContainer.pmViewDesc
+					) {
 						const resolvedFrom = editorState.doc.resolve(resolvedStartContainer.pmViewDesc.posAtStart + range.startOffset).pos;
 						const resolvedTo = editorState.doc.resolve(resolvedEndContainer.pmViewDesc.posAtStart + range.endOffset).pos;
 						return Decoration.inline(resolvedFrom, resolvedTo, { class: highlightClassName });
