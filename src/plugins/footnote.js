@@ -22,7 +22,12 @@ export default (schema)=> {
 							);
 							newTransaction.setMeta('footnote', true);
 						}
-						footnoteItems.push({ value: node.attrs.value, count: footnoteCount });
+						footnoteItems.push({
+							count: footnoteCount,
+							value: node.attrs.value,
+							structuredValue: node.attrs.structuredValue,
+							structuredHtml: node.attrs.structuredHtml
+						});
 						footnoteCount += 1;
 					}
 					return true;
@@ -37,10 +42,10 @@ export default (schema)=> {
 				(node, nodePos)=> {
 					if (node.type.name === 'footnoteList') {
 						/* Test whether the values of the footnote list should be */
-						/* updated due to new value in individual footnotes */
+						/* updated due to new values in individual footnotes */
 						const footnoteContentChanged = footnoteItems.reduce((prev, curr, index)=> {
 							const prevFootnoteData = node.attrs.listItems[index] || {};
-							if (prevFootnoteData.value !== curr.value) {
+							if (prevFootnoteData.value !== curr.value || prevFootnoteData.structuredValue !== curr.structuredValue) {
 								return true;
 							}
 							return prev;

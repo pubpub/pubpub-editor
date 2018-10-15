@@ -23,8 +23,12 @@ const CitationList = (props)=> {
 							[{item.count}]
 						</span>
 						<span
-							className="rendered-citation"
+							className="rendered-citation structured-value"
 							dangerouslySetInnerHTML={{ __html: item.html }}
+						/>
+						<span
+							className="rendered-citation unstructured-value"
+							dangerouslySetInnerHTML={{ __html: item.unstructuredValue }}
 						/>
 					</li>
 				);

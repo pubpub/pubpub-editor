@@ -8,6 +8,7 @@ export default {
 		attrs: {
 			value: { default: '' },
 			html: { default: '' },
+			unstructuredValue: { default: '' },
 			count: { default: 0 },
 		},
 		parseDOM: [{
@@ -16,6 +17,7 @@ export default {
 				return {
 					value: node.getAttribute('data-value') || '',
 					html: node.getAttribute('data-html') || '',
+					unstructuredValue: node.getAttribute('data-unstructured-value') || '',
 					count: Number(node.getAttribute('data-count')) || undefined,
 				};
 			}
@@ -24,6 +26,7 @@ export default {
 			return ['citation', {
 				'data-value': node.attrs.value,
 				'data-html': node.attrs.html,
+				'data-unstructured-value': node.attrs.unstructuredValue,
 				'data-count': node.attrs.count
 			}];
 		},

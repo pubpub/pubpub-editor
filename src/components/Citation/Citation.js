@@ -24,7 +24,10 @@ const Citation = (props)=> {
 				{attrs.value &&
 					<div dangerouslySetInnerHTML={{ __html: attrs.html }} />
 				}
-				{!attrs.value &&
+				{attrs.unstructuredValue &&
+					<div dangerouslySetInnerHTML={{ __html: attrs.unstructuredValue }} />
+				}
+				{!attrs.value && !attrs.unstructuredValue &&
 					<div className="empty-text">
 						No Citation text entered...
 					</div>

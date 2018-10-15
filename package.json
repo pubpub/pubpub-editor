@@ -1,6 +1,6 @@
 {
   "name": "@pubpub/editor",
-  "version": "5.0.0-beta36",
+  "version": "5.0.0-beta37",
   "description": "PubPub Collaborative Editor",
   "main": "dist/index.js",
   "author": "PubPub Team <pubpub@media.mit.edu>",

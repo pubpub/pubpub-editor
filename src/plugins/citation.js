@@ -12,7 +12,8 @@ export default (schema)=> {
 				newState.doc.nodeSize - 2,
 				(node, nodePos)=> {
 					if (node.type.name === 'citation') {
-						const existingCount = counts[node.attrs.html] && counts[node.attrs.html].count;
+						const key = `${node.attrs.html}-${node.attrs.unstructuredValue}`;
+						const existingCount = counts[key] && counts[key].count;
 						const nextCount = Object.keys(counts).length + 1;
 						if (existingCount && node.attrs.count !== existingCount) {
 							/* If we already have a number for this citation, but */
@@ -27,7 +28,7 @@ export default (schema)=> {
 						}
 						if (!existingCount && node.attrs.count !== nextCount) {
 							/* If we don't have a number for this citation and */
-							/* the current node doesn't have that the right */ 
+							/* the current node doesn't have that the right */
 							/* nextNumber, then update. */
 							didUpdate = true;
 							newTransaction.setNodeMarkup(
@@ -38,9 +39,11 @@ export default (schema)=> {
 							newTransaction.setMeta('citation', true);
 						}
 						if (!existingCount) {
-							counts[node.attrs.html] = {
+							counts[key] = {
 								count: nextCount,
 								value: node.attrs.value,
+								html: node.attrs.html,
+								unstructuredValue: node.attrs.unstructuredValue,
 							};
 						}
 					}
@@ -60,7 +63,8 @@ export default (schema)=> {
 						const citationListContentChanged = Object.keys(counts).reduce((prev, curr)=> {
 							const currCitationData = counts[curr];
 							const prevCitationData = node.attrs.listItems[currCitationData.count] || {};
-							if (prevCitationData.html !== curr) {
+							const prevKey = `${prevCitationData.html}-${prevCitationData.unstructuredValue}`;
+							if (prevKey !== curr) {
 								return true;
 							}
 							return prev;
@@ -72,7 +76,12 @@ export default (schema)=> {
 								if (counts[foo].count > counts[bar].count) { return 1; }
 								return 0;
 							}).map((key)=> {
-								return { html: key, value: counts[key].value, count: counts[key].count };
+								return {
+									html: counts[key].html,
+									value: counts[key].value,
+									unstructuredValue: counts[key].unstructuredValue,
+									count: counts[key].count,
+								};
 							});
 
 							didUpdate = true;

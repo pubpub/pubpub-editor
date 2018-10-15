@@ -22,8 +22,12 @@ const FootnoteList = (props)=> {
 							{item.count}.
 						</span>
 						<span
-							className="rendered-footnote"
+							className="rendered-footnote unstructured-value"
 							dangerouslySetInnerHTML={{ __html: item.value }}
+						/>
+						<span
+							className="rendered-footnote structured-value"
+							dangerouslySetInnerHTML={{ __html: item.structuredHtml }}
 						/>
 					</li>
 				);

@@ -24,7 +24,10 @@ const Footnote = (props)=> {
 				{attrs.value &&
 					<div dangerouslySetInnerHTML={{ __html: attrs.value }} />
 				}
-				{!attrs.value &&
+				{attrs.structuredValue &&
+					<div dangerouslySetInnerHTML={{ __html: attrs.structuredHtml }} />
+				}
+				{!attrs.value && !attrs.structuredValue &&
 					<div className="empty-text">
 						No Footnote text entered...
 					</div>

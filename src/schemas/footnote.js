@@ -7,6 +7,8 @@ export default {
 		atom: true,
 		attrs: {
 			value: { default: '' },
+			structuredValue: { default: '' },
+			structuredHtml: { default: '' },
 			count: { default: 0 },
 		},
 		parseDOM: [
@@ -15,6 +17,8 @@ export default {
 				getAttrs: (node)=> {
 					return {
 						value: node.getAttribute('data-value') || '',
+						structuredValue: node.getAttribute('data-structured-value') || '',
+						structuredHtml: node.getAttribute('data-structured-html') || '',
 						count: Number(node.getAttribute('data-count')) || 0,
 					};
 				}
@@ -34,6 +38,8 @@ export default {
 		toDOM: (node)=> {
 			return ['footnote', {
 				'data-value': node.attrs.value,
+				'date-structured-value': node.attrs.structuredValue,
+				'date-structured-html': node.attrs.structuredHtml,
 				'data-count': node.attrs.count,
 			}];
 		},
