@@ -5,10 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+
+## [5.0.0] - 2018-08-16
 - update: Breaking - rebuilt architecture that simplifies and cleans use of the PubPub editor. The editor is no longer responsible for interfaces to nodeviews and menus. The data necessary to build such menus are passed up in the onChange response.
-- update: Firebase, Blueprint, Webpack, and other dependencies.
-- feature: Image captions can have marks (bold, italic, superscript, subscript, code).
-- fix: NodeView losing focus on typing while in Collaborative mode fixed.
 
 ## [4.11.0] - 2018-06-20
 - feature: Add importHtml function to <Editor />.

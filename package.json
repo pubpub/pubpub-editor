@@ -1,6 +1,6 @@
 {
   "name": "@pubpub/editor",
-  "version": "5.0.0-beta37",
+  "version": "5.0.0",
   "description": "PubPub Collaborative Editor",
   "main": "dist/index.js",
   "author": "PubPub Team <pubpub@media.mit.edu>",
@@ -20,20 +20,20 @@
   "dependencies": {
     "dom-anchor-text-quote": "^4.0.2",
     "katex": "^0.9.0",
-    "prosemirror-collab": "^1.1.0",
+    "prosemirror-collab": "^1.1.1",
     "prosemirror-commands": "^1.0.7",
     "prosemirror-compress": "0.0.2",
-    "prosemirror-gapcursor": "^1.0.2",
-    "prosemirror-history": "^1.0.2",
+    "prosemirror-gapcursor": "^1.0.3",
+    "prosemirror-history": "^1.0.3",
     "prosemirror-inputrules": "^1.0.1",
     "prosemirror-keymap": "^1.0.1",
-    "prosemirror-model": "^1.6.1",
+    "prosemirror-model": "^1.6.2",
     "prosemirror-schema-list": "^1.0.1",
     "prosemirror-schema-table": "^0.22.0",
     "prosemirror-state": "^1.2.2",
-    "prosemirror-tables": "^0.7.6",
+    "prosemirror-tables": "^0.7.8",
     "prosemirror-transform": "^1.1.3",
-    "prosemirror-view": "^1.5.1"
+    "prosemirror-view": "^1.6.3"
   },
   "peerDependencies": {
     "firebase": "^5.1.0",
@@ -65,7 +65,7 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.10.0",
     "file-loader": "^1.1.11",
-    "firebase": "^5.1.0",
+    "firebase": "^5.5.4",
     "node-sass": "^4.7.2",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",

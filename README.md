@@ -104,6 +104,10 @@ const component = (props)=> {
     /* activeLink is useful for displaying a link editing interface. */
     activeLink: {},
 
+    /* A boolean indicating whether the collaborative document has fully loaded. */
+    /* Will remain false if the collaborative functionality is not used. */
+    isCollabLoaded: false
+
 }
 ```
 
