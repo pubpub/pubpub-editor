@@ -22,7 +22,7 @@
     "katex": "^0.9.0",
     "prosemirror-collab": "^1.1.1",
     "prosemirror-commands": "^1.0.7",
-    "prosemirror-compress": "0.0.2",
+    "prosemirror-compress-pubpub": "0.0.3",
     "prosemirror-gapcursor": "^1.0.3",
     "prosemirror-history": "^1.0.3",
     "prosemirror-inputrules": "^1.0.1",

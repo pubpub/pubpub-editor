@@ -6,8 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [5.0.1] - 2018-10-21
+- fix: Use new prosemirror-compress package that solves Safari Object prototype bug.
 
-## [5.0.0] - 2018-08-16
+## [5.0.0] - 2018-10-16
 - update: Breaking - rebuilt architecture that simplifies and cleans use of the PubPub editor. The editor is no longer responsible for interfaces to nodeviews and menus. The data necessary to build such menus are passed up in the onChange response.
 
 ## [4.11.0] - 2018-06-20
