@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [5.0.2] - 2018-10-21
+- fix: Properly referencing new prosemirror-compress-pubpub package.
+
 ## [5.0.1] - 2018-10-21
 - fix: Use new prosemirror-compress package that solves Safari Object prototype bug.
 
