@@ -24,7 +24,7 @@ export const baseNodes = {
 			}
 		],
 		toDOM(node) {
-			return ['p', { class: node.attrs.class }, 0]; 
+			return ['p', { class: node.attrs.class }, 0];
 		},
 		toStatic(node, options, isSelected, isEditable, editorProps, children) {
 			const attrs = {};
@@ -234,7 +234,7 @@ export const baseMarks = {
 				</a>
 			);
 		},
-		toEditable: ()=> {}, /* This is a workaround to make the LinkMenu function within tables */ 
+		toEditable: ()=> {}, /* This is a workaround to make the LinkMenu function within tables */
 	},
 	sub: {
 		parseDOM: [{ tag: 'sub' }],
@@ -251,7 +251,11 @@ export const baseMarks = {
 		}
 	},
 	strike: {
-		parseDOM: [{ tag: 's' }],
+		parseDOM: [
+			{ tag: 's' },
+			{ tag: 'strike' },
+			{ tag: 'del' },
+		],
 		toDOM() { return ['s']; },
 		toStatic(mark, children) {
 			return <s>{children}</s>;
