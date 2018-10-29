@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [5.0.3] - 2018-10-29
+- fix: importHtml more properly inserts Slice rather than looping through nodes.
+
 ## [5.0.2] - 2018-10-21
 - fix: Properly referencing new prosemirror-compress-pubpub package.
 

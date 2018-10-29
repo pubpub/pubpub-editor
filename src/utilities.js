@@ -1,5 +1,5 @@
 import { Selection } from 'prosemirror-state';
-import { DOMParser, Schema } from 'prosemirror-model';
+import { DOMParser, Schema, Slice } from 'prosemirror-model';
 import { defaultNodes, defaultMarks } from './schemas';
 
 export const docIsEmpty = (doc)=> {
@@ -92,13 +92,7 @@ export const importHtml = (editorView, htmlString)=> {
 	/* Create transaction and set selection to the beginning of the doc */
 	const tr = editorView.state.tr;
 	tr.setSelection(Selection.atStart(editorView.state.doc));
-
-	/* Insert each node of newDoc to current doc */
-	/* Note, we don't want to just replaceSelectionWith(newDoc) */
-	/* because it will add a doc within a doc. */
-	newDoc.content.content.forEach((node)=> {
-		tr.replaceSelectionWith(node);
-	});
+	tr.replaceSelection(new Slice(newDoc.content, 0, 0));
 
 	/* Dispatch transaction to setSelection and insert content */
 	editorView.dispatch(tr);
