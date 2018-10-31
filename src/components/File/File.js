@@ -21,12 +21,12 @@ const File = (props)=> {
 				<div className="pt-card pt-elevation-2 details">
 					<div className="file-icon file-icon-default" data-type={extension.substring(0, 4)} />
 					<div className="file-name">
-						<a href={attrs.url} target="_blank" rel="noopener noreferrer">
+						<a href={attrs.url} target="_blank" rel="noopener noreferrer" download>
 							{attrs.fileName}
 						</a>
 					</div>
 					<div className="file-size" contentEditable={false}>{attrs.fileSize}</div>
-					<a className="pt-button pt-icon-download" href={attrs.url} target="_blank" rel="noopener noreferrer" />
+					<a className="pt-button pt-icon-download" href={attrs.url} target="_blank" rel="noopener noreferrer" download />
 				</div>
 				{attrs.caption &&
 					<figcaption dangerouslySetInnerHTML={{ __html: attrs.caption }} />
