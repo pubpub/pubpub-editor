@@ -1,25 +1,13 @@
 .highlight-quote {
-	font-style: italic;
-	margin: 2px 2px 1em 2px;
-	&.pt-card {
-		padding: 10px;
-		// min-height: 44px;
-	}
-	.highlight-text {
-		background-color: rgba(56, 111, 241, 0.3);
-	}
-	&.isSelected {
-		outline: 3px solid #BBBDC0;
-		background-color: #F0F0F0;
-	}
+	margin-bottom: 1em;
+    padding: 10px;
+    background: #F0F0F0;
+    border-left: 4px solid #D0D0D0;
+	display: flex;
 	.quote-text {
-		// padding-top: 10px;
+		flex: 1 1 auto;
 	}
-	.scroll-to-button {
-		float: right;
-		margin: 0em 0em 1em 1em;
-		position: relative;
-		top: -3px;
-		right: -3px;
+	.action-element {
+		margin-left: 1em;
 	}
 }

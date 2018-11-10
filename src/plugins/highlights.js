@@ -31,7 +31,10 @@ export default (schema, props)=> {
 					const highlightFrom = Number(highlightData.from);
 					const highlightTo = Number(highlightData.to);
 					const highlightClassName = `highlight ${highlightData.id} ${highlightData.permanent ? 'permanent' : ''}`.trim();
-					const contentAtSpecifiedRange = editorState.doc.nodeSize >= highlightFrom && editorState.doc.nodeSize >= highlightTo
+					/* maxSize is the nodeSize of the doc minus 2, beacuse according to the Prosemirror ref: */
+					/* "For non-leaf nodes, [nodeSize] is the size of the content plus two (the start and end token). */
+					const maxSize = editorState.doc.nodeSize - 2;
+					const contentAtSpecifiedRange = maxSize >= highlightFrom && maxSize >= highlightTo
 						? editorState.doc.textBetween(highlightFrom, highlightTo)
 						: '';
 
@@ -44,11 +47,19 @@ export default (schema, props)=> {
 					/* If there contentAtSpecifiedRange does not match the exact value, */
 					/* we need to search for the content. This is a bit fuzzy and not perfect. */
 					/* Better technical solutions would be welcome! */
-					const range = textQuote.toRange(props.container, {
-						exact: highlightData.exact,
-						prefix: highlightData.prefix,
-						suffix: highlightData.suffix,
-					});
+					let range;
+					try {
+						/* This try-catch is because toRange was throwing an error: */
+						/* Failed to execute 'setEnd' on 'Range': parameter 1 is not of type 'Node'. */
+						range = textQuote.toRange(props.container, {
+							exact: highlightData.exact,
+							prefix: highlightData.prefix,
+							suffix: highlightData.suffix,
+						});
+					} catch (err) {
+						console.warn('Caught err in textQuote.toRange: ', err);
+					}
+
 					let resolvedStartContainer;
 					let resolvedEndContainer;
 					if (range) {

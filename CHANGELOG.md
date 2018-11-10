@@ -5,7 +5,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [5.1.0] - 2018-11-08
+- feature: Highlight quote now takes a `generateActionElement` function in options that can be used to create an element for scrolling, highlighting, or other highlight actions.
+- update: **Breaking** HighlightQuote no longer provides scroller or highlight functionality.
 - update: Add download attribute to File component links.
+- fix: Highlight plugin properly checks doc nodeSize.
+- fix: Highlight plugin properly handles textQuote errors.
 
 ## [5.0.4] - 2018-10-29
 - fix: Parse more variants of strikethrough dom nodes.
