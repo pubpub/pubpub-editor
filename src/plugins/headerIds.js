@@ -9,7 +9,7 @@ export default ()=> {
 			let changedId = false;
 			newState.doc.forEach((node, offset)=> {
 				if (node.type.name === 'heading') {
-					const newId = node.textContent.trim().toLowerCase().replace(/ /gi, '-').replace(/[^a-zA-Z0-9-]/gi, '');
+					const newId = node.textContent.replace(/[^a-zA-Z0-9-]/gi, '').trim().toLowerCase().replace(/ /gi, '-');
 					if (node.attrs.id !== newId) {
 						changedId = true;
 						transaction.setNodeMarkup(

@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [5.1.1] - 2018-11-12
+- update: headerIds module trims after replacing non alphanumeric characters to avoid leading or trailing hyphens.
+
 ## [5.1.0] - 2018-11-08
 - feature: Highlight quote now takes a `generateActionElement` function in options that can be used to create an element for scrolling, highlighting, or other highlight actions.
 - update: **Breaking** HighlightQuote no longer provides scroller or highlight functionality.
