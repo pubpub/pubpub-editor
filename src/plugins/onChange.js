@@ -46,6 +46,7 @@ const getMenuItems = (editorView)=> {
 	/* Blocks */
 	/* -------------- */
 	function blockTypeIsActive(type, attrs = {}) {
+		if (!type) { return false; }
 		const $from = editorView.state.selection.$from;
 
 		let wrapperDepth;
@@ -115,97 +116,97 @@ const getMenuItems = (editorView)=> {
 	const formattingItems = [
 		{
 			title: 'header1',
-			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 1 }),
+			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 1 }, false),
 			canRun: toggleBlockType(schema.nodes.heading, { level: 1 }, true),
 			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 1 }),
 		},
 		{
 			title: 'header2',
-			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 2 }),
+			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 2 }, false),
 			canRun: toggleBlockType(schema.nodes.heading, { level: 2 }, true),
 			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 2 }),
 		},
 		{
 			title: 'header3',
-			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 3 }),
+			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 3 }, false),
 			canRun: toggleBlockType(schema.nodes.heading, { level: 3 }, true),
 			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 3 }),
 		},
 		{
 			title: 'header4',
-			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 4 }),
+			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 4 }, false),
 			canRun: toggleBlockType(schema.nodes.heading, { level: 4 }, true),
 			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 4 }),
 		},
 		{
 			title: 'header5',
-			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 5 }),
+			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 5 }, false),
 			canRun: toggleBlockType(schema.nodes.heading, { level: 5 }, true),
 			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 5 }),
 		},
 		{
 			title: 'header6',
-			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 6 }),
+			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 6 }, false),
 			canRun: toggleBlockType(schema.nodes.heading, { level: 6 }, true),
 			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 6 }),
 		},
 		{
 			title: 'strong',
-			run: applyToggleMark.bind(this, schema.marks.strong, {}),
+			run: applyToggleMark.bind(this, schema.marks.strong, {}, false),
 			canRun: applyToggleMark(schema.marks.strong, {}, true),
 			isActive: schema.marks.strong && markIsActive(schema.marks.strong),
 		},
 		{
 			title: 'em',
-			run: applyToggleMark.bind(this, schema.marks.em, {}),
+			run: applyToggleMark.bind(this, schema.marks.em, {}, false),
 			canRun: applyToggleMark(schema.marks.em, {}, true),
 			isActive: schema.marks.em && markIsActive(schema.marks.em),
 		},
 		{
 			title: 'code',
-			run: applyToggleMark.bind(this, schema.marks.code, {}),
+			run: applyToggleMark.bind(this, schema.marks.code, {}, false),
 			canRun: applyToggleMark(schema.marks.code, {}, true),
 			isActive: schema.marks.code && markIsActive(schema.marks.code),
 		},
 		{
 			title: 'subscript',
-			run: applyToggleMark.bind(this, schema.marks.sub, {}),
+			run: applyToggleMark.bind(this, schema.marks.sub, {}, false),
 			canRun: applyToggleMark(schema.marks.sub, {}, true),
 			isActive: schema.marks.sub && markIsActive(schema.marks.sub),
 		},
 		{
 			title: 'superscript',
-			run: applyToggleMark.bind(this, schema.marks.sup, {}),
+			run: applyToggleMark.bind(this, schema.marks.sup, {}, false),
 			canRun: applyToggleMark(schema.marks.sup, {}, true),
 			isActive: schema.marks.sup && markIsActive(schema.marks.sup),
 		},
 		{
 			title: 'strikethrough',
-			run: applyToggleMark.bind(this, schema.marks.strike, {}),
+			run: applyToggleMark.bind(this, schema.marks.strike, {}, false),
 			canRun: applyToggleMark(schema.marks.strike, {}, true),
 			isActive: schema.marks.strike && markIsActive(schema.marks.strike),
 		},
 		{
 			title: 'blockquote',
-			run: toggleWrap.bind(this, schema.nodes.blockquote),
+			run: toggleWrap.bind(this, schema.nodes.blockquote, false),
 			canRun: toggleWrap(schema.nodes.blockquote, true),
 			isActive: schema.nodes.blockquote && blockTypeIsActive(schema.nodes.blockquote),
 		},
 		{
 			title: 'bullet-list',
-			run: toggleWrapList.bind(this, schema.nodes.bullet_list),
+			run: toggleWrapList.bind(this, schema.nodes.bullet_list, false),
 			canRun: toggleWrapList(schema.nodes.bullet_list, true),
 			isActive: schema.nodes.bullet_list && blockTypeIsActive(schema.nodes.bullet_list),
 		},
 		{
 			title: 'numbered-list',
-			run: toggleWrapList.bind(this, schema.nodes.ordered_list),
+			run: toggleWrapList.bind(this, schema.nodes.ordered_list, false),
 			canRun: toggleWrapList(schema.nodes.ordered_list, true),
 			isActive: schema.nodes.ordered_list && blockTypeIsActive(schema.nodes.ordered_list),
 		},
 		{
 			title: 'link',
-			run: applyToggleMark.bind(this, schema.marks.link, {}),
+			run: applyToggleMark.bind(this, schema.marks.link, {}, false),
 			canRun: applyToggleMark(schema.marks.link, {}, true),
 			isActive: schema.marks.link && markIsActive(schema.marks.link),
 		},
