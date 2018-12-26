@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 - feature: Add `canRun` boolean to onChange menuItems object.
+- feature: Add `handleSingleClick` and `handleDoubleClick` props to Editor component
 
 ## [5.1.2] - 2018-11-12
 - update: headerIds more cleanly handles additional whitespace.

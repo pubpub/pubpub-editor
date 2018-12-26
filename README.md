@@ -56,6 +56,14 @@ const component = (props)=> {
             /* A function for finding highlight content when pasted. Used by
             the highlightQuote plugin */
             getHighlightContent={(from, to)=>{}}
+
+            /* A function that will be called for every click within the
+            editor */
+            handleSingleClick={(view, pos, node, nodePos, event, direct)=>{}}
+
+            /* A function that will be called for every double click within
+            the editor */
+            handleDoubleClick={(view, pos, node, nodePos, event, direct)=>{}}
         />
     );
 }

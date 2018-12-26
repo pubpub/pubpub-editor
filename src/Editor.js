@@ -21,6 +21,8 @@ const propTypes = {
 	isReadOnly: PropTypes.bool,
 	highlights: PropTypes.array,
 	getHighlightContent: PropTypes.func,
+	handleSingleClick: PropTypes.func,
+	handleDoubleClick: PropTypes.func,
 };
 
 const defaultProps = {
@@ -35,6 +37,8 @@ const defaultProps = {
 	isReadOnly: false,
 	highlights: [],
 	getHighlightContent: ()=>{},
+	handleSingleClick: undefined,
+	handleDoubleClick: undefined,
 };
 
 class Editor extends Component {
@@ -129,7 +133,9 @@ class Editor extends Component {
 				},
 				// TODO: We need something here that allows the dev to
 				// disable certain keys when a inline-menu is open for example
-			})
+			}),
+			handleClickOn: this.props.handleSingleClick,
+			handleDoubleClickOn: this.props.handleDoubleClick,
 		});
 
 		const emptyInitTransaction = editorView.state.tr;
