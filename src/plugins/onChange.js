@@ -33,10 +33,13 @@ const getMenuItems = (editorView)=> {
 		return state.doc.rangeHasMark(from, to, type);
 	}
 
-	function applyToggleMark(mark, attrs) {
+	function applyToggleMark(mark, attrs, isTest) {
 		// Toggle the mark on and off. Marks are things like bold, italic, etc
 		const toggleFunction = toggleMark(mark, attrs);
-		toggleFunction(editorView.state, editorView.dispatch);
+		const dispatchFunc = isTest
+			? undefined
+			: editorView.dispatch;
+		return toggleFunction(editorView.state, dispatchFunc);
 	}
 
 
@@ -71,114 +74,139 @@ const getMenuItems = (editorView)=> {
 		return !!wrapperDepth;
 	}
 
-	function toggleBlockType(type, attrs) {
+	function toggleBlockType(type, attrs, isTest) {
 		const isActive = blockTypeIsActive(type, attrs);
 		const newNodeType = isActive ? schema.nodes.paragraph : type;
 		const setBlockFunction = setBlockType(newNodeType, attrs);
-		return setBlockFunction(editorView.state, editorView.dispatch);
+		const dispatchFunc = isTest
+			? undefined
+			: editorView.dispatch;
+		return setBlockFunction(editorView.state, dispatchFunc);
 	}
 
 
 	/* Wraps */
 	/* -------------- */
-	function toggleWrap(type) {
+	function toggleWrap(type, isTest) {
+		const dispatchFunc = isTest
+			? undefined
+			: editorView.dispatch;
 		if (blockTypeIsActive(type)) {
-			return lift(editorView.state, editorView.dispatch);
+			return lift(editorView.state, dispatchFunc);
 		}
 		const wrapFunction = wrapIn(type);
-		return wrapFunction(editorView.state, editorView.dispatch);
+		return wrapFunction(editorView.state, dispatchFunc);
 	}
 
 
 	/* List Wraps */
 	/* -------------- */
-	function toggleWrapList(type) {
+	function toggleWrapList(type, isTest) {
+		const dispatchFunc = isTest
+			? undefined
+			: editorView.dispatch;
 		if (blockTypeIsActive(type)) {
-			return lift(editorView.state, editorView.dispatch);
+			return lift(editorView.state, dispatchFunc);
 		}
 		const wrapFunction = wrapInList(type);
-		return wrapFunction(editorView.state, editorView.dispatch);
+		return wrapFunction(editorView.state, dispatchFunc);
 	}
 
 	const formattingItems = [
 		{
 			title: 'header1',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 1 }),
+			canRun: toggleBlockType(schema.nodes.heading, { level: 1 }, true),
 			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 1 }),
 		},
 		{
 			title: 'header2',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 2 }),
+			canRun: toggleBlockType(schema.nodes.heading, { level: 2 }, true),
 			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 2 }),
 		},
 		{
 			title: 'header3',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 3 }),
+			canRun: toggleBlockType(schema.nodes.heading, { level: 3 }, true),
 			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 3 }),
 		},
 		{
 			title: 'header4',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 4 }),
+			canRun: toggleBlockType(schema.nodes.heading, { level: 4 }, true),
 			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 4 }),
 		},
 		{
 			title: 'header5',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 5 }),
+			canRun: toggleBlockType(schema.nodes.heading, { level: 5 }, true),
 			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 5 }),
 		},
 		{
 			title: 'header6',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 6 }),
+			canRun: toggleBlockType(schema.nodes.heading, { level: 6 }, true),
 			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 6 }),
 		},
 		{
 			title: 'strong',
 			run: applyToggleMark.bind(this, schema.marks.strong, {}),
+			canRun: applyToggleMark(schema.marks.strong, {}, true),
 			isActive: schema.marks.strong && markIsActive(schema.marks.strong),
 		},
 		{
 			title: 'em',
 			run: applyToggleMark.bind(this, schema.marks.em, {}),
+			canRun: applyToggleMark(schema.marks.em, {}, true),
 			isActive: schema.marks.em && markIsActive(schema.marks.em),
 		},
 		{
 			title: 'code',
 			run: applyToggleMark.bind(this, schema.marks.code, {}),
+			canRun: applyToggleMark(schema.marks.code, {}, true),
 			isActive: schema.marks.code && markIsActive(schema.marks.code),
 		},
 		{
 			title: 'subscript',
 			run: applyToggleMark.bind(this, schema.marks.sub, {}),
+			canRun: applyToggleMark(schema.marks.sub, {}, true),
 			isActive: schema.marks.sub && markIsActive(schema.marks.sub),
 		},
 		{
 			title: 'superscript',
 			run: applyToggleMark.bind(this, schema.marks.sup, {}),
+			canRun: applyToggleMark(schema.marks.sup, {}, true),
 			isActive: schema.marks.sup && markIsActive(schema.marks.sup),
 		},
 		{
 			title: 'strikethrough',
 			run: applyToggleMark.bind(this, schema.marks.strike, {}),
+			canRun: applyToggleMark(schema.marks.strike, {}, true),
 			isActive: schema.marks.strike && markIsActive(schema.marks.strike),
 		},
 		{
 			title: 'blockquote',
 			run: toggleWrap.bind(this, schema.nodes.blockquote),
+			canRun: toggleWrap(schema.nodes.blockquote, true),
 			isActive: schema.nodes.blockquote && blockTypeIsActive(schema.nodes.blockquote),
 		},
 		{
 			title: 'bullet-list',
 			run: toggleWrapList.bind(this, schema.nodes.bullet_list),
+			canRun: toggleWrapList(schema.nodes.bullet_list, true),
 			isActive: schema.nodes.bullet_list && blockTypeIsActive(schema.nodes.bullet_list),
 		},
 		{
 			title: 'numbered-list',
 			run: toggleWrapList.bind(this, schema.nodes.ordered_list),
+			canRun: toggleWrapList(schema.nodes.ordered_list, true),
 			isActive: schema.nodes.ordered_list && blockTypeIsActive(schema.nodes.ordered_list),
 		},
 		{
 			title: 'link',
 			run: applyToggleMark.bind(this, schema.marks.link, {}),
+			canRun: applyToggleMark(schema.marks.link, {}, true),
 			isActive: schema.marks.link && markIsActive(schema.marks.link),
 		},
 	];
@@ -188,61 +216,73 @@ const getMenuItems = (editorView)=> {
 			{
 				title: 'table-delete',
 				run: deleteTable.bind(this, editorView.state, editorView.dispatch),
+				canRun: deleteTable(editorView.state),
 				isActive: deleteTable.bind(this, editorView.state),
 			},
 			{
 				title: 'table-merge-cells',
 				run: mergeCells.bind(this, editorView.state, editorView.dispatch),
+				canRun: mergeCells(editorView.state),
 				isActive: mergeCells.bind(this, editorView.state),
 			},
 			{
 				title: 'table-split-cell',
 				run: splitCell.bind(this, editorView.state, editorView.dispatch),
+				canRun: splitCell(editorView.state),
 				isActive: splitCell.bind(this, editorView.state),
 			},
 			{
 				title: 'table-add-row-before',
 				run: addRowBefore.bind(this, editorView.state, editorView.dispatch),
+				canRun: addRowBefore(editorView.state),
 				isActive: addRowBefore.bind(this, editorView.state),
 			},
 			{
 				title: 'table-add-row-after',
 				run: addRowAfter.bind(this, editorView.state, editorView.dispatch),
+				canRun: addRowAfter(editorView.state),
 				isActive: addRowAfter.bind(this, editorView.state),
 			},
 			{
 				title: 'table-delete-row',
 				run: deleteRow.bind(this, editorView.state, editorView.dispatch),
+				canRun: deleteRow(editorView.state),
 				isActive: deleteRow.bind(this, editorView.state),
 			},
 			{
 				title: 'table-add-column-before',
 				run: addColumnBefore.bind(this, editorView.state, editorView.dispatch),
+				canRun: addColumnBefore(editorView.state),
 				isActive: addColumnBefore.bind(this, editorView.state),
 			},
 			{
 				title: 'table-add-column-after',
 				run: addColumnAfter.bind(this, editorView.state, editorView.dispatch),
+				canRun: addColumnAfter(editorView.state),
 				isActive: addColumnAfter.bind(this, editorView.state),
 			},
 			{
 				title: 'table-delete-column',
 				run: deleteColumn.bind(this, editorView.state, editorView.dispatch),
+				canRun: deleteColumn(editorView.state),
 				isActive: deleteColumn.bind(this, editorView.state),
 			},
 			{
 				title: 'table-toggle-header-row',
 				run: toggleHeaderRow.bind(this, editorView.state, editorView.dispatch),
+				canRun: toggleHeaderRow(editorView.state),
 				isActive: toggleHeaderRow.bind(this, editorView.state),
 			},
 			{
 				title: 'table-toggle-header-column',
 				run: toggleHeaderColumn.bind(this, editorView.state, editorView.dispatch),
+				canRun: toggleHeaderColumn(editorView.state),
 				isActive: toggleHeaderColumn.bind(this, editorView.state),
 			},
 			{
 				title: 'table-toggle-header-cell',
 				run: toggleHeaderCell.bind(this, editorView.state, editorView.dispatch),
+				canRun: toggleHeaderCell(editorView.state),
 				isActive: toggleHeaderCell.bind(this, editorView.state),
 			},
 		];

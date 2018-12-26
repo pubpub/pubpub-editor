@@ -14,7 +14,7 @@ storiesOf('Editor', module)
 			onChange={(changeObject)=> {
 				console.log('====');
 				// console.log(changeObject.view.state.doc.toJSON(), null, 4));
-				console.log(changeObject.view);
+				console.log(changeObject.menuItems);
 				// console.log(getCollabJSONs(changeObject.view));
 				if (changeObject.updateNode && changeObject.selectedNode.attrs.size === 50) {
 					changeObject.updateNode({ size: 65 });
@@ -65,7 +65,7 @@ storiesOf('Editor', module)
 			}}
 			collaborativeOptions={{
 				firebaseConfig: firebaseConfig,
-				editorKey: 'storybook-editor-v22',
+				editorKey: 'storybook-editor-v23',
 				clientData: clientData,
 				// onClientChange: (val)=> { console.log('clientChange ', val); },
 				// onStatusChange: (val)=> { console.log('statusChagnge ', val); },
