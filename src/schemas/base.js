@@ -124,9 +124,6 @@ export const baseNodes = {
 		code: true,
 		parseDOM: [{ tag: 'pre', preserveWhitespace: true }],
 		toDOM() { return ['pre', ['code', 0]]; },
-		onInsert: (view) => {
-			view.dispatch(view.state.tr.replaceSelectionWith(view.state.schema.nodes.code_block.create()));
-		},
 		toStatic(node, options, isSelected, isEditable, editorProps, children) {
 			return <pre key={node.currIndex}><code>{children}</code></pre>;
 		}

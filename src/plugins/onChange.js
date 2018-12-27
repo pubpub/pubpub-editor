@@ -115,6 +115,12 @@ const getMenuItems = (editorView)=> {
 
 	const formattingItems = [
 		{
+			title: 'paragraph',
+			run: toggleBlockType.bind(this, schema.nodes.paragraph, {}, false),
+			canRun: toggleBlockType(schema.nodes.paragraph, {}, true),
+			isActive: schema.nodes.paragraph && blockTypeIsActive(schema.nodes.paragraph, {}),
+		},
+		{
 			title: 'header1',
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 1 }, false),
 			canRun: toggleBlockType(schema.nodes.heading, { level: 1 }, true),
@@ -149,6 +155,12 @@ const getMenuItems = (editorView)=> {
 			run: toggleBlockType.bind(this, schema.nodes.heading, { level: 6 }, false),
 			canRun: toggleBlockType(schema.nodes.heading, { level: 6 }, true),
 			isActive: schema.nodes.heading && blockTypeIsActive(schema.nodes.heading, { level: 6 }),
+		},
+		{
+			title: 'code_block',
+			run: toggleBlockType.bind(this, schema.nodes.code_block, {}, false),
+			canRun: toggleBlockType(schema.nodes.code_block, {}, true),
+			isActive: schema.nodes.code_block && blockTypeIsActive(schema.nodes.code_block, {}),
 		},
 		{
 			title: 'strong',
