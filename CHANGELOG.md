@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [5.2.2] - 2018-12-27
+- dev: Update prosemirror and react dependencies
+
 ## [5.2.1] - 2018-12-27
 - update: Add paragraph and code block to Block Toggle in menuItems
 
