@@ -48,31 +48,56 @@ const getMenuItems = (editorView)=> {
 	function blockTypeIsActive(type, attrs = {}) {
 		if (!type) { return false; }
 		const $from = editorView.state.selection.$from;
-
-		let wrapperDepth;
+		const selectedNode = editorView.state.selection.node;
+		// console.log('$from', $from, );
+		// let wrapperDepth;
+		let isActive = false;
 		let currentDepth = $from.depth;
+
+		const checkForNode = (node)=> {
+			const isType = type.name === node.type.name;
+			const hasAttrs = Object.keys(attrs).reduce((prev, curr)=> {
+				if (attrs[curr] !== node.attrs[curr]) { return false; }
+				return prev;
+			}, true);
+			if (isType && hasAttrs) { isActive = true; }
+		};
+		if (selectedNode) {
+			checkForNode(selectedNode);
+		}
 		while (currentDepth > 0) {
 			const currentNodeAtDepth = $from.node(currentDepth);
 			const comparisonAttrs = { ...attrs };
 			if (currentNodeAtDepth.attrs.id) {
 				comparisonAttrs.id = currentNodeAtDepth.attrs.id;
 			}
-
-			/* Previous versions used node.hasMarkup but that */
-			/* mandates deep equality on attrs. We just want to */
-			/* ensure that everyting in the passed in attrs */
-			/* is present in the node at the depth */
-			const isType = type.name === currentNodeAtDepth.type.name;
-			const hasAttrs = Object.keys(attrs).reduce((prev, curr)=> {
-				if (attrs[curr] !== currentNodeAtDepth.attrs[curr]) { return false; }
-				return prev;
-			}, true);
-
-			if (isType && hasAttrs) { wrapperDepth = currentDepth; }
+			checkForNode(currentNodeAtDepth);
 			currentDepth -= 1;
 		}
+		return isActive;
 
-		return !!wrapperDepth;
+		// while (currentDepth > 0) {
+		// 	const currentNodeAtDepth = $from.node(currentDepth);
+		// 	const comparisonAttrs = { ...attrs };
+		// 	if (currentNodeAtDepth.attrs.id) {
+		// 		comparisonAttrs.id = currentNodeAtDepth.attrs.id;
+		// 	}
+		// 
+		// 	/* Previous versions used node.hasMarkup but that */
+		// 	/* mandates deep equality on attrs. We just want to */
+		// 	/* ensure that everyting in the passed in attrs */
+		// 	/* is present in the node at the depth */
+		// 	const isType = type.name === currentNodeAtDepth.type.name;
+		// 	const hasAttrs = Object.keys(attrs).reduce((prev, curr)=> {
+		// 		if (attrs[curr] !== currentNodeAtDepth.attrs[curr]) { return false; }
+		// 		return prev;
+		// 	}, true);
+		// 
+		// 	if (isType && hasAttrs) { wrapperDepth = currentDepth; }
+		// 	currentDepth -= 1;
+		// }
+		// 
+		// return !!wrapperDepth;
 	}
 
 	function toggleBlockType(type, attrs, isTest) {
