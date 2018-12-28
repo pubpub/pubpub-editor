@@ -24,9 +24,13 @@
 			padding: 5px 0px;
 		}
 		&.isEditable {
-			pointer-events: none;
+			iframe {
+				pointer-events: none;
+			}
 			&.isSelected {
-				pointer-events: auto;
+				iframe {
+					pointer-events: auto;
+				}
 			}
 		}
 	}	

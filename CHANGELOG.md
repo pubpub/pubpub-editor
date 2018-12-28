@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [5.3.0] - 2018-12-27
+- feature: Support audio files
+- fix: Update File component to use bp3 classnames
+- fix: Video pointer event handling in editor
+- fix: Image and Iframe draggable flag
+
 ## [5.2.3] - 2018-12-27
 - fix: Update blocktype is active to properly set value when at depth 0
 

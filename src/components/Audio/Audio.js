@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-require('./video.scss');
+require('./audio.scss');
 
 const propTypes = {
 	attrs: PropTypes.object.isRequired,
@@ -11,7 +11,7 @@ const propTypes = {
 	isEditable: PropTypes.bool.isRequired,
 };
 
-const Video = (props)=> {
+const Audio = (props)=> {
 	const attrs = props.attrs;
 	const figFloat = attrs.align === 'left' || attrs.align === 'right'
 		? attrs.align
@@ -30,8 +30,8 @@ const Video = (props)=> {
 
 	return (
 		<div className="figure-wrapper">
-			<figure className={`video ${props.isSelected ? 'isSelected' : ''} ${props.isEditable ? 'isEditable' : ''}`} style={figStyle}>
-				<video
+			<figure className={`audio ${props.isSelected ? 'isSelected' : ''} ${props.isEditable ? 'isEditable' : ''}`} style={figStyle}>
+				<audio
 					controls
 					src={attrs.url}
 					preload="metadata"
@@ -44,5 +44,5 @@ const Video = (props)=> {
 	);
 };
 
-Video.propTypes = propTypes;
-export default Video;
+Audio.propTypes = propTypes;
+export default Audio;

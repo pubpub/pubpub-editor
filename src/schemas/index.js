@@ -7,6 +7,7 @@ import iframe from './iframe';
 import image from './image';
 import table from './table';
 import video from './video';
+import audio from './audio';
 import highlightQuote from './highlightQuote';
 
 export const defaultNodes = {
@@ -19,6 +20,7 @@ export const defaultNodes = {
 	...image,
 	...table,
 	...video,
+	...audio,
 	...highlightQuote,
 };
 

@@ -1,8 +1,8 @@
 import React from 'react';
-import Video from '../components/Video/Video';
+import Audio from '../components/Audio/Audio';
 
 export default {
-	video: {
+	audio: {
 		atom: true,
 		attrs: {
 			url: { default: null },
@@ -11,7 +11,7 @@ export default {
 			caption: { default: '' },
 		},
 		parseDOM: [{
-			tag: 'video',
+			tag: 'audio',
 			getAttrs: (node)=> {
 				return {
 					url: node.getAttribute('src') || null,
@@ -22,7 +22,7 @@ export default {
 			}
 		}],
 		toDOM: (node)=> {
-			return ['video', {
+			return ['audio', {
 				src: node.attrs.url,
 				'data-size': node.attrs.size,
 				'data-align': node.attrs.align,
@@ -36,14 +36,14 @@ export default {
 		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
 		isNodeView: true,
 		onInsert: (view, attrs)=> {
-			const videoNode = view.state.schema.nodes.video.create(attrs);
-			const transaction = view.state.tr.replaceSelectionWith(videoNode);
+			const audioNode = view.state.schema.nodes.audio.create(attrs);
+			const transaction = view.state.tr.replaceSelectionWith(audioNode);
 			view.dispatch(transaction);
 		},
 		defaultOptions: {},
 		toStatic: (node, options, isSelected, isEditable, /* editorProps, children */)=> {
 			return (
-				<Video
+				<Audio
 					key={node.currIndex}
 					attrs={node.attrs}
 					options={options}

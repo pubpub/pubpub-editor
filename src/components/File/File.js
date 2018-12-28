@@ -18,7 +18,7 @@ const File = (props)=> {
 	return (
 		<div className="figure-wrapper">
 			<figure className={`file ${props.isSelected ? 'isSelected' : ''}`}>
-				<div className="pt-card pt-elevation-2 details">
+				<div className="bp3-card bp3-elevation-2 details">
 					<div className="file-icon file-icon-default" data-type={extension.substring(0, 4)} />
 					<div className="file-name">
 						<a href={attrs.url} target="_blank" rel="noopener noreferrer" download={attrs.fileName}>
@@ -26,7 +26,7 @@ const File = (props)=> {
 						</a>
 					</div>
 					<div className="file-size" contentEditable={false}>{attrs.fileSize}</div>
-					<a className="pt-button pt-icon-download" href={attrs.url} target="_blank" rel="noopener noreferrer" download={attrs.fileName} />
+					<a className="bp3-button bp3-icon-download" href={attrs.url} target="_blank" rel="noopener noreferrer" download={attrs.fileName} />
 				</div>
 				{attrs.caption &&
 					<figcaption dangerouslySetInnerHTML={{ __html: attrs.caption }} />

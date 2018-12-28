@@ -4,12 +4,12 @@
 	a {
 		text-decoration: none !important;
 	}
-	figure.video {
+	figure.audio {
 		position: relative;
 		text-align: center;
 		display: inline-block;
 		pointer-events: auto;
-		video {
+		audio {
 			display: block;
 			width: 100%;
 		}
@@ -18,11 +18,11 @@
 			padding: 5px 0px;
 		}
 		&.isEditable {
-			video {
+			audio {
 				pointer-events: none;
 			}
 			&.isSelected {
-				video {
+				audio {
 					pointer-events: auto;
 				}
 			}
@@ -32,7 +32,7 @@
 
 @media only screen and (max-width: 720px) {
 	.figure-wrapper {
-		figure.video {
+		figure.audio {
 			margin: 1em 0em !important;
 			width: 100% !important;
 			float: none !important;

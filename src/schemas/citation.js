@@ -66,7 +66,7 @@ export default {
 		inline: false,
 		group: 'block',
 		draggable: true,
-
+		
 		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
 		isNodeView: true,
 		onInsert: (view, attrs)=> {
