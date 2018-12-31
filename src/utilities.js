@@ -101,3 +101,9 @@ export const importHtml = (editorView, htmlString)=> {
 export const focus = (editorView)=> {
 	editorView.focus();
 };
+
+export const marksAtSelection = (editorView)=> {
+	return editorView.state.selection.$from.marks().map((mark)=> {
+		return mark.type.name;
+	});
+};

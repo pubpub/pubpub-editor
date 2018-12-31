@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [5.3.1] - 2018-12-31
+- feature: Add marksAtSelection function to utilities
+
 ## [5.3.0] - 2018-12-28
 - feature: Support audio files
 - fix: Update File component to use bp3 classnames
