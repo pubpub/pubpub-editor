@@ -98,7 +98,6 @@ const doc = {
 				caption: 'A more perfect union',
 			},
 		},
-		
 		// {
 		// 	type: 'iframe',
 		// 	attrs: {

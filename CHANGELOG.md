@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [5.3.2] - 2019-01-06
+- feature: Add moveSelectionToStart and moveSelectionToEnd utility functions
+
 ## [5.3.1] - 2018-12-31
 - feature: Add marksAtSelection function to utilities
 
