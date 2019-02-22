@@ -1,7 +1,7 @@
 const doc = {
 	type: 'doc',
 	attrs: {
-		meta: {}
+		meta: {},
 	},
 	content: [
 		{
@@ -11,8 +11,8 @@ const doc = {
 					type: 'text',
 					text: 'Hello there and hello.',
 					marks: [{ type: 'strong' }],
-				}
-			]
+				},
+			],
 		},
 		{
 			type: 'heading',
@@ -23,8 +23,8 @@ const doc = {
 				{
 					type: 'text',
 					text: 'Introduction',
-				}
-			]
+				},
+			],
 		},
 		{
 			type: 'image',
@@ -42,8 +42,8 @@ const doc = {
 				{
 					type: 'text',
 					text: 'Whatever',
-				}
-			]
+				},
+			],
 		},
 		{
 			type: 'heading',
@@ -54,10 +54,10 @@ const doc = {
 				{
 					type: 'text',
 					text: 'Okay now',
-				}
-			]
+				},
+			],
 		},
-	]
+	],
 };
 
 export default doc;

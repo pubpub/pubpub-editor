@@ -1,7 +1,7 @@
 const doc = {
 	type: 'doc',
 	attrs: {
-		meta: {}
+		meta: {},
 	},
 	content: [
 		{
@@ -9,9 +9,9 @@ const doc = {
 			content: [
 				{
 					type: 'text',
-					text: 'Hello there!'
-				}
-			]
+					text: 'Hello there!',
+				},
+			],
 		},
 		{
 			type: 'file',
@@ -103,7 +103,7 @@ const doc = {
 				caption: 'Hello there!',
 			},
 		},
-	]
+	],
 };
 
 export default doc;

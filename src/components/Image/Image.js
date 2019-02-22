@@ -11,21 +11,20 @@ const propTypes = {
 	isEditable: PropTypes.bool.isRequired,
 };
 
-const Image = (props)=> {
+const Image = (props) => {
 	const attrs = props.attrs;
 	const options = props.options;
-	const imageUrl = attrs.url && props.options.onResizeUrl
-		? props.options.onResizeUrl(attrs.url)
-		: attrs.url;
-	const figFloat = attrs.align === 'left' || attrs.align === 'right'
-		? attrs.align
-		: 'none';
+	const imageUrl =
+		attrs.url && props.options.onResizeUrl ? props.options.onResizeUrl(attrs.url) : attrs.url;
+	const figFloat = attrs.align === 'left' || attrs.align === 'right' ? attrs.align : 'none';
 	let figMargin = '0em auto 1em';
-	if (attrs.align === 'left') { figMargin = '1em 1em 1em 0px'; }
-	if (attrs.align === 'right') { figMargin = '1em 0px 1em 1em'; }
-	const figWidth = attrs.align === 'full'
-		? '100%'
-		: `${attrs.size}%`;
+	if (attrs.align === 'left') {
+		figMargin = '1em 1em 1em 0px';
+	}
+	if (attrs.align === 'right') {
+		figMargin = '1em 0px 1em 1em';
+	}
+	const figWidth = attrs.align === 'full' ? '100%' : `${attrs.size}%`;
 	const figStyle = {
 		width: figWidth,
 		margin: figMargin,
@@ -35,7 +34,7 @@ const Image = (props)=> {
 		<img
 			src={imageUrl}
 			alt={attrs.caption}
-			onError={(evt)=> {
+			onError={(evt) => {
 				/* If the resizer fails, try using the original url */
 				if (evt.target.src !== attrs.url) {
 					evt.target.src = attrs.url;
@@ -47,17 +46,15 @@ const Image = (props)=> {
 	return (
 		<div className="figure-wrapper">
 			<figure className={`image ${props.isSelected ? 'isSelected' : ''}`} style={figStyle}>
-				{useLink &&
+				{useLink && (
 					<a href={attrs.url} target="_blank" rel="noopener noreferrer">
 						{imgElement}
 					</a>
-				}
-				{!useLink &&
-					imgElement
-				}
-				{attrs.caption &&
+				)}
+				{!useLink && imgElement}
+				{attrs.caption && (
 					<figcaption dangerouslySetInnerHTML={{ __html: attrs.caption }} />
-				}
+				)}
 			</figure>
 		</div>
 	);

@@ -11,11 +11,11 @@ import buildCollaborative from './collaborative';
 import buildCitation from './citation';
 import buildFootnote from './footnote';
 
-const buildGapCursor = ()=> {
+const buildGapCursor = () => {
 	return gapCursor();
 };
 
-const buildHistory = ()=> {
+const buildHistory = () => {
 	return history();
 };
 

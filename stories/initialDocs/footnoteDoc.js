@@ -1,7 +1,7 @@
 const doc = {
 	type: 'doc',
 	attrs: {
-		meta: {}
+		meta: {},
 	},
 	content: [
 		{
@@ -9,7 +9,7 @@ const doc = {
 			content: [
 				{
 					type: 'text',
-					text: 'Hello'
+					text: 'Hello',
 				},
 				{
 					type: 'footnote',
@@ -21,11 +21,11 @@ const doc = {
 				},
 				{
 					type: 'text',
-					text: ' how are you?'
-				}
-			]
-		}
-	]
+					text: ' how are you?',
+				},
+			],
+		},
+	],
 };
 
 export default doc;

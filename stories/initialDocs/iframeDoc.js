@@ -1,7 +1,7 @@
 const iframeDoc = {
 	type: 'doc',
 	attrs: {
-		meta: {}
+		meta: {},
 	},
 	content: [
 		{
@@ -9,9 +9,9 @@ const iframeDoc = {
 			content: [
 				{
 					type: 'text',
-					text: 'Hello there and hello.'
-				}
-			]
+					text: 'Hello there and hello.',
+				},
+			],
 		},
 		{
 			type: 'iframe',
@@ -20,7 +20,7 @@ const iframeDoc = {
 				caption: 'Hello there!',
 			},
 		},
-	]
+	],
 };
 
 export default iframeDoc;

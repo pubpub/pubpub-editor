@@ -1,23 +1,39 @@
 import { Plugin, NodeSelection, TextSelection } from 'prosemirror-state';
 import { lift, setBlockType, toggleMark, wrapIn } from 'prosemirror-commands';
 import { wrapInList } from 'prosemirror-schema-list';
-import { isInTable, deleteTable, mergeCells, splitCell, addRowBefore, addRowAfter, deleteRow, addColumnBefore, addColumnAfter, deleteColumn, toggleHeaderRow, toggleHeaderColumn, toggleHeaderCell } from 'prosemirror-tables';
+import {
+	isInTable,
+	deleteTable,
+	mergeCells,
+	splitCell,
+	addRowBefore,
+	addRowAfter,
+	deleteRow,
+	addColumnBefore,
+	addColumnAfter,
+	deleteColumn,
+	toggleHeaderRow,
+	toggleHeaderColumn,
+	toggleHeaderCell,
+} from 'prosemirror-tables';
 
-const getInsertFunctions = (editorView)=> {
+const getInsertFunctions = (editorView) => {
 	/* Gather all node insert functions. These will be used to populate menus. */
-	return Object.values(editorView.state.schema.nodes).filter((node)=> {
-		return node.spec.onInsert;
-	}).reduce((prev, curr)=> {
-		return {
-			...prev,
-			[curr.name]: (attrs)=> {
-				curr.spec.onInsert(editorView, attrs);
-			}
-		};
-	}, {});
+	return Object.values(editorView.state.schema.nodes)
+		.filter((node) => {
+			return node.spec.onInsert;
+		})
+		.reduce((prev, curr) => {
+			return {
+				...prev,
+				[curr.name]: (attrs) => {
+					curr.spec.onInsert(editorView, attrs);
+				},
+			};
+		}, {});
 };
 
-const getMenuItems = (editorView)=> {
+const getMenuItems = (editorView) => {
 	const schema = editorView.state.schema;
 
 	/* Marks */
@@ -36,27 +52,30 @@ const getMenuItems = (editorView)=> {
 	function applyToggleMark(mark, attrs, isTest) {
 		// Toggle the mark on and off. Marks are things like bold, italic, etc
 		const toggleFunction = toggleMark(mark, attrs);
-		const dispatchFunc = isTest
-			? undefined
-			: editorView.dispatch;
+		const dispatchFunc = isTest ? undefined : editorView.dispatch;
 		return toggleFunction(editorView.state, dispatchFunc);
 	}
-
 
 	/* Blocks */
 	/* -------------- */
 	function blockTypeIsActive(type, attrs = {}) {
-		if (!type) { return false; }
+		if (!type) {
+			return false;
+		}
 		const $from = editorView.state.selection.$from;
 		const selectedNode = editorView.state.selection.node;
 		let isActive = false;
-		const checkForNode = (node)=> {
+		const checkForNode = (node) => {
 			const isType = type.name === node.type.name;
-			const hasAttrs = Object.keys(attrs).reduce((prev, curr)=> {
-				if (attrs[curr] !== node.attrs[curr]) { return false; }
+			const hasAttrs = Object.keys(attrs).reduce((prev, curr) => {
+				if (attrs[curr] !== node.attrs[curr]) {
+					return false;
+				}
 				return prev;
 			}, true);
-			if (isType && hasAttrs) { isActive = true; }
+			if (isType && hasAttrs) {
+				isActive = true;
+			}
 		};
 
 		if (selectedNode) {
@@ -77,19 +96,14 @@ const getMenuItems = (editorView)=> {
 		const isActive = blockTypeIsActive(type, attrs);
 		const newNodeType = isActive ? schema.nodes.paragraph : type;
 		const setBlockFunction = setBlockType(newNodeType, attrs);
-		const dispatchFunc = isTest
-			? undefined
-			: editorView.dispatch;
+		const dispatchFunc = isTest ? undefined : editorView.dispatch;
 		return setBlockFunction(editorView.state, dispatchFunc);
 	}
-
 
 	/* Wraps */
 	/* -------------- */
 	function toggleWrap(type, isTest) {
-		const dispatchFunc = isTest
-			? undefined
-			: editorView.dispatch;
+		const dispatchFunc = isTest ? undefined : editorView.dispatch;
 		if (blockTypeIsActive(type)) {
 			return lift(editorView.state, dispatchFunc);
 		}
@@ -97,13 +111,10 @@ const getMenuItems = (editorView)=> {
 		return wrapFunction(editorView.state, dispatchFunc);
 	}
 
-
 	/* List Wraps */
 	/* -------------- */
 	function toggleWrapList(type, isTest) {
-		const dispatchFunc = isTest
-			? undefined
-			: editorView.dispatch;
+		const dispatchFunc = isTest ? undefined : editorView.dispatch;
 		if (blockTypeIsActive(type)) {
 			return lift(editorView.state, dispatchFunc);
 		}
@@ -221,87 +232,88 @@ const getMenuItems = (editorView)=> {
 			isActive: schema.marks.link && markIsActive(schema.marks.link),
 		},
 	];
-	const tableItems = !schema.nodes.table || !isInTable(editorView.state)
-		? []
-		: [
-			{
-				title: 'table-delete',
-				run: deleteTable.bind(this, editorView.state, editorView.dispatch),
-				canRun: deleteTable(editorView.state),
-				isActive: deleteTable.bind(this, editorView.state),
-			},
-			{
-				title: 'table-merge-cells',
-				run: mergeCells.bind(this, editorView.state, editorView.dispatch),
-				canRun: mergeCells(editorView.state),
-				isActive: mergeCells.bind(this, editorView.state),
-			},
-			{
-				title: 'table-split-cell',
-				run: splitCell.bind(this, editorView.state, editorView.dispatch),
-				canRun: splitCell(editorView.state),
-				isActive: splitCell.bind(this, editorView.state),
-			},
-			{
-				title: 'table-add-row-before',
-				run: addRowBefore.bind(this, editorView.state, editorView.dispatch),
-				canRun: addRowBefore(editorView.state),
-				isActive: addRowBefore.bind(this, editorView.state),
-			},
-			{
-				title: 'table-add-row-after',
-				run: addRowAfter.bind(this, editorView.state, editorView.dispatch),
-				canRun: addRowAfter(editorView.state),
-				isActive: addRowAfter.bind(this, editorView.state),
-			},
-			{
-				title: 'table-delete-row',
-				run: deleteRow.bind(this, editorView.state, editorView.dispatch),
-				canRun: deleteRow(editorView.state),
-				isActive: deleteRow.bind(this, editorView.state),
-			},
-			{
-				title: 'table-add-column-before',
-				run: addColumnBefore.bind(this, editorView.state, editorView.dispatch),
-				canRun: addColumnBefore(editorView.state),
-				isActive: addColumnBefore.bind(this, editorView.state),
-			},
-			{
-				title: 'table-add-column-after',
-				run: addColumnAfter.bind(this, editorView.state, editorView.dispatch),
-				canRun: addColumnAfter(editorView.state),
-				isActive: addColumnAfter.bind(this, editorView.state),
-			},
-			{
-				title: 'table-delete-column',
-				run: deleteColumn.bind(this, editorView.state, editorView.dispatch),
-				canRun: deleteColumn(editorView.state),
-				isActive: deleteColumn.bind(this, editorView.state),
-			},
-			{
-				title: 'table-toggle-header-row',
-				run: toggleHeaderRow.bind(this, editorView.state, editorView.dispatch),
-				canRun: toggleHeaderRow(editorView.state),
-				isActive: toggleHeaderRow.bind(this, editorView.state),
-			},
-			{
-				title: 'table-toggle-header-column',
-				run: toggleHeaderColumn.bind(this, editorView.state, editorView.dispatch),
-				canRun: toggleHeaderColumn(editorView.state),
-				isActive: toggleHeaderColumn.bind(this, editorView.state),
-			},
-			{
-				title: 'table-toggle-header-cell',
-				run: toggleHeaderCell.bind(this, editorView.state, editorView.dispatch),
-				canRun: toggleHeaderCell(editorView.state),
-				isActive: toggleHeaderCell.bind(this, editorView.state),
-			},
-		];
+	const tableItems =
+		!schema.nodes.table || !isInTable(editorView.state)
+			? []
+			: [
+					{
+						title: 'table-delete',
+						run: deleteTable.bind(this, editorView.state, editorView.dispatch),
+						canRun: deleteTable(editorView.state),
+						isActive: deleteTable.bind(this, editorView.state),
+					},
+					{
+						title: 'table-merge-cells',
+						run: mergeCells.bind(this, editorView.state, editorView.dispatch),
+						canRun: mergeCells(editorView.state),
+						isActive: mergeCells.bind(this, editorView.state),
+					},
+					{
+						title: 'table-split-cell',
+						run: splitCell.bind(this, editorView.state, editorView.dispatch),
+						canRun: splitCell(editorView.state),
+						isActive: splitCell.bind(this, editorView.state),
+					},
+					{
+						title: 'table-add-row-before',
+						run: addRowBefore.bind(this, editorView.state, editorView.dispatch),
+						canRun: addRowBefore(editorView.state),
+						isActive: addRowBefore.bind(this, editorView.state),
+					},
+					{
+						title: 'table-add-row-after',
+						run: addRowAfter.bind(this, editorView.state, editorView.dispatch),
+						canRun: addRowAfter(editorView.state),
+						isActive: addRowAfter.bind(this, editorView.state),
+					},
+					{
+						title: 'table-delete-row',
+						run: deleteRow.bind(this, editorView.state, editorView.dispatch),
+						canRun: deleteRow(editorView.state),
+						isActive: deleteRow.bind(this, editorView.state),
+					},
+					{
+						title: 'table-add-column-before',
+						run: addColumnBefore.bind(this, editorView.state, editorView.dispatch),
+						canRun: addColumnBefore(editorView.state),
+						isActive: addColumnBefore.bind(this, editorView.state),
+					},
+					{
+						title: 'table-add-column-after',
+						run: addColumnAfter.bind(this, editorView.state, editorView.dispatch),
+						canRun: addColumnAfter(editorView.state),
+						isActive: addColumnAfter.bind(this, editorView.state),
+					},
+					{
+						title: 'table-delete-column',
+						run: deleteColumn.bind(this, editorView.state, editorView.dispatch),
+						canRun: deleteColumn(editorView.state),
+						isActive: deleteColumn.bind(this, editorView.state),
+					},
+					{
+						title: 'table-toggle-header-row',
+						run: toggleHeaderRow.bind(this, editorView.state, editorView.dispatch),
+						canRun: toggleHeaderRow(editorView.state),
+						isActive: toggleHeaderRow.bind(this, editorView.state),
+					},
+					{
+						title: 'table-toggle-header-column',
+						run: toggleHeaderColumn.bind(this, editorView.state, editorView.dispatch),
+						canRun: toggleHeaderColumn(editorView.state),
+						isActive: toggleHeaderColumn.bind(this, editorView.state),
+					},
+					{
+						title: 'table-toggle-header-cell',
+						run: toggleHeaderCell.bind(this, editorView.state, editorView.dispatch),
+						canRun: toggleHeaderCell(editorView.state),
+						isActive: toggleHeaderCell.bind(this, editorView.state),
+					},
+			  ];
 
 	return [...formattingItems, ...tableItems];
 };
 
-const getRangeBoundingBox = (editorView, fromPos, toPos)=> {
+const getRangeBoundingBox = (editorView, fromPos, toPos) => {
 	const fromBoundingBox = editorView.coordsAtPos(fromPos);
 	const toBoundingBox = editorView.coordsAtPos(toPos);
 	return {
@@ -312,13 +324,13 @@ const getRangeBoundingBox = (editorView, fromPos, toPos)=> {
 	};
 };
 
-const getDecorations = (editorView)=> {
+const getDecorations = (editorView) => {
 	const decorationSets = editorView.docView.innerDeco.members
 		? editorView.docView.innerDeco.members
 		: [editorView.docView.innerDeco];
 
-	return decorationSets.reduce((prev, curr)=> {
-		const decorations = curr.find().map((decoration)=> {
+	return decorationSets.reduce((prev, curr) => {
+		const decorations = curr.find().map((decoration) => {
 			return {
 				from: decoration.from,
 				to: decoration.to,
@@ -330,7 +342,7 @@ const getDecorations = (editorView)=> {
 	}, []);
 };
 
-const getSelectedText = (editorView)=> {
+const getSelectedText = (editorView) => {
 	if (editorView.state.selection.empty) {
 		return undefined;
 	}
@@ -338,8 +350,14 @@ const getSelectedText = (editorView)=> {
 	const fromPos = editorView.state.selection.from;
 	const toPos = editorView.state.selection.to;
 	const exact = editorView.state.doc.textBetween(fromPos, toPos);
-	const prefix = editorView.state.doc.textBetween(Math.max(0, fromPos - 10), Math.max(0, fromPos));
-	const suffix = editorView.state.doc.textBetween(Math.min(editorView.state.doc.nodeSize - 2, toPos), Math.min(editorView.state.doc.nodeSize - 2, toPos + 10));
+	const prefix = editorView.state.doc.textBetween(
+		Math.max(0, fromPos - 10),
+		Math.max(0, fromPos),
+	);
+	const suffix = editorView.state.doc.textBetween(
+		Math.min(editorView.state.doc.nodeSize - 2, toPos),
+		Math.min(editorView.state.doc.nodeSize - 2, toPos + 10),
+	);
 	return {
 		exact: exact,
 		prefix: prefix,
@@ -347,7 +365,7 @@ const getSelectedText = (editorView)=> {
 	};
 };
 
-const getShortcutValues = (editorView)=> {
+const getShortcutValues = (editorView) => {
 	// TODO: Clean up this function!
 	const editorState = editorView.state;
 	const toPos = editorState.selection.to;
@@ -358,7 +376,9 @@ const getShortcutValues = (editorView)=> {
 	// sometimes the parent offset may not be describing the offset into the text node
 	// if so, we need to correct for this.
 	if (currentNode !== editorState.selection.$to.parent) {
-		const child = editorState.selection.$to.parent.childAfter(editorState.selection.$to.parentOffset - 1);
+		const child = editorState.selection.$to.parent.childAfter(
+			editorState.selection.$to.parentOffset - 1,
+		);
 		if (child.node === currentNode) {
 			parentOffset -= child.offset;
 		}
@@ -370,7 +390,7 @@ const getShortcutValues = (editorView)=> {
 	const startLetter = currentLine.charAt(startIndex);
 
 	const shortcutChars = ['?', '/', '+', '@'];
-	const output = shortcutChars.reduce((prev, curr)=> {
+	const output = shortcutChars.reduce((prev, curr) => {
 		const charsAreCorrect = startLetter === curr && nextCh.charCodeAt(0) === 32;
 		const substring = currentLine.substring(startIndex + 1, nextChIndex) || '';
 		const start = toPos - parentOffset + startIndex;
@@ -379,29 +399,27 @@ const getShortcutValues = (editorView)=> {
 			...prev,
 			[curr]: charsAreCorrect ? substring : undefined,
 			selectShortCut: charsAreCorrect
-				? ()=> {
-					/* Useful for selecting the entire shortcut text */
-					/* right before inserting/replacing with a node or */
-					/* other content. */
-					const selectionnew = new TextSelection(
-						editorState.doc.resolve(start),
-						editorState.doc.resolve(end),
-					);
-					const transaction = editorState.tr;
-					transaction.setSelection(selectionnew);
-					editorView.dispatch(transaction);
-				}
+				? () => {
+						/* Useful for selecting the entire shortcut text */
+						/* right before inserting/replacing with a node or */
+						/* other content. */
+						const selectionnew = new TextSelection(
+							editorState.doc.resolve(start),
+							editorState.doc.resolve(end),
+						);
+						const transaction = editorState.tr;
+						transaction.setSelection(selectionnew);
+						editorView.dispatch(transaction);
+				  }
 				: undefined,
-			boundingBox: charsAreCorrect
-				? getRangeBoundingBox(editorView, start, end)
-				: undefined,
+			boundingBox: charsAreCorrect ? getRangeBoundingBox(editorView, start, end) : undefined,
 		};
 	}, {});
 
 	return output;
 };
 
-const getActiveLink = (editorView)=> {
+const getActiveLink = (editorView) => {
 	const editorState = editorView.state;
 	const linkMarkType = editorState.schema.marks.link;
 	const { from, $from, to, $to, empty } = editorState.selection;
@@ -411,15 +429,19 @@ const getActiveLink = (editorView)=> {
 	/* Because we set link marks to not be inclusive, we need to do */
 	/* some shifted so the dialog will appear at the start and end */
 	/* of the link text */
-	const getMarks = (open, close)=> {
+	const getMarks = (open, close) => {
 		return open.marksAcross(close) || [];
 	};
 	const foundMarks = empty
-		? getMarks($from, $to).length ? getMarks($from, $to) : getMarks(shiftedFrom, shiftedTo)
+		? getMarks($from, $to).length
+			? getMarks($from, $to)
+			: getMarks(shiftedFrom, shiftedTo)
 		: getMarks($from, shiftedTo);
 
-	const activeLinkMark = foundMarks.reduce((prev, curr)=> {
-		if (curr.type.name === 'link') { return curr; }
+	const activeLinkMark = foundMarks.reduce((prev, curr) => {
+		if (curr.type.name === 'link') {
+			return curr;
+		}
 		return prev;
 	}, undefined);
 
@@ -435,7 +457,9 @@ const getActiveLink = (editorView)=> {
 	let startPos = from - 1;
 	let foundStart = false;
 	while (!foundStart) {
-		if (startPos === 0) { foundStart = true; }
+		if (startPos === 0) {
+			foundStart = true;
+		}
 		if (editorState.doc.rangeHasMark(startPos, startPos + 1, linkMarkType)) {
 			startPos -= 1;
 		} else {
@@ -445,7 +469,9 @@ const getActiveLink = (editorView)=> {
 	let endPos = from;
 	let foundEnd = false;
 	while (!foundEnd) {
-		if (endPos === 0) { foundEnd = true; }
+		if (endPos === 0) {
+			foundEnd = true;
+		}
 		if (editorState.doc.rangeHasMark(endPos, endPos + 1, linkMarkType)) {
 			endPos += 1;
 		} else {
@@ -456,14 +482,10 @@ const getActiveLink = (editorView)=> {
 	return {
 		attrs: activeLinkMark.attrs,
 		boundingBox: getRangeBoundingBox(editorView, startPos, endPos),
-		updateAttrs: (newAttrs)=>{
+		updateAttrs: (newAttrs) => {
 			const oldNodeAttrs = activeLinkMark.attrs;
 			const transaction = editorView.state.tr;
-			transaction.removeMark(
-				startPos + 1,
-				endPos,
-				editorView.state.schema.marks.link,
-			);
+			transaction.removeMark(startPos + 1, endPos, editorView.state.schema.marks.link);
 			transaction.addMark(
 				startPos + 1,
 				endPos,
@@ -471,13 +493,9 @@ const getActiveLink = (editorView)=> {
 			);
 			editorView.dispatch(transaction);
 		},
-		removeLink: ()=>{
+		removeLink: () => {
 			const transaction = editorView.state.tr;
-			transaction.removeMark(
-				startPos + 1,
-				endPos,
-				editorView.state.schema.marks.link,
-			);
+			transaction.removeMark(startPos + 1, endPos, editorView.state.schema.marks.link);
 			editorView.dispatch(transaction);
 		},
 	};
@@ -485,20 +503,19 @@ const getActiveLink = (editorView)=> {
 
 /* This plugin is used to call onChange with */
 /* all of the new editor values. */
-export default (schema, props)=> {
+export default (schema, props) => {
 	return new Plugin({
-		view: ()=> {
+		view: () => {
 			return {
-				update: (editorView)=> {
-					const updateAttrs = (newAttrs)=> {
+				update: (editorView) => {
+					const updateAttrs = (newAttrs) => {
 						const start = editorView.state.selection.from;
 						if (start !== undefined) {
 							const oldNodeAttrs = editorView.state.selection.node.attrs;
-							const transaction = editorView.state.tr.setNodeMarkup(
-								start,
-								null,
-								{ ...oldNodeAttrs, ...newAttrs }
-							);
+							const transaction = editorView.state.tr.setNodeMarkup(start, null, {
+								...oldNodeAttrs,
+								...newAttrs,
+							});
 							if (editorView.state.selection.node.type.isInline) {
 								/* Inline nodeviews lose focus on content change */
 								/* this fixes that issue. */
@@ -509,13 +526,20 @@ export default (schema, props)=> {
 						}
 					};
 
-					const changeNode = (nodeType, attrs, content)=> {
-						const newNode = nodeType.create({
-							...attrs,
-						}, content);
+					const changeNode = (nodeType, attrs, content) => {
+						const newNode = nodeType.create(
+							{
+								...attrs,
+							},
+							content,
+						);
 						const start = editorView.state.selection.from;
 						const end = editorView.state.selection.to;
-						const transaction = editorView.state.tr.replaceRangeWith(start, end, newNode);
+						const transaction = editorView.state.tr.replaceRangeWith(
+							start,
+							end,
+							newNode,
+						);
 						editorView.dispatch(transaction);
 						// this.view.focus();
 						/* Changing a node between inline and block will cause it to lose focus */
@@ -532,7 +556,11 @@ export default (schema, props)=> {
 						/* The active selection. */
 						selection: editorView.state.selection,
 						/* The bounding box for the active selection. */
-						selectionBoundingBox: getRangeBoundingBox(editorView, editorView.state.selection.from, editorView.state.selection.to),
+						selectionBoundingBox: getRangeBoundingBox(
+							editorView,
+							editorView.state.selection.from,
+							editorView.state.selection.to,
+						),
 						/* The text, prefix, and suffix of the current selection */
 						selectedText: getSelectedText(editorView),
 						/* If the active selection is of a NodeView, provide the selected node. */
@@ -560,8 +588,8 @@ export default (schema, props)=> {
 							? editorView.state.collaborative$.isLoaded
 							: false,
 					});
-				}
+				},
 			};
-		}
+		},
 	});
 };

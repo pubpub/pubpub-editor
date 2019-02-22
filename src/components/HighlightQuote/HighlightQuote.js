@@ -10,20 +10,20 @@ const propTypes = {
 	// isEditable: PropTypes.bool.isRequired,
 };
 
-const HighlightQuote = (props)=> {
+const HighlightQuote = (props) => {
 	const attrs = props.attrs;
 	const options = props.options;
 	const generateActionElement = options.generateActionElement;
 
-	if (!attrs.exact) { return null; }
+	if (!attrs.exact) {
+		return null;
+	}
 	return (
 		<div className={`highlight-quote ${props.isSelected ? 'isSelected' : ''}`}>
-			<div className="quote-text">
-				{attrs.exact}
-			</div>
-			{generateActionElement &&
+			<div className="quote-text">{attrs.exact}</div>
+			{generateActionElement && (
 				<div className="action-element">{generateActionElement(props)}</div>
-			}
+			)}
 		</div>
 	);
 };

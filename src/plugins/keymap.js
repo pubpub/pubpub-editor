@@ -1,4 +1,15 @@
-import { baseKeymap, wrapIn, setBlockType, chainCommands, toggleMark, exitCode, joinUp, joinDown, lift, selectParentNode } from 'prosemirror-commands';
+import {
+	baseKeymap,
+	wrapIn,
+	setBlockType,
+	chainCommands,
+	toggleMark,
+	exitCode,
+	joinUp,
+	joinDown,
+	lift,
+	selectParentNode,
+} from 'prosemirror-commands';
 import { wrapInList, splitListItem, liftListItem, sinkListItem } from 'prosemirror-schema-list';
 import { undo, redo } from 'prosemirror-history';
 import { undoInputRule } from 'prosemirror-inputrules';
@@ -31,12 +42,11 @@ const mac = typeof navigator !== 'undefined' ? /Mac/.test(navigator.platform) : 
 // * **Mod-BracketLeft** to `lift`
 // * **Escape** to `selectParentNode`
 
-export default (schema)=> {
+export default (schema) => {
 	const keys = {};
-	const bind = (key, cmd)=> {
+	const bind = (key, cmd) => {
 		keys[key] = cmd;
 	};
-
 
 	bind('Mod-z', undo);
 	bind('Shift-Mod-z', redo);
@@ -81,7 +91,9 @@ export default (schema)=> {
 	}
 	if (schema.nodes.hard_break) {
 		const cmd = chainCommands(exitCode, (state, dispatch) => {
-			dispatch(state.tr.replaceSelectionWith(schema.nodes.hard_break.create()).scrollIntoView());
+			dispatch(
+				state.tr.replaceSelectionWith(schema.nodes.hard_break.create()).scrollIntoView(),
+			);
 			return true;
 		});
 		bind('Mod-Enter', cmd);
@@ -108,13 +120,14 @@ export default (schema)=> {
 	}
 	if (schema.nodes.horizontal_rule) {
 		bind('Mod-_', (state, dispatch) => {
-			dispatch(state.tr.replaceSelectionWith(schema.nodes.horizontal_rule.create()).scrollIntoView());
+			dispatch(
+				state.tr
+					.replaceSelectionWith(schema.nodes.horizontal_rule.create())
+					.scrollIntoView(),
+			);
 			return true;
 		});
 	}
 
-	return [
-		keymap(keys),
-		keymap(baseKeymap),
-	];
+	return [keymap(keys), keymap(baseKeymap)];
 };

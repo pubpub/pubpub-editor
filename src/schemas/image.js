@@ -10,24 +10,29 @@ export default {
 			align: { default: 'center' },
 			caption: { default: '' },
 		},
-		parseDOM: [{
-			tag: 'img',
-			getAttrs: (node)=> {
-				return {
-					url: node.getAttribute('src') || null,
-					size: Number(node.getAttribute('data-size')) || 50,
-					align: node.getAttribute('data-align') || 'center',
-					caption: node.getAttribute('alt') || '',
-				};
-			}
-		}],
-		toDOM: (node)=> {
-			return ['img', {
-				src: node.attrs.url,
-				'data-size': node.attrs.size,
-				'data-align': node.attrs.align,
-				alt: node.attrs.caption,
-			}];
+		parseDOM: [
+			{
+				tag: 'img',
+				getAttrs: (node) => {
+					return {
+						url: node.getAttribute('src') || null,
+						size: Number(node.getAttribute('data-size')) || 50,
+						align: node.getAttribute('data-align') || 'center',
+						caption: node.getAttribute('alt') || '',
+					};
+				},
+			},
+		],
+		toDOM: (node) => {
+			return [
+				'img',
+				{
+					src: node.attrs.url,
+					'data-size': node.attrs.size,
+					'data-align': node.attrs.align,
+					alt: node.attrs.caption,
+				},
+			];
 		},
 		inline: false,
 		group: 'block',
@@ -35,16 +40,18 @@ export default {
 
 		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
 		isNodeView: true,
-		onInsert: (view, attrs)=> {
+		onInsert: (view, attrs) => {
 			const imageNode = view.state.schema.nodes.image.create(attrs);
 			const transaction = view.state.tr.replaceSelectionWith(imageNode);
 			view.dispatch(transaction);
 		},
 		defaultOptions: {
-			onResizeUrl: (url)=> { return url; },
+			onResizeUrl: (url) => {
+				return url;
+			},
 			linkToSrc: true,
 		},
-		toStatic: (node, options, isSelected, isEditable, /* editorProps, children */)=> {
+		toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
 			return (
 				<Image
 					key={node.currIndex}
@@ -54,6 +61,6 @@ export default {
 					isEditable={isEditable}
 				/>
 			);
-		}
-	}
+		},
+	},
 };

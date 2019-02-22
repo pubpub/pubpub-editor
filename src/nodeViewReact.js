@@ -21,8 +21,15 @@ export default class NodeViewReact {
 	/* a helper function we use to update the React component */
 	renderElement() {
 		ReactDOM.render(
-			this.node.type.spec.toStatic(this.node, this.options, this.isSelected, this.view.editable, null, null),
-			this.containerNode
+			this.node.type.spec.toStatic(
+				this.node,
+				this.options,
+				this.isSelected,
+				this.view.editable,
+				null,
+				null,
+			),
+			this.containerNode,
 		);
 	}
 
@@ -48,11 +55,13 @@ export default class NodeViewReact {
 	}
 
 	stopEvent(evt) {
-		return evt.type === 'keypress'
-			|| evt.type === 'input'
-			|| evt.type === 'keydown'
-			|| evt.type === 'keyup'
-			|| evt.type === 'paste';
+		return (
+			evt.type === 'keypress' ||
+			evt.type === 'input' ||
+			evt.type === 'keydown' ||
+			evt.type === 'keyup' ||
+			evt.type === 'paste'
+		);
 	}
 
 	ignoreMutation() {

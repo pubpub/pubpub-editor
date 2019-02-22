@@ -11,17 +11,15 @@ const propTypes = {
 	// isEditable: PropTypes.bool.isRequired,
 };
 
-const CitationList = (props)=> {
+const CitationList = (props) => {
 	const attrs = props.attrs;
 	const listItems = attrs.listItems || [];
 	return (
 		<ol className={`citation-list-wrapper ${props.isSelected ? 'isSelected' : ''}`}>
-			{listItems.map((item)=> {
+			{listItems.map((item) => {
 				return (
 					<li key={`citation-list-item-${item.count}`} className="citation-list-item">
-						<span className="count">
-							[{item.count}]
-						</span>
+						<span className="count">[{item.count}]</span>
 						<span
 							className="rendered-citation structured-value"
 							dangerouslySetInnerHTML={{ __html: item.html }}
@@ -33,12 +31,14 @@ const CitationList = (props)=> {
 					</li>
 				);
 			})}
-			{!listItems.length &&
+			{!listItems.length && (
 				<div className="empty-state">
-					<p><b>No Citations</b></p>
+					<p>
+						<b>No Citations</b>
+					</p>
 					<p>This pub does not have any citations to list.</p>
 				</div>
-			}
+			)}
 		</ol>
 	);
 };

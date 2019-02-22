@@ -11,7 +11,7 @@ const propTypes = {
 	// isEditable: PropTypes.bool.isRequired,
 };
 
-const Citation = (props)=> {
+const Citation = (props) => {
 	const attrs = props.attrs;
 
 	return (
@@ -21,17 +21,13 @@ const Citation = (props)=> {
 			</span>
 
 			<div className="render-wrapper">
-				{attrs.value &&
-					<div dangerouslySetInnerHTML={{ __html: attrs.html }} />
-				}
-				{attrs.unstructuredValue &&
+				{attrs.value && <div dangerouslySetInnerHTML={{ __html: attrs.html }} />}
+				{attrs.unstructuredValue && (
 					<div dangerouslySetInnerHTML={{ __html: attrs.unstructuredValue }} />
-				}
-				{!attrs.value && !attrs.unstructuredValue &&
-					<div className="empty-text">
-						No Citation text entered...
-					</div>
-				}
+				)}
+				{!attrs.value && !attrs.unstructuredValue && (
+					<div className="empty-text">No Citation text entered...</div>
+				)}
 			</div>
 		</div>
 	);

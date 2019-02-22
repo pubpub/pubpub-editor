@@ -11,17 +11,17 @@ const propTypes = {
 	isEditable: PropTypes.bool.isRequired,
 };
 
-const Iframe = (props)=> {
+const Iframe = (props) => {
 	const attrs = props.attrs;
-	const figFloat = attrs.align === 'left' || attrs.align === 'right'
-		? attrs.align
-		: 'none';
+	const figFloat = attrs.align === 'left' || attrs.align === 'right' ? attrs.align : 'none';
 	let figMargin = '0em auto 1em';
-	if (attrs.align === 'left') { figMargin = '1em 1em 1em 0px'; }
-	if (attrs.align === 'right') { figMargin = '1em 0px 1em 1em'; }
-	const figWidth = attrs.align === 'full'
-		? '100%'
-		: `${attrs.size}%`;
+	if (attrs.align === 'left') {
+		figMargin = '1em 1em 1em 0px';
+	}
+	if (attrs.align === 'right') {
+		figMargin = '1em 0px 1em 1em';
+	}
+	const figWidth = attrs.align === 'full' ? '100%' : `${attrs.size}%`;
 	const figStyle = {
 		width: figWidth,
 		margin: figMargin,
@@ -30,8 +30,13 @@ const Iframe = (props)=> {
 
 	return (
 		<div className="figure-wrapper">
-			<figure className={`iframe ${props.isSelected ? 'isSelected' : ''} ${props.isEditable ? 'isEditable' : ''}`} style={figStyle}>
-				{attrs.url &&
+			<figure
+				className={`iframe ${props.isSelected ? 'isSelected' : ''} ${
+					props.isEditable ? 'isEditable' : ''
+				}`}
+				style={figStyle}
+			>
+				{attrs.url && (
 					<iframe
 						title={`iFrame of ${attrs.url}`}
 						src={attrs.url}
@@ -39,15 +44,11 @@ const Iframe = (props)=> {
 						allowFullScreen
 						frameBorder="0"
 					/>
-				}
-				{!attrs.url &&
-					<div className="empty-iframe">
-						Enter Source URL
-					</div>
-				}
-				{attrs.caption &&
+				)}
+				{!attrs.url && <div className="empty-iframe">Enter Source URL</div>}
+				{attrs.caption && (
 					<figcaption dangerouslySetInnerHTML={{ __html: attrs.caption }} />
-				}
+				)}
 			</figure>
 		</div>
 	);

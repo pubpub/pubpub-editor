@@ -1,4 +1,11 @@
-import { inputRules, wrappingInputRule, textblockTypeInputRule, smartQuotes, emDash, ellipsis } from 'prosemirror-inputrules';
+import {
+	inputRules,
+	wrappingInputRule,
+	textblockTypeInputRule,
+	smartQuotes,
+	emDash,
+	ellipsis,
+} from 'prosemirror-inputrules';
 
 // : (NodeType) → InputRule
 // Given a blockquote node type, returns an input rule that turns `"> "`
@@ -11,8 +18,12 @@ export function blockQuoteRule(nodeType) {
 // Given a list node type, returns an input rule that turns a number
 // followed by a dot at the start of a textblock into an ordered list.
 export function orderedListRule(nodeType) {
-	return wrappingInputRule(/^(\d+)\.\s$/, nodeType, match => ({ order: +match[1] }),
-		(match, node) => node.childCount + node.attrs.order === +match[1]);
+	return wrappingInputRule(
+		/^(\d+)\.\s$/,
+		nodeType,
+		(match) => ({ order: +match[1] }),
+		(match, node) => node.childCount + node.attrs.order === +match[1],
+	);
 }
 
 // : (NodeType) → InputRule
@@ -36,20 +47,21 @@ export function codeBlockRule(nodeType) {
 // the start of a textblock into a heading whose level corresponds to
 // the number of `#` signs.
 export function headingRule(nodeType, maxLevel) {
-	return textblockTypeInputRule(new RegExp(`^(#{1,${maxLevel}})\\s$`),
-		nodeType, match => ({ level: match[1].length }));
+	return textblockTypeInputRule(new RegExp(`^(#{1,${maxLevel}})\\s$`), nodeType, (match) => ({
+		level: match[1].length,
+	}));
 }
 
 // : (Schema) → Plugin
 // A set of input rules for creating the basic block quotes, lists,
 // code blocks, and heading.
-export default (schema)=> {
+export default (schema) => {
 	const rules = smartQuotes.concat(ellipsis, emDash);
 	let type;
-	if (type = schema.nodes.blockquote) rules.push(blockQuoteRule(type));
-	if (type = schema.nodes.ordered_list) rules.push(orderedListRule(type));
-	if (type = schema.nodes.bullet_list) rules.push(bulletListRule(type));
-	if (type = schema.nodes.code_block) rules.push(codeBlockRule(type));
-	if (type = schema.nodes.heading) rules.push(headingRule(type, 6));
+	if ((type = schema.nodes.blockquote)) rules.push(blockQuoteRule(type));
+	if ((type = schema.nodes.ordered_list)) rules.push(orderedListRule(type));
+	if ((type = schema.nodes.bullet_list)) rules.push(bulletListRule(type));
+	if ((type = schema.nodes.code_block)) rules.push(codeBlockRule(type));
+	if ((type = schema.nodes.heading)) rules.push(headingRule(type, 6));
 	return inputRules({ rules });
 };

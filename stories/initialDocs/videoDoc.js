@@ -1,7 +1,7 @@
 const doc = {
 	type: 'doc',
 	attrs: {
-		meta: {}
+		meta: {},
 	},
 	content: [
 		{
@@ -9,9 +9,9 @@ const doc = {
 			content: [
 				{
 					type: 'text',
-					text: 'Hello there and hello.'
-				}
-			]
+					text: 'Hello there and hello.',
+				},
+			],
 		},
 		{
 			type: 'video',
@@ -20,7 +20,7 @@ const doc = {
 				caption: 'Hello there!',
 			},
 		},
-	]
+	],
 };
 
 export default doc;

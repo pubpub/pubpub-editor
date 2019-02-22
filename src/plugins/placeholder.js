@@ -2,7 +2,7 @@ import { Plugin } from 'prosemirror-state';
 import { DecorationSet, Decoration } from 'prosemirror-view';
 import { docIsEmpty } from '../utilities';
 
-export default (schema, props)=> {
+export default (schema, props) => {
 	return new Plugin({
 		props: {
 			decorations(state) {
@@ -11,10 +11,12 @@ export default (schema, props)=> {
 					const placeHolderElem = document.createElement('span');
 					placeHolderElem.className = 'prosemirror-placeholder';
 					placeHolderElem.innerHTML = props.placeholder;
-					return DecorationSet.create(doc, [Decoration.widget(doc.childCount, placeHolderElem)]);
+					return DecorationSet.create(doc, [
+						Decoration.widget(doc.childCount, placeHolderElem),
+					]);
 				}
 				return null;
-			}
-		}
+			},
+		},
 	});
 };

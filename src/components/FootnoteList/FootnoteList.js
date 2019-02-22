@@ -11,16 +11,14 @@ const propTypes = {
 	// isEditable: PropTypes.bool.isRequired,
 };
 
-const FootnoteList = (props)=> {
+const FootnoteList = (props) => {
 	const attrs = props.attrs;
 	return (
 		<ol className={`footnote-list-wrapper ${props.isSelected ? 'isSelected' : ''}`}>
-			{attrs.listItems.map((item)=> {
+			{attrs.listItems.map((item) => {
 				return (
 					<li key={`footnote-list-item-${item.count}`} className="footnote-list-item">
-						<span className="count">
-							{item.count}.
-						</span>
+						<span className="count">{item.count}.</span>
 						<span
 							className="rendered-footnote unstructured-value"
 							dangerouslySetInnerHTML={{ __html: item.value }}
@@ -32,12 +30,14 @@ const FootnoteList = (props)=> {
 					</li>
 				);
 			})}
-			{!attrs.listItems.length &&
+			{!attrs.listItems.length && (
 				<div className="empty-state">
-					<p><b>No Footnotes</b></p>
+					<p>
+						<b>No Footnotes</b>
+					</p>
 					<p>This pub does not have any footnotes to list.</p>
 				</div>
-			}
+			)}
 		</ol>
 	);
 };

@@ -1,17 +1,21 @@
 import React from 'react';
 import { tableNodes } from 'prosemirror-tables';
-import { Fragment } from "prosemirror-model";
+import { Fragment } from 'prosemirror-model';
 
 const pmTableNodes = tableNodes({
-	tableGroup: "block",
-	cellContent: "block+",
+	tableGroup: 'block',
+	cellContent: 'block+',
 	cellAttributes: {
 		background: {
 			default: null,
-			getFromDOM(dom) { return dom.style.backgroundColor || null },
-			setDOMAttr(value, attrs) { if (value) attrs.style = (attrs.style || "") + `background-color: ${value};` }
-		}
-	}
+			getFromDOM(dom) {
+				return dom.style.backgroundColor || null;
+			},
+			setDOMAttr(value, attrs) {
+				if (value) attrs.style = (attrs.style || '') + `background-color: ${value};`;
+			},
+		},
+	},
 });
 
 pmTableNodes.table.onInsert = (view) => {
@@ -30,22 +34,41 @@ pmTableNodes.table.onInsert = (view) => {
 	const tableNode = tableType.create(null, Fragment.from(rows));
 	view.dispatch(tr.replaceSelectionWith(tableNode).scrollIntoView());
 };
-pmTableNodes.table.toStatic = (node, options, isSelected, isEditable, editorProps, children)=> {
+pmTableNodes.table.toStatic = (node, options, isSelected, isEditable, editorProps, children) => {
 	return (
 		<table key={node.currIndex}>
-			<tbody>
-				{children}
-			</tbody>
+			<tbody>{children}</tbody>
 		</table>
 	);
 };
-pmTableNodes.table_cell.toStatic = (node, options, isSelected, isEditable, editorProps, children)=> {
+pmTableNodes.table_cell.toStatic = (
+	node,
+	options,
+	isSelected,
+	isEditable,
+	editorProps,
+	children,
+) => {
 	return <td key={node.currIndex}>{children}</td>;
 };
-pmTableNodes.table_header.toStatic = (node, options, isSelected, isEditable, editorProps, children)=> {
+pmTableNodes.table_header.toStatic = (
+	node,
+	options,
+	isSelected,
+	isEditable,
+	editorProps,
+	children,
+) => {
 	return <th key={node.currIndex}>{children}</th>;
 };
-pmTableNodes.table_row.toStatic = (node, options, isSelected, isEditable, editorProps, children)=> {
+pmTableNodes.table_row.toStatic = (
+	node,
+	options,
+	isSelected,
+	isEditable,
+	editorProps,
+	children,
+) => {
 	return <tr key={node.currIndex}>{children}</tr>;
 };
 

@@ -7,9 +7,9 @@ const doc = {
 			content: [
 				{
 					type: 'text',
-					text: 'Hello, this is some text about.'
+					text: 'Hello, this is some text about.',
 				},
-			]
+			],
 		},
 		{
 			type: 'highlightQuote',
@@ -18,18 +18,18 @@ const doc = {
 				exact: 'This is my highlight.',
 				suffix: ' Surely this comes after.',
 				id: 'initfakeid1',
-			}
+			},
 		},
 		{
 			type: 'paragraph',
 			content: [
 				{
 					type: 'text',
-					text: 'Other things talk about earthworms. '
+					text: 'Other things talk about earthworms. ',
 				},
-			]
-		}
-	]
+			],
+		},
+	],
 };
 
 export default doc;

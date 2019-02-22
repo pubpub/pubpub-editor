@@ -14,14 +14,14 @@ export default {
 		parseDOM: [
 			{
 				tag: 'footnote',
-				getAttrs: (node)=> {
+				getAttrs: (node) => {
 					return {
 						value: node.getAttribute('data-value') || '',
 						structuredValue: node.getAttribute('data-structured-value') || '',
 						structuredHtml: node.getAttribute('data-structured-html') || '',
 						count: Number(node.getAttribute('data-count')) || 0,
 					};
-				}
+				},
 			},
 			// {
 			// 	style: 'mso-special-character',
@@ -35,13 +35,16 @@ export default {
 			// 	}
 			// }
 		],
-		toDOM: (node)=> {
-			return ['footnote', {
-				'data-value': node.attrs.value,
-				'date-structured-value': node.attrs.structuredValue,
-				'date-structured-html': node.attrs.structuredHtml,
-				'data-count': node.attrs.count,
-			}];
+		toDOM: (node) => {
+			return [
+				'footnote',
+				{
+					'data-value': node.attrs.value,
+					'date-structured-value': node.attrs.structuredValue,
+					'date-structured-html': node.attrs.structuredHtml,
+					'data-count': node.attrs.count,
+				},
+			];
 		},
 		inline: true,
 		group: 'inline',
@@ -49,13 +52,13 @@ export default {
 
 		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
 		isNodeView: true,
-		onInsert: (view, attrs)=> {
+		onInsert: (view, attrs) => {
 			const footnoteNode = view.state.schema.nodes.footnote.create(attrs);
 			const transaction = view.state.tr.replaceSelectionWith(footnoteNode);
 			view.dispatch(transaction);
 		},
 		defaultOptions: {},
-		toStatic: (node, options, isSelected, isEditable, /* editorProps, children */)=> {
+		toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
 			return (
 				<Footnote
 					key={node.currIndex}
@@ -65,15 +68,17 @@ export default {
 					isEditable={isEditable}
 				/>
 			);
-		}
+		},
 	},
 	footnoteList: {
 		atom: true,
 		attrs: {
-			listItems: { default: [] } /* An array of objects with the form { value: footnoteValue }  */
+			listItems: {
+				default: [],
+			} /* An array of objects with the form { value: footnoteValue }  */,
 		},
 		parseDOM: [{ tag: 'footnotelist' }],
-		toDOM: ()=> {
+		toDOM: () => {
 			return ['footnotelist'];
 		},
 		inline: false,
@@ -82,13 +87,13 @@ export default {
 
 		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
 		isNodeView: true,
-		onInsert: (view, attrs)=> {
+		onInsert: (view, attrs) => {
 			const footnoteListNode = view.state.schema.nodes.footnoteList.create(attrs);
 			const transaction = view.state.tr.replaceSelectionWith(footnoteListNode);
 			view.dispatch(transaction);
 		},
 		defaultOptions: {},
-		toStatic: (node, options, isSelected, isEditable, /* editorProps, children */)=> {
+		toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
 			return (
 				<FootnoteList
 					key={node.currIndex}
@@ -98,7 +103,6 @@ export default {
 					isEditable={isEditable}
 				/>
 			);
-		}
+		},
 	},
-
 };

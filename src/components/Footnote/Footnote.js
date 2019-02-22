@@ -11,7 +11,7 @@ const propTypes = {
 	// isEditable: PropTypes.bool.isRequired,
 };
 
-const Footnote = (props)=> {
+const Footnote = (props) => {
 	const attrs = props.attrs;
 
 	return (
@@ -21,17 +21,13 @@ const Footnote = (props)=> {
 			</span>
 
 			<div className="render-wrapper">
-				{attrs.value &&
-					<div dangerouslySetInnerHTML={{ __html: attrs.value }} />
-				}
-				{attrs.structuredValue &&
+				{attrs.value && <div dangerouslySetInnerHTML={{ __html: attrs.value }} />}
+				{attrs.structuredValue && (
 					<div dangerouslySetInnerHTML={{ __html: attrs.structuredHtml }} />
-				}
-				{!attrs.value && !attrs.structuredValue &&
-					<div className="empty-text">
-						No Footnote text entered...
-					</div>
-				}
+				)}
+				{!attrs.value && !attrs.structuredValue && (
+					<div className="empty-text">No Footnote text entered...</div>
+				)}
 			</div>
 		</div>
 	);
