@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [5.3.3] - 2019-02-26
+- fix: Grab node schema defaultOptions from right place
+
 ## [5.3.2] - 2019-01-06
 - feature: Add moveSelectionToStart and moveSelectionToEnd utility functions
 
