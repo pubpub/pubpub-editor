@@ -42,7 +42,9 @@ const File = (props) => {
 						target="_blank"
 						rel="noopener noreferrer"
 						download={attrs.fileName}
-					/>
+					>
+						<span />
+					</a>
 				</div>
 				{attrs.caption && (
 					<figcaption dangerouslySetInnerHTML={{ __html: attrs.caption }} />

@@ -16,17 +16,17 @@ export const baseNodes = {
 		parseDOM: [
 			{
 				tag: 'p',
-				getAttrs(dom) {
+				getAttrs: (dom) => {
 					return {
 						class: dom.getAttribute('class'),
 					};
 				},
 			},
 		],
-		toDOM(node) {
+		toDOM: (node) => {
 			return ['p', { class: node.attrs.class }, 0];
 		},
-		toStatic(node, options, isSelected, isEditable, editorProps, children) {
+		toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
 			const attrs = {};
 			if (node.attrs && node.attrs.class) {
 				attrs.className = node.attrs.class;
@@ -43,17 +43,17 @@ export const baseNodes = {
 		content: 'block+',
 		group: 'block',
 		parseDOM: [{ tag: 'blockquote' }],
-		toDOM() {
+		toDOM: () => {
 			return ['blockquote', 0];
 		},
-		toStatic(node, options, isSelected, isEditable, editorProps, children) {
+		toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
 			return <blockquote key={node.currIndex}>{children}</blockquote>;
 		},
 	},
 	horizontal_rule: {
 		group: 'block',
 		parseDOM: [{ tag: 'hr' }],
-		toDOM() {
+		toDOM: () => {
 			return ['div', ['hr']];
 		},
 		onInsert: (view) => {
@@ -63,7 +63,7 @@ export const baseNodes = {
 				),
 			);
 		},
-		toStatic(node) {
+		toStatic: (node) => {
 			return <hr key={node.currIndex} />;
 		},
 	},
@@ -78,45 +78,45 @@ export const baseNodes = {
 		parseDOM: [
 			{
 				tag: 'h1',
-				getAttrs(dom) {
+				getAttrs: (dom) => {
 					return { level: 1, id: dom.getAttribute('id') };
 				},
 			},
 			{
 				tag: 'h2',
-				getAttrs(dom) {
+				getAttrs: (dom) => {
 					return { level: 2, id: dom.getAttribute('id') };
 				},
 			},
 			{
 				tag: 'h3',
-				getAttrs(dom) {
+				getAttrs: (dom) => {
 					return { level: 3, id: dom.getAttribute('id') };
 				},
 			},
 			{
 				tag: 'h4',
-				getAttrs(dom) {
+				getAttrs: (dom) => {
 					return { level: 4, id: dom.getAttribute('id') };
 				},
 			},
 			{
 				tag: 'h5',
-				getAttrs(dom) {
+				getAttrs: (dom) => {
 					return { level: 5, id: dom.getAttribute('id') };
 				},
 			},
 			{
 				tag: 'h6',
-				getAttrs(dom) {
+				getAttrs: (dom) => {
 					return { level: 6, id: dom.getAttribute('id') };
 				},
 			},
 		],
-		toDOM(node) {
+		toDOM: (node) => {
 			return [`h${node.attrs.level}`, { id: node.attrs.id }, 0];
 		},
-		toStatic(node, options, isSelected, isEditable, editorProps, children) {
+		toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
 			if (node.attrs.level === 1) {
 				return (
 					<h1 key={node.currIndex} id={node.attrs.id}>
@@ -169,15 +169,15 @@ export const baseNodes = {
 		parseDOM: [
 			{
 				tag: 'ol',
-				getAttrs(dom) {
+				getAttrs: (dom) => {
 					return { order: dom.hasAttribute('start') ? +dom.getAttribute('start') : 1 };
 				},
 			},
 		],
-		toDOM(node) {
+		toDOM: (node) => {
 			return ['ol', { start: node.attrs.order === 1 ? null : node.attrs.order }, 0];
 		},
-		toStatic(node, options, isSelected, isEditable, editorProps, children) {
+		toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
 			const attrs = { start: node.attrs.order === 1 ? null : node.attrs.order };
 			return (
 				<ol key={node.currIndex} {...attrs}>
@@ -190,10 +190,10 @@ export const baseNodes = {
 		content: 'list_item+',
 		group: 'block',
 		parseDOM: [{ tag: 'ul' }],
-		toDOM() {
+		toDOM: () => {
 			return ['ul', 0];
 		},
-		toStatic(node, options, isSelected, isEditable, editorProps, children) {
+		toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
 			return <ul key={node.currIndex}>{children}</ul>;
 		},
 	},
@@ -201,10 +201,10 @@ export const baseNodes = {
 		content: 'paragraph block*',
 		defining: true,
 		parseDOM: [{ tag: 'li' }],
-		toDOM() {
+		toDOM: () => {
 			return ['li', 0];
 		},
-		toStatic(node, options, isSelected, isEditable, editorProps, children) {
+		toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
 			return <li key={node.currIndex}>{children}</li>;
 		},
 	},
@@ -213,10 +213,10 @@ export const baseNodes = {
 		group: 'block',
 		code: true,
 		parseDOM: [{ tag: 'pre', preserveWhitespace: true }],
-		toDOM() {
+		toDOM: () => {
 			return ['pre', ['code', 0]];
 		},
-		toStatic(node, options, isSelected, isEditable, editorProps, children) {
+		toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
 			return (
 				<pre key={node.currIndex}>
 					<code>{children}</code>
@@ -227,10 +227,10 @@ export const baseNodes = {
 	text: {
 		inline: true,
 		group: 'inline',
-		toDOM(node) {
+		toDOM: (node) => {
 			return node.text;
 		},
-		toStatic(node, options, isSelected, isEditable, editorProps, children) {
+		toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
 			return editorProps.renderStaticMarkup ? (
 				children
 			) : (
@@ -243,10 +243,10 @@ export const baseNodes = {
 		group: 'inline',
 		selectable: false,
 		parseDOM: [{ tag: 'br' }],
-		toDOM() {
+		toDOM: () => {
 			return ['br'];
 		},
-		toStatic(node) {
+		toStatic: (node) => {
 			return <br key={node.currIndex} />;
 		},
 	},
@@ -256,10 +256,10 @@ export const baseNodes = {
 		/* At the moment, it's not included in the defaultNodes prop */
 		/* by default. */
 		group: 'block',
-		toDOM() {
+		toDOM: () => {
 			return ['span'];
 		},
-		toStatic(node, options, isSelected, isEditable, editorProps, children) {
+		toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
 			return <span key={node.currIndex}>{children}</span>;
 		},
 	},
@@ -275,10 +275,10 @@ export const baseMarks = {
 				getAttrs: (value) => value === 'italic' && null,
 			},
 		],
-		toDOM() {
+		toDOM: () => {
 			return ['em'];
 		},
-		toStatic(mark, children) {
+		toStatic: (mark, children) => {
 			return <em>{children}</em>;
 		},
 	},
@@ -295,10 +295,10 @@ export const baseMarks = {
 				getAttrs: (value) => /^(bold(er)?|[5-9]\d{2,})$/.test(value) && null,
 			},
 		],
-		toDOM() {
+		toDOM: () => {
 			return ['strong'];
 		},
-		toStatic(mark, children) {
+		toStatic: (mark, children) => {
 			return <strong>{children}</strong>;
 		},
 	},
@@ -321,7 +321,7 @@ export const baseMarks = {
 				},
 			},
 		],
-		toDOM(node) {
+		toDOM: (node) => {
 			/* Links seem to be recieving a target attr that is a dom element */
 			/* coming from the wrong source in some interfaces. This ensures */
 			/* only strings can be a target attr. */
@@ -331,7 +331,7 @@ export const baseMarks = {
 			}
 			return ['a', attrs];
 		},
-		toStatic(mark, children) {
+		toStatic: (mark, children) => {
 			return (
 				<a href={mark.attrs.href} title={mark.attrs.title} target={mark.attrs.target}>
 					{children}
@@ -342,37 +342,37 @@ export const baseMarks = {
 	},
 	sub: {
 		parseDOM: [{ tag: 'sub' }],
-		toDOM() {
+		toDOM: () => {
 			return ['sub'];
 		},
-		toStatic(mark, children) {
+		toStatic: (mark, children) => {
 			return <sub>{children}</sub>;
 		},
 	},
 	sup: {
 		parseDOM: [{ tag: 'sup' }],
-		toDOM() {
+		toDOM: () => {
 			return ['sup'];
 		},
-		toStatic(mark, children) {
+		toStatic: (mark, children) => {
 			return <sup>{children}</sup>;
 		},
 	},
 	strike: {
 		parseDOM: [{ tag: 's' }, { tag: 'strike' }, { tag: 'del' }],
-		toDOM() {
+		toDOM: () => {
 			return ['s'];
 		},
-		toStatic(mark, children) {
+		toStatic: (mark, children) => {
 			return <s>{children}</s>;
 		},
 	},
 	code: {
 		parseDOM: [{ tag: 'code' }],
-		toDOM() {
+		toDOM: () => {
 			return ['code'];
 		},
-		toStatic(mark, children) {
+		toStatic: (mark, children) => {
 			return <code>{children}</code>;
 		},
 	},

@@ -8,12 +8,12 @@ export default (schema, props) => {
 	return new Plugin({
 		key: highlightPluginKey,
 		state: {
-			init(config, editorState) {
+			init: (config, editorState) => {
 				return {
 					activeDecorationSet: DecorationSet.create(editorState.doc, []),
 				};
 			},
-			apply(transaction, pluginState, prevEditorState, editorState) {
+			apply: (transaction, pluginState, prevEditorState, editorState) => {
 				const oldDecorationSet = pluginState.activeDecorationSet;
 				const decorationsToRemove = transaction.meta.highlightsToRemove || [];
 				const mappedDecorationSet = oldDecorationSet
@@ -124,7 +124,7 @@ export default (schema, props) => {
 			},
 		},
 		props: {
-			decorations(editorState) {
+			decorations: (editorState) => {
 				return highlightPluginKey.getState(editorState).activeDecorationSet;
 			},
 		},

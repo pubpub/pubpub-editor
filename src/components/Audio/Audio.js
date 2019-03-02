@@ -36,7 +36,9 @@ const Audio = (props) => {
 				}`}
 				style={figStyle}
 			>
-				<audio controls src={attrs.url} preload="metadata" />
+				<audio controls src={attrs.url} preload="metadata">
+					<track kind="captions" />
+				</audio>
 				{attrs.caption && (
 					<figcaption dangerouslySetInnerHTML={{ __html: attrs.caption }} />
 				)}

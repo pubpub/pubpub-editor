@@ -37,6 +37,7 @@ const Image = (props) => {
 			onError={(evt) => {
 				/* If the resizer fails, try using the original url */
 				if (evt.target.src !== attrs.url) {
+					/* eslint-disable-next-line no-param-reassign */
 					evt.target.src = attrs.url;
 				}
 			}}

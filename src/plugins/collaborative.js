@@ -11,41 +11,18 @@ import {
 	uncompressStateJSON,
 	uncompressStepJSON,
 } from 'prosemirror-compress-pubpub';
+/* Firebase has some issues with their auth packages and importing */
+/* conflicting dependencies. https://github.com/firebase/firebase-js-sdk/issues/752 */
+/* eslint-disable-next-line import/no-extraneous-dependencies */
 import firebase from '@firebase/app';
 
+/* eslint-disable-next-line import/no-extraneous-dependencies */
 require('@firebase/auth');
+/* eslint-disable-next-line import/no-extraneous-dependencies */
 require('@firebase/database');
 
 const TIMESTAMP = { '.sv': 'timestamp' };
 const SAVE_EVERY_N_STEPS = 100;
-
-export default (schema, props) => {
-	const collabOptions = props.collaborativeOptions;
-	if (!collabOptions.firebaseConfig) {
-		return [];
-	}
-
-	const possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
-	let clientHash = '';
-	for (let index = 0; index < 6; index += 1) {
-		clientHash += possible.charAt(Math.floor(Math.random() * possible.length));
-	}
-	const localClientId = `clientId-${collabOptions.clientData.id}-${clientHash}`;
-
-	return [
-		collab({
-			clientID: localClientId,
-		}),
-		new CollaborativePlugin({
-			firebaseConfig: collabOptions.firebaseConfig,
-			localClientData: collabOptions.clientData,
-			localClientId: localClientId,
-			editorKey: collabOptions.editorKey,
-			onClientChange: collabOptions.onClientChange,
-			onStatusChange: collabOptions.onStatusChange,
-		}),
-	];
-};
 
 class CollaborativePlugin extends Plugin {
 	constructor({
@@ -716,3 +693,31 @@ class CollaborativePlugin extends Plugin {
 		);
 	}
 }
+
+export default (schema, props) => {
+	const collabOptions = props.collaborativeOptions;
+	if (!collabOptions.firebaseConfig) {
+		return [];
+	}
+
+	const possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
+	let clientHash = '';
+	for (let index = 0; index < 6; index += 1) {
+		clientHash += possible.charAt(Math.floor(Math.random() * possible.length));
+	}
+	const localClientId = `clientId-${collabOptions.clientData.id}-${clientHash}`;
+
+	return [
+		collab({
+			clientID: localClientId,
+		}),
+		new CollaborativePlugin({
+			firebaseConfig: collabOptions.firebaseConfig,
+			localClientData: collabOptions.clientData,
+			localClientId: localClientId,
+			editorKey: collabOptions.editorKey,
+			onClientChange: collabOptions.onClientChange,
+			onStatusChange: collabOptions.onStatusChange,
+		}),
+	];
+};

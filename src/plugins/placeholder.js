@@ -5,7 +5,7 @@ import { docIsEmpty } from '../utilities';
 export default (schema, props) => {
 	return new Plugin({
 		props: {
-			decorations(state) {
+			decorations: (state) => {
 				const doc = state.doc;
 				if (docIsEmpty(doc)) {
 					const placeHolderElem = document.createElement('span');

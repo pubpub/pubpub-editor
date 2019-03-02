@@ -8,11 +8,14 @@ const pmTableNodes = tableNodes({
 	cellAttributes: {
 		background: {
 			default: null,
-			getFromDOM(dom) {
+			getFromDOM: (dom) => {
 				return dom.style.backgroundColor || null;
 			},
-			setDOMAttr(value, attrs) {
-				if (value) attrs.style = (attrs.style || '') + `background-color: ${value};`;
+			setDOMAttr: (value, attrs) => {
+				if (value) {
+					/* eslint-disable-next-line no-param-reassign */
+					attrs.style = `(attrs.style || '') background-color: ${value};`;
+				}
 			},
 		},
 	},

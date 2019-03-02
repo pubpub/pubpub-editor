@@ -36,7 +36,9 @@ const Video = (props) => {
 				}`}
 				style={figStyle}
 			>
-				<video controls src={attrs.url} preload="metadata" />
+				<video controls src={attrs.url} preload="metadata">
+					<track kind="captions" />
+				</video>
 				{attrs.caption && (
 					<figcaption dangerouslySetInnerHTML={{ __html: attrs.caption }} />
 				)}
