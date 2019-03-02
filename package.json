@@ -1,6 +1,6 @@
 {
   "name": "@pubpub/editor",
-  "version": "5.3.3",
+  "version": "5.3.4",
   "description": "PubPub Collaborative Editor",
   "main": "dist/index.js",
   "author": "PubPub Team <pubpub@media.mit.edu>",
@@ -12,10 +12,12 @@
   "scripts": {
     "build": "npm run clean && babel src -d dist --copy-files",
     "clean": "rm -rf dist && mkdir dist",
+    "install-git-hooks": "rm -f ./.git/hooks/* && cp ./.githooks/* ./.git/hooks && chmod +x ./.git/hooks/*",
     "lint": "eslint src stories .storybook",
     "prepublish-soon": "npm run lint && rm -rf node_modules && npm install && npm run build",
     "prepublishOnly": "npm run build",
     "pretty": "prettier --write '**/*.js'",
+    "postinstall": "npm run install-git-hooks",
     "start": "start-storybook -p 9002 -c .storybook"
   },
   "dependencies": {

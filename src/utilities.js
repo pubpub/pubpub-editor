@@ -75,10 +75,16 @@ export const renderStatic = (schema = buildSchema(), nodeArray, editorProps) => 
 };
 
 export const getJSON = (editorView) => {
+	if (!editorView) {
+		return null;
+	}
 	return editorView.state.doc.toJSON();
 };
 
 export const getText = (editorView, separator = '\n') => {
+	if (!editorView) {
+		return null;
+	}
 	return editorView.state.doc.textBetween(0, editorView.state.doc.nodeSize - 2, separator);
 };
 
