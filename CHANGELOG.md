@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [5.3.5] - 2019-03-01
+- fix: Remove postinstall githook copying because it caused `npm install @pubpub/editor` to fail
+
+## [5.3.4] - 2019-03-01
+- update: Handle undefined editor in getText and getJSON
+- dev: Add pre-push hooks to run lint
+
+## [5.3.3] - 2019-02-26
+- fix: Grab node schema defaultOptions from right place
+
 ## [5.3.2] - 2019-01-06
 - feature: Add moveSelectionToStart and moveSelectionToEnd utility functions
 

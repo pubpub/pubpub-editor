@@ -34,7 +34,7 @@ export default {
 
 		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
 		isNodeView: true,
-		onInsert: (view, attrs) => {
+		onInsert: (view) => {
 			const equationNode = view.state.schema.nodes.equation.create({
 				value: '\\sum_ix^i',
 				html:
@@ -88,7 +88,7 @@ export default {
 
 		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
 		isNodeView: true,
-		onInsert: (view, attrs) => {
+		onInsert: (view) => {
 			const equationNode = view.state.schema.nodes.block_equation.create({
 				value: '\\sum_ix^i',
 				html:

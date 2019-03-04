@@ -57,11 +57,10 @@ export function headingRule(nodeType, maxLevel) {
 // code blocks, and heading.
 export default (schema) => {
 	const rules = smartQuotes.concat(ellipsis, emDash);
-	let type;
-	if ((type = schema.nodes.blockquote)) rules.push(blockQuoteRule(type));
-	if ((type = schema.nodes.ordered_list)) rules.push(orderedListRule(type));
-	if ((type = schema.nodes.bullet_list)) rules.push(bulletListRule(type));
-	if ((type = schema.nodes.code_block)) rules.push(codeBlockRule(type));
-	if ((type = schema.nodes.heading)) rules.push(headingRule(type, 6));
-	return inputRules({ rules });
+	if (schema.nodes.blockquote) rules.push(blockQuoteRule(schema.nodes.blockquote));
+	if (schema.nodes.ordered_list) rules.push(orderedListRule(schema.nodes.ordered_list));
+	if (schema.nodes.bullet_list) rules.push(bulletListRule(schema.nodes.bullet_list));
+	if (schema.nodes.code_block) rules.push(codeBlockRule(schema.nodes.code_block));
+	if (schema.nodes.heading) rules.push(headingRule(schema.nodes.heading, 6));
+	return inputRules({ rules: rules });
 };
