@@ -1,5 +1,7 @@
 import { Selection } from 'prosemirror-state';
-import { DOMParser, Schema, Slice } from 'prosemirror-model';
+import { DOMParser, Schema, Slice, Node } from 'prosemirror-model';
+import { uncompressStateJSON, uncompressStepJSON } from 'prosemirror-compress-pubpub';
+import { Step } from 'prosemirror-transform';
 import { defaultNodes, defaultMarks } from './schemas';
 
 export const docIsEmpty = (doc) => {
@@ -145,3 +147,127 @@ export const moveSelectionToEnd = (editorView) => {
 	/* Dispatch transaction to setSelection and insert content */
 	editorView.dispatch(tr);
 };
+
+export const getFirebaseDoc = (firebaseRef, schema) => {
+	let mostRecentRemoteKey;
+	return firebaseRef
+		.child('checkpoint')
+		.once('value')
+		.then((checkpointSnapshot) => {
+			const checkpointSnapshotVal = checkpointSnapshot.val() || {
+				k: '0',
+				d: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] },
+			};
+
+			mostRecentRemoteKey = Number(checkpointSnapshotVal.k);
+			const newDoc = Node.fromJSON(
+				schema,
+				uncompressStateJSON({ d: checkpointSnapshotVal.d }).doc,
+			);
+
+			/* Get all changes since mostRecentRemoteKey */
+			const getChanges = firebaseRef
+				.child('changes')
+				.orderByKey()
+				.startAt(String(mostRecentRemoteKey + 1))
+				.once('value');
+
+			return Promise.all([newDoc, getChanges]);
+		})
+		.then(([newDoc, changesSnapshot]) => {
+			const changesSnapshotVal = changesSnapshot.val() || {};
+			const steps = [];
+			const stepClientIds = [];
+			const keys = Object.keys(changesSnapshotVal);
+			mostRecentRemoteKey = keys.length ? Math.max(...keys) : mostRecentRemoteKey;
+
+			/* Uncompress steps and add stepClientIds */
+			Object.keys(changesSnapshotVal).forEach((key) => {
+				const compressedStepsJSON = changesSnapshotVal[key].s;
+				const uncompressedSteps = compressedStepsJSON.map((compressedStepJSON) => {
+					return Step.fromJSON(schema, uncompressStepJSON(compressedStepJSON));
+				});
+				steps.push(...uncompressedSteps);
+				stepClientIds.push(
+					...new Array(compressedStepsJSON.length).fill(changesSnapshotVal[key].c),
+				);
+			});
+			const updatedDoc = steps.reduce((prev, curr) => {
+				const stepResult = curr.apply(prev);
+				if (stepResult.failed) {
+					console.error('Failed with ', stepResult.failed);
+				}
+				return stepResult.doc;
+			}, newDoc);
+			return {
+				content: updatedDoc.toJSON(),
+				mostRecentRemoteKey: mostRecentRemoteKey,
+			};
+		})
+		.catch((firebaseErr) => {
+			console.error('firebaseErr', firebaseErr);
+		});
+};
+
+// const findContent = firebaseRef
+// 	.child('checkpoint')
+// 	.once('value')
+// 	.then(() => {
+// 		const checkpointSnapshotVal = {
+// 			k: '0',
+// 			d: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] },
+// 		};
+
+// 		mostRecentRemoteKey = Number(checkpointSnapshotVal.k);
+// 		const newDoc = Node.fromJSON(
+// 			editorSchema,
+// 			uncompressStateJSON({ d: checkpointSnapshotVal.d }).doc,
+// 		);
+
+// 		/* Get all changes since mostRecentRemoteKey */
+// 		const getChanges = firebaseRef
+// 			.child('changes')
+// 			.orderByKey()
+// 			.startAt(String(mostRecentRemoteKey + 1))
+// 			// .endAt(String(mostRecentRemoteKey + 105))
+// 			.once('value');
+
+// 		return Promise.all([newDoc, getChanges]);
+// 	})
+// 	.then(([newDoc, changesSnapshot]) => {
+// 		const changesSnapshotVal = changesSnapshot.val() || {};
+// 		const steps = [];
+// 		const stepClientIds = [];
+// 		const keys = Object.keys(changesSnapshotVal);
+// 		mostRecentRemoteKey = keys.length ? Math.max(...keys) : mostRecentRemoteKey;
+
+// 		/* Uncompress steps and add stepClientIds */
+// 		Object.keys(changesSnapshotVal).forEach((key) => {
+// 			const compressedStepsJSON = changesSnapshotVal[key].s;
+// 			const uncompressedSteps = compressedStepsJSON.map((compressedStepJSON) => {
+// 				return Step.fromJSON(editorSchema, uncompressStepJSON(compressedStepJSON));
+// 			});
+// 			steps.push(...uncompressedSteps);
+// 			stepClientIds.push(
+// 				...new Array(compressedStepsJSON.length).fill(changesSnapshotVal[key].c),
+// 			);
+// 		});
+// 		const updatedDoc = steps.reduce((prev, curr, index) => {
+// 			const stepResult = curr.apply(prev);
+// 			if (stepResult.failed) {
+// 				console.error('Failed with ', stepResult.failed);
+// 			}
+// 			if (index % 10 === 0 || index === steps.length - 1) {
+// 				changeArray.push({ index: index, doc: stepResult.doc.toJSON() });
+// 			}
+// 			return stepResult.doc;
+// 		}, newDoc);
+// 		return {
+// 			content: updatedDoc.toJSON(),
+// 			changeArray: changeArray,
+// 			changesSnapshotVal: changesSnapshotVal,
+// 		};
+// 	})
+// 	.catch((firebaseErr) => {
+// 		console.error('firebase-firebaseErr', firebaseErr);
+// 	});

@@ -11,25 +11,17 @@ import {
 	uncompressStateJSON,
 	uncompressStepJSON,
 } from 'prosemirror-compress-pubpub';
-/* Firebase has some issues with their auth packages and importing */
-/* conflicting dependencies. https://github.com/firebase/firebase-js-sdk/issues/752 */
-/* eslint-disable-next-line import/no-extraneous-dependencies */
-import firebase from '@firebase/app';
-
-/* eslint-disable-next-line import/no-extraneous-dependencies */
-require('@firebase/auth');
-/* eslint-disable-next-line import/no-extraneous-dependencies */
-require('@firebase/database');
 
 const TIMESTAMP = { '.sv': 'timestamp' };
 const SAVE_EVERY_N_STEPS = 100;
 
 class CollaborativePlugin extends Plugin {
 	constructor({
-		firebaseConfig,
+		firebaseRef,
+		initialContent,
+		initialDocKey,
 		localClientData,
 		localClientId,
-		editorKey,
 		onClientChange,
 		onStatusChange,
 	}) {
@@ -48,12 +40,13 @@ class CollaborativePlugin extends Plugin {
 		this.issueEmptyTransaction = this.issueEmptyTransaction.bind(this);
 		this.handleRemoteChanges = this.handleRemoteChanges.bind(this);
 		this.setResendTimeout = this.setResendTimeout.bind(this);
-		this.getJSONs = this.getJSONs.bind(this);
+		// this.getJSONs = this.getJSONs.bind(this);
 
 		/* Make passed props accessible */
+		this.initialContent = initialContent;
 		this.localClientData = localClientData;
 		this.localClientId = localClientId;
-		this.editorKey = editorKey;
+
 		const emptyFunc = () => {};
 		this.onClientChange = onClientChange || emptyFunc;
 		this.onStatusChange = onStatusChange || emptyFunc;
@@ -61,7 +54,7 @@ class CollaborativePlugin extends Plugin {
 		/* Init plugin variables */
 		this.startedLoad = false;
 		this.view = null;
-		this.mostRecentRemoteKey = null;
+		this.mostRecentRemoteKey = initialDocKey;
 		this.selections = {};
 		this.ongoingTransaction = false;
 		this.resendSyncTimeout = undefined;
@@ -81,108 +74,25 @@ class CollaborativePlugin extends Plugin {
 		};
 
 		/* Check for firebaseConfig */
-		if (!firebaseConfig) {
-			throw new Error('Did not include a firebase config');
+		if (!firebaseRef) {
+			throw new Error('Did not include a firebase ref');
 		}
 
-		/* Connect to firebase app */
-		const existingApp = firebase.apps.reduce((prev, curr) => {
-			if (curr.name === editorKey) {
-				return curr;
-			}
-			return prev;
-		}, undefined);
-		this.firebaseApp = existingApp || firebase.initializeApp(firebaseConfig, editorKey);
-		this.database = firebase.database(this.firebaseApp);
-		this.firebaseRef = this.database.ref(editorKey);
+		this.firebaseRef = firebaseRef;
 
 		/* Set user status and watch for status changes */
-		this.database.ref('.info/connected').on('value', (snapshot) => {
-			if (snapshot.val() === true) {
-				this.onStatusChange('connected');
-			} else {
-				this.onStatusChange('disconnected');
-			}
-		});
+		/* TODO - do we pass in the database instead? Or handle this disconnect from above? */
+		// this.database.ref('.info/connected').on('value', (snapshot) => {
+		// 	if (snapshot.val() === true) {
+		// 		this.onStatusChange('connected');
+		// 	} else {
+		// 		this.onStatusChange('disconnected');
+		// 	}
+		// });
 	}
 
 	disconnect() {
 		this.firebaseApp.delete();
-	}
-
-	getJSONs(collabIds) {
-		/* The purpose of this function is to get and build the docs as stored on the server */
-		const buildJSONs = collabIds.map((id) => {
-			const currentRef = this.database.ref(id);
-
-			/* Authenticate with Firebase if a firebaseToken is provided in the client data */
-			const authenticationFunction = this.localClientData.firebaseToken
-				? firebase
-						.auth(this.firebaseApp)
-						.signInWithCustomToken(this.localClientData.firebaseToken)
-				: new Promise((resolve) => {
-						return resolve();
-				  });
-
-			return authenticationFunction
-				.then(() => {
-					/* Load the checkpoint if available */
-					return currentRef.child('checkpoint').once('value');
-				})
-				.then((checkpointSnapshot) => {
-					const checkpointSnapshotVal = checkpointSnapshot.val() || {
-						k: '0',
-						d: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] },
-					};
-					const mostRecentRemoteKey = Number(checkpointSnapshotVal.k);
-					const newDoc = Node.fromJSON(
-						this.view.state.schema,
-						uncompressStateJSON({ d: checkpointSnapshotVal.d }).doc,
-					);
-
-					/* Get all changes since mostRecentRemoteKey */
-					const getChanges = currentRef
-						.child('changes')
-						.orderByKey()
-						.startAt(String(mostRecentRemoteKey + 1))
-						.once('value');
-
-					return Promise.all([newDoc, getChanges]);
-				})
-				.then(([newDoc, changesSnapshot]) => {
-					const changesSnapshotVal = changesSnapshot.val() || {};
-					const steps = [];
-
-					/* Uncompress steps and add stepClientIds */
-					Object.keys(changesSnapshotVal).forEach((key) => {
-						const compressedStepsJSON = changesSnapshotVal[key].s;
-						const uncompressedSteps = compressedStepsJSON.map((compressedStepJSON) => {
-							return Step.fromJSON(
-								this.view.state.schema,
-								uncompressStepJSON(compressedStepJSON),
-							);
-						});
-						steps.push(...uncompressedSteps);
-					});
-
-					const checkpointState = EditorState.create({
-						doc: newDoc,
-						schema: this.view.state.schema,
-						plugins: this.view.state.plugins,
-					});
-
-					const trans = checkpointState.tr;
-					trans.setMeta('buildingJSON', true);
-					steps.forEach((step) => {
-						trans.step(step);
-					});
-
-					const allChangesState = checkpointState.apply(trans);
-					return allChangesState.doc.toJSON();
-				});
-		});
-
-		return Promise.all(buildJSONs);
 	}
 
 	loadDocument() {
@@ -191,42 +101,12 @@ class CollaborativePlugin extends Plugin {
 		}
 		this.startedLoad = true;
 
-		/* Authenticate with Firebase if a firebaseToken is provided in the client data */
-		const authenticationFunction = this.localClientData.firebaseToken
-			? firebase
-					.auth(this.firebaseApp)
-					.signInWithCustomToken(this.localClientData.firebaseToken)
-			: new Promise((resolve) => {
-					return resolve();
-			  });
-
-		return authenticationFunction
-			.then(() => {
-				/* Load the checkpoint if available */
-				return this.firebaseRef.child('checkpoint').once('value');
-			})
-			.then((checkpointSnapshot) => {
-				const checkpointSnapshotVal = checkpointSnapshot.val() || {
-					k: '0',
-					d: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] },
-				};
-
-				this.mostRecentRemoteKey = Number(checkpointSnapshotVal.k);
-				const newDoc = Node.fromJSON(
-					this.view.state.schema,
-					uncompressStateJSON({ d: checkpointSnapshotVal.d }).doc,
-				);
-
-				/* Get all changes since mostRecentRemoteKey */
-				const getChanges = this.firebaseRef
-					.child('changes')
-					.orderByKey()
-					.startAt(String(this.mostRecentRemoteKey + 1))
-					.once('value');
-
-				return Promise.all([newDoc, getChanges]);
-			})
-			.then(([newDoc, changesSnapshot]) => {
+		return this.firebaseRef
+			.child('changes')
+			.orderByKey()
+			.startAt(String(this.mostRecentRemoteKey + 1))
+			.once('value')
+			.then((changesSnapshot) => {
 				const changesSnapshotVal = changesSnapshot.val() || {};
 				const steps = [];
 				const stepClientIds = [];
@@ -251,6 +131,7 @@ class CollaborativePlugin extends Plugin {
 				});
 
 				/* Update the prosemirror view with new doc */
+				const newDoc = Node.fromJSON(this.view.state.schema, this.initialContent);
 				this.view.updateState(
 					EditorState.create({
 						doc: newDoc,
@@ -262,6 +143,7 @@ class CollaborativePlugin extends Plugin {
 				this.view.dispatch(trans);
 
 				/* Listen to Selections Change */
+				console.log('about to set listeners');
 				const selectionsRef = this.firebaseRef.child('selections');
 				selectionsRef
 					.child(this.localClientId)
@@ -329,6 +211,7 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	sendCollabChanges(transaction, newState) {
+		console.log('in send collab');
 		// TODO: Rather than exclude - we should probably explicitly list the types of transactions we accept.
 		// Exluding only will break when others add custom plugin transactions.
 		const meta = transaction.meta;
@@ -515,6 +398,7 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	updateClientSelection(snapshot) {
+		console.log('update client selection');
 		/* Called on firebase updates to selection */
 		const clientID = snapshot.key;
 		if (clientID !== this.localClientId) {
@@ -696,7 +580,8 @@ class CollaborativePlugin extends Plugin {
 
 export default (schema, props) => {
 	const collabOptions = props.collaborativeOptions;
-	if (!collabOptions.firebaseConfig) {
+	console.log(props.collaborativeOptions);
+	if (!collabOptions.firebaseRef) {
 		return [];
 	}
 
@@ -712,10 +597,11 @@ export default (schema, props) => {
 			clientID: localClientId,
 		}),
 		new CollaborativePlugin({
-			firebaseConfig: collabOptions.firebaseConfig,
+			firebaseRef: collabOptions.firebaseRef,
+			initialContent: props.initialContent,
+			initialDocKey: collabOptions.initialDocKey,
 			localClientData: collabOptions.clientData,
 			localClientId: localClientId,
-			editorKey: collabOptions.editorKey,
 			onClientChange: collabOptions.onClientChange,
 			onStatusChange: collabOptions.onStatusChange,
 		}),
