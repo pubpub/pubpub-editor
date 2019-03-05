@@ -1,9 +1,37 @@
 /* eslint-disable no-console */
-import React from 'react';
+import React, { useState } from 'react';
 import { storiesOf } from '@storybook/react';
-import Editor from '../src/index';
+import Editor, { cursor } from '../src/index';
 import { editorWrapperStyle, firebaseConfig, clientData } from './_utilities';
 import initialContent from './initialDocs/fullDoc';
+
+const CurosrOptionsDemoPub = () => {
+	const [editorView, setEditorView] = useState();
+
+	const cursorButtons = Object.keys(cursor).map((key) => ({
+		children: key,
+		onClick: () => {
+			cursor[key](editorView);
+			editorView.focus();
+		},
+	}));
+
+	return (
+		<div style={editorWrapperStyle}>
+			<div style={{ display: 'flex' }}>
+				{cursorButtons.map((props) => (
+					<button type="button" {...props} />
+				))}
+			</div>
+			<Editor
+				placeholder="Begin writing..."
+				initialContent={initialContent}
+				isReadOnly={false}
+				onChange={(editorChangeObject) => setEditorView(editorChangeObject.view)}
+			/>
+		</div>
+	);
+};
 
 storiesOf('Editor', module)
 	.add('default', () => (
@@ -91,4 +119,5 @@ storiesOf('Editor', module)
 				}}
 			/>
 		</div>
-	));
+	))
+	.add('cursorUtilities', () => <CurosrOptionsDemoPub />);
