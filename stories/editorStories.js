@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import React, { useState } from 'react';
 import { storiesOf } from '@storybook/react';
-import Editor from '../src/index';
+import Editor, { cursor } from '../src/index';
 import { editorWrapperStyle, initFirebase, clientData } from './_utilities';
 import initialContent from './initialDocs/fullDoc';
 import {
@@ -15,6 +15,34 @@ const branchKey = 'branch-f4bf24f7-6184-4f5f-b2d3-2b9d2563cb62';
 const firebaseRootRef = initFirebase(rootKey, '');
 const firebaseBranchRef = firebaseRootRef.child(branchKey);
 const newDiscussionId = String(Math.floor(Math.random() * 999999));
+
+const CursorOptionsDemoPub = () => {
+	const [editorView, setEditorView] = useState();
+
+	const cursorButtons = Object.keys(cursor).map((key) => ({
+		children: key,
+		onClick: () => {
+			cursor[key](editorView);
+			editorView.focus();
+		},
+	}));
+
+	return (
+		<div style={editorWrapperStyle}>
+			<div style={{ display: 'flex' }}>
+				{cursorButtons.map((props) => (
+					<button type="button" {...props} />
+				))}
+			</div>
+			<Editor
+				placeholder="Begin writing..."
+				initialContent={initialContent}
+				isReadOnly={false}
+				onChange={(editorChangeObject) => setEditorView(editorChangeObject.view)}
+			/>
+		</div>
+	);
+};
 
 storiesOf('Editor', module)
 	.add('default', () => (
@@ -157,4 +185,5 @@ storiesOf('Editor', module)
 				}}
 			/>
 		</div>
-	));
+	))
+	.add('cursorUtilities', () => <CursorOptionsDemoPub />);
