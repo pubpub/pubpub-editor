@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [5.3.6] - 2019-03-05
+- update: Add and refactor cursor manipulation utilties
+
 ## [5.3.5] - 2019-03-01
 - fix: Remove postinstall githook copying because it caused `npm install @pubpub/editor` to fail
 
