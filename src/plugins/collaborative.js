@@ -479,9 +479,9 @@ class CollaborativePlugin extends Plugin {
 			}
 
 			const data = selection.data || {};
-			if (!data.canEdit) {
-				return null;
-			}
+			// if (!data.canEdit) {
+			// 	return null;
+			// }
 
 			/* Classnames must begin with letter, so append one single uuid's may not. */
 			const formattedDataId = `c-${data.id}`;
@@ -511,6 +511,12 @@ class CollaborativePlugin extends Plugin {
 			const innerChildCircleBig = document.createElement('span');
 			innerChildCircleBig.className = 'inner-circle-big';
 			hoverItemsWrapper.appendChild(innerChildCircleBig);
+
+			/* Just for testing */
+			const testComp = document.createElement('span');
+			testComp.className = 'test-comp';
+			elem.appendChild(testComp);
+			/* ---- */
 
 			/* If Initials exist - add to hover items wrapper */
 			if (data.initials) {
@@ -556,7 +562,14 @@ class CollaborativePlugin extends Plugin {
 			const selectionFrom = selection.from;
 			const selectionTo = selection.to;
 			const selectionHead = selection.head;
-			decorations.push(Decoration.widget(selectionHead, elem));
+			decorations.push(
+				Decoration.widget(selectionHead, elem, {
+					stopEvent: () => {
+						return true;
+					},
+					key: 'discussion-item-id',
+				}),
+			);
 
 			if (selectionFrom !== selectionTo) {
 				decorations.push(
