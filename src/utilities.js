@@ -148,16 +148,23 @@ export const moveSelectionToEnd = (editorView) => {
 	editorView.dispatch(tr);
 };
 
-export const getFirebaseDoc = (firebaseRef, schema) => {
+export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 	let mostRecentRemoteKey;
 	return firebaseRef
 		.child('checkpoint')
 		.once('value')
 		.then((checkpointSnapshot) => {
+			const emptyDoc = { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] };
 			const checkpointSnapshotVal = checkpointSnapshot.val() || {
 				k: '0',
-				d: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] },
+				d: emptyDoc,
 			};
+
+			/* If the given versionNumber is earlier than the checkpoint, build doc from 0 */
+			if (versionNumber && versionNumber < Number(checkpointSnapshotVal.k)) {
+				checkpointSnapshotVal.k = '0';
+				checkpointSnapshotVal.d = emptyDoc;
+			}
 
 			mostRecentRemoteKey = Number(checkpointSnapshotVal.k);
 			const newDoc = Node.fromJSON(
@@ -170,6 +177,7 @@ export const getFirebaseDoc = (firebaseRef, schema) => {
 				.child('changes')
 				.orderByKey()
 				.startAt(String(mostRecentRemoteKey + 1))
+				.endAt(String(versionNumber))
 				.once('value');
 
 			return Promise.all([newDoc, getChanges]);
