@@ -189,17 +189,37 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 			const keys = Object.keys(changesSnapshotVal);
 			mostRecentRemoteKey = keys.length ? Math.max(...keys) : mostRecentRemoteKey;
 
+			/* flattenedMergeStepArray is an array of { steps, client, time } values */
+			/* It flattens the case where we have a merge-object which is an array of */
+			/* { steps, client, time } values. */
+			const flattenedMergeStepArray = Object.keys(changesSnapshotVal).reduce((prev, curr) => {
+				if (Array.isArray(changesSnapshotVal[curr])) {
+					return [...prev, ...changesSnapshotVal[curr]];
+				}
+				return [...prev, changesSnapshotVal[curr]];
+			}, []);
+
 			/* Uncompress steps and add stepClientIds */
-			Object.keys(changesSnapshotVal).forEach((key) => {
-				const compressedStepsJSON = changesSnapshotVal[key].s;
+			flattenedMergeStepArray.forEach((stepContent) => {
+				const compressedStepsJSON = stepContent.s;
 				const uncompressedSteps = compressedStepsJSON.map((compressedStepJSON) => {
 					return Step.fromJSON(schema, uncompressStepJSON(compressedStepJSON));
 				});
 				steps.push(...uncompressedSteps);
-				stepClientIds.push(
-					...new Array(compressedStepsJSON.length).fill(changesSnapshotVal[key].c),
-				);
+				stepClientIds.push(...new Array(compressedStepsJSON.length).fill(stepContent.c));
 			});
+			/* Uncompress steps and add stepClientIds */
+			// Object.keys(changesSnapshotVal).forEach((key) => {
+			// 	console.log('isArray', Array.isArray(changesSnapshotVal[key]));
+			// 	const compressedStepsJSON = changesSnapshotVal[key].s;
+			// 	const uncompressedSteps = compressedStepsJSON.map((compressedStepJSON) => {
+			// 		return Step.fromJSON(schema, uncompressStepJSON(compressedStepJSON));
+			// 	});
+			// 	steps.push(...uncompressedSteps);
+			// 	stepClientIds.push(
+			// 		...new Array(compressedStepsJSON.length).fill(changesSnapshotVal[key].c),
+			// 	);
+			// });
 			const updatedDoc = steps.reduce((prev, curr) => {
 				const stepResult = curr.apply(prev);
 				if (stepResult.failed) {
@@ -217,65 +237,13 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 		});
 };
 
-// const findContent = firebaseRef
-// 	.child('checkpoint')
-// 	.once('value')
-// 	.then(() => {
-// 		const checkpointSnapshotVal = {
-// 			k: '0',
-// 			d: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] },
-// 		};
+export function generateHash(length) {
+	const tokenLength = length || 32;
+	const possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
-// 		mostRecentRemoteKey = Number(checkpointSnapshotVal.k);
-// 		const newDoc = Node.fromJSON(
-// 			editorSchema,
-// 			uncompressStateJSON({ d: checkpointSnapshotVal.d }).doc,
-// 		);
-
-// 		/* Get all changes since mostRecentRemoteKey */
-// 		const getChanges = firebaseRef
-// 			.child('changes')
-// 			.orderByKey()
-// 			.startAt(String(mostRecentRemoteKey + 1))
-// 			// .endAt(String(mostRecentRemoteKey + 105))
-// 			.once('value');
-
-// 		return Promise.all([newDoc, getChanges]);
-// 	})
-// 	.then(([newDoc, changesSnapshot]) => {
-// 		const changesSnapshotVal = changesSnapshot.val() || {};
-// 		const steps = [];
-// 		const stepClientIds = [];
-// 		const keys = Object.keys(changesSnapshotVal);
-// 		mostRecentRemoteKey = keys.length ? Math.max(...keys) : mostRecentRemoteKey;
-
-// 		/* Uncompress steps and add stepClientIds */
-// 		Object.keys(changesSnapshotVal).forEach((key) => {
-// 			const compressedStepsJSON = changesSnapshotVal[key].s;
-// 			const uncompressedSteps = compressedStepsJSON.map((compressedStepJSON) => {
-// 				return Step.fromJSON(editorSchema, uncompressStepJSON(compressedStepJSON));
-// 			});
-// 			steps.push(...uncompressedSteps);
-// 			stepClientIds.push(
-// 				...new Array(compressedStepsJSON.length).fill(changesSnapshotVal[key].c),
-// 			);
-// 		});
-// 		const updatedDoc = steps.reduce((prev, curr, index) => {
-// 			const stepResult = curr.apply(prev);
-// 			if (stepResult.failed) {
-// 				console.error('Failed with ', stepResult.failed);
-// 			}
-// 			if (index % 10 === 0 || index === steps.length - 1) {
-// 				changeArray.push({ index: index, doc: stepResult.doc.toJSON() });
-// 			}
-// 			return stepResult.doc;
-// 		}, newDoc);
-// 		return {
-// 			content: updatedDoc.toJSON(),
-// 			changeArray: changeArray,
-// 			changesSnapshotVal: changesSnapshotVal,
-// 		};
-// 	})
-// 	.catch((firebaseErr) => {
-// 		console.error('firebase-firebaseErr', firebaseErr);
-// 	});
+	let hash = '';
+	for (let index = 0; index < tokenLength; index += 1) {
+		hash += possible.charAt(Math.floor(Math.random() * possible.length));
+	}
+	return hash;
+}

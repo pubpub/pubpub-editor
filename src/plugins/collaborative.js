@@ -8,91 +8,95 @@ import {
 	compressStateJSON,
 	compressStepJSON,
 	uncompressSelectionJSON,
-	uncompressStateJSON,
 	uncompressStepJSON,
 } from 'prosemirror-compress-pubpub';
+import { generateHash } from '../utilities';
 
 const TIMESTAMP = { '.sv': 'timestamp' };
 const SAVE_EVERY_N_STEPS = 100;
 
+/*	Collab Lifecycle
+	================
+	1. user input
+	2. apply()
+	3. sendCollab()
+	4. decorations()
+	5. view()
+	6. receiveCollab()
+	7. apply()
+	8. sendCollab() [doesn't send due to meta showing the transaction is a collab one]
+	9. decorations()
+	10. view()
+*/
+
+export default (schema, props) => {
+	const collabOptions = props.collaborativeOptions;
+	if (!collabOptions.firebaseRef) {
+		return [];
+	}
+
+	const localClientId = `clientId-${collabOptions.clientData.id}-${generateHash(6)}`;
+
+	return [
+		collab({
+			clientID: localClientId,
+		}),
+		/* eslint-disable-next-line no-use-before-define */
+		new CollaborativePlugin({
+			firebaseRef: collabOptions.firebaseRef,
+			initialContent: props.initialContent,
+			initialDocKey: collabOptions.initialDocKey,
+			localClientData: collabOptions.clientData,
+			localClientId: localClientId,
+			onClientChange: collabOptions.onClientChange || function() {},
+			onStatusChange: collabOptions.onStatusChange || function() {},
+		}),
+	];
+};
+
 class CollaborativePlugin extends Plugin {
-	constructor({
-		firebaseRef,
-		initialContent,
-		initialDocKey,
-		localClientData,
-		localClientId,
-		onClientChange,
-		onStatusChange,
-	}) {
+	constructor(pluginProps) {
 		super({ key: new PluginKey('collaborative') });
+		this.pluginProps = pluginProps;
 
 		/* Bind plugin functions */
 		this.loadDocument = this.loadDocument.bind(this);
+		this.receiveCollabChanges = this.receiveCollabChanges.bind(this);
 		this.sendCollabChanges = this.sendCollabChanges.bind(this);
-		this.apply = this.apply.bind(this);
-		this.updateView = this.updateView.bind(this);
-		this.disconnect = this.disconnect.bind(this);
-		this.decorations = this.decorations.bind(this);
 		this.addClientSelection = this.addClientSelection.bind(this);
 		this.updateClientSelection = this.updateClientSelection.bind(this);
 		this.deleteClientSelection = this.deleteClientSelection.bind(this);
 		this.issueEmptyTransaction = this.issueEmptyTransaction.bind(this);
-		this.handleRemoteChanges = this.handleRemoteChanges.bind(this);
 		this.setResendTimeout = this.setResendTimeout.bind(this);
-		// this.getJSONs = this.getJSONs.bind(this);
-
-		/* Make passed props accessible */
-		this.initialContent = initialContent;
-		this.localClientData = localClientData;
-		this.localClientId = localClientId;
-
-		const emptyFunc = () => {};
-		this.onClientChange = onClientChange || emptyFunc;
-		this.onStatusChange = onStatusChange || emptyFunc;
 
 		/* Init plugin variables */
 		this.startedLoad = false;
-		this.view = null;
-		this.mostRecentRemoteKey = initialDocKey;
+		this.mostRecentRemoteKey = pluginProps.initialDocKey;
 		this.selections = {};
 		this.ongoingTransaction = false;
 		this.resendSyncTimeout = undefined;
 
 		/* Setup Prosemirror plugin values */
 		this.spec = {
-			view: this.updateView,
+			view: (view) => {
+				this.view = view;
+				this.loadDocument();
+				return {
+					update: (newView) => {
+						this.view = newView;
+					},
+				};
+			},
 			state: {
 				init: () => {
 					return { isLoaded: false };
 				},
-				apply: this.apply,
+				apply: this.apply.bind(this),
 			},
 		};
 		this.props = {
-			decorations: this.decorations,
+			decorations: this.decorations.bind(this),
 		};
-
-		/* Check for firebaseConfig */
-		if (!firebaseRef) {
-			throw new Error('Did not include a firebase ref');
-		}
-
-		this.firebaseRef = firebaseRef;
-
-		/* Set user status and watch for status changes */
-		/* TODO - do we pass in the database instead? Or handle this disconnect from above? */
-		// this.database.ref('.info/connected').on('value', (snapshot) => {
-		// 	if (snapshot.val() === true) {
-		// 		this.onStatusChange('connected');
-		// 	} else {
-		// 		this.onStatusChange('disconnected');
-		// 	}
-		// });
-	}
-
-	disconnect() {
-		this.firebaseApp.delete();
 	}
 
 	loadDocument() {
@@ -101,7 +105,7 @@ class CollaborativePlugin extends Plugin {
 		}
 		this.startedLoad = true;
 
-		return this.firebaseRef
+		return this.pluginProps.firebaseRef
 			.child('changes')
 			.orderByKey()
 			.startAt(String(this.mostRecentRemoteKey + 1))
@@ -131,7 +135,10 @@ class CollaborativePlugin extends Plugin {
 				});
 
 				/* Update the prosemirror view with new doc */
-				const newDoc = Node.fromJSON(this.view.state.schema, this.initialContent);
+				const newDoc = Node.fromJSON(
+					this.view.state.schema,
+					this.pluginProps.initialContent,
+				);
 				this.view.updateState(
 					EditorState.create({
 						doc: newDoc,
@@ -144,9 +151,9 @@ class CollaborativePlugin extends Plugin {
 
 				/* Listen to Selections Change */
 				console.log('about to set listeners');
-				const selectionsRef = this.firebaseRef.child('selections');
+				const selectionsRef = this.pluginProps.firebaseRef.child('selections');
 				selectionsRef
-					.child(this.localClientId)
+					.child(this.pluginProps.localClientId)
 					.onDisconnect()
 					.remove();
 				selectionsRef.on('child_added', this.addClientSelection);
@@ -158,18 +165,19 @@ class CollaborativePlugin extends Plugin {
 				this.view.dispatch(finishedLoadingTrans);
 
 				/* Listen to Changes */
-				return this.firebaseRef
+				return this.pluginProps.firebaseRef
 					.child('changes')
 					.orderByKey()
 					.startAt(String(this.mostRecentRemoteKey + 1))
-					.on('child_added', this.handleRemoteChanges);
+					.on('child_added', this.receiveCollabChanges);
 			})
 			.catch((err) => {
 				console.error('In loadDocument Error with ', err, err.message);
 			});
 	}
 
-	handleRemoteChanges(snapshot) {
+	receiveCollabChanges(snapshot) {
+		console.log('in handle remote');
 		this.mostRecentRemoteKey = Number(snapshot.key);
 		const snapshotVal = snapshot.val();
 		const compressedStepsJSON = snapshotVal.s;
@@ -195,17 +203,17 @@ class CollaborativePlugin extends Plugin {
 		/* To reproduce, put one cursor in the middle of the last line of the paragraph, */
 		/* and then with another cursor begin typing at the end of the paragraph. The typing */
 		/* cursor will jump to the location of the middle cursor. */
-		const selection = document.getSelection();
-		const anchorNode = selection.anchorNode || { className: '' };
-		const anchorClasses = anchorNode.className || '';
-		if (
-			selection &&
-			selection.isCollapsed &&
-			anchorClasses.indexOf('options-wrapper') === -1 &&
-			this.view.hasFocus()
-		) {
-			document.getSelection().empty();
-		}
+		// const selection = document.getSelection();
+		// const anchorNode = selection.anchorNode || { className: '' };
+		// const anchorClasses = anchorNode.className || '';
+		// if (
+		// 	selection &&
+		// 	selection.isCollapsed &&
+		// 	anchorClasses.indexOf('options-wrapper') === -1 &&
+		// 	this.view.hasFocus()
+		// ) {
+		// 	document.getSelection().empty();
+		// }
 
 		return this.view.dispatch(trans);
 	}
@@ -225,6 +233,7 @@ class CollaborativePlugin extends Plugin {
 			meta.newHighlightsData ||
 			meta.appendedTransaction
 		) {
+			console.log('in bad meta', meta);
 			return null;
 		}
 
@@ -237,6 +246,7 @@ class CollaborativePlugin extends Plugin {
 
 		const sendable = sendableSteps(newState);
 		if (!sendable) {
+			console.log('no sendable');
 			return null;
 		}
 
@@ -254,12 +264,12 @@ class CollaborativePlugin extends Plugin {
 		const steps = sendable.steps;
 		const clientId = sendable.clientID;
 
-		return this.firebaseRef
+		return this.pluginProps.firebaseRef
 			.child('changes')
 			.child(this.mostRecentRemoteKey + 1)
 			.transaction(
 				(existingRemoteSteps) => {
-					this.onStatusChange('saving');
+					this.pluginProps.onStatusChange('saving');
 					if (existingRemoteSteps) {
 						return undefined;
 					}
@@ -280,19 +290,21 @@ class CollaborativePlugin extends Plugin {
 					}
 
 					if (committed) {
-						this.onStatusChange('saved');
+						this.pluginProps.onStatusChange('saved');
 
 						/* If multiple of SAVE_EVERY_N_STEPS, update checkpoint */
 						if (snapshot.key % SAVE_EVERY_N_STEPS === 0) {
-							this.firebaseRef.child('checkpoint').set({
+							this.pluginProps.firebaseRef.child('checkpoint').set({
 								d: compressStateJSON(newState.toJSON()).d,
 								k: snapshot.key,
 								t: TIMESTAMP,
 							});
 						}
+						/* Update discussion mappings here */
+						// TODO
 					} else {
 						/* If the transaction did not commit changes, we need
-				to trigger sendCollabChanges to fire again. */
+						to trigger sendCollabChanges to fire again. */
 						this.setResendTimeout();
 					}
 
@@ -314,7 +326,32 @@ class CollaborativePlugin extends Plugin {
 		return null;
 	}
 
+	/*
+		Only update your own selection in firebase
+		Map other selections forward locally when you have a succesful transaction
+		On load, remove any selections whose stepNumber is older than your init one.
+		Whoever issues the step should issue updates to the discussions, and their selection
+		Map all decorations (discussions) locally. We only update the firebase for first load folks
+		Otherwise, you update discussions via mapping when you get the new step
+		Also have to be watching for new discussions
+
+
+		Are all decorations the same?
+		Get decorations from firebase
+		If your number is behind their number - don't display
+		If your number is equal to their stepNumber - apply
+		As you get new steps, map all decorations forward
+		As there is a new decoration, apply it (if steps are equal), and then handle mapping
+
+		For selections - we could make the selections due to clicks, etc have a new id and 'look' new,
+		while leaving old ones to expire. They would have to expire as soon as stepNumbers didn't match
+
+		do we need a mostRecentLocalStep? Which we set everytime docChanged and not $collab?
+
+	*/
+
 	apply(transaction, state, prevEditorState, editorState) {
+		console.log('in apply', transaction.meta);
 		/* Remove Stale Selections */
 		Object.keys(this.selections).forEach((clientId) => {
 			const originalClientData = this.selections[clientId]
@@ -324,7 +361,7 @@ class CollaborativePlugin extends Plugin {
 			const lastActiveExpired =
 				originalClientData.lastActive + expirationTime < new Date().getTime();
 			if (!originalClientData.lastActive || lastActiveExpired) {
-				this.firebaseRef
+				this.pluginProps.firebaseRef
 					.child('selections')
 					.child(clientId)
 					.remove();
@@ -334,7 +371,10 @@ class CollaborativePlugin extends Plugin {
 		/* Map Selection */
 		if (transaction.docChanged && !transaction.meta.buildingJSON) {
 			Object.keys(this.selections).forEach((clientId) => {
-				if (this.selections[clientId] && this.selections[clientId] !== this.localClientId) {
+				if (
+					this.selections[clientId] &&
+					this.selections[clientId] !== this.pluginProps.localClientId
+				) {
 					const originalClientData = this.selections[clientId]
 						? this.selections[clientId].data
 						: {};
@@ -348,7 +388,7 @@ class CollaborativePlugin extends Plugin {
 		}
 
 		/* Set Selection */
-		const prevSelection = this.selections[this.localClientId] || {};
+		const prevSelection = this.selections[this.pluginProps.localClientId] || {};
 		const selection = editorState.selection || {};
 		const needsToInit = !prevSelection.anchor;
 		const isPointer = transaction.meta.pointer;
@@ -357,12 +397,12 @@ class CollaborativePlugin extends Plugin {
 			!transaction.docChanged &&
 			(selection.anchor !== prevSelection.anchor || selection.head !== prevSelection.head);
 		if (isNotSelectAll && (needsToInit || isPointer || isCursorChange)) {
-			const prevLocalSelectionData = this.selections[this.localClientId] || {};
+			const prevLocalSelectionData = this.selections[this.pluginProps.localClientId] || {};
 			const anchorEqual = prevLocalSelectionData.anchor === selection.anchor;
 			const headEqual = prevLocalSelectionData.head === selection.head;
 			if (!prevLocalSelectionData.anchor || !anchorEqual || !headEqual) {
 				const compressed = compressSelectionJSON(selection.toJSON());
-				compressed.data = this.localClientData;
+				compressed.data = this.pluginProps.localClientData;
 				if (needsToInit) {
 					compressed.a = 1;
 					compressed.h = 1;
@@ -376,11 +416,13 @@ class CollaborativePlugin extends Plugin {
 				compressed.data.lastActive =
 					Math.round(new Date().getTime() / smoothingTimeFactor) * smoothingTimeFactor;
 
-				this.selections[this.localClientId] = selection;
-				this.selections[this.localClientId].data = this.localClientData;
-				this.firebaseRef
+				this.selections[this.pluginProps.localClientId] = selection;
+				this.selections[
+					this.pluginProps.localClientId
+				].data = this.pluginProps.localClientData;
+				this.pluginProps.firebaseRef
 					.child('selections')
-					.child(this.localClientId)
+					.child(this.pluginProps.localClientId)
 					.set(compressed);
 			}
 		}
@@ -398,10 +440,11 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	updateClientSelection(snapshot) {
+		// Note - we do have something that causes the cursor to bounce, or be mapped incorrectly
 		console.log('update client selection');
 		/* Called on firebase updates to selection */
 		const clientID = snapshot.key;
-		if (clientID !== this.localClientId) {
+		if (clientID !== this.pluginProps.localClientId) {
 			const snapshotVal = snapshot.val();
 			/* Invalid selections can happen if a selection is synced before the corresponding changes from that 
 			remote editor. We simply remove the selection in that case, and wait for the proper position to sync. */
@@ -422,54 +465,42 @@ class CollaborativePlugin extends Plugin {
 
 	addClientSelection(snapshot) {
 		this.updateClientSelection(snapshot);
-		if (this.onClientChange) {
-			this.onClientChange(
-				Object.keys(this.selections)
-					.filter((key) => {
-						return this.selections[key];
-					})
-					.map((key) => {
-						return this.selections[key].data;
-					}),
-			);
-		}
+		// if (this.pluginProps.onClientChange) {
+		this.pluginProps.onClientChange(
+			Object.keys(this.selections)
+				.filter((key) => {
+					return this.selections[key];
+				})
+				.map((key) => {
+					return this.selections[key].data;
+				}),
+		);
+		// }
 	}
 
 	deleteClientSelection(snapshot) {
 		const clientID = snapshot.key;
 		delete this.selections[clientID];
-		if (this.onClientChange) {
-			this.onClientChange(
-				Object.keys(this.selections)
-					.filter((key) => {
-						return this.selections[key];
-					})
-					.map((key) => {
-						return this.selections[key].data;
-					}),
-			);
-		}
+		// if (this.pluginProps.onClientChange) {
+		this.pluginProps.onClientChange(
+			Object.keys(this.selections)
+				.filter((key) => {
+					return this.selections[key];
+				})
+				.map((key) => {
+					return this.selections[key].data;
+				}),
+		);
+		// }
 		this.issueEmptyTransaction();
 	}
 
-	updateView(view) {
-		this.view = view;
-		this.loadDocument();
-		return {
-			update: (newView) => {
-				this.view = newView;
-			},
-			destroy: () => {
-				this.view = null;
-			},
-		};
-	}
-
 	decorations(state) {
+		console.log('in decorations');
 		const selectionKeys = Object.keys(this.selections);
 		const decorations = [];
 		selectionKeys.forEach((clientId) => {
-			if (clientId === this.localClientId) {
+			if (clientId === this.pluginProps.localClientId) {
 				return null;
 			}
 
@@ -591,32 +622,12 @@ class CollaborativePlugin extends Plugin {
 	}
 }
 
-export default (schema, props) => {
-	const collabOptions = props.collaborativeOptions;
-	console.log(props.collaborativeOptions);
-	if (!collabOptions.firebaseRef) {
-		return [];
-	}
-
-	const possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
-	let clientHash = '';
-	for (let index = 0; index < 6; index += 1) {
-		clientHash += possible.charAt(Math.floor(Math.random() * possible.length));
-	}
-	const localClientId = `clientId-${collabOptions.clientData.id}-${clientHash}`;
-
-	return [
-		collab({
-			clientID: localClientId,
-		}),
-		new CollaborativePlugin({
-			firebaseRef: collabOptions.firebaseRef,
-			initialContent: props.initialContent,
-			initialDocKey: collabOptions.initialDocKey,
-			localClientData: collabOptions.clientData,
-			localClientId: localClientId,
-			onClientChange: collabOptions.onClientChange,
-			onStatusChange: collabOptions.onStatusChange,
-		}),
-	];
-};
+/* Set user status and watch for status changes */
+/* TODO - do we pass in the database instead? Or handle this disconnect from above? */
+// this.database.ref('.info/connected').on('value', (snapshot) => {
+// 	if (snapshot.val() === true) {
+// 		this.pluginProps.onStatusChange('connected');
+// 	} else {
+// 		this.pluginProps.onStatusChange('disconnected');
+// 	}
+// });

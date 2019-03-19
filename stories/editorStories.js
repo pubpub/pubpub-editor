@@ -2,8 +2,13 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import Editor from '../src/index';
-import { editorWrapperStyle, firebaseConfig, clientData } from './_utilities';
+import { editorWrapperStyle, initFirebase, clientData } from './_utilities';
 import initialContent from './initialDocs/fullDoc';
+
+const rootKey = 'pub-bacc95b3-d73f-4a36-8e4f-13d1438999d9';
+const branchKey = 'branch-f4bf24f7-6184-4f5f-b2d3-2b9d2563cb62';
+const firebaseRootRef = initFirebase(rootKey, '');
+const firebaseBranchRef = firebaseRootRef.child(branchKey);
 
 storiesOf('Editor', module)
 	.add('default', () => (
@@ -13,9 +18,9 @@ storiesOf('Editor', module)
 				initialContent={initialContent}
 				// isReadOnly={true}
 				onChange={(changeObject) => {
-					console.log('====');
+					// console.log('====');
 					// console.log(changeObject.view.state.doc.toJSON(), null, 4));
-					console.log(changeObject.menuItems);
+					// console.log(changeObject.menuItems);
 					// console.log(getCollabJSONs(changeObject.view));
 					if (changeObject.updateNode && changeObject.selectedNode.attrs.size === 50) {
 						changeObject.updateNode({ size: 65 });
@@ -66,16 +71,17 @@ storiesOf('Editor', module)
 	.add('collaborative', () => (
 		<div style={editorWrapperStyle}>
 			<Editor
+				key={firebaseBranchRef ? 'ready' : 'unready'}
 				placeholder="Begin writing..."
 				onChange={(changeObject) => {
-					console.log(changeObject.view);
+					// console.log(changeObject.view);
 				}}
 				collaborativeOptions={{
-					firebaseConfig: firebaseConfig,
-					editorKey: 'storybook-editor-v23',
+					firebaseRef: firebaseBranchRef,
 					clientData: clientData,
-					// onClientChange: (val)=> { console.log('clientChange ', val); },
-					// onStatusChange: (val)=> { console.log('statusChagnge ', val); },
+					initialDocKey: 0,
+					// onClientChange: () => {},
+					// onStatusChange: () => {},
 				}}
 			/>
 		</div>
