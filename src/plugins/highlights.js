@@ -11,10 +11,12 @@ export default (schema, props) => {
 			init: (config, editorState) => {
 				return {
 					activeDecorationSet: DecorationSet.create(editorState.doc, []),
+					usedHighlightIds: [],
 				};
 			},
 			apply: (transaction, pluginState, prevEditorState, editorState) => {
 				const oldDecorationSet = pluginState.activeDecorationSet;
+				const newUsedHighlightIds = [...pluginState.usedHighlightIds];
 				const decorationsToRemove = transaction.meta.highlightsToRemove || [];
 				const mappedDecorationSet = oldDecorationSet
 					.remove(decorationsToRemove)
@@ -24,6 +26,7 @@ export default (schema, props) => {
 				if (!transaction.meta.newHighlightsData) {
 					return {
 						activeDecorationSet: mappedDecorationSet,
+						usedHighlightIds: newUsedHighlightIds,
 					};
 				}
 
@@ -36,6 +39,7 @@ export default (schema, props) => {
 						const highlightClassName = `highlight ${highlightData.id} ${
 							highlightData.permanent ? 'permanent' : ''
 						}`.trim();
+						newUsedHighlightIds.push(highlightData.id);
 						/* maxSize is the nodeSize of the doc minus 2, beacuse according to the Prosemirror ref: */
 						/* "For non-leaf nodes, [nodeSize] is the size of the content plus two (the start and end token). */
 						const maxSize = editorState.doc.nodeSize - 2;
@@ -120,6 +124,7 @@ export default (schema, props) => {
 
 				return {
 					activeDecorationSet: mappedDecorationSet.add(editorState.doc, newDecorations),
+					usedHighlightIds: newUsedHighlightIds,
 				};
 			},
 		},
@@ -135,17 +140,19 @@ export default (schema, props) => {
 				.getState(editorState)
 				.activeDecorationSet.find();
 
+			const usedHighlightIds = highlightPluginKey.getState(editorState).usedHighlightIds;
+
 			/* usedHighlightIds are the ids of the activeDecorations. */
-			const usedHighlightIds = activeDecorations
-				.map((decoration) => {
-					return (
-						decoration.type.attrs.class.indexOf('highlight') !== -1 &&
-						decoration.type.attrs.class.split(' ')[1]
-					);
-				})
-				.filter((decoration) => {
-					return !!decoration;
-				});
+			// const usedHighlightIds = activeDecorations
+			// 	.map((decoration) => {
+			// 		return (
+			// 			decoration.type.attrs.class.indexOf('highlight') !== -1 &&
+			// 			decoration.type.attrs.class.split(' ')[1]
+			// 		);
+			// 	})
+			// 	.filter((decoration) => {
+			// 		return !!decoration;
+			// 	});
 
 			/* inputHighlightIds are the ids of the highlights provided */
 			/* through the <Editor /> getHighlights prop. */
@@ -160,7 +167,7 @@ export default (schema, props) => {
 			});
 
 			/* highlightsToRemove are the set of decorations whose id is in */
-			/* usedHighlightIds but not in the list of highlight provided */
+			/* activeDecorations but not in the list of highlight provided */
 			/* through the <Editor /> getHighlights prop */
 			const highlightsToRemove = activeDecorations
 				.filter((decoration) => {

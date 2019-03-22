@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [5.3.7] - 2019-03-22
+- fix: usedHighlights infinite transaction loop bug
+
 ## [5.3.6] - 2019-03-05
 - update: Add and refactor cursor manipulation utilties
 
