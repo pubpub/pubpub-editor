@@ -18,9 +18,6 @@ const propTypes = {
 	nodeOptions:
 		PropTypes.object /* An object with nodeName keys and values of objects of overriding options. For example: nodeOptions = { image: { linkToSrc: false } } */,
 	collaborativeOptions: PropTypes.object,
-	// firebaseRef: PropTypes.object,
-	// initialDocKey: PropTypes.string,
-
 	onChange: PropTypes.func,
 	initialContent: PropTypes.object,
 	placeholder: PropTypes.string,
@@ -37,8 +34,6 @@ const defaultProps = {
 	customPlugins: {} /* defaults: inputRules, keymap, headerIds, placeholder */,
 	nodeOptions: {},
 	collaborativeOptions: {},
-	// firebaseRef: undefined,
-	// initialDocKey: '0',
 	onChange: () => {},
 	initialContent: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] },
 	placeholder: '',
@@ -93,11 +88,8 @@ class Editor extends Component {
 				const passedProps = {
 					container: this.editorRef.current,
 					onChange: this.props.onChange,
-					collaborativeOptions: this.props.collaborativeOptions,
-					// firebaseRef: this.props.firebaseRef,
 					initialContent: this.props.initialContent,
-					// initialDocKey: this.props.initialDocKey,
-
+					collaborativeOptions: this.props.collaborativeOptions,
 					placeholder: this.props.placeholder,
 					isReadOnly: this.props.isReadOnly,
 					getHighlights: () => {

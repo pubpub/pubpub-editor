@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
-import React from 'react';
+import React, { useState } from 'react';
 import { storiesOf } from '@storybook/react';
 import Editor from '../src/index';
 import { editorWrapperStyle, initFirebase, clientData } from './_utilities';
 import initialContent from './initialDocs/fullDoc';
+import { getDiscussionData } from '../src/utilities';
 
 const rootKey = 'pub-bacc95b3-d73f-4a36-8e4f-13d1438999d9';
 const branchKey = 'branch-f4bf24f7-6184-4f5f-b2d3-2b9d2563cb62';
@@ -68,24 +69,42 @@ storiesOf('Editor', module)
 			/>
 		</div>
 	))
-	.add('collaborative', () => (
-		<div style={editorWrapperStyle}>
-			<Editor
-				key={firebaseBranchRef ? 'ready' : 'unready'}
-				placeholder="Begin writing..."
-				onChange={(changeObject) => {
-					// console.log(changeObject.view);
-				}}
-				collaborativeOptions={{
-					firebaseRef: firebaseBranchRef,
-					clientData: clientData,
-					initialDocKey: 0,
-					// onClientChange: () => {},
-					// onStatusChange: () => {},
-				}}
-			/>
-		</div>
-	))
+	.add('collaborative', () => {
+		const Thing = () => {
+			const [changeObject, updatechangeObject] = useState({});
+			return (
+				<div style={editorWrapperStyle}>
+					<button
+						type="button"
+						onClick={() => {
+							firebaseBranchRef
+								.child('discussions')
+								.child(Math.floor(Math.random() * 999999))
+								.set(getDiscussionData(changeObject.view));
+						}}
+					>
+						New
+					</button>
+					<Editor
+						key={firebaseBranchRef ? 'ready' : 'unready'}
+						placeholder="Begin writing..."
+						onChange={(evt) => {
+							// console.log(evt.view.state);
+							updatechangeObject(evt);
+						}}
+						collaborativeOptions={{
+							firebaseRef: firebaseBranchRef,
+							clientData: clientData,
+							initialDocKey: 0,
+							// onClientChange: () => {},
+							// onStatusChange: () => {},
+						}}
+					/>
+				</div>
+			);
+		};
+		return <Thing />;
+	})
 	.add('readOnly', () => (
 		<div style={editorWrapperStyle}>
 			<Editor

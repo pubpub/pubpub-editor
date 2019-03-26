@@ -10,10 +10,22 @@ import {
 	uncompressSelectionJSON,
 	uncompressStepJSON,
 } from 'prosemirror-compress-pubpub';
-import { generateHash } from '../utilities';
+import { generateHash, restoreDiscussionMaps } from '../utilities';
 
 const TIMESTAMP = { '.sv': 'timestamp' };
 const SAVE_EVERY_N_STEPS = 100;
+
+/*
+	Load doc from firebase
+	Generate initialContent
+	Pass that into Editor
+	Server Render HTML
+	On Client, load Editor
+	Editor create init doc
+	collaborative sets up listeners
+	collaborative gets discussions, applies the ones that match the dockey (with no sendable), keeps track of their ids
+	non-applied decorations are applied whenever their key matches the mostRecentRemote and there are no sendable steps
+*/
 
 /*	Collab Lifecycle
 	================
@@ -27,6 +39,38 @@ const SAVE_EVERY_N_STEPS = 100;
 	8. sendCollab() [doesn't send due to meta showing the transaction is a collab one]
 	9. decorations()
 	10. view()
+*/
+
+// Maybe only accept a new discussion if the remoteStep matches.
+// Since remoteStepKeys are updated each time
+// Probably want to rename 'selections' to 'cursors' in firebase
+
+/*
+cursors: {
+	clientId: {
+		backgroundColor
+		color
+		name
+		selection: {
+			a
+			h
+			type
+		}
+	}
+}
+discussions: {
+	discussionId: {
+		currentKey
+		initAnchor
+		initHead
+		initKey
+		selection: {
+			a
+			h
+			type
+		}
+	}
+}
 */
 
 export default (schema, props) => {
@@ -63,21 +107,32 @@ class CollaborativePlugin extends Plugin {
 		this.loadDocument = this.loadDocument.bind(this);
 		this.receiveCollabChanges = this.receiveCollabChanges.bind(this);
 		this.sendCollabChanges = this.sendCollabChanges.bind(this);
-		this.addClientSelection = this.addClientSelection.bind(this);
-		this.updateClientSelection = this.updateClientSelection.bind(this);
-		this.deleteClientSelection = this.deleteClientSelection.bind(this);
+		this.addClientCursor = this.addClientCursor.bind(this);
+		this.updateClientCursor = this.updateClientCursor.bind(this);
+		this.deleteClientCursor = this.deleteClientCursor.bind(this);
 		this.issueEmptyTransaction = this.issueEmptyTransaction.bind(this);
 		this.setResendTimeout = this.setResendTimeout.bind(this);
+
+		this.updateDiscussion = this.updateDiscussion.bind(this);
+		this.deleteDiscussion = this.deleteDiscussion.bind(this);
+		this.syncDiscussions = this.syncDiscussions.bind(this);
 
 		/* Init plugin variables */
 		this.startedLoad = false;
 		this.mostRecentRemoteKey = pluginProps.initialDocKey;
-		this.selections = {};
+		this.cursors = {};
+		this.discussions = {};
 		this.ongoingTransaction = false;
 		this.resendSyncTimeout = undefined;
 
 		/* Setup Prosemirror plugin values */
 		this.spec = {
+			state: {
+				init: () => {
+					return { isLoaded: false };
+				},
+				apply: this.apply.bind(this),
+			},
 			view: (view) => {
 				this.view = view;
 				this.loadDocument();
@@ -86,12 +141,6 @@ class CollaborativePlugin extends Plugin {
 						this.view = newView;
 					},
 				};
-			},
-			state: {
-				init: () => {
-					return { isLoaded: false };
-				},
-				apply: this.apply.bind(this),
 			},
 		};
 		this.props = {
@@ -104,6 +153,11 @@ class CollaborativePlugin extends Plugin {
 			return null;
 		}
 		this.startedLoad = true;
+
+		// console.time('restoringdiscussions');
+		// restoreDiscussionMaps(this.pluginProps.firebaseRef, this.view.state.schema).then(() => {
+		// 	console.timeEnd('restoringdiscussions');
+		// });
 
 		return this.pluginProps.firebaseRef
 			.child('changes')
@@ -149,17 +203,23 @@ class CollaborativePlugin extends Plugin {
 				const trans = receiveTransaction(this.view.state, steps, stepClientIds);
 				this.view.dispatch(trans);
 
-				/* Listen to Selections Change */
-				console.log('about to set listeners');
-				const selectionsRef = this.pluginProps.firebaseRef.child('selections');
-				selectionsRef
+				/* Retrieve and Listen to Cursors */
+				const cursorsRef = this.pluginProps.firebaseRef.child('cursors');
+				cursorsRef
 					.child(this.pluginProps.localClientId)
 					.onDisconnect()
 					.remove();
-				selectionsRef.on('child_added', this.addClientSelection);
-				selectionsRef.on('child_changed', this.updateClientSelection);
-				selectionsRef.on('child_removed', this.deleteClientSelection);
+				cursorsRef.on('child_added', this.addClientCursor);
+				cursorsRef.on('child_changed', this.updateClientCursor);
+				cursorsRef.on('child_removed', this.deleteClientCursor);
 
+				/* Retrieve and Listen to Discussions */
+				const discussionsRef = this.pluginProps.firebaseRef.child('discussions');
+				discussionsRef.on('child_added', this.updateDiscussion);
+				discussionsRef.on('child_changed', this.updateDiscussion);
+				discussionsRef.on('child_removed', this.deleteDiscussion);
+
+				/* Set finishedLoading flag */
 				const finishedLoadingTrans = this.view.state.tr;
 				finishedLoadingTrans.setMeta('finishedLoading', true);
 				this.view.dispatch(finishedLoadingTrans);
@@ -177,7 +237,6 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	receiveCollabChanges(snapshot) {
-		console.log('in handle remote');
 		this.mostRecentRemoteKey = Number(snapshot.key);
 		const snapshotVal = snapshot.val();
 		const compressedStepsJSON = snapshotVal.s;
@@ -196,35 +255,14 @@ class CollaborativePlugin extends Plugin {
 			});
 		}
 
-		/* We do getSelection().empty() because of a chrome bug: */
-		/* https://discuss.prosemirror.net/t/in-collab-setup-with-selections-cursor-jumps-to-a-different-position-without-selection-being-changed/1011 */
-		/* https://github.com/ProseMirror/prosemirror/issues/710 */
-		/* https://bugs.chromium.org/p/chromium/issues/detail?id=775939 */
-		/* To reproduce, put one cursor in the middle of the last line of the paragraph, */
-		/* and then with another cursor begin typing at the end of the paragraph. The typing */
-		/* cursor will jump to the location of the middle cursor. */
-		// const selection = document.getSelection();
-		// const anchorNode = selection.anchorNode || { className: '' };
-		// const anchorClasses = anchorNode.className || '';
-		// if (
-		// 	selection &&
-		// 	selection.isCollapsed &&
-		// 	anchorClasses.indexOf('options-wrapper') === -1 &&
-		// 	this.view.hasFocus()
-		// ) {
-		// 	document.getSelection().empty();
-		// }
-
 		return this.view.dispatch(trans);
 	}
 
 	sendCollabChanges(transaction, newState) {
-		console.log('in send collab');
 		// TODO: Rather than exclude - we should probably explicitly list the types of transactions we accept.
 		// Exluding only will break when others add custom plugin transactions.
 		const meta = transaction.meta;
 		if (
-			meta.buildingJSON ||
 			meta.finishedLoading ||
 			meta.collab$ ||
 			meta.rebase ||
@@ -233,7 +271,6 @@ class CollaborativePlugin extends Plugin {
 			meta.newHighlightsData ||
 			meta.appendedTransaction
 		) {
-			console.log('in bad meta', meta);
 			return null;
 		}
 
@@ -246,7 +283,6 @@ class CollaborativePlugin extends Plugin {
 
 		const sendable = sendableSteps(newState);
 		if (!sendable) {
-			console.log('no sendable');
 			return null;
 		}
 
@@ -351,171 +387,251 @@ class CollaborativePlugin extends Plugin {
 	*/
 
 	apply(transaction, state, prevEditorState, editorState) {
-		console.log('in apply', transaction.meta);
-		/* Remove Stale Selections */
-		Object.keys(this.selections).forEach((clientId) => {
-			const originalClientData = this.selections[clientId]
-				? this.selections[clientId].data
-				: {};
+		/* Remove Stale Cursors */
+		Object.keys(this.cursors).forEach((clientId) => {
+			const originalClientData = this.cursors[clientId];
 			const expirationTime = 1000 * 60 * 5; /* 5 minutes */
 			const lastActiveExpired =
 				originalClientData.lastActive + expirationTime < new Date().getTime();
 			if (!originalClientData.lastActive || lastActiveExpired) {
 				this.pluginProps.firebaseRef
-					.child('selections')
+					.child('cursors')
 					.child(clientId)
 					.remove();
 			}
 		});
 
-		/* Map Selection */
-		if (transaction.docChanged && !transaction.meta.buildingJSON) {
-			Object.keys(this.selections).forEach((clientId) => {
-				if (
-					this.selections[clientId] &&
-					this.selections[clientId] !== this.pluginProps.localClientId
-				) {
-					const originalClientData = this.selections[clientId]
-						? this.selections[clientId].data
-						: {};
-					this.selections[clientId] = this.selections[clientId].map(
+		if (transaction.docChanged) {
+			/* Map Cursors */
+			Object.keys(this.cursors)
+				.filter((clientId) => {
+					/* Don't map local client's cursor */
+					return this.cursors[clientId] !== this.pluginProps.localClientId;
+				})
+				.forEach((clientId) => {
+					this.cursors[clientId].selection = this.cursors[clientId].selection.map(
 						editorState.doc,
 						transaction.mapping,
 					);
-					this.selections[clientId].data = originalClientData;
-				}
+				});
+
+			/* Map Discussions */
+			Object.keys(this.discussions).forEach((discussionId) => {
+				const prevSelection = this.discussions[discussionId].selection;
+				this.discussions[discussionId].selection = prevSelection.map(
+					editorState.doc,
+					transaction.mapping,
+				);
 			});
 		}
 
-		/* Set Selection */
-		const prevSelection = this.selections[this.pluginProps.localClientId] || {};
+		if (transaction.meta.collab$) {
+			this.syncDiscussions();
+		}
+
+		/* Set Cursor data */
+		const prevCursor = this.cursors[this.pluginProps.localClientId] || {};
+		const prevSelection = prevCursor.selection || {};
 		const selection = editorState.selection || {};
-		const needsToInit = !prevSelection.anchor;
+		const needsToInit = !(prevSelection.a || prevSelection.anchor);
 		const isPointer = transaction.meta.pointer;
 		const isNotSelectAll = selection instanceof AllSelection === false;
 		const isCursorChange =
 			!transaction.docChanged &&
 			(selection.anchor !== prevSelection.anchor || selection.head !== prevSelection.head);
 		if (isNotSelectAll && (needsToInit || isPointer || isCursorChange)) {
-			const prevLocalSelectionData = this.selections[this.pluginProps.localClientId] || {};
-			const anchorEqual = prevLocalSelectionData.anchor === selection.anchor;
-			const headEqual = prevLocalSelectionData.head === selection.head;
-			if (!prevLocalSelectionData.anchor || !anchorEqual || !headEqual) {
-				const compressed = compressSelectionJSON(selection.toJSON());
-				compressed.data = this.pluginProps.localClientData;
-				if (needsToInit) {
-					compressed.a = 1;
-					compressed.h = 1;
-				}
+			const anchorEqual = prevSelection.anchor === selection.anchor;
+			const headEqual = prevSelection.head === selection.head;
+			if (!prevSelection.anchor || !anchorEqual || !headEqual) {
+				const newCursorData = {
+					...this.pluginProps.localClientData,
+					selection: selection,
+				};
 
-				/* compressed.data.lastActive has to be rounded to the nearest minute (or some larger value)
+				/* lastActive has to be rounded to the nearest minute (or some larger value)
 				If it is updated every millisecond, firebase will see it as constant changes and you'll get a 
 				loop of updates triggering millisecond updates. The lastActive is updated anytime a client 
 				makes or receives changes. A client will be active even if they have a tab open and are 'watching'. */
 				const smoothingTimeFactor = 1000 * 60;
-				compressed.data.lastActive =
+				newCursorData.lastActive =
 					Math.round(new Date().getTime() / smoothingTimeFactor) * smoothingTimeFactor;
 
-				this.selections[this.pluginProps.localClientId] = selection;
-				this.selections[
-					this.pluginProps.localClientId
-				].data = this.pluginProps.localClientData;
+				this.cursors[this.pluginProps.localClientId] = newCursorData;
+				const firebaseCursorData = {
+					...newCursorData,
+					selection: needsToInit
+						? {
+								a: 1,
+								h: 1,
+								t: 'text',
+						  }
+						: compressSelectionJSON(selection.toJSON()),
+				};
 				this.pluginProps.firebaseRef
-					.child('selections')
+					.child('cursors')
 					.child(this.pluginProps.localClientId)
-					.set(compressed);
+					.set(firebaseCursorData);
 			}
 		}
+
 		/* Send Collab Changes */
 		this.sendCollabChanges(transaction, editorState);
 
 		if (transaction.meta.finishedLoading) {
 			return { isLoaded: true };
 		}
-		return state;
+		return {
+			...state,
+			mostRecentRemoteKey: this.mostRecentRemoteKey,
+		};
+	}
+
+	syncDiscussions() {
+		Object.keys(this.discussions).forEach((discussionId) => {
+			this.pluginProps.firebaseRef
+				.child('discussions')
+				.child(discussionId)
+				.transaction(
+					(existingDiscussionData) => {
+						if (existingDiscussionData.currentKey >= this.mostRecentRemoteKey) {
+							return undefined;
+						}
+						this.pluginProps.onStatusChange('saving');
+						return {
+							...existingDiscussionData,
+							currentKey: this.mostRecentRemoteKey,
+							selection: compressSelectionJSON(
+								this.discussions[discussionId].selection.toJSON(),
+							),
+						};
+					},
+					() => {
+						this.pluginProps.onStatusChange('saved');
+					},
+					false,
+				)
+				.catch((err) => {
+					console.error('Discussions Sync Failed', err);
+				});
+		});
 	}
 
 	issueEmptyTransaction() {
 		this.view.dispatch(this.view.state.tr);
 	}
 
-	updateClientSelection(snapshot) {
-		// Note - we do have something that causes the cursor to bounce, or be mapped incorrectly
-		console.log('update client selection');
-		/* Called on firebase updates to selection */
+	updateClientCursor(snapshot) {
+		/* Called on firebase updates to cursors */
 		const clientID = snapshot.key;
 		if (clientID !== this.pluginProps.localClientId) {
 			const snapshotVal = snapshot.val();
-			/* Invalid selections can happen if a selection is synced before the corresponding changes from that 
-			remote editor. We simply remove the selection in that case, and wait for the proper position to sync. */
-			const invalidSelection =
-				Math.max(snapshotVal.a, snapshotVal.h) > this.view.state.doc.content.size - 1;
-			if (snapshotVal && !invalidSelection) {
-				this.selections[clientID] = Selection.fromJSON(
-					this.view.state.doc,
-					uncompressSelectionJSON(snapshotVal),
-				);
-				this.selections[clientID].data = snapshotVal.data;
-			} else {
-				delete this.selections[clientID];
+			/* Invalid cursors can happen if a cursor is synced before the corresponding changes from that 
+			remote editor. We simply remove the cursor in that case, and wait for the proper position to sync. */
+			// const invalidSelection =
+			// 	Math.max(snapshotVal.a, snapshotVal.h) > this.view.state.doc.content.size - 1;
+			// if (snapshotVal && !invalidSelection) {
+			try {
+				/* This try-catch is a safegaurd against */
+				/* cursors being a step out of sync and */
+				/* referring to an impossible range in the */
+				/* local doc */
+				this.cursors[clientID] = {
+					...snapshotVal,
+					selection: Selection.fromJSON(
+						this.view.state.doc,
+						uncompressSelectionJSON(snapshotVal.selection),
+					),
+				};
+			} catch (err) {
+				delete this.cursors[clientID];
 			}
 			this.issueEmptyTransaction();
 		}
 	}
 
-	addClientSelection(snapshot) {
-		this.updateClientSelection(snapshot);
-		// if (this.pluginProps.onClientChange) {
+	addClientCursor(snapshot) {
+		this.updateClientCursor(snapshot);
 		this.pluginProps.onClientChange(
-			Object.keys(this.selections)
+			Object.keys(this.cursors)
 				.filter((key) => {
-					return this.selections[key];
+					return this.cursors[key];
 				})
 				.map((key) => {
-					return this.selections[key].data;
+					return this.cursors[key].data;
 				}),
 		);
-		// }
 	}
 
-	deleteClientSelection(snapshot) {
+	deleteClientCursor(snapshot) {
 		const clientID = snapshot.key;
-		delete this.selections[clientID];
-		// if (this.pluginProps.onClientChange) {
+		delete this.cursors[clientID];
 		this.pluginProps.onClientChange(
-			Object.keys(this.selections)
+			Object.keys(this.cursors)
 				.filter((key) => {
-					return this.selections[key];
+					return this.cursors[key];
 				})
 				.map((key) => {
-					return this.selections[key].data;
+					return this.cursors[key].data;
 				}),
 		);
-		// }
+		this.issueEmptyTransaction();
+	}
+
+	updateDiscussion(snapshot) {
+		/* New discussions and discussions that aren't tracked are treated as the same. */
+		/* If you do track a disucssion, or have sendable steps, or the keys don't match, ignore the update */
+		const discussionId = snapshot.key;
+		const discussionData = snapshot.val() || {};
+		const alreadyHandled = Object.keys(this.discussions).reduce((prev, curr) => {
+			if (curr === discussionId) {
+				return true;
+			}
+			return prev;
+		}, false);
+
+		if (
+			discussionData.currentKey === this.mostRecentRemoteKey &&
+			!sendableSteps(this.view.state) &&
+			!alreadyHandled
+		) {
+			this.discussions[discussionId] = {
+				...discussionData,
+				selection: Selection.fromJSON(
+					this.view.state.doc,
+					uncompressSelectionJSON(discussionData.selection),
+				),
+			};
+			this.issueEmptyTransaction();
+		}
+	}
+
+	deleteDiscussion(snapshot) {
+		const discussionId = snapshot.key;
+		delete this.discussions[discussionId];
 		this.issueEmptyTransaction();
 	}
 
 	decorations(state) {
-		console.log('in decorations');
-		const selectionKeys = Object.keys(this.selections);
+		const cursorKeys = Object.keys(this.cursors);
+		const discussionKeys = Object.keys(this.discussions);
 		const decorations = [];
-		selectionKeys.forEach((clientId) => {
+		cursorKeys.forEach((clientId) => {
 			if (clientId === this.pluginProps.localClientId) {
 				return null;
 			}
 
-			const selection = this.selections[clientId];
-			if (!selection) {
+			const cursor = this.cursors[clientId];
+			if (!cursor) {
 				return null;
 			}
 
-			const data = selection.data || {};
+			// const data = selection.data || {};
 			// if (!data.canEdit) {
 			// 	return null;
 			// }
 
 			/* Classnames must begin with letter, so append one single uuid's may not. */
-			const formattedDataId = `c-${data.id}`;
+			const formattedDataId = `c-${cursor.id}`;
 			const elem = document.createElement('span');
 			elem.className = `collab-cursor ${formattedDataId}`;
 
@@ -550,49 +666,49 @@ class CollaborativePlugin extends Plugin {
 			/* ---- */
 
 			/* If Initials exist - add to hover items wrapper */
-			if (data.initials) {
+			if (cursor.initials) {
 				const innerCircleInitials = document.createElement('span');
 				innerCircleInitials.className = `initials ${formattedDataId}`;
 				innerStyle += `.initials.${formattedDataId}::after { content: "${
-					data.initials
+					cursor.initials
 				}"; } `;
 				hoverItemsWrapper.appendChild(innerCircleInitials);
 			}
 			/* If Image exists - add to hover items wrapper */
-			if (data.image) {
+			if (cursor.image) {
 				const innerCircleImage = document.createElement('span');
 				innerCircleImage.className = `image ${formattedDataId}`;
 				innerStyle += `.image.${formattedDataId}::after { background-image: url('${
-					data.image
+					cursor.image
 				}'); } `;
 				hoverItemsWrapper.appendChild(innerCircleImage);
 			}
 
 			/* If name exists - add to hover items wrapper */
-			if (data.name) {
+			if (cursor.name) {
 				const innerCircleName = document.createElement('span');
 				innerCircleName.className = `name ${formattedDataId}`;
-				innerStyle += `.name.${formattedDataId}::after { content: "${data.name}"; } `;
-				if (data.cursorColor) {
-					innerCircleName.style.backgroundColor = data.cursorColor;
+				innerStyle += `.name.${formattedDataId}::after { content: "${cursor.name}"; } `;
+				if (cursor.cursorColor) {
+					innerCircleName.style.backgroundColor = cursor.cursorColor;
 				}
 				hoverItemsWrapper.appendChild(innerCircleName);
 			}
 
 			/* If cursor color provided - override defaults */
-			if (data.cursorColor) {
-				innerChildBar.style.backgroundColor = data.cursorColor;
-				innerChildCircleSmall.style.backgroundColor = data.cursorColor;
-				innerChildCircleBig.style.backgroundColor = data.cursorColor;
+			if (cursor.cursorColor) {
+				innerChildBar.style.backgroundColor = cursor.cursorColor;
+				innerChildCircleSmall.style.backgroundColor = cursor.cursorColor;
+				innerChildCircleBig.style.backgroundColor = cursor.cursorColor;
 				innerStyle += `.name.${formattedDataId}::after { background-color: ${
-					data.cursorColor
+					cursor.cursorColor
 				} !important; } `;
 			}
 			style.innerHTML = innerStyle;
 
-			const selectionFrom = selection.from;
-			const selectionTo = selection.to;
-			const selectionHead = selection.head;
+			const selectionFrom = cursor.selection.from;
+			const selectionTo = cursor.selection.to;
+			const selectionHead = cursor.selection.head;
 			decorations.push(
 				Decoration.widget(selectionHead, elem, {
 					stopEvent: () => {
@@ -605,14 +721,31 @@ class CollaborativePlugin extends Plugin {
 			if (selectionFrom !== selectionTo) {
 				decorations.push(
 					Decoration.inline(selectionFrom, selectionTo, {
-						class: `collab-selection ${formattedDataId}`,
-						style: `background-color: ${data.backgroundColor ||
+						class: `cursor-range ${formattedDataId}`,
+						style: `background-color: ${cursor.backgroundColor ||
 							'rgba(0, 25, 150, 0.2)'};`,
 					}),
 				);
 			}
 			return null;
 		});
+
+		/* Add discussion decorations */
+		discussionKeys.forEach((discussionId) => {
+			const discussion = this.discussions[discussionId];
+			if (!discussion) {
+				return null;
+			}
+
+			decorations.push(
+				Decoration.inline(discussion.selection.from, discussion.selection.to, {
+					class: `discussion-range d-${discussionId}`,
+					style: `background-color: ${'rgba(50, 25, 50, 0.2)'};`,
+				}),
+			);
+			return null;
+		});
+
 		return DecorationSet.create(
 			state.doc,
 			decorations.filter((dec) => {
