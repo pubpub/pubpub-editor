@@ -10,7 +10,7 @@ import {
 import { Step, Mapping } from 'prosemirror-transform';
 import { defaultNodes, defaultMarks } from './schemas';
 
-const TIMESTAMP = { '.sv': 'timestamp' };
+export const firebaseTimestamp = { '.sv': 'timestamp' };
 
 export const docIsEmpty = (doc) => {
 	return (
@@ -421,6 +421,6 @@ export const storeCheckpoint = (firebaseRef, docNode, keyNumber) => {
 	return firebaseRef.child('checkpoint').set({
 		d: compressStateJSON({ doc: docNode.toJSON() }).d,
 		k: keyNumber,
-		t: TIMESTAMP,
+		t: firebaseTimestamp,
 	});
 };

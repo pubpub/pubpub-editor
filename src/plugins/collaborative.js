@@ -10,10 +10,12 @@ import {
 	uncompressSelectionJSON,
 	uncompressStepJSON,
 } from 'prosemirror-compress-pubpub';
-import { generateHash, restoreDiscussionMaps, storeCheckpoint } from '../utilities';
-
-const TIMESTAMP = { '.sv': 'timestamp' };
-const SAVE_EVERY_N_STEPS = 100;
+import {
+	generateHash,
+	restoreDiscussionMaps,
+	storeCheckpoint,
+	firebaseTimestamp,
+} from '../utilities';
 
 /*
 	Load doc from firebase
@@ -316,7 +318,7 @@ class CollaborativePlugin extends Plugin {
 						}),
 						c: clientId,
 						m: meta,
-						t: TIMESTAMP,
+						t: firebaseTimestamp,
 					};
 				},
 				(error, committed, snapshot) => {
@@ -329,8 +331,9 @@ class CollaborativePlugin extends Plugin {
 					if (committed) {
 						this.pluginProps.onStatusChange('saved');
 
-						/* If multiple of SAVE_EVERY_N_STEPS, update checkpoint */
-						if (snapshot.key % SAVE_EVERY_N_STEPS === 0) {
+						/* If multiple of saveEveryNSteps, update checkpoint */
+						const saveEveryNSteps = 100;
+						if (snapshot.key % saveEveryNSteps === 0) {
 							storeCheckpoint(
 								this.pluginProps.firebaseRef,
 								newState.doc,
