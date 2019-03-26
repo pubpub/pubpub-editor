@@ -5,9 +5,12 @@ import {
 	uncompressSelectionJSON,
 	uncompressStateJSON,
 	uncompressStepJSON,
+	compressStateJSON,
 } from 'prosemirror-compress-pubpub';
 import { Step, Mapping } from 'prosemirror-transform';
 import { defaultNodes, defaultMarks } from './schemas';
+
+const TIMESTAMP = { '.sv': 'timestamp' };
 
 export const docIsEmpty = (doc) => {
 	return (
@@ -412,4 +415,12 @@ export const restoreDiscussionMaps = (firebaseRef, schema, useMergeSteps) => {
 			});
 			return firebaseRef.child('discussions').set(restoredDiscussions);
 		});
+};
+
+export const storeCheckpoint = (firebaseRef, docNode, keyNumber) => {
+	return firebaseRef.child('checkpoint').set({
+		d: compressStateJSON({ doc: docNode.toJSON() }).d,
+		k: keyNumber,
+		t: TIMESTAMP,
+	});
 };

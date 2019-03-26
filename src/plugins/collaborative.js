@@ -10,7 +10,7 @@ import {
 	uncompressSelectionJSON,
 	uncompressStepJSON,
 } from 'prosemirror-compress-pubpub';
-import { generateHash, restoreDiscussionMaps } from '../utilities';
+import { generateHash, restoreDiscussionMaps, storeCheckpoint } from '../utilities';
 
 const TIMESTAMP = { '.sv': 'timestamp' };
 const SAVE_EVERY_N_STEPS = 100;
@@ -200,6 +200,7 @@ class CollaborativePlugin extends Plugin {
 					}),
 				);
 
+				// storeCheckpoint(this.pluginProps.firebaseRef, newDoc, this.mostRecentRemoteKey);
 				const trans = receiveTransaction(this.view.state, steps, stepClientIds);
 				this.view.dispatch(trans);
 
@@ -330,11 +331,11 @@ class CollaborativePlugin extends Plugin {
 
 						/* If multiple of SAVE_EVERY_N_STEPS, update checkpoint */
 						if (snapshot.key % SAVE_EVERY_N_STEPS === 0) {
-							this.pluginProps.firebaseRef.child('checkpoint').set({
-								d: compressStateJSON(newState.toJSON()).d,
-								k: snapshot.key,
-								t: TIMESTAMP,
-							});
+							storeCheckpoint(
+								this.pluginProps.firebaseRef,
+								newState.doc,
+								snapshot.key,
+							);
 						}
 						/* Update discussion mappings here */
 						// TODO
