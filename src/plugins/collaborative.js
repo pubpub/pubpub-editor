@@ -1,3 +1,5 @@
+// import React from 'react';
+// import ReactDOM from 'react-dom';
 import { AllSelection, EditorState, Plugin, Selection, PluginKey } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 import { collab, receiveTransaction, sendableSteps } from 'prosemirror-collab';
@@ -635,7 +637,21 @@ class CollaborativePlugin extends Plugin {
 			// }
 
 			/* Classnames must begin with letter, so append one single uuid's may not. */
+			// console.time('render');
+			// const formattedDataId = `c-${cursor.id}`;
+			// const CursorElem = () => (
+			// 	<span className={`collab-cursor ${formattedDataId}`}>
+			// 		<span className="inner-bar">OK</span>
+			// 	</span>
+			// );
+			// const rootElem = document.createElement('span');
+			// ReactDOM.render(<CursorElem />, rootElem);
+			// console.timeEnd('render');
+			// console.log(rootElem);
+
+			/* Classnames must begin with letter, so append one single uuid's may not. */
 			const formattedDataId = `c-${cursor.id}`;
+			// console.time('redner2');
 			const elem = document.createElement('span');
 			elem.className = `collab-cursor ${formattedDataId}`;
 
@@ -709,7 +725,7 @@ class CollaborativePlugin extends Plugin {
 				} !important; } `;
 			}
 			style.innerHTML = innerStyle;
-
+			// console.timeEnd('redner2');
 			const selectionFrom = cursor.selection.from;
 			const selectionTo = cursor.selection.to;
 			const selectionHead = cursor.selection.head;
