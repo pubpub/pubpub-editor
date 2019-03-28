@@ -6,6 +6,7 @@ import buildKeymap from './keymap';
 import buildHeaderIds from './headerIds';
 import buildPlaceholder from './placeholder';
 import buildHighlights from './highlights';
+import buildLocalHighlights from './localHighlights';
 import buildTable from './table';
 import buildCollaborative from './collaborative';
 import buildCitation from './citation';
@@ -35,4 +36,5 @@ export const optionalPlugins = {
 	headerIds: buildHeaderIds,
 	placeholder: buildPlaceholder,
 	highlights: buildHighlights,
+	localHighlights: buildLocalHighlights,
 };

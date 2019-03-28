@@ -4,12 +4,17 @@ import { storiesOf } from '@storybook/react';
 import Editor from '../src/index';
 import { editorWrapperStyle, initFirebase, clientData } from './_utilities';
 import initialContent from './initialDocs/fullDoc';
-import { getDiscussionData } from '../src/utilities';
+import {
+	setLocalHighlight,
+	removeLocalHighlight,
+	convertLocalHighlightToDiscussion,
+} from '../src/utilities';
 
 const rootKey = 'pub-bacc95b3-d73f-4a36-8e4f-13d1438999d9';
 const branchKey = 'branch-f4bf24f7-6184-4f5f-b2d3-2b9d2563cb62';
 const firebaseRootRef = initFirebase(rootKey, '');
 const firebaseBranchRef = firebaseRootRef.child(branchKey);
+const newDiscussionId = String(Math.floor(Math.random() * 999999));
 
 storiesOf('Editor', module)
 	.add('default', () => (
@@ -74,7 +79,7 @@ storiesOf('Editor', module)
 			const [changeObject, updatechangeObject] = useState({});
 			return (
 				<div style={editorWrapperStyle}>
-					<button
+					{/* <button
 						type="button"
 						onClick={() => {
 							firebaseBranchRef
@@ -84,12 +89,48 @@ storiesOf('Editor', module)
 						}}
 					>
 						New
+					</button> */}
+					<button
+						type="button"
+						onClick={() => {
+							setLocalHighlight(
+								changeObject.view,
+								changeObject.view.state.selection.from,
+								changeObject.view.state.selection.to,
+								newDiscussionId,
+							);
+						}}
+					>
+						New Local Highlight
 					</button>
+					<button
+						type="button"
+						onClick={() => {
+							removeLocalHighlight(changeObject.view, newDiscussionId);
+						}}
+					>
+						Remove Local Highlight
+					</button>
+					<button
+						type="button"
+						onClick={() => {
+							console.log(
+								convertLocalHighlightToDiscussion(
+									changeObject.view,
+									newDiscussionId,
+									firebaseBranchRef,
+								),
+							);
+						}}
+					>
+						Convert Highlight to Discussion
+					</button>
+
 					<Editor
 						key={firebaseBranchRef ? 'ready' : 'unready'}
 						placeholder="Begin writing..."
 						onChange={(evt) => {
-							// console.log(evt.view.state);
+							console.log(evt.view.state);
 							updatechangeObject(evt);
 						}}
 						collaborativeOptions={{

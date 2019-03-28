@@ -256,18 +256,6 @@ export const generateHash = (length) => {
 	return hash;
 };
 
-export const getDiscussionData = (editorView) => {
-	const newSelection = compressSelectionJSON(editorView.state.selection.toJSON());
-	const remoteKey = editorView.state.collaborative$.mostRecentRemoteKey;
-	return {
-		currentKey: remoteKey,
-		initAnchor: newSelection.a,
-		initHead: newSelection.h,
-		initKey: remoteKey,
-		selection: newSelection,
-	};
-};
-
 export const restoreDiscussionMaps = (firebaseRef, schema, useMergeSteps) => {
 	/* This function looks at all the discussions and ensures */
 	/* they have been mapped through all necessary steps */
@@ -423,4 +411,62 @@ export const storeCheckpoint = (firebaseRef, docNode, keyNumber) => {
 		k: keyNumber,
 		t: firebaseTimestamp,
 	});
+};
+
+export const formatDiscussionData = (editorView, from, to) => {
+	const collabPlugin = editorView.state.collaborative$ || {};
+	const remoteKey = collabPlugin.mostRecentRemoteKey;
+	return {
+		currentKey: remoteKey,
+		initAnchor: from,
+		initHead: to,
+		initKey: remoteKey,
+		selection: {
+			a: from,
+			h: to,
+			type: 'text',
+		},
+	};
+};
+
+export const setLocalHighlight = (editorView, from, to, id) => {
+	const transaction = editorView.state.tr;
+	transaction.setMeta('localHighlights', true);
+	transaction.setMeta('newLocalHighlightData', [
+		{
+			from: from,
+			to: to,
+			id: id,
+		},
+	]);
+	editorView.dispatch(transaction);
+};
+
+export const removeLocalHighlight = (editorView, id) => {
+	const transaction = editorView.state.tr;
+	transaction.setMeta('localHighlights', true);
+	transaction.setMeta('localHighlightIdToRemove', id);
+	editorView.dispatch(transaction);
+};
+
+export const convertLocalHighlightToDiscussion = (editorView, id, firebaseRef) => {
+	const localHighlight = editorView.state.localHighlights$.activeDecorationSet
+		.find()
+		.reduce((prev, curr) => {
+			const decorationId = curr.type.attrs.class.replace('local-highlight lh-', '');
+			if (decorationId === id) {
+				return curr;
+			}
+			return prev;
+		}, {});
+	const newDiscussionData = formatDiscussionData(
+		editorView,
+		localHighlight.from,
+		localHighlight.to,
+	);
+	firebaseRef
+		.child('discussions')
+		.child(id)
+		.set(newDiscussionData);
+	removeLocalHighlight(editorView, id);
 };

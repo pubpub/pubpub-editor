@@ -274,7 +274,8 @@ class CollaborativePlugin extends Plugin {
 			meta.footnote ||
 			meta.highlightsToRemove ||
 			meta.newHighlightsData ||
-			meta.appendedTransaction
+			meta.appendedTransaction ||
+			meta.localHighlights
 		) {
 			return null;
 		}
@@ -395,7 +396,7 @@ class CollaborativePlugin extends Plugin {
 	apply(transaction, state, prevEditorState, editorState) {
 		/* Remove Stale Cursors */
 		Object.keys(this.cursors).forEach((clientId) => {
-			const originalClientData = this.cursors[clientId];
+			const originalClientData = this.cursors[clientId] || {};
 			const expirationTime = 1000 * 60 * 5; /* 5 minutes */
 			const lastActiveExpired =
 				originalClientData.lastActive + expirationTime < new Date().getTime();
