@@ -771,7 +771,7 @@ class CollaborativePlugin extends Plugin {
 						stopEvent: () => {
 							return true;
 						},
-						key: discussionId,
+						key: `dm-${discussionId}`,
 						marks: [],
 					}),
 				);
