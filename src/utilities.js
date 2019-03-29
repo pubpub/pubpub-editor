@@ -452,6 +452,9 @@ export const removeLocalHighlight = (editorView, id) => {
 export const convertLocalHighlightToDiscussion = (editorView, id, firebaseRef) => {
 	const localHighlight = editorView.state.localHighlights$.activeDecorationSet
 		.find()
+		.filter((decoration) => {
+			return decoration.type.attrs && decoration.type.attrs.class;
+		})
 		.reduce((prev, curr) => {
 			const decorationId = curr.type.attrs.class.replace('local-highlight lh-', '');
 			if (decorationId === id) {

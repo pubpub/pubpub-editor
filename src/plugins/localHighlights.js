@@ -15,13 +15,18 @@ export default () => {
 			apply: (transaction, pluginState, prevEditorState, editorState) => {
 				const prevDecorationSet = pluginState.activeDecorationSet;
 
-				const decorationsToRemove = prevDecorationSet.find().filter((decoration) => {
-					const decorationId = decoration.type.attrs.class.replace(
-						'local-highlight lh-',
-						'',
-					);
-					return decorationId === transaction.meta.localHighlightIdToRemove;
-				});
+				const decorationsToRemove = prevDecorationSet
+					.find()
+					.filter((decoration) => {
+						return decoration.type.attrs && decoration.type.attrs.class;
+					})
+					.filter((decoration) => {
+						const decorationId = decoration.type.attrs.class.replace(
+							'local-highlight lh-',
+							'',
+						);
+						return decorationId === transaction.meta.localHighlightIdToRemove;
+					});
 
 				const mappedDecorationSet = prevDecorationSet
 					.remove(decorationsToRemove)
@@ -39,8 +44,24 @@ export default () => {
 					});
 				});
 
+				const newDecorationWidgets = newHighlightsData.map((highlightData) => {
+					const highlightTo = Number(highlightData.to);
+					const elem = document.createElement('span');
+					elem.className = `discussion-mount dm-${highlightData.id}`;
+
+					return Decoration.widget(highlightTo, elem, {
+						stopEvent: () => {
+							return true;
+						},
+						key: highlightData.id,
+					});
+				});
+
 				return {
-					activeDecorationSet: mappedDecorationSet.add(editorState.doc, newDecorations),
+					activeDecorationSet: mappedDecorationSet.add(editorState.doc, [
+						...newDecorations,
+						...newDecorationWidgets,
+					]),
 				};
 			},
 		},

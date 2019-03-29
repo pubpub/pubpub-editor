@@ -754,17 +754,28 @@ class CollaborativePlugin extends Plugin {
 		/* Add discussion decorations */
 		discussionKeys.forEach((discussionId) => {
 			const discussion = this.discussions[discussionId];
-			if (!discussion) {
-				return null;
-			}
+			if (discussion) {
+				decorations.push(
+					Decoration.inline(discussion.selection.from, discussion.selection.to, {
+						class: `discussion-range d-${discussionId}`,
+						style: `background-color: ${'rgba(50, 25, 50, 0.2)'};`,
+					}),
+				);
 
-			decorations.push(
-				Decoration.inline(discussion.selection.from, discussion.selection.to, {
-					class: `discussion-range d-${discussionId}`,
-					style: `background-color: ${'rgba(50, 25, 50, 0.2)'};`,
-				}),
-			);
-			return null;
+				const highlightTo = discussion.selection.to;
+				const elem = document.createElement('span');
+				elem.className = `discussion-mount dm-${discussionId}`;
+
+				decorations.push(
+					Decoration.widget(highlightTo, elem, {
+						stopEvent: () => {
+							return true;
+						},
+						key: discussionId,
+						marks: [],
+					}),
+				);
+			}
 		});
 
 		return DecorationSet.create(
@@ -775,13 +786,3 @@ class CollaborativePlugin extends Plugin {
 		);
 	}
 }
-
-/* Set user status and watch for status changes */
-/* TODO - do we pass in the database instead? Or handle this disconnect from above? */
-// this.database.ref('.info/connected').on('value', (snapshot) => {
-// 	if (snapshot.val() === true) {
-// 		this.pluginProps.onStatusChange('connected');
-// 	} else {
-// 		this.pluginProps.onStatusChange('disconnected');
-// 	}
-// });
