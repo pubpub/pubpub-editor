@@ -151,6 +151,12 @@ class Editor extends Component {
 				}),
 				handleClickOn: this.props.handleSingleClick,
 				handleDoubleClickOn: this.props.handleDoubleClick,
+				handleDOMEvents: {
+					blur: (view) => {
+						/* Issue empty transaction on blur to trigger onChange */
+						view.dispatch(view.state.tr);
+					},
+				},
 			},
 		);
 
