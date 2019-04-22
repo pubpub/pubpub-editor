@@ -61,8 +61,9 @@ export const renderStatic = (schema = buildSchema(), nodeArray, editorProps) => 
 		}
 		if (node.type === 'text') {
 			const marks = node.marks || [];
-			children = marks.reduce((prev, curr) => {
-				const MarkComponent = schema.marks[curr.type].spec.toStatic(curr, prev);
+			children = marks.reduce((prev, curr, markIndex) => {
+				const currIndex = `${index}-${markIndex}`;
+				const MarkComponent = schema.marks[curr.type].spec.toStatic(curr, prev, currIndex);
 				return MarkComponent;
 			}, node.text);
 		}
