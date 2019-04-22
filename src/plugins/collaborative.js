@@ -758,7 +758,7 @@ class CollaborativePlugin extends Plugin {
 				decorations.push(
 					Decoration.inline(discussion.selection.from, discussion.selection.to, {
 						class: `discussion-range d-${discussionId}`,
-						style: `background-color: ${'rgba(50, 25, 50, 0.2)'};`,
+						// style: `background-color: ${'rgba(50, 25, 50, 0.2)'};`,
 					}),
 				);
 
