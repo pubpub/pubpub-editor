@@ -14,7 +14,10 @@ const propTypes = {
 const FootnoteList = (props) => {
 	const attrs = props.attrs;
 	return (
-		<ol className={`footnote-list-wrapper ${props.isSelected ? 'isSelected' : ''}`}>
+		<ol
+			className={`footnote-list-wrapper ${props.isSelected ? 'isSelected' : ''}`}
+			tabIndex={-1}
+		>
 			{attrs.listItems.map((item) => {
 				return (
 					<li key={`footnote-list-item-${item.count}`} className="footnote-list-item">

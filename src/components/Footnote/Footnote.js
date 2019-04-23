@@ -15,7 +15,7 @@ const Footnote = (props) => {
 	const attrs = props.attrs;
 
 	return (
-		<div className="footnote-wrapper">
+		<div className="footnote-wrapper" tabIndex={-1}>
 			<span className={`count-wrapper ${props.isSelected ? 'isSelected' : ''}`}>
 				<sup className="footnote">{attrs.count}</sup>
 			</span>

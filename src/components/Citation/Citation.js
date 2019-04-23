@@ -15,7 +15,7 @@ const Citation = (props) => {
 	const attrs = props.attrs;
 
 	return (
-		<div className="citation-wrapper">
+		<div className="citation-wrapper" tabIndex={-1}>
 			<span className={`count-wrapper ${props.isSelected ? 'isSelected' : ''}`}>
 				<span className="citation">[{attrs.count}]</span>
 			</span>
