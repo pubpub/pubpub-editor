@@ -1,5 +1,3 @@
-// import React from 'react';
-// import ReactDOM from 'react-dom';
 import { AllSelection, EditorState, Plugin, Selection, PluginKey } from 'prosemirror-state';
 import { Decoration, DecorationSet } from 'prosemirror-view';
 import { collab, receiveTransaction, sendableSteps } from 'prosemirror-collab';
@@ -96,7 +94,6 @@ export default (schema, props) => {
 			initialDocKey: collabOptions.initialDocKey,
 			localClientData: collabOptions.clientData,
 			localClientId: localClientId,
-			// onClientChange: collabOptions.onClientChange || function() {},
 			onStatusChange: collabOptions.onStatusChange || function() {},
 		}),
 	];
@@ -113,7 +110,6 @@ class CollaborativePlugin extends Plugin {
 		this.loadDocument = this.loadDocument.bind(this);
 		this.receiveCollabChanges = this.receiveCollabChanges.bind(this);
 		this.sendCollabChanges = this.sendCollabChanges.bind(this);
-		this.issueEmptyTransaction = this.issueEmptyTransaction.bind(this);
 		this.issueDecoTransaction = this.issueDecoTransaction.bind(this);
 		this.setResendTimeout = this.setResendTimeout.bind(this);
 		this.generateCursorDecorations = this.generateCursorDecorations.bind(this);
@@ -545,10 +541,6 @@ class CollaborativePlugin extends Plugin {
 						console.error('Discussions Sync Failed', err);
 					});
 			});
-	}
-
-	issueEmptyTransaction() {
-		this.view.dispatch(this.view.state.tr);
 	}
 
 	issueDecoTransaction(metaType) {
