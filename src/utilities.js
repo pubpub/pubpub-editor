@@ -188,24 +188,32 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 				.startAt(String(mostRecentRemoteKey + 1))
 				.endAt(String(versionNumber))
 				.once('value');
+			const getMerges = firebaseRef
+				.child('merges')
+				.orderByKey()
+				.startAt(String(mostRecentRemoteKey + 1))
+				.endAt(String(versionNumber))
+				.once('value');
 
-			return Promise.all([newDoc, getChanges]);
+			return Promise.all([newDoc, getChanges, getMerges]);
 		})
-		.then(([newDoc, changesSnapshot]) => {
+		.then(([newDoc, changesSnapshot, mergesSnapshot]) => {
 			const changesSnapshotVal = changesSnapshot.val() || {};
+			const mergesSnapshotVal = mergesSnapshot.val() || {};
+			const allKeyables = { ...changesSnapshotVal, ...mergesSnapshotVal };
 			const steps = [];
 			const stepClientIds = [];
-			const keys = Object.keys(changesSnapshotVal);
+			const keys = Object.keys(allKeyables);
 			mostRecentRemoteKey = keys.length ? Math.max(...keys) : mostRecentRemoteKey;
 
 			/* flattenedMergeStepArray is an array of { steps, client, time } values */
 			/* It flattens the case where we have a merge-object which is an array of */
 			/* { steps, client, time } values. */
-			const flattenedMergeStepArray = Object.keys(changesSnapshotVal).reduce((prev, curr) => {
-				if (Array.isArray(changesSnapshotVal[curr])) {
-					return [...prev, ...changesSnapshotVal[curr]];
+			const flattenedMergeStepArray = Object.keys(allKeyables).reduce((prev, curr) => {
+				if (Array.isArray(allKeyables[curr])) {
+					return [...prev, ...allKeyables[curr]];
 				}
-				return [...prev, changesSnapshotVal[curr]];
+				return [...prev, allKeyables[curr]];
 			}, []);
 
 			/* Uncompress steps and add stepClientIds */
