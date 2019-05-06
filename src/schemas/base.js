@@ -212,7 +212,7 @@ export const baseNodes = {
 		content: 'text*',
 		group: 'block',
 		code: true,
-		parseDOM: [{ tag: 'pre', preserveWhitespace: true }],
+		parseDOM: [{ tag: 'pre', preserveWhitespace: 'full' }],
 		toDOM: () => {
 			return ['pre', ['code', 0]];
 		},
