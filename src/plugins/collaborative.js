@@ -95,6 +95,7 @@ export default (schema, props) => {
 			localClientData: collabOptions.clientData,
 			localClientId: localClientId,
 			onStatusChange: collabOptions.onStatusChange || function() {},
+			onUpdateLatestKey: collabOptions.onUpdateLatestKey || function() {},
 		}),
 	];
 };
@@ -201,6 +202,8 @@ class CollaborativePlugin extends Plugin {
 					}),
 				);
 
+				this.pluginProps.onUpdateLatestKey(this.mostRecentRemoteKey);
+
 				// storeCheckpoint(this.pluginProps.firebaseRef, newDoc, this.mostRecentRemoteKey);
 				const trans = receiveTransaction(this.view.state, steps, stepClientIds);
 				this.view.dispatch(trans);
@@ -244,7 +247,6 @@ class CollaborativePlugin extends Plugin {
 		const compressedStepsJSON = snapshotVal.s;
 		const clientId = snapshotVal.c;
 		const meta = snapshotVal.m;
-
 		const newSteps = compressedStepsJSON.map((compressedStepJSON) => {
 			return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
 		});
@@ -256,7 +258,7 @@ class CollaborativePlugin extends Plugin {
 				trans.setMeta(metaKey, meta[metaKey]);
 			});
 		}
-
+		this.pluginProps.onUpdateLatestKey(this.mostRecentRemoteKey);
 		return this.view.dispatch(trans);
 	}
 
