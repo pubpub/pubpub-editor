@@ -216,6 +216,11 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 				return [...prev, allKeyables[curr]];
 			}, []);
 
+			const timestamp =
+				flattenedMergeStepArray.length > 0
+					? flattenedMergeStepArray[flattenedMergeStepArray.length - 1].t
+					: null;
+
 			/* Uncompress steps and add stepClientIds */
 			flattenedMergeStepArray.forEach((stepContent) => {
 				const compressedStepsJSON = stepContent.s;
@@ -247,6 +252,7 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 			return {
 				content: updatedDoc.toJSON(),
 				mostRecentRemoteKey: mostRecentRemoteKey,
+				timestamp: timestamp,
 			};
 		})
 		.catch((firebaseErr) => {
