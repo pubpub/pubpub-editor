@@ -194,10 +194,20 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 				.startAt(String(mostRecentRemoteKey + 1))
 				.endAt(String(versionNumber))
 				.once('value');
+			const getLatestChange = firebaseRef
+				.child('changes')
+				.orderByKey()
+				.limitToLast(1)
+				.once('value');
+			const getLatestMerge = firebaseRef
+				.child('merges')
+				.orderByKey()
+				.limitToLast(1)
+				.once('value');
 
-			return Promise.all([newDoc, getChanges, getMerges]);
+			return Promise.all([newDoc, getChanges, getMerges, getLatestChange, getLatestMerge]);
 		})
-		.then(([newDoc, changesSnapshot, mergesSnapshot]) => {
+		.then(([newDoc, changesSnapshot, mergesSnapshot, latestChange, latestMerge]) => {
 			const changesSnapshotVal = changesSnapshot.val() || {};
 			const mergesSnapshotVal = mergesSnapshot.val() || {};
 			const allKeyables = { ...changesSnapshotVal, ...mergesSnapshotVal };
@@ -205,6 +215,11 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 			const stepClientIds = [];
 			const keys = Object.keys(allKeyables);
 			mostRecentRemoteKey = keys.length ? Math.max(...keys) : mostRecentRemoteKey;
+
+			const latestKey = Math.max(
+				Math.max(...Object.keys(latestChange.val() || {})),
+				Math.max(...Object.keys(latestMerge.val() || {})),
+			);
 
 			/* flattenedMergeStepArray is an array of { steps, client, time } values */
 			/* It flattens the case where we have a merge-object which is an array of */
@@ -252,7 +267,13 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 			return {
 				content: updatedDoc.toJSON(),
 				mostRecentRemoteKey: mostRecentRemoteKey,
-				timestamp: timestamp,
+				historyData: {
+					timestamps: {
+						[versionNumber]: timestamp,
+					},
+					currentKey: Number(versionNumber) || latestKey,
+					latestKey: latestKey,
+				},
 			};
 		})
 		.catch((firebaseErr) => {
