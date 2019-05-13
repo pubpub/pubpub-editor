@@ -216,10 +216,12 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 			const keys = Object.keys(allKeyables);
 			mostRecentRemoteKey = keys.length ? Math.max(...keys) : mostRecentRemoteKey;
 
-			const latestKey = Math.max(
-				Math.max(...Object.keys(latestChange.val() || {})),
-				Math.max(...Object.keys(latestMerge.val() || {})),
-			);
+			const latestKey = Object.keys({
+				...latestChange.val(),
+				...latestMerge.val(),
+			})
+				.map((key) => parseInt(key, 10))
+				.reduce((max, next) => Math.max(max, next), 0);
 
 			/* flattenedMergeStepArray is an array of { steps, client, time } values */
 			/* It flattens the case where we have a merge-object which is an array of */
