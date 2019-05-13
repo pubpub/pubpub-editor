@@ -244,7 +244,9 @@ class CollaborativePlugin extends Plugin {
 	receiveCollabChanges(snapshot) {
 		this.mostRecentRemoteKey = Number(snapshot.key);
 		const snapshotVal = snapshot.val();
-		const { s: compressedStepsJSON, c: clientId, m: meta } = snapshotVal;
+		const compressedStepsJSON = snapshotVal.s;
+		const clientId = snapshotVal.c;
+		const meta = snapshotVal.m;
 		const newSteps = compressedStepsJSON.map((compressedStepJSON) => {
 			return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
 		});

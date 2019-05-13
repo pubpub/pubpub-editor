@@ -231,7 +231,7 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 				return [...prev, allKeyables[curr]];
 			}, []);
 
-			const timestamp =
+			const latestTimestamp =
 				flattenedMergeStepArray.length > 0
 					? flattenedMergeStepArray[flattenedMergeStepArray.length - 1].t
 					: null;
@@ -269,7 +269,7 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 				mostRecentRemoteKey: mostRecentRemoteKey,
 				historyData: {
 					timestamps: {
-						[versionNumber]: timestamp,
+						[versionNumber]: latestTimestamp,
 					},
 					currentKey: Number(versionNumber) || latestKey,
 					latestKey: latestKey,
