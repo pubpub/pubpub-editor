@@ -139,6 +139,14 @@ export const marksAtSelection = (editorView) => {
 	});
 };
 
+const flattenMergeStepArray = (keyables) =>
+	Object.keys(keyables).reduce((prev, curr) => {
+		if (Array.isArray(keyables[curr])) {
+			return [...prev, ...keyables[curr]];
+		}
+		return [...prev, keyables[curr]];
+	}, []);
+
 export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 	let mostRecentRemoteKey;
 	return firebaseRef
@@ -198,12 +206,20 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 			const keys = Object.keys(allKeyables);
 			mostRecentRemoteKey = keys.length ? Math.max(...keys) : mostRecentRemoteKey;
 
-			const latestKey = Object.keys({
+			const latestUpdates = {
 				...latestChange.val(),
 				...latestMerge.val(),
-			})
+			};
+			const latestKey = Object.keys(latestUpdates)
 				.map((key) => parseInt(key, 10))
 				.reduce((max, next) => Math.max(max, next), 0);
+
+			const latestUpdateWrapped = latestUpdates[latestKey];
+			const latestUpdate = Array.isArray(latestUpdateWrapped)
+				? latestUpdateWrapped[latestUpdateWrapped.length - 1]
+				: latestUpdateWrapped;
+
+			const latestTimestamp = latestUpdate && latestUpdate.t;
 
 			/* flattenedMergeStepArray is an array of { steps, client, time } values */
 			/* It flattens the case where we have a merge-object which is an array of */
@@ -215,7 +231,7 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 				return [...prev, allKeyables[curr]];
 			}, []);
 
-			const latestTimestamp =
+			const currentTimestamp =
 				flattenedMergeStepArray.length > 0
 					? flattenedMergeStepArray[flattenedMergeStepArray.length - 1].t
 					: null;
@@ -254,7 +270,8 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 				mostRecentRemoteKey: mostRecentRemoteKey,
 				historyData: {
 					timestamps: {
-						[currentKey]: latestTimestamp,
+						[currentKey]: currentTimestamp,
+						[latestKey]: latestTimestamp,
 					},
 					currentKey: currentKey,
 					latestKey: latestKey,
