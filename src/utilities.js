@@ -248,14 +248,15 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 				}
 				return stepResult.doc;
 			}, newDoc);
+			const currentKey = Number(versionNumber || latestKey);
 			return {
 				content: updatedDoc.toJSON(),
 				mostRecentRemoteKey: mostRecentRemoteKey,
 				historyData: {
 					timestamps: {
-						[versionNumber]: latestTimestamp,
+						[currentKey]: latestTimestamp,
 					},
-					currentKey: Number(versionNumber) || latestKey,
+					currentKey: currentKey,
 					latestKey: latestKey,
 				},
 			};
