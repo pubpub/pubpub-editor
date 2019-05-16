@@ -140,12 +140,44 @@ export const marksAtSelection = (editorView) => {
 };
 
 const flattenMergeStepArray = (keyables) =>
+	/* flattenedMergeStepArray is an array of { steps, client, time } values */
+	/* It flattens the case where we have a merge-object which is an array of */
+	/* { steps, client, time } values. */
 	Object.keys(keyables).reduce((prev, curr) => {
 		if (Array.isArray(keyables[curr])) {
 			return [...prev, ...keyables[curr]];
 		}
 		return [...prev, keyables[curr]];
 	}, []);
+
+export const createBranch = (baseFirebaseRef, newFirebaseRef, versionNumber) => {
+	const getChanges = baseFirebaseRef
+		.child('changes')
+		.orderByKey()
+		.startAt(String(1))
+		.endAt(String(versionNumber))
+		.once('value');
+	const getMerges = baseFirebaseRef
+		.child('merges')
+		.orderByKey()
+		.startAt(String(1))
+		.endAt(String(versionNumber))
+		.once('value');
+	return Promise.all([getChanges, getMerges])
+		.then((changesSnapshot, mergesSnapshot) => {
+			const changesSnapshotVal = changesSnapshot.val() || {};
+			const mergesSnapshotVal = mergesSnapshot.val() || {};
+			const allKeyables = { ...changesSnapshotVal, ...mergesSnapshotVal };
+			const flattenedMergeStepArray = flattenMergeStepArray(allKeyables);
+			newFirebaseRef.set({
+				lastMergeKey: 1,
+				merges: { 1: flattenedMergeStepArray },
+			});
+		})
+		.catch((err) => {
+			console.error('Error creating firebase branch', err);
+		});
+};
 
 export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 	let mostRecentRemoteKey;
@@ -221,15 +253,7 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 
 			const latestTimestamp = latestUpdate && latestUpdate.t;
 
-			/* flattenedMergeStepArray is an array of { steps, client, time } values */
-			/* It flattens the case where we have a merge-object which is an array of */
-			/* { steps, client, time } values. */
-			const flattenedMergeStepArray = Object.keys(allKeyables).reduce((prev, curr) => {
-				if (Array.isArray(allKeyables[curr])) {
-					return [...prev, ...allKeyables[curr]];
-				}
-				return [...prev, allKeyables[curr]];
-			}, []);
+			const flattenedMergeStepArray = flattenMergeStepArray(allKeyables);
 
 			const currentTimestamp =
 				flattenedMergeStepArray.length > 0
