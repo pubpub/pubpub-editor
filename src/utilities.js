@@ -163,20 +163,16 @@ export const createBranch = (baseFirebaseRef, newFirebaseRef, versionNumber) => 
 		.startAt(String(1))
 		.endAt(String(versionNumber))
 		.once('value');
-	return Promise.all([getChanges, getMerges])
-		.then((changesSnapshot, mergesSnapshot) => {
-			const changesSnapshotVal = changesSnapshot.val() || {};
-			const mergesSnapshotVal = mergesSnapshot.val() || {};
-			const allKeyables = { ...changesSnapshotVal, ...mergesSnapshotVal };
-			const flattenedMergeStepArray = flattenMergeStepArray(allKeyables);
-			newFirebaseRef.set({
-				lastMergeKey: 1,
-				merges: { 1: flattenedMergeStepArray },
-			});
-		})
-		.catch((err) => {
-			console.error('Error creating firebase branch', err);
+	return Promise.all([getChanges, getMerges]).then(([changesSnapshot, mergesSnapshot]) => {
+		const changesSnapshotVal = changesSnapshot.val() || {};
+		const mergesSnapshotVal = mergesSnapshot.val() || {};
+		const allKeyables = { ...changesSnapshotVal, ...mergesSnapshotVal };
+		const flattenedMergeStepArray = flattenMergeStepArray(allKeyables);
+		return newFirebaseRef.set({
+			lastMergeKey: 1,
+			merges: { 1: flattenedMergeStepArray },
 		});
+	});
 };
 
 export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
