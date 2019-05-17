@@ -51,6 +51,13 @@
 		text-align: left;
 		background-color: #F0F0F4;
 	}
+
+	.addition {
+		background: rgba(0, 255, 0, 0.2);
+	}
+	.deletion {
+		background: rgba(255, 0, 0, 0.2);
+	}
 }
 
 @import "./collab.scss";

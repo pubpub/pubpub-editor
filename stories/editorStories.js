@@ -9,6 +9,7 @@ import {
 	removeLocalHighlight,
 	convertLocalHighlightToDiscussion,
 } from '../src/utilities';
+import ChangesetDemo from './ChangesetDemo';
 
 const rootKey = 'pub-bacc95b3-d73f-4a36-8e4f-13d1438999d9';
 const branchKey = 'branch-f4bf24f7-6184-4f5f-b2d3-2b9d2563cb62';
@@ -186,4 +187,5 @@ storiesOf('Editor', module)
 			/>
 		</div>
 	))
-	.add('cursorUtilities', () => <CursorOptionsDemoPub />);
+	.add('cursorUtilities', () => <CursorOptionsDemoPub />)
+	.add('changeset', () => <ChangesetDemo />);
