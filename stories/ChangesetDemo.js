@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
-import { ChangeSet } from 'prosemirror-changeset';
-import { DOMSerializer } from 'prosemirror-model';
+import ReactDOM from 'react-dom';
+import { ChangeSet, simplifyChanges } from 'prosemirror-changeset';
 import { Plugin, PluginKey } from 'prosemirror-state';
 import { DecorationSet, Decoration } from 'prosemirror-view';
 
-import Editor, { buildSchema } from '../src/index';
+import Editor, { buildSchema, renderStatic } from '../src/index';
+import sampleDoc from './initialDocs/imageDoc';
 import emptyDoc from './initialDocs/emptyDoc';
 
 const editorSchema = buildSchema();
@@ -26,28 +27,58 @@ const createCaptureStepsPlugin = () =>
 		},
 	});
 
-const createChangesetPlugin = (changeset, oldDoc) =>
+const createChangesetPlugin = (changeset, oldDoc, newDoc) =>
 	new Plugin({
 		props: {
 			decorations: (state) => {
+				// const changes = simplifyChanges(changeset.changes, oldDoc);
 				const { changes } = changeset;
 				const doc = state.doc;
 				const decorations = changes.map((change) => {
 					const output = [];
 					if (change.inserted.length) {
-						output.push(
-							Decoration.inline(change.fromB, change.toB, {
-								class: 'addition',
-							}),
-						);
+						const slice = newDoc.slice(change.fromB, change.toB);
+						const { content: fragment } = slice;
+						fragment.forEach((child, offset) => {
+							const from = change.fromB + offset;
+							const to = from + child.nodeSize;
+							console.log(from, to, child);
+							if (child.isBlock && !child.isTextblock) {
+								output.push(Decoration.node(from, to, { class: 'addition' }));
+							} else {
+								output.push(Decoration.inline(from, to, { class: 'addition' }));
+								console.log(
+									'oh no',
+									child.textContent,
+									child.isBlock,
+									child.isTextBock,
+									child.isText,
+								);
+							}
+						});
 					}
 					if (change.deleted) {
 						const slice = oldDoc.slice(change.fromA, change.toA);
-						const elem = document.createElement('span');
-						const serializer = DOMSerializer.fromSchema(editorSchema);
-						elem.appendChild(serializer.serializeFragment(slice.content));
-						elem.className = 'deletion';
-						output.push(Decoration.widget(change.fromB, elem));
+						const { content: fragment } = slice;
+						let isBlockNode = false;
+						fragment.descendants((node) => {
+							if (node.isBlock) {
+								isBlockNode = true;
+								return false;
+							}
+							return null;
+						});
+						const elem = document.createElement(isBlockNode ? 'div' : 'span');
+						const serialized = fragment.toJSON();
+						if (fragment.size > 2) {
+							console.log('FRAGMENT', fragment);
+							if (serialized) {
+								const domFragment = renderStatic(editorSchema, serialized, {});
+								ReactDOM.render(domFragment, elem);
+							}
+							elem.className = 'deletion';
+							output.push(Decoration.widget(change.fromB, elem));
+						}
 					}
 					return output;
 				});
@@ -74,7 +105,7 @@ const ChangesetDemo = () => {
 	const [leftSteps, setLeftSteps] = useState([]);
 	const [rightSteps, setRightSteps] = useState([]);
 	// We need to use refs here because Prosemirror doesn't really obey the React model
-	const leftDoc = useRef(emptyDoc);
+	const leftDoc = useRef(sampleDoc);
 	const rightDoc = useRef(emptyDoc);
 
 	const forkDocument = () => {
@@ -114,10 +145,8 @@ const ChangesetDemo = () => {
 			<div
 				style={{
 					display: 'grid',
-					gridTemplateColumns: '1fr 1fr',
-					gridTemplateRows: '1fr 1fr',
+					gridTemplateColumns: 'repeat(3, 1fr)',
 					gridColumnGap: 40,
-					gridRowGap: 40,
 					height: '80vh',
 				}}
 			>
@@ -159,16 +188,6 @@ const ChangesetDemo = () => {
 						key={forkedAt}
 					/>
 				</div>
-				<div
-					style={{
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center',
-						background: '#DDD',
-					}}
-				>
-					(This space intentionally left blank)
-				</div>
 				<div style={{ opacity: isEditingRight ? 1 : 0.5, padding: 10 }}>
 					<Editor
 						placeholder="Diff from left to right"
@@ -177,9 +196,16 @@ const ChangesetDemo = () => {
 						onChange={() => {}}
 						key={rightSteps.length}
 						customPlugins={
-							changeset && {
-								changeset: () => createChangesetPlugin(changeset, leftDoc.current),
-							}
+							changeset
+								? {
+										changeset: () =>
+											createChangesetPlugin(
+												changeset,
+												leftDoc.current,
+												rightDoc.current,
+											),
+								  }
+								: {}
 						}
 					/>
 				</div>
