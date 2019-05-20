@@ -1,14 +1,17 @@
 import React, { useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
+import { Node, DOMSerializer } from 'prosemirror-model';
 import { ChangeSet, simplifyChanges } from 'prosemirror-changeset';
 import { Plugin, PluginKey } from 'prosemirror-state';
+import { Step } from 'prosemirror-transform';
 import { DecorationSet, Decoration } from 'prosemirror-view';
 
 import Editor, { buildSchema, renderStatic } from '../src/index';
-import sampleDoc from './initialDocs/imageDoc';
+import sampleDoc from './initialDocs/plainDoc';
 import emptyDoc from './initialDocs/emptyDoc';
 
 const editorSchema = buildSchema();
+const serializer = DOMSerializer.fromSchema(editorSchema);
 const captureStepsPluginKey = new PluginKey('captureSteps');
 
 const createCaptureStepsPlugin = () =>
@@ -19,10 +22,7 @@ const createCaptureStepsPlugin = () =>
 				return [];
 			},
 			apply: (transaction, value) => {
-				if (transaction.docChanged) {
-					return [...value, ...transaction.steps];
-				}
-				return value;
+				return [...value, ...transaction.steps];
 			},
 		},
 	});
@@ -33,56 +33,62 @@ const createChangesetPlugin = (changeset, oldDoc, newDoc) =>
 			decorations: (state) => {
 				// const changes = simplifyChanges(changeset.changes, oldDoc);
 				const { changes } = changeset;
+				console.log('CHANGES', changes);
 				const doc = state.doc;
 				const decorations = changes.map((change) => {
 					const output = [];
 					if (change.inserted.length) {
 						const slice = newDoc.slice(change.fromB, change.toB);
-						const { content: fragment } = slice;
-						fragment.forEach((child, offset) => {
-							const from = change.fromB + offset;
-							const to = from + child.nodeSize;
-							console.log(from, to, child);
-							if (child.isBlock && !child.isTextblock) {
-								output.push(Decoration.node(from, to, { class: 'addition' }));
-							} else {
-								output.push(Decoration.inline(from, to, { class: 'addition' }));
-								console.log(
-									'oh no',
-									child.textContent,
-									child.isBlock,
-									child.isTextBock,
-									child.isText,
-								);
-							}
-						});
-					}
-					if (change.deleted) {
-						const slice = oldDoc.slice(change.fromA, change.toA);
-						const { content: fragment } = slice;
-						let isBlockNode = false;
-						fragment.descendants((node) => {
-							if (node.isBlock) {
-								isBlockNode = true;
+						output.push(
+							Decoration.inline(change.fromB, change.toB, { class: 'addition' }),
+						);
+						slice.content.nodesBetween(
+							0,
+							change.toB - change.fromB,
+							(child, position) => {
+								const from = change.fromB + position;
+								const to = from + child.nodeSize;
+								if (child.isBlock && !child.inlineContent) {
+									output.push(Decoration.node(from, to, { class: 'addition' }));
+								}
 								return false;
-							}
-							return null;
-						});
-						const elem = document.createElement(isBlockNode ? 'div' : 'span');
-						const serialized = fragment.toJSON();
-						if (fragment.size > 2) {
-							console.log('FRAGMENT', fragment);
-							if (serialized) {
-								const domFragment = renderStatic(editorSchema, serialized, {});
-								ReactDOM.render(domFragment, elem);
-							}
-							elem.className = 'deletion';
-							output.push(Decoration.widget(change.fromB, elem));
-						}
+							},
+						);
 					}
+					if (change.deleted.length) {
+						let isBlockNode = false;
+						const slice = oldDoc.slice(change.fromA, change.toA);
+						// slice.content.descendants((node) => {
+						// 	if (node.isBlock) {
+						// 		isBlockNode = true;
+						// 		return false;
+						// 	}
+						// 	return null;
+						// });
+						const elem = document.createElement(isBlockNode ? 'div' : 'span');
+						const domFragment = renderStatic(editorSchema, slice.content.toJSON(), {});
+						ReactDOM.render(domFragment, elem);
+						elem.className = 'deletion';
+						output.push(Decoration.widget(change.fromB, elem));
+					}
+					// change.deleted.forEach((deletion) => {
+					// 	let isBlockNode = false;
+					// 	// const slice = deletion.data.slice;
+					// 	slice.content.descendants((node) => {
+					// 		if (node.isBlock) {
+					// 			isBlockNode = true;
+					// 			return false;
+					// 		}
+					// 		return null;
+					// 	});
+					// 	const elem = document.createElement(isBlockNode ? 'div' : 'span');
+					// 	const domFragment = renderStatic(editorSchema, slice.content.toJSON(), {});
+					// 	ReactDOM.render(domFragment, elem);
+					// 	elem.className = 'deletion';
+					// 	output.push(Decoration.widget(change.fromB, elem));
+					// });
 					return output;
 				});
-
 				const flattenArray = [].concat(...decorations);
 				return DecorationSet.create(doc, flattenArray);
 			},
@@ -92,7 +98,18 @@ const createChangesetPlugin = (changeset, oldDoc, newDoc) =>
 const createChangeSet = (oldDoc, newDoc, newDocSteps, divergeKey) => {
 	const changeset = ChangeSet.create(oldDoc);
 	const diffSteps = newDocSteps.slice(divergeKey);
-	return changeset.addSteps(newDoc, diffSteps.map((step) => step.getMap()));
+	const diffStepsInverted = [];
+	diffSteps
+		.map((step) => Step.fromJSON(editorSchema, step.toJSON()))
+		.reduce((doc, step) => {
+			const stepResult = step.apply(doc);
+			if (stepResult.failed) {
+				throw ('Failed with ', stepResult.failed);
+			}
+			diffStepsInverted.push(step.invert(doc));
+			return stepResult.doc;
+		}, Node.fromJSON(editorSchema, oldDoc.toJSON()));
+	return changeset.addSteps(newDoc, diffSteps.map((step) => step.getMap()), diffStepsInverted);
 };
 
 const initialDoc = (doc) => (doc.toJSON ? doc.toJSON() : doc);
@@ -105,21 +122,21 @@ const ChangesetDemo = () => {
 	const [leftSteps, setLeftSteps] = useState([]);
 	const [rightSteps, setRightSteps] = useState([]);
 	// We need to use refs here because Prosemirror doesn't really obey the React model
-	const leftDoc = useRef(sampleDoc);
-	const rightDoc = useRef(emptyDoc);
+	const leftDoc = useRef(editorSchema.nodeFromJSON(sampleDoc));
+	const rightDoc = useRef(editorSchema.nodeFromJSON(sampleDoc));
 
 	const forkDocument = () => {
+		rightDoc.current = leftDoc.current;
 		setForkedAt(Date.now());
 		setEditingRight(true);
 		setDivergeKey(leftSteps.length);
-		rightDoc.current = leftDoc.current;
 		setRightSteps(leftSteps);
 	};
 
 	const mergeDocument = () => {
+		leftDoc.current = rightDoc.current;
 		setMergedAt(Date.now());
 		setEditingRight(false);
-		leftDoc.current = rightDoc.current;
 		setLeftSteps(rightSteps);
 	};
 
