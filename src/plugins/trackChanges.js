@@ -16,7 +16,7 @@ export default (schema, props) => {
 					);
 				});
 			});
-			
+
 			return newTransaction;
 		},
 	});

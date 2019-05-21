@@ -52,6 +52,7 @@ export default {
 			linkToSrc: true,
 		},
 		toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
+			console.log(node);
 			return (
 				<Image
 					key={node.currIndex}
