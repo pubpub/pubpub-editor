@@ -75,16 +75,25 @@ const createAdditionalSteps = (step, doc, schema) => {
 			);
 		return [addReplacedStep, addDeletionMark, addAdditionMark];
 	}
+	if (step instanceof ReplaceAroundStep) {
+		throw new Error("Can't handle this step yet");
+	}
 	return [];
 };
 
 const amendStep = (step, doc, schema, futureSteps = []) => {
 	const additionalSteps = createAdditionalSteps(step, doc, schema).filter((x) => x);
 	const amendedSteps = [step, ...additionalSteps];
-	const futureStepsMapping = new Mapping(additionalSteps.map((as) => {
-		const addedRange = as.to - as.from;
-		return new StepMap([as.from - addedRange, 0, addedRange]);
-	}));
+	const futureStepsMapping = new Mapping(
+		additionalSteps.map((as) => {
+			if (as.slice) {
+				const size = as.slice.size;
+				return new StepMap(as.from - size, 0, as.size);
+			}
+			return as.getMap();
+		}),
+	);
+	//const futureStepsMapping = new Mapping(additionalSteps.map((as) => as.getMap()));
 	const tr = new Transform(doc);
 	console.log('  -- with futureStepsMapping', futureStepsMapping);
 	amendedSteps.forEach((as) => tr.step(as));
