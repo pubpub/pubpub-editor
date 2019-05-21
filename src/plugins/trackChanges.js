@@ -21,3 +21,21 @@ export default (schema, props) => {
 		},
 	});
 };
+
+
+/*
+[1,2,3,4]
+(1, [2,3,4]) -> [1, A, [2a, 3a, 4a]]
+(2a, [3a, 4a]) -> [2a, B, [3ab, 4ab]]
+
+[1, A, 2a, B]
+
+adjustSteps(currStep, futureSteps) -> [currStep, ...newSteps, futureStepsMapped]
+	
+
+
+bananas -> banana
+1: Step to remove 's'
+2: Inverted Step to put 's'
+3: Apply a mark over the inverted step slice
+*/
