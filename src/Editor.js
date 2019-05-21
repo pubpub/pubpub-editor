@@ -158,6 +158,10 @@ class Editor extends Component {
 		editorView.dispatch(emptyInitTransaction);
 	}
 
+	shouldComponentUpdate() {
+		return false;
+	}
+
 	render() {
 		/* Before createEditor is called from componentDidMount, we */
 		/* render a static version of the doc for server-side */
