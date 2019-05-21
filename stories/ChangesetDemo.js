@@ -9,8 +9,9 @@ import { DecorationSet, Decoration } from 'prosemirror-view';
 import Editor, { buildSchema, renderStatic } from '../src/index';
 import sampleDoc from './initialDocs/plainDoc';
 import emptyDoc from './initialDocs/emptyDoc';
+import { amendThrough, changeMarks, sanitizeStep, sanitizeDoc } from '../src/plugins/changes';
 
-const editorSchema = buildSchema();
+const editorSchema = buildSchema({}, { ...changeMarks });
 const serializer = DOMSerializer.fromSchema(editorSchema);
 const captureStepsPluginKey = new PluginKey('captureSteps');
 
@@ -56,7 +57,7 @@ const createChangesetPlugin = (changeset, oldDoc, newDoc) =>
 						);
 					}
 					if (change.deleted.length) {
-						let isBlockNode = false;
+						const isBlockNode = false;
 						const slice = oldDoc.slice(change.fromA, change.toA);
 						// slice.content.descendants((node) => {
 						// 	if (node.isBlock) {
@@ -95,21 +96,12 @@ const createChangesetPlugin = (changeset, oldDoc, newDoc) =>
 		},
 	});
 
-const createChangeSet = (oldDoc, newDoc, newDocSteps, divergeKey) => {
-	const changeset = ChangeSet.create(oldDoc);
-	const diffSteps = newDocSteps.slice(divergeKey);
-	const diffStepsInverted = [];
-	diffSteps
-		.map((step) => Step.fromJSON(editorSchema, step.toJSON()))
-		.reduce((doc, step) => {
-			const stepResult = step.apply(doc);
-			if (stepResult.failed) {
-				throw ('Failed with ', stepResult.failed);
-			}
-			diffStepsInverted.push(step.invert(doc));
-			return stepResult.doc;
-		}, Node.fromJSON(editorSchema, oldDoc.toJSON()));
-	return changeset.addSteps(newDoc, diffSteps.map((step) => step.getMap()), diffStepsInverted);
+const createDiffDoc = (oldDoc, newDoc, newDocSteps, divergeKey) => {
+	const diffSteps = newDocSteps.slice(divergeKey).map((s) => sanitizeStep(s, editorSchema));
+	console.log('START');
+	const res = amendThrough(diffSteps, sanitizeDoc(oldDoc, editorSchema), editorSchema);
+	console.log('END');
+	return res;
 };
 
 const initialDoc = (doc) => (doc.toJSON ? doc.toJSON() : doc);
@@ -122,8 +114,8 @@ const ChangesetDemo = () => {
 	const [leftSteps, setLeftSteps] = useState([]);
 	const [rightSteps, setRightSteps] = useState([]);
 	// We need to use refs here because Prosemirror doesn't really obey the React model
-	const leftDoc = useRef(editorSchema.nodeFromJSON(sampleDoc));
-	const rightDoc = useRef(editorSchema.nodeFromJSON(sampleDoc));
+	const leftDoc = useRef(editorSchema.nodeFromJSON(emptyDoc));
+	const rightDoc = useRef(editorSchema.nodeFromJSON(emptyDoc));
 
 	const forkDocument = () => {
 		rightDoc.current = leftDoc.current;
@@ -147,9 +139,12 @@ const ChangesetDemo = () => {
 	const buttonLabel = isEditingRight ? 'Merge right to left' : 'Fork left to right';
 	const buttonCallback = isEditingRight ? mergeDocument : forkDocument;
 
-	const changeset =
-		divergeKey > 0 &&
-		createChangeSet(leftDoc.current, rightDoc.current, rightSteps, divergeKey);
+	const { doc: diffDoc, steps: diffSteps } = createDiffDoc(
+		leftDoc.current,
+		rightDoc.current,
+		rightSteps,
+		divergeKey,
+	);
 
 	return (
 		<div>
@@ -208,22 +203,11 @@ const ChangesetDemo = () => {
 				<div style={{ opacity: isEditingRight ? 1 : 0.5, padding: 10 }}>
 					<Editor
 						placeholder="Diff from left to right"
-						initialContent={initialDoc(rightDoc.current)}
+						initialContent={initialDoc(diffDoc)}
 						isReadOnly={true}
 						onChange={() => {}}
 						key={rightSteps.length}
-						customPlugins={
-							changeset
-								? {
-										changeset: () =>
-											createChangesetPlugin(
-												changeset,
-												leftDoc.current,
-												rightDoc.current,
-											),
-								  }
-								: {}
-						}
+						customMarks={{ ...changeMarks }}
 					/>
 				</div>
 			</div>
