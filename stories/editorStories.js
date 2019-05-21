@@ -2,8 +2,9 @@
 import React, { useState } from 'react';
 import { storiesOf } from '@storybook/react';
 import Editor, { cursor } from '../src/index';
+import buildTrackChanges from '../src/plugins/trackChanges';
 import { editorWrapperStyle, initFirebase, clientData } from './_utilities';
-import initialContent from './initialDocs/fullDoc';
+import initialContent from './initialDocs/plainDoc';
 import {
 	setLocalHighlight,
 	removeLocalHighlight,
@@ -186,4 +187,19 @@ storiesOf('Editor', module)
 			/>
 		</div>
 	))
-	.add('cursorUtilities', () => <CursorOptionsDemoPub />);
+	.add('cursorUtilities', () => <CursorOptionsDemoPub />)
+	.add('trackChanges', () => (
+		<div style={editorWrapperStyle}>
+			<Editor
+				placeholder="Begin writing..."
+				initialContent={initialContent}
+				customPlugins={{
+					trackChanges: buildTrackChanges,
+				}}
+				// isReadOnly={true}
+				// onChange={(changeObject) => {
+
+				// }}
+			/>
+		</div>
+	));

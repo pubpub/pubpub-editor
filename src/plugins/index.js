@@ -11,6 +11,7 @@ import buildTable from './table';
 import buildCollaborative from './collaborative';
 import buildCitation from './citation';
 import buildFootnote from './footnote';
+// import buildTrackChanges from './trackChanges';
 
 const buildGapCursor = () => {
 	return gapCursor();
@@ -22,6 +23,7 @@ const buildHistory = () => {
 
 export const requiredPlugins = {
 	onChange: buildOnChange,
+	// trackChanges: buildTrackChanges,
 	gapCursor: buildGapCursor,
 	history: buildHistory,
 	keymap: buildKeymap,
