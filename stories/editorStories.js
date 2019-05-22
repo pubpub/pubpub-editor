@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react';
 import Editor, { cursor } from '../src/index';
 import buildTrackChanges from '../src/plugins/trackChanges';
 import { editorWrapperStyle, initFirebase, clientData } from './_utilities';
-import initialContent from './initialDocs/plainDoc';
+import initialContent from './initialDocs/emptyDoc';
 import {
 	setLocalHighlight,
 	removeLocalHighlight,

@@ -91,17 +91,15 @@ const avoidDoubleCountingMaps = (oldMapping, newMap) => {
 	oldMapping.maps.forEach((oldMap) => {
 		oldMap.forEach((om_oldStart, om_oldEnd, om_newStart, om_newEnd) => {
 			newMap.forEach((oldStart, oldEnd, newStart, newEnd) => {
-				console.log(om_oldStart, om_oldEnd, om_newStart, om_newEnd)
-				console.log(oldStart, oldEnd, newStart, newEnd)
+				console.log(om_oldStart, om_oldEnd, om_newStart, om_newEnd);
+				console.log(oldStart, oldEnd, newStart, newEnd);
 				// const offsetStart = Math.max(0, om_newStart - newStart);
 				// const offsetEnd = Math.max(0, om_newEnd - newEnd);
-				const offsetStart = om_newStart > newStart && om_newStart < newEnd
-					? newEnd - om_newStart
-					: 0;
-				const offsetEnd = om_newEnd > newStart && om_newEnd < newEnd
-					? newEnd - om_newEnd
-					: 0;
-					 // Math.max(0, newStart - om_newStart);
+				const offsetStart =
+					om_newStart > newStart && om_newStart < newEnd ? newEnd - om_newStart : 0;
+				const offsetEnd =
+					om_newEnd > newStart && om_newEnd < newEnd ? newEnd - om_newEnd : 0;
+				// Math.max(0, newStart - om_newStart);
 				// const offsetEnd = Math.max(0, newEnd - om_newEnd);
 				const offset = offsetStart - offsetEnd;
 				const thisNewStepMap = new StepMap([
@@ -141,6 +139,10 @@ const avoidDoubleCountingMaps = (oldMapping, newMap) => {
 
 /* eslint-disable-next-line import/prefer-default-export */
 export const adjustSteps2 = (doc, schema, stepsToAdjust, startIndex) => {
+	/* The header and structure-gap-replace with replace around */
+	/* is wonky because the inputRules plugin is removing '# ' */
+	/* and replacing it with headers. It's a problem when we try to invert */
+	/* the removal of '# ' */
 	console.log('********');
 	stepsToAdjust.forEach((step) => {
 		console.log(JSON.stringify(step.toJSON()));
@@ -149,14 +151,17 @@ export const adjustSteps2 = (doc, schema, stepsToAdjust, startIndex) => {
 	let mapping = new Mapping();
 	// const newSteps = [];
 	stepsToAdjust.forEach((step, index) => {
-		console.log('Mapping is', mapping.maps);
-		if (index < startIndex) {
+		console.log('Mapping is', mapping.maps, step.jsonID);
+		if (index < startIndex || step.jsonID !== 'replace') {
 			/* Before the track changes starts */
 			// newSteps.push(step);
 			tr.step(step);
+			
 		} else {
+			
 			const hasInsertion = !!step.slice.content.size;
 			const hasDeletion = step.to - step.from > 0;
+			console.log('hasInsertion: ', hasInsertion, '. hasDeletion: ', hasDeletion);
 			const mappedStep = step.map(mapping);
 			console.log('unmapped', JSON.stringify(step.toJSON()));
 			console.log('mapped', JSON.stringify(mappedStep.toJSON()));
@@ -167,36 +172,59 @@ export const adjustSteps2 = (doc, schema, stepsToAdjust, startIndex) => {
 				/* If it's a deletion */
 				// mapping.appendMap(mappedStep.getMap());
 				const invertedStep = mappedStep.invert(docBeforeStep);
+				const deletionMark = schema.marks.strike.create();
+				console.log('invertedStep', invertedStep);
 				// mapping.appendMap(invertedStep.getMap());
 
 				mapping = avoidDoubleCountingMaps(mapping, invertedStep.getMap());
+				invertedStep.slice.content.forEach((node, offset, nodeIndex) => {
+					console.log('!', node);
+					if (node.type.name === 'paragraph') {
+						node.attrs = { ...node.attrs, class: 'deleted' };
+						/* TODO:  dive into child contents and apply marks */
+						// invertedStep.slice.content = invertedStep.slice.content.replaceChild(
+						// 	nodeIndex,
+						// 	node.mark(deletionMark.addToSet(node.marks)),
+						// );
+					}
+					// return node;
+				});
+				console.log('$$', invertedStep);
 				tr.step(invertedStep);
-				console.log(invertedStep);
+				// console.log(tr.doc.toJSON());
 				let startingPoint = invertedStep.from;
-				invertedStep.slice.content.forEach((node) => {
-					const deletionMark = schema.marks.strike.create();
+				invertedStep.slice.content.forEach((node, offset) => {
+					console.log('offset is', offset)
+					startingPoint += offset;
 					if (node.type.name === 'text') {
-						console.log(startingPoint, startingPoint + node.text.length, node)
+						console.log(startingPoint, startingPoint + node.text.length, node);
 						tr.addMark(startingPoint, startingPoint + node.text.length, deletionMark);
 						startingPoint += node.text.length;
 					} else {
-						// console.log(node);
+						console.log('here iwth node', node);
 						// console.log(startingPoint);
 						// console.log(node.type, node.attrs, deletionMark.addToSet(node.marks));
 						// tr.doc.descendants((thisnode, pos, parent) => {
 						// 	console.log(thisnode, pos);
 						// 	return false;
 						// });
-						if (tr.doc.nodeAt(startingPoint)) {
-							tr.setNodeMarkup(
-								startingPoint,
-								node.type,
-								// node.attrs,
-								{ ...node.attrs, class: 'deleted' },
-								// deletionMark.addToSet(node.marks), This is throwing an error
-							);
+						// console.log(tr.doc.nodeAt(startingPoint).type.name, node.type.name)
+						// if (tr.doc.nodeAt(startingPoint - 1).type.name === node.type.name) {
+						// 	// console.log('node at the thing is', tr.doc.nodeAt(startingPoint));
+						// 	tr.setNodeMarkup(
+						// 		startingPoint - 1,
+						// 		node.type,
+						// 		// node.attrs,
+						// 		{ ...node.attrs, class: 'deleted' },
+						// 		// deletionMark.addToSet(node.marks), This is throwing an error
+						// 	);
+						// }
+						if (node.content) {
+							node.content.forEach((node2, offset2) => {
+								console.log('node2content', node2, startingPoint + offset2);
+								tr.addMark(startingPoint + offset2, startingPoint + offset2 + node2.text.length, deletionMark);
+							});
 						}
-						startingPoint += node.content.size || 1;
 					}
 				});
 				if (hasInsertion) {
