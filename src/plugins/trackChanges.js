@@ -5,10 +5,11 @@ import { Plugin } from 'prosemirror-state';
 export default (schema, props) => {
 	return new Plugin({
 		appendTransaction: (transactions, oldState, newState) => {
-			console.log(transactions);
+			// console.log(transactions);
 			const newTransaction = newState.tr;
 			transactions.forEach((transaction) => {
 				transaction.steps.forEach((step) => {
+					// console.log(JSON.stringify(step.toJSON()));
 					newTransaction.addMark(
 						step.from,
 						step.from + step.slice.content.size,
