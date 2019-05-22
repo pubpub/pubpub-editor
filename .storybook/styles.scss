@@ -4,3 +4,13 @@
 .pubpub-editor {
 	font-family: serif;
 }
+p.inserted:before {
+	content: "¶";
+	color: green;
+}
+p.deleted:before {
+	content: "¶";
+	color: green;
+	text-decoration: line-through;
+}
+

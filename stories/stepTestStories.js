@@ -2,7 +2,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { Node } from 'prosemirror-model';
-import { Step, Transform, Mapping, AddMarkStep } from 'prosemirror-transform';
+import { Step, Transform, Mapping, AddMarkStep, ReplaceStep, StepMap } from 'prosemirror-transform';
 import steps from './data/steps_AaBb';
 import emptyDoc from './initialDocs/emptyDoc';
 import { buildSchema } from '../src/utilities';
@@ -20,10 +20,11 @@ const adjustSteps = (doc, schema, stepsToAdjust, startIndex) => {
 		} else if (step.from === step.to) {
 			/* If it's an insertion */
 			const mappedStep = step.map(mapping);
-			console.log('----');
-			console.log(JSON.stringify(mapping.maps));
-			console.log(JSON.stringify(step.toJSON()));
-			console.log(JSON.stringify(mappedStep.toJSON()));
+			// console.log('----');
+			// console.log(JSON.stringify(mapping.maps));
+			// console.log(JSON.stringify(step.toJSON()));
+			// console.log(JSON.stringify(mappedStep.toJSON()));
+			// console.log(mappedStep.slice.content)
 			newSteps.push(mappedStep);
 			newSteps.push(
 				new AddMarkStep(
@@ -37,6 +38,9 @@ const adjustSteps = (doc, schema, stepsToAdjust, startIndex) => {
 			/* If it's a deletion */
 			const mappedStep = step.map(mapping);
 			const invertedStep = mappedStep.invert(tr.doc);
+			console.log('----');
+			console.log(JSON.stringify(mappedStep.toJSON()));
+			console.log(JSON.stringify(invertedStep.toJSON()));
 			newSteps.push(mappedStep);
 			newSteps.push(invertedStep);
 			newSteps.push(
@@ -55,6 +59,188 @@ const adjustSteps = (doc, schema, stepsToAdjust, startIndex) => {
 	return newSteps;
 };
 
+/*
+Does adding anything other than text require some clever code?
+For paragraphs, the thing you're trying to wrap a mark around (either the inserted slice, or the slice of the inverted step)
+needs to be checked to see if we simply apply a mark, or apply a node mark?
+
+For every step - break it down into it's insertions and deletions?
+
+forEach(steps)
+	if hasInsertion
+		genInsertionSteps
+			if text
+				apply mark
+			if node
+				apply mark to node
+	if hasDeletion
+		genDeletionSteps
+			if text
+				apply mark
+			if node
+				apply mark to node
+
+
+*/
+
+const avoidDoubleCountingMaps = (oldMapping, newMap) => {
+	const newestMapping = new Mapping();
+	// const properNewMapRanges = [];
+	console.log(oldMapping, newMap, '###');
+
+	oldMapping.maps.forEach((oldMap) => {
+		oldMap.forEach((om_oldStart, om_oldEnd, om_newStart, om_newEnd) => {
+			newMap.forEach((oldStart, oldEnd, newStart, newEnd) => {
+				console.log(om_oldStart, om_oldEnd, om_newStart, om_newEnd)
+				console.log(oldStart, oldEnd, newStart, newEnd)
+				// const offsetStart = Math.max(0, om_newStart - newStart);
+				// const offsetEnd = Math.max(0, om_newEnd - newEnd);
+				const offsetStart = om_newStart > newStart && om_newStart < newEnd
+					? newEnd - om_newStart
+					: 0;
+				const offsetEnd = om_newEnd > newStart && om_newEnd < newEnd
+					? newEnd - om_newEnd
+					: 0;
+					 // Math.max(0, newStart - om_newStart);
+				// const offsetEnd = Math.max(0, newEnd - om_newEnd);
+				const offset = offsetStart - offsetEnd;
+				const thisNewStepMap = new StepMap([
+					om_newStart,
+					om_oldEnd - om_oldStart,
+					om_newEnd - om_newStart - offset,
+				]);
+				newestMapping.appendMap(thisNewStepMap);
+			});
+		});
+	});
+	newestMapping.appendMap(newMap);
+	console.log('!!', newestMapping.maps);
+	return newestMapping;
+
+	// newMap.forEach((oldStart, oldEnd, newStart, newEnd) => {
+	// 	console.log('zing', oldMapping.maps);
+	// 	oldMapping.maps.forEach((oldMap) => {
+	// 		console.log('zop', oldMap);
+	// 		oldMap.forEach((om_oldStart, om_oldEnd, om_newStart, om_newEnd) => {
+	// 			console.log('wtf');
+	// 			console.log(oldStart, oldEnd, newStart, newEnd);
+	// 			console.log(om_oldStart, om_oldEnd, om_newStart, om_newEnd);
+	// 			const offsetStart = Math.max(0, newStart - om_newStart);
+	// 			const offsetEnd = Math.max(0, newEnd - om_newEnd);
+	// 			const offset = offsetStart + offsetEnd;
+	// 			console.log(offset);
+	// 			properNewMapRanges.push(newStart);
+	// 			properNewMapRanges.push(oldEnd - oldStart);
+	// 			properNewMapRanges.push(newEnd - newStart - offset);
+	// 		});
+	// 	});
+	// });
+	// console.log('@@@', properNewMapRanges);
+	// return new StepMap(properNewMapRanges);
+};
+
+/* eslint-disable-next-line import/prefer-default-export */
+export const adjustSteps2 = (doc, schema, stepsToAdjust, startIndex) => {
+	console.log('********');
+	stepsToAdjust.forEach((step) => {
+		console.log(JSON.stringify(step.toJSON()));
+	});
+	const tr = new Transform(doc);
+	let mapping = new Mapping();
+	// const newSteps = [];
+	stepsToAdjust.forEach((step, index) => {
+		console.log('Mapping is', mapping.maps);
+		if (index < startIndex) {
+			/* Before the track changes starts */
+			// newSteps.push(step);
+			tr.step(step);
+		} else {
+			const hasInsertion = !!step.slice.content.size;
+			const hasDeletion = step.to - step.from > 0;
+			const mappedStep = step.map(mapping);
+			console.log('unmapped', JSON.stringify(step.toJSON()));
+			console.log('mapped', JSON.stringify(mappedStep.toJSON()));
+			// newSteps.push(mappedStep);
+			const docBeforeStep = tr.doc;
+			tr.step(mappedStep);
+			if (hasDeletion) {
+				/* If it's a deletion */
+				// mapping.appendMap(mappedStep.getMap());
+				const invertedStep = mappedStep.invert(docBeforeStep);
+				// mapping.appendMap(invertedStep.getMap());
+
+				mapping = avoidDoubleCountingMaps(mapping, invertedStep.getMap());
+				tr.step(invertedStep);
+				console.log(invertedStep);
+				let startingPoint = invertedStep.from;
+				invertedStep.slice.content.forEach((node) => {
+					const deletionMark = schema.marks.strike.create();
+					if (node.type.name === 'text') {
+						console.log(startingPoint, startingPoint + node.text.length, node)
+						tr.addMark(startingPoint, startingPoint + node.text.length, deletionMark);
+						startingPoint += node.text.length;
+					} else {
+						// console.log(node);
+						// console.log(startingPoint);
+						// console.log(node.type, node.attrs, deletionMark.addToSet(node.marks));
+						// tr.doc.descendants((thisnode, pos, parent) => {
+						// 	console.log(thisnode, pos);
+						// 	return false;
+						// });
+						if (tr.doc.nodeAt(startingPoint)) {
+							tr.setNodeMarkup(
+								startingPoint,
+								node.type,
+								// node.attrs,
+								{ ...node.attrs, class: 'deleted' },
+								// deletionMark.addToSet(node.marks), This is throwing an error
+							);
+						}
+						startingPoint += node.content.size || 1;
+					}
+				});
+				if (hasInsertion) {
+					const insertionMark = schema.marks.strong.create();
+					const start = mappedStep.to;
+					const newReplaceStep = new ReplaceStep(start, start, mappedStep.slice);
+					// console.log('&&&', newReplaceStep.getMap());
+					// mapping.appendMap(newReplaceStep.getMap());
+					mapping = avoidDoubleCountingMaps(mapping, newReplaceStep.getMap());
+					tr.step(newReplaceStep);
+					tr.addMark(start, start + mappedStep.slice.content.size, insertionMark);
+					// tr.replaceRange(mappedStep.from, mappedStep.from, mappedStep.slice);
+				}
+			}
+			if (hasInsertion && !hasDeletion) {
+				let startingPoint = mappedStep.from;
+				mappedStep.slice.content.forEach((node) => {
+					const insertionMark = schema.marks.strong.create();
+					if (node.type.name === 'text') {
+						tr.addMark(startingPoint, startingPoint + node.text.length, insertionMark);
+						startingPoint += node.text.length;
+					} else {
+						console.log('%%%', node);
+						// console.log(node);
+						// console.log(startingPoint);
+						if (tr.doc.nodeAt(startingPoint)) {
+							tr.setNodeMarkup(
+								startingPoint,
+								node.type,
+								// node.attrs,
+								{ ...node.attrs, class: 'inserted' },
+								// insertionMark.addToSet(node.marks), This is throwing an error
+							);
+						}
+						startingPoint += node.content.size || 1;
+					}
+				});
+			}
+		}
+		// console.log(JSON.stringify(tr.doc.toJSON()));
+	});
+	return tr.steps;
+};
+
 storiesOf('Editor', module).add('stepTesting', () => {
 	const schema = buildSchema();
 	const doc = Node.fromJSON(schema, emptyDoc);
@@ -62,11 +248,13 @@ storiesOf('Editor', module).add('stepTesting', () => {
 	const hydratedSteps = steps.map((step) => {
 		return Step.fromJSON(schema, step);
 	});
-	const adjustedSteps = adjustSteps(doc, schema, hydratedSteps, 2);
+	const adjustedSteps = adjustSteps2(doc, schema, hydratedSteps, 1);
 	adjustedSteps.forEach((step) => {
 		tr.step(step);
 	});
 	const generatedDoc = tr.doc;
+	// console.log(JSON.stringify(generatedDoc.toJSON()));
+
 	return (
 		<Editor
 			placeholder="Begin writing..."

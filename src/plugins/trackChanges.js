@@ -9,12 +9,12 @@ export default (schema, props) => {
 			const newTransaction = newState.tr;
 			transactions.forEach((transaction) => {
 				transaction.steps.forEach((step) => {
-					// console.log(JSON.stringify(step.toJSON()));
-					newTransaction.addMark(
-						step.from,
-						step.from + step.slice.content.size,
-						newState.schema.marks.strong.create(),
-					);
+					console.log(JSON.stringify(step.toJSON()));
+					// newTransaction.addMark(
+					// 	step.from,
+					// 	step.from + step.slice.content.size,
+					// 	newState.schema.marks.strong.create(),
+					// );
 				});
 			});
 
