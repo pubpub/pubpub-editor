@@ -23,6 +23,7 @@ const createCaptureStepsPlugin = () =>
 				return [];
 			},
 			apply: (transaction, value) => {
+				console.log('tr is', transaction);
 				return [...value, ...transaction.steps];
 			},
 		},

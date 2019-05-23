@@ -152,15 +152,22 @@ export const adjustSteps2 = (doc, schema, stepsToAdjust, startIndex) => {
 	// const newSteps = [];
 	stepsToAdjust.forEach((step, index) => {
 		console.log('Mapping is', mapping.maps, step.jsonID);
-		if (index < startIndex || step.jsonID !== 'replace') {
+		/* TODO: need to be more rigorous about detecting mightBeInputRule */
+		/* We should verify that the item that is being removed matches */
+		/* one of the regexes */
+		const mightBeInputRule =
+			stepsToAdjust.length > index + 1 &&
+			stepsToAdjust[index + 1].jsonID === 'replaceAround' &&
+			step.to - step.from === 1;
+
+		if (index < startIndex || step.jsonID !== 'replace' || mightBeInputRule) {
 			/* Before the track changes starts */
 			// newSteps.push(step);
 			tr.step(step);
-			
 		} else {
-			
 			const hasInsertion = !!step.slice.content.size;
 			const hasDeletion = step.to - step.from > 0;
+
 			console.log('hasInsertion: ', hasInsertion, '. hasDeletion: ', hasDeletion);
 			const mappedStep = step.map(mapping);
 			console.log('unmapped', JSON.stringify(step.toJSON()));
@@ -194,7 +201,7 @@ export const adjustSteps2 = (doc, schema, stepsToAdjust, startIndex) => {
 				// console.log(tr.doc.toJSON());
 				let startingPoint = invertedStep.from;
 				invertedStep.slice.content.forEach((node, offset) => {
-					console.log('offset is', offset)
+					console.log('offset is', offset);
 					startingPoint += offset;
 					if (node.type.name === 'text') {
 						console.log(startingPoint, startingPoint + node.text.length, node);
@@ -222,7 +229,11 @@ export const adjustSteps2 = (doc, schema, stepsToAdjust, startIndex) => {
 						if (node.content) {
 							node.content.forEach((node2, offset2) => {
 								console.log('node2content', node2, startingPoint + offset2);
-								tr.addMark(startingPoint + offset2, startingPoint + offset2 + node2.text.length, deletionMark);
+								tr.addMark(
+									startingPoint + offset2,
+									startingPoint + offset2 + node2.text.length,
+									deletionMark,
+								);
 							});
 						}
 					}
