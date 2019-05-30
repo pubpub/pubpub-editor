@@ -175,6 +175,40 @@ export const createBranch = (baseFirebaseRef, newFirebaseRef, versionNumber) => 
 	});
 };
 
+export const mergeBranch = (sourceFirebaseRef, destinationFirebaseRef) => {
+	/* TODO-BRANCH At the moment, this merge simply appends new changes in a merge */
+	/* It does not properly handle 'commonAncestor' or any similar */
+	/* concept which would be needed for multi-direction merging */
+	/* or multi-branch merge trees */
+	return destinationFirebaseRef
+		.child('merges')
+		.orderByKey()
+		.startAt(String(1))
+		.once('value')
+		.then((mergesSnapshot) => {
+			const mergesSnapshotVal = mergesSnapshot.val() || {};
+			const numKeyables = Object.values(mergesSnapshotVal).reduce((prev, curr) => {
+				return prev + curr.length;
+			}, 0);
+			const nextMergeKey = Object.values(mergesSnapshotVal).length + 1;
+			const getSourceChanges = sourceFirebaseRef
+				.child('changes')
+				.orderByKey()
+				.startAt(String(numKeyables + 1))
+				.once('value');
+			return Promise.all([getSourceChanges, nextMergeKey]);
+		})
+		.then(([changesSnapshot, nextMergeKey]) => {
+			const changesSnapshotVal = changesSnapshot.val() || {};
+			const setLastMergeKey = destinationFirebaseRef.child('lastMergeKey').set(nextMergeKey);
+			const appendMerge = destinationFirebaseRef
+				.child('merges')
+				.child(nextMergeKey)
+				.set(Object.values(changesSnapshotVal));
+			return Promise.all([setLastMergeKey, appendMerge]);
+		});
+};
+
 export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 	let mostRecentRemoteKey;
 	return firebaseRef
