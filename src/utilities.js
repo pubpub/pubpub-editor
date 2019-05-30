@@ -200,6 +200,10 @@ export const mergeBranch = (sourceFirebaseRef, destinationFirebaseRef) => {
 		})
 		.then(([changesSnapshot, nextMergeKey]) => {
 			const changesSnapshotVal = changesSnapshot.val() || {};
+			if (!Object.values(changesSnapshotVal).length) {
+				/* If there are no new changes to add into a merge, simply return */
+				return null;
+			}
 			const setLastMergeKey = destinationFirebaseRef.child('lastMergeKey').set(nextMergeKey);
 			const appendMerge = destinationFirebaseRef
 				.child('merges')
