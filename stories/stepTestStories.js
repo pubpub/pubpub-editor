@@ -302,3 +302,10 @@ storiesOf('Editor', module).add('stepTesting', () => {
 		/>
 	);
 });
+
+
+// 1) Apply the appended Steps with mapping logic
+// 2) Reorder/group adjacent text blocks with same ins/del marks
+// 3) Look at adjacent text blocks with ins/del and cancel-out start/end text
+
+// insertion, deletion, change
