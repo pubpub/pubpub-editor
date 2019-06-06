@@ -154,13 +154,13 @@ export const createBranch = (baseFirebaseRef, newFirebaseRef, versionNumber) => 
 	const getChanges = baseFirebaseRef
 		.child('changes')
 		.orderByKey()
-		.startAt(String(1))
+		.startAt(String(0))
 		.endAt(String(versionNumber))
 		.once('value');
 	const getMerges = baseFirebaseRef
 		.child('merges')
 		.orderByKey()
-		.startAt(String(1))
+		.startAt(String(0))
 		.endAt(String(versionNumber))
 		.once('value');
 	return Promise.all([getChanges, getMerges]).then(([changesSnapshot, mergesSnapshot]) => {
@@ -169,8 +169,8 @@ export const createBranch = (baseFirebaseRef, newFirebaseRef, versionNumber) => 
 		const allKeyables = { ...changesSnapshotVal, ...mergesSnapshotVal };
 		const flattenedMergeStepArray = flattenMergeStepArray(allKeyables);
 		return newFirebaseRef.set({
-			lastMergeKey: 1,
-			merges: { 1: flattenedMergeStepArray },
+			lastMergeKey: 0,
+			merges: { 0: flattenedMergeStepArray },
 		});
 	});
 };
@@ -183,7 +183,7 @@ export const mergeBranch = (sourceFirebaseRef, destinationFirebaseRef) => {
 	return destinationFirebaseRef
 		.child('merges')
 		.orderByKey()
-		.startAt(String(1))
+		.startAt(String(0))
 		.once('value')
 		.then((mergesSnapshot) => {
 			const mergesSnapshotVal = mergesSnapshot.val() || {};
@@ -220,22 +220,25 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 		.once('value')
 		.then((checkpointSnapshot) => {
 			const emptyDoc = { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] };
-			const checkpointSnapshotVal = checkpointSnapshot.val() || {
-				k: '0',
-				d: emptyDoc,
-			};
+			const checkpointSnapshotVal = checkpointSnapshot.val();
 
+			const versionLessThanCheckpoint =
+				versionNumber &&
+				checkpointSnapshotVal &&
+				versionNumber < Number(checkpointSnapshotVal.k);
+			const useCheckpoint = checkpointSnapshotVal && !versionLessThanCheckpoint;
 			/* If the given versionNumber is earlier than the checkpoint, build doc from 0 */
-			if (versionNumber && versionNumber < Number(checkpointSnapshotVal.k)) {
-				checkpointSnapshotVal.k = '0';
-				checkpointSnapshotVal.d = emptyDoc;
-			}
+			// if (versionNumber && versionNumber < Number(checkpointSnapshotVal.k)) {
+			// 	checkpointSnapshotVal.k = '-1';
+			// 	checkpointSnapshotVal.d = emptyDoc;
+			// }
 
-			mostRecentRemoteKey = Number(checkpointSnapshotVal.k);
-			const newDoc = Node.fromJSON(
-				schema,
-				uncompressStateJSON({ d: checkpointSnapshotVal.d }).doc,
-			);
+			mostRecentRemoteKey = useCheckpoint ? Number(checkpointSnapshotVal.k) : -1;
+			const docJSON = useCheckpoint
+				? uncompressStateJSON(checkpointSnapshotVal).doc
+				: emptyDoc;
+
+			const newDoc = Node.fromJSON(schema, docJSON);
 
 			/* Get all changes since mostRecentRemoteKey */
 			const getChanges = firebaseRef

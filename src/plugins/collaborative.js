@@ -335,7 +335,7 @@ class CollaborativePlugin extends Plugin {
 
 						/* If multiple of saveEveryNSteps, update checkpoint */
 						const saveEveryNSteps = 100;
-						if (snapshot.key % saveEveryNSteps === 0) {
+						if (snapshot.key && snapshot.key % saveEveryNSteps === 0) {
 							storeCheckpoint(
 								this.pluginProps.firebaseRef,
 								newState.doc,
