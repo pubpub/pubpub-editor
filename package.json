@@ -41,7 +41,8 @@
     "firebase": "^5.9.1",
     "react": "^16.8.5",
     "react-dom": "^16.8.5",
-    "react-transition-group": "^2.7.1"
+    "react-transition-group": "^2.7.1",
+    "uuid": "^3.3.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
@@ -78,6 +79,7 @@
     "sass-loader": "^7.0.3",
     "style-loader": "^0.23.1",
     "url-loader": "^1.1.2",
+    "uuid": "^3.3.2",
     "webpack": "^4.29.6"
   },
   "engines": {

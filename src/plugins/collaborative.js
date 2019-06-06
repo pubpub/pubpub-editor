@@ -10,6 +10,7 @@ import {
 	uncompressSelectionJSON,
 	uncompressStepJSON,
 } from 'prosemirror-compress-pubpub';
+import uuidv4 from 'uuid/v4';
 import {
 	generateHash,
 	restoreDiscussionMaps,
@@ -318,9 +319,14 @@ class CollaborativePlugin extends Plugin {
 						s: steps.map((step) => {
 							return compressStepJSON(step.toJSON());
 						}),
-						c: clientId,
 						m: meta,
 						t: firebaseTimestamp,
+						/* Change Id */
+						id: uuidv4(),
+						/* Client Id */
+						cId: clientId,
+						/* Origin Branch Id */
+						bId: this.pluginProps.firebaseRef.key.replace('branch-', ''),
 					};
 				},
 				(error, committed, snapshot) => {
