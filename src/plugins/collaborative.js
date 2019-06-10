@@ -82,7 +82,7 @@ export default (schema, props) => {
 		return [];
 	}
 
-	const localClientId = `clientId-${collabOptions.clientData.id}-${generateHash(6)}`;
+	const localClientId = `${collabOptions.clientData.id}-${generateHash(6)}`;
 
 	return [
 		collab({

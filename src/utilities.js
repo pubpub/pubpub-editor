@@ -190,11 +190,11 @@ export const mergeBranch = (sourceFirebaseRef, destinationFirebaseRef) => {
 			const numKeyables = Object.values(mergesSnapshotVal).reduce((prev, curr) => {
 				return prev + curr.length;
 			}, 0);
-			const nextMergeKey = Object.values(mergesSnapshotVal).length + 1;
+			const nextMergeKey = Object.values(mergesSnapshotVal).length;
 			const getSourceChanges = sourceFirebaseRef
 				.child('changes')
 				.orderByKey()
-				.startAt(String(numKeyables + 1))
+				.startAt(String(numKeyables))
 				.once('value');
 			return Promise.all([getSourceChanges, nextMergeKey]);
 		})
