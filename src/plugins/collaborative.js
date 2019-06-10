@@ -246,7 +246,7 @@ class CollaborativePlugin extends Plugin {
 		this.mostRecentRemoteKey = Number(snapshot.key);
 		const snapshotVal = snapshot.val();
 		const compressedStepsJSON = snapshotVal.s;
-		const clientId = snapshotVal.c;
+		const clientId = snapshotVal.cId;
 		const meta = snapshotVal.m;
 		const newSteps = compressedStepsJSON.map((compressedStepJSON) => {
 			return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
