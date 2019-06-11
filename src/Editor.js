@@ -64,6 +64,10 @@ class Editor extends Component {
 		this.createEditor();
 	}
 
+	shouldComponentUpdate() {
+		return false;
+	}
+
 	configurePlugins() {
 		const allPlugins = {
 			...optionalPlugins,
@@ -156,10 +160,6 @@ class Editor extends Component {
 
 		const emptyInitTransaction = editorView.state.tr;
 		editorView.dispatch(emptyInitTransaction);
-	}
-
-	shouldComponentUpdate() {
-		return false;
 	}
 
 	render() {
