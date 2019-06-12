@@ -29,27 +29,35 @@ export default () => {
 				/* generate the new Decoration objects. */
 				const newHighlightsData = transaction.meta.newLocalHighlightData || [];
 				const newDecorations = newHighlightsData.map((highlightData) => {
+					const className =
+						highlightData.id === 'permanent'
+							? 'permanent'
+							: `local-highlight lh-${highlightData.id}`;
+					const key =
+						highlightData.id === 'permanent' ? 'permanent' : `lm-${highlightData.id}`;
 					return Decoration.inline(
 						Number(highlightData.from),
 						Number(highlightData.to),
-						{
-							class: `local-highlight lh-${highlightData.id}`,
-						},
-						{ key: `lm-${highlightData.id}` },
+						{ class: className },
+						{ key: key },
 					);
 				});
 
-				const newDecorationWidgets = newHighlightsData.map((highlightData) => {
-					const elem = document.createElement('span');
-					elem.className = `local-mount lm-${highlightData.id}`;
+				const newDecorationWidgets = newHighlightsData
+					.filter((highlightData) => {
+						return highlightData.id !== 'permanent';
+					})
+					.map((highlightData) => {
+						const elem = document.createElement('span');
+						elem.className = `local-mount lm-${highlightData.id}`;
 
-					return Decoration.widget(Number(highlightData.to), elem, {
-						stopEvent: () => {
-							return true;
-						},
-						key: `lm-${highlightData.id}`,
+						return Decoration.widget(Number(highlightData.to), elem, {
+							stopEvent: () => {
+								return true;
+							},
+							key: `lm-${highlightData.id}`,
+						});
 					});
-				});
 
 				return {
 					activeDecorationSet: mappedDecorationSet.add(editorState.doc, [
