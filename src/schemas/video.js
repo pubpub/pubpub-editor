@@ -1,5 +1,6 @@
 import React from 'react';
 import Video from '../components/Video/Video';
+import breakout from './partials/breakout';
 
 export default {
 	video: {
@@ -9,6 +10,7 @@ export default {
 			size: { default: 50 }, // number as percentage
 			align: { default: 'center' },
 			caption: { default: '' },
+			breakout: { default: false },
 		},
 		parseDOM: [
 			{
@@ -56,6 +58,9 @@ export default {
 					isEditable={isEditable}
 				/>
 			);
+		},
+		processContainerElement: (node, element) => {
+			breakout(node, element);
 		},
 	},
 };

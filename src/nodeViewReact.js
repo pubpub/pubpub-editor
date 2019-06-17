@@ -9,17 +9,19 @@ export default class NodeViewReact {
 		this.node = node;
 		this.options = options;
 		this.isSelected = false;
-		this.containerNode = node.type.spec.inline
+		this.containerElement = node.type.spec.inline
 			? document.createElement('span')
 			: document.createElement('div');
 		this.renderElement();
-
-		this.dom = this.containerNode;
+		this.dom = this.containerElement;
 	}
 
 	/* renderElement is not a requirement of the NodeView spec, but */
 	/* a helper function we use to update the React component */
 	renderElement() {
+		if (this.node.type.spec.processContainerElement) {
+			this.node.type.spec.processContainerElement(this.node, this.containerElement);
+		}
 		ReactDOM.render(
 			this.node.type.spec.toStatic(
 				this.node,
@@ -29,7 +31,7 @@ export default class NodeViewReact {
 				null,
 				null,
 			),
-			this.containerNode,
+			this.containerElement,
 		);
 	}
 

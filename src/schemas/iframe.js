@@ -1,5 +1,6 @@
 import React from 'react';
 import Iframe from '../components/Iframe/Iframe';
+import breakout from './partials/breakout';
 
 export default {
 	iframe: {
@@ -10,6 +11,7 @@ export default {
 			height: { default: 419 },
 			align: { default: 'center' },
 			caption: { default: '' },
+			breakout: { default: false },
 		},
 		parseDOM: [
 			{
@@ -59,6 +61,9 @@ export default {
 					isEditable={isEditable}
 				/>
 			);
+		},
+		processContainerElement: (node, element) => {
+			breakout(node, element);
 		},
 	},
 };
