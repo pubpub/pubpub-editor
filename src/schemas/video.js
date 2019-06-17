@@ -50,9 +50,8 @@ export default {
 		defaultOptions: {},
 		toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
 			return (
-				<div data-align-breakout={node.attrs.breakout}>
+				<div data-align-breakout={node.attrs.breakout} key={node.currIndex}>
 					<Video
-						key={node.currIndex}
 						attrs={node.attrs}
 						options={options}
 						isSelected={isSelected}

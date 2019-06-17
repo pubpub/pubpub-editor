@@ -15,21 +15,21 @@ const Citation = (props) => {
 	const attrs = props.attrs;
 
 	return (
-		<div className="citation-wrapper" tabIndex={-1}>
+		<span className="citation-wrapper" tabIndex={-1}>
 			<span className={`count-wrapper ${props.isSelected ? 'isSelected' : ''}`}>
 				<span className="citation">[{attrs.count}]</span>
 			</span>
 
-			<div className="render-wrapper">
-				{attrs.value && <div dangerouslySetInnerHTML={{ __html: attrs.html }} />}
+			<span className="render-wrapper">
+				{attrs.value && <span dangerouslySetInnerHTML={{ __html: attrs.html }} />}
 				{attrs.unstructuredValue && (
-					<div dangerouslySetInnerHTML={{ __html: attrs.unstructuredValue }} />
+					<span dangerouslySetInnerHTML={{ __html: attrs.unstructuredValue }} />
 				)}
 				{!attrs.value && !attrs.unstructuredValue && (
-					<div className="empty-text">No Citation text entered...</div>
+					<span className="empty-text">No Citation text entered...</span>
 				)}
-			</div>
-		</div>
+			</span>
+		</span>
 	);
 };
 
