@@ -64,6 +64,10 @@ class Editor extends Component {
 		this.createEditor();
 	}
 
+	shouldComponentUpdate() {
+		return false;
+	}
+
 	configurePlugins() {
 		const allPlugins = {
 			...optionalPlugins,

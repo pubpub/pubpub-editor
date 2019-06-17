@@ -10,6 +10,7 @@ import {
 	uncompressSelectionJSON,
 	uncompressStepJSON,
 } from 'prosemirror-compress-pubpub';
+import uuidv4 from 'uuid/v4';
 import {
 	generateHash,
 	restoreDiscussionMaps,
@@ -81,7 +82,7 @@ export default (schema, props) => {
 		return [];
 	}
 
-	const localClientId = `clientId-${collabOptions.clientData.id}-${generateHash(6)}`;
+	const localClientId = `${collabOptions.clientData.id}-${generateHash(6)}`;
 
 	return [
 		collab({
@@ -245,7 +246,7 @@ class CollaborativePlugin extends Plugin {
 		this.mostRecentRemoteKey = Number(snapshot.key);
 		const snapshotVal = snapshot.val();
 		const compressedStepsJSON = snapshotVal.s;
-		const clientId = snapshotVal.c;
+		const clientId = snapshotVal.cId;
 		const meta = snapshotVal.m;
 		const newSteps = compressedStepsJSON.map((compressedStepJSON) => {
 			return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
@@ -318,9 +319,14 @@ class CollaborativePlugin extends Plugin {
 						s: steps.map((step) => {
 							return compressStepJSON(step.toJSON());
 						}),
-						c: clientId,
 						m: meta,
 						t: firebaseTimestamp,
+						/* Change Id */
+						id: uuidv4(),
+						/* Client Id */
+						cId: clientId,
+						/* Origin Branch Id */
+						bId: this.pluginProps.firebaseRef.key.replace('branch-', ''),
 					};
 				},
 				(error, committed, snapshot) => {
@@ -335,7 +341,7 @@ class CollaborativePlugin extends Plugin {
 
 						/* If multiple of saveEveryNSteps, update checkpoint */
 						const saveEveryNSteps = 100;
-						if (snapshot.key % saveEveryNSteps === 0) {
+						if (snapshot.key && snapshot.key % saveEveryNSteps === 0) {
 							storeCheckpoint(
 								this.pluginProps.firebaseRef,
 								newState.doc,
@@ -486,10 +492,25 @@ class CollaborativePlugin extends Plugin {
 						  }
 						: compressSelectionJSON(selection.toJSON()),
 				};
-				this.pluginProps.firebaseRef
-					.child('cursors')
-					.child(this.pluginProps.localClientId)
-					.set(firebaseCursorData);
+
+				/*
+					This timeout is due to a bug I could only reproduce at the pubpub
+					level. I could not reproduce it in pubpub-editor storybook. Without
+					the timeout, click-and-drag to create a selection acts oddly. The
+					selection doesn't take. It's not entirely consistent though which
+					makes it feel like a race condition. Disabling all firebase listeners
+					at the pubpub level does not seem to resolve the issue. Disabling the
+					editor onChange handler (at the same time as the disabled firebase
+					listeners) also does not resolve the issue. It's unclear to me what is
+					different at that point between pubpub-editor storybook and the editor
+					used in PubBody.
+				*/
+				setTimeout(() => {
+					this.pluginProps.firebaseRef
+						.child('cursors')
+						.child(this.pluginProps.localClientId)
+						.set(firebaseCursorData);
+				}, 0);
 			}
 		}
 
