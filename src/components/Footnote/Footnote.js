@@ -9,6 +9,11 @@ const propTypes = {
 	// options: PropTypes.object.isRequired,
 	isSelected: PropTypes.bool.isRequired,
 	// isEditable: PropTypes.bool.isRequired,
+	editorProps: PropTypes.object,
+};
+
+const defaultProps = {
+	editorProps: {},
 };
 
 const Footnote = (props) => {
@@ -19,19 +24,21 @@ const Footnote = (props) => {
 			<span className={`count-wrapper ${props.isSelected ? 'isSelected' : ''}`}>
 				<sup className="footnote">{attrs.count}</sup>
 			</span>
-
-			<span className="render-wrapper">
-				{attrs.value && <span dangerouslySetInnerHTML={{ __html: attrs.value }} />}
-				{attrs.structuredValue && (
-					<span dangerouslySetInnerHTML={{ __html: attrs.structuredHtml }} />
-				)}
-				{!attrs.value && !attrs.structuredValue && (
-					<span className="empty-text">No Footnote text entered...</span>
-				)}
-			</span>
+			{!props.editorProps.renderStaticMarkup && (
+				<span className="render-wrapper">
+					{attrs.value && <span dangerouslySetInnerHTML={{ __html: attrs.value }} />}
+					{attrs.structuredValue && (
+						<span dangerouslySetInnerHTML={{ __html: attrs.structuredHtml }} />
+					)}
+					{!attrs.value && !attrs.structuredValue && (
+						<span className="empty-text">No Footnote text entered...</span>
+					)}
+				</span>
+			)}
 		</span>
 	);
 };
 
 Footnote.propTypes = propTypes;
+Footnote.defaultProps = defaultProps;
 export default Footnote;
