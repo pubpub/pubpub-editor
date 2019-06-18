@@ -5,7 +5,6 @@ import buildInputRules from './inputRules';
 import buildKeymap from './keymap';
 import buildHeaderIds from './headerIds';
 import buildPlaceholder from './placeholder';
-import buildHighlights from './highlights';
 import buildLocalHighlights from './localHighlights';
 import buildTable from './table';
 import buildCollaborative from './collaborative';
@@ -35,6 +34,5 @@ export const optionalPlugins = {
 	inputRules: buildInputRules,
 	headerIds: buildHeaderIds,
 	placeholder: buildPlaceholder,
-	highlights: buildHighlights,
 	localHighlights: buildLocalHighlights,
 };
