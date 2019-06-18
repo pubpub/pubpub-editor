@@ -10,6 +10,12 @@ key from Firebase.
 - update: BREAKING - collaborationOptions updated to take ref, rather than firebase credentials
 - update: BREAKING - new firebase schema to support merges, branches, and other metadata.
 
+## [5.3.7] - 2019-03-22
+- fix: usedHighlights infinite transaction loop bug
+
+## [5.3.6] - 2019-03-05
+- update: Add and refactor cursor manipulation utilties
+
 ## [5.3.5] - 2019-03-01
 - fix: Remove postinstall githook copying because it caused `npm install @pubpub/editor` to fail
 
