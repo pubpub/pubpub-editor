@@ -47,7 +47,7 @@ export default {
 			view.dispatch(transaction);
 		},
 		defaultOptions: {},
-		toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
+		toStatic: (node, options, isSelected, isEditable, editorProps /* children */) => {
 			return (
 				<Citation
 					key={node.currIndex}
@@ -55,6 +55,7 @@ export default {
 					options={options}
 					isSelected={isSelected}
 					isEditable={isEditable}
+					editorProps={editorProps || undefined} /* We || undefined because editorProps can be null which doesn't trigger defaultProps */
 				/>
 			);
 		},

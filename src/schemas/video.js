@@ -49,13 +49,14 @@ export default {
 		defaultOptions: {},
 		toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
 			return (
-				<Video
-					key={node.currIndex}
-					attrs={node.attrs}
-					options={options}
-					isSelected={isSelected}
-					isEditable={isEditable}
-				/>
+				<div data-align-breakout={node.attrs.breakout} key={node.currIndex}>
+					<Video
+						attrs={node.attrs}
+						options={options}
+						isSelected={isSelected}
+						isEditable={isEditable}
+					/>
+				</div>
 			);
 		},
 	},

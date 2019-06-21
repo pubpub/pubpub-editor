@@ -9,29 +9,36 @@ const propTypes = {
 	// options: PropTypes.object.isRequired,
 	isSelected: PropTypes.bool.isRequired,
 	// isEditable: PropTypes.bool.isRequired,
+	editorProps: PropTypes.object,
+};
+
+const defaultProps = {
+	editorProps: {},
 };
 
 const Citation = (props) => {
 	const attrs = props.attrs;
 
 	return (
-		<div className="citation-wrapper" tabIndex={-1}>
+		<span className="citation-wrapper" tabIndex={-1}>
 			<span className={`count-wrapper ${props.isSelected ? 'isSelected' : ''}`}>
 				<span className="citation">[{attrs.count}]</span>
 			</span>
-
-			<div className="render-wrapper">
-				{attrs.value && <div dangerouslySetInnerHTML={{ __html: attrs.html }} />}
-				{attrs.unstructuredValue && (
-					<div dangerouslySetInnerHTML={{ __html: attrs.unstructuredValue }} />
-				)}
-				{!attrs.value && !attrs.unstructuredValue && (
-					<div className="empty-text">No Citation text entered...</div>
-				)}
-			</div>
-		</div>
+			{!props.editorProps.renderStaticMarkup && (
+				<span className="render-wrapper">
+					{attrs.value && <span dangerouslySetInnerHTML={{ __html: attrs.html }} />}
+					{attrs.unstructuredValue && (
+						<span dangerouslySetInnerHTML={{ __html: attrs.unstructuredValue }} />
+					)}
+					{!attrs.value && !attrs.unstructuredValue && (
+						<span className="empty-text">No Citation text entered...</span>
+					)}
+				</span>
+			)}
+		</span>
 	);
 };
 
 Citation.propTypes = propTypes;
+Citation.defaultProps = defaultProps;
 export default Citation;
