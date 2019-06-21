@@ -1,6 +1,5 @@
 import React from 'react';
 import Iframe from '../components/Iframe/Iframe';
-import breakout from './partials/breakout';
 
 export default {
 	iframe: {
@@ -61,9 +60,6 @@ export default {
 					isEditable={isEditable}
 				/>
 			);
-		},
-		processContainerElement: (node, element) => {
-			breakout(node, element);
 		},
 	},
 };

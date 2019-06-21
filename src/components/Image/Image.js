@@ -1,6 +1,7 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 require('./image.scss');
 
@@ -45,8 +46,11 @@ const Image = (props) => {
 	);
 	const useLink = !props.isEditable && options.linkToSrc;
 	return (
-		<div className="figure-wrapper">
-			<figure className={`image ${props.isSelected ? 'isSelected' : ''}`} style={figStyle}>
+		<div className={classNames('figure-wrapper', attrs.breakout && 'breakout')}>
+			<figure
+				className={classNames('image', props.isSelected && 'isSelected')}
+				style={figStyle}
+			>
 				{useLink && (
 					<a href={attrs.url} target="_blank" rel="noopener noreferrer">
 						{imgElement}

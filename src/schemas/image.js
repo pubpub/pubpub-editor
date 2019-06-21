@@ -1,6 +1,5 @@
 import React from 'react';
 import Image from '../components/Image/Image';
-import breakout from './partials/breakout';
 
 export default {
 	image: {
@@ -63,9 +62,6 @@ export default {
 					isEditable={isEditable}
 				/>
 			);
-		},
-		processContainerElement: (node, element) => {
-			breakout(node, element);
 		},
 	},
 };

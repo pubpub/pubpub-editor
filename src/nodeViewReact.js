@@ -19,9 +19,6 @@ export default class NodeViewReact {
 	/* renderElement is not a requirement of the NodeView spec, but */
 	/* a helper function we use to update the React component */
 	renderElement() {
-		if (this.node.type.spec.processContainerElement) {
-			this.node.type.spec.processContainerElement(this.node, this.containerElement);
-		}
 		ReactDOM.render(
 			this.node.type.spec.toStatic(
 				this.node,

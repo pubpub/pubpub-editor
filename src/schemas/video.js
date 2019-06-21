@@ -1,6 +1,5 @@
 import React from 'react';
 import Video from '../components/Video/Video';
-import breakout from './partials/breakout';
 
 export default {
 	video: {
@@ -58,9 +57,6 @@ export default {
 					isEditable={isEditable}
 				/>
 			);
-		},
-		processContainerElement: (node, element) => {
-			breakout(node, element);
 		},
 	},
 };

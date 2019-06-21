@@ -1,6 +1,7 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 require('./video.scss');
 
@@ -29,11 +30,13 @@ const Video = (props) => {
 	};
 
 	return (
-		<div className="figure-wrapper">
+		<div className={classNames('figure-wrapper', attrs.breakout && 'breakout')}>
 			<figure
-				className={`video ${props.isSelected ? 'isSelected' : ''} ${
-					props.isEditable ? 'isEditable' : ''
-				}`}
+				className={classNames(
+					'video',
+					props.isSelected && 'isSelected',
+					props.isEditable && 'isEditable',
+				)}
 				style={figStyle}
 			>
 				<video controls src={attrs.url} preload="metadata">
