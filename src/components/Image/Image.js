@@ -18,6 +18,7 @@ const Image = (props) => {
 	const imageUrl =
 		attrs.url && props.options.onResizeUrl ? props.options.onResizeUrl(attrs.url) : attrs.url;
 	const figFloat = attrs.align === 'left' || attrs.align === 'right' ? attrs.align : 'none';
+	const breakout = attrs.align === 'breakout';
 	let figMargin = '0em auto 1em';
 	if (attrs.align === 'left') {
 		figMargin = '1em 1em 1em 0px';
@@ -46,7 +47,7 @@ const Image = (props) => {
 	);
 	const useLink = !props.isEditable && options.linkToSrc;
 	return (
-		<div className={classNames('figure-wrapper', attrs.breakout && 'breakout')}>
+		<div className={classNames('figure-wrapper', breakout && 'breakout')}>
 			<figure
 				className={classNames('image', props.isSelected && 'isSelected')}
 				style={figStyle}
