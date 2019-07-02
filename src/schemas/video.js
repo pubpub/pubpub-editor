@@ -9,7 +9,6 @@ export default {
 			size: { default: 50 }, // number as percentage
 			align: { default: 'center' },
 			caption: { default: '' },
-			breakout: { default: false },
 		},
 		parseDOM: [
 			{

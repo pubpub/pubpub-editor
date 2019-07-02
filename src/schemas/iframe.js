@@ -10,7 +10,6 @@ export default {
 			height: { default: 419 },
 			align: { default: 'center' },
 			caption: { default: '' },
-			breakout: { default: false },
 		},
 		parseDOM: [
 			{

@@ -15,6 +15,7 @@ const propTypes = {
 const Iframe = (props) => {
 	const attrs = props.attrs;
 	const figFloat = attrs.align === 'left' || attrs.align === 'right' ? attrs.align : 'none';
+	const breakout = attrs.align === 'breakout';
 	let figMargin = '0em auto 1em';
 	if (attrs.align === 'left') {
 		figMargin = '1em 1em 1em 0px';
@@ -30,7 +31,7 @@ const Iframe = (props) => {
 	};
 
 	return (
-		<div className={classNames('figure-wrapper', attrs.breakout && 'breakout')}>
+		<div className={classNames('figure-wrapper', breakout && 'breakout')}>
 			<figure
 				className={classNames(
 					'iframe',

@@ -63,6 +63,10 @@ export default class NodeViewReact {
 		);
 	}
 
+	destroy() {
+		ReactDOM.unmountComponentAtNode(this.containerElement);
+	}
+
 	ignoreMutation() {
 		return true;
 	}
