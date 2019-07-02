@@ -1,3 +1,4 @@
+import React from 'react';
 import { Selection } from 'prosemirror-state';
 import { DOMParser, Schema, Slice, Node } from 'prosemirror-model';
 import {
@@ -53,6 +54,43 @@ export const buildSchema = (customNodes = {}, customMarks = {}) => {
 	});
 };
 
+const renderReactFromSpec = (elem, key, holeContent) => {
+	if (!elem) {
+		return null;
+	}
+	if (typeof elem === 'string') {
+		return elem;
+	}
+	if (elem.nodeType || elem.$$typeof) {
+		return elem;
+	}
+
+	let attrs;
+	let children;
+	const hasAttrs =
+		elem[1] && typeof elem[1] === 'object' && !elem[1].nodeType && !Array.isArray(elem[1]);
+	if (hasAttrs) {
+		attrs = elem[1];
+	} else {
+		attrs = {};
+	}
+
+	if (elem[2] === 0) {
+		children = holeContent;
+	} else if (typeof elem[2] === 'string') {
+		children = elem[2];
+	} else {
+		const start = attrs ? 2 : 1;
+		const childArray = elem.slice(start, elem.length);
+		if (childArray.length) {
+			children = childArray.map((child) => {
+				return renderReactFromSpec(child);
+			});
+		}
+	}
+	return React.createElement(elem[0], { ...attrs, key: key }, children);
+};
+
 export const renderStatic = (schema = buildSchema(), nodeArray, editorProps) => {
 	return nodeArray.map((node, index) => {
 		let children;
@@ -63,25 +101,37 @@ export const renderStatic = (schema = buildSchema(), nodeArray, editorProps) => 
 			const marks = node.marks || [];
 			children = marks.reduce((prev, curr, markIndex) => {
 				const currIndex = `${index}-${markIndex}`;
-				const MarkComponent = schema.marks[curr.type].spec.toStatic(curr, prev, currIndex);
-				return MarkComponent;
+				const MarkComponent = schema.marks[curr.type].spec;
+				return renderReactFromSpec(MarkComponent.toDOM(curr), currIndex);
+				// .toStatic(curr, prev, currIndex);
+				// return MarkComponent;
 			}, node.text);
 		}
 
-		const nodeWithIndex = node;
-		nodeWithIndex.currIndex = index;
-		const nodeOptions = editorProps.nodeOptions || {};
-		const customOptions = nodeOptions[node.type] || {};
-		const mergedOptions = { ...schema.nodes[node.type].spec.defaultOptions, ...customOptions };
-		const NodeComponent = schema.nodes[node.type].spec.toStatic(
-			nodeWithIndex,
-			mergedOptions,
-			false,
-			false,
-			{ ...editorProps, renderStaticMarkup: true },
+		// const nodeWithIndex = node;
+		// nodeWithIndex.currIndex = index;
+		// const nodeOptions = editorProps.nodeOptions || {};
+		// const customOptions = nodeOptions[node.type] || {};
+		// const mergedOptions = { ...schema.nodes[node.type].spec.defaultOptions, ...customOptions };
+		// const NodeComponent = schema.nodes[node.type].spec.toStatic(
+		// 	nodeWithIndex,
+		// 	mergedOptions,
+		// 	false,
+		// 	false,
+		// 	{ ...editorProps, renderStaticMarkup: true },
+		// 	children,
+		// );
+		// return NodeComponent;
+
+		const NodeComponent = schema.nodes[node.type].spec;
+
+		const output = renderReactFromSpec(
+			NodeComponent.toDOM({ ...node, attrs: { ...node.attrs, key: index } }),
+			index,
 			children,
 		);
-		return NodeComponent;
+		console.log(node, NodeComponent, children, output);
+		return output;
 	});
 };
 

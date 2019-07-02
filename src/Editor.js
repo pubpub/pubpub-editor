@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
@@ -6,6 +7,7 @@ import { keydownHandler } from 'prosemirror-keymap';
 import { requiredPlugins, optionalPlugins } from './plugins';
 import NodeViewReact from './nodeViewReact';
 import { renderStatic, buildSchema } from './utilities';
+
 
 require('./style.scss');
 
@@ -167,6 +169,9 @@ class Editor extends Component {
 		/* render a static version of the doc for server-side */
 		/* friendliness. This static version is overwritten when the */
 		/* editorView is mounted into the editor dom node. */
+		console.log('=====');
+		console.log(ReactDOMServer.renderToStaticMarkup(renderStatic(this.schema, this.props.initialContent.content, this.props)));
+		console.log('=====');
 		return (
 			<div
 				className={`editor ProseMirror ${this.props.isReadOnly ? 'read-only' : ''}`}

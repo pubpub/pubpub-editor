@@ -20,12 +20,32 @@ export default {
 			},
 		],
 		toDOM: (node) => {
+			// return [
+			// 	'math-inline',
+			// 	{
+			// 		'data-value': node.attrs.value,
+			// 		'data-html': node.attrs.html,
+			// 	},
+			// ];
+			console.log('equation node', node);
+			const thing = node.attrs.key ? (
+				<span dangerouslySetInnerHTML={{ __html: node.attrs.html }} />
+			) : (
+				document.createElement('span')
+			);
+			if (!node.attrs.key) {
+				thing.innerHTML = node.attrs.html;
+			}
+			return thing;
 			return [
 				'math-inline',
 				{
+					class: 'latex-wrapper',
+					'data-type': 'math-inline',
 					'data-value': node.attrs.value,
 					'data-html': node.attrs.html,
 				},
+				thing,
 			];
 		},
 		inline: true,
@@ -33,7 +53,7 @@ export default {
 		draggable: false,
 
 		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
-		isNodeView: true,
+		// isNodeView: true,
 		onInsert: (view) => {
 			const equationNode = view.state.schema.nodes.equation.create({
 				value: '\\sum_ix^i',
