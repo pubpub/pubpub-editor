@@ -5,18 +5,12 @@ import { Step } from 'prosemirror-transform';
 import { Node } from 'prosemirror-model';
 import {
 	compressSelectionJSON,
-	compressStateJSON,
 	compressStepJSON,
 	uncompressSelectionJSON,
 	uncompressStepJSON,
 } from 'prosemirror-compress-pubpub';
 import uuidv4 from 'uuid/v4';
-import {
-	generateHash,
-	restoreDiscussionMaps,
-	storeCheckpoint,
-	firebaseTimestamp,
-} from '../utilities';
+import { generateHash, storeCheckpoint, firebaseTimestamp } from '../utilities';
 
 /*
 	Load doc from firebase

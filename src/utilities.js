@@ -526,7 +526,7 @@ export const restoreDiscussionMaps = (firebaseRef, schema, useMergeSteps) => {
 		)
 		.catch((err) => {
 			if (err.message === 'No Discussions to map') {
-				return null;
+				return;
 			}
 			console.error(err);
 		});
@@ -576,7 +576,12 @@ export const removeLocalHighlight = (editorView, id) => {
 	editorView.dispatch(transaction);
 };
 
-export const convertLocalHighlightToDiscussion = (editorView, id, firebaseRef) => {
+export const convertLocalHighlightToDiscussion = (
+	editorView,
+	highlightId,
+	discussionId,
+	firebaseRef,
+) => {
 	const localHighlight = editorView.state.localHighlights$.activeDecorationSet
 		.find()
 		.filter((decoration) => {
@@ -584,7 +589,7 @@ export const convertLocalHighlightToDiscussion = (editorView, id, firebaseRef) =
 		})
 		.reduce((prev, curr) => {
 			const decorationId = curr.type.attrs.class.replace('local-highlight lh-', '');
-			if (decorationId === id) {
+			if (decorationId === highlightId) {
 				return curr;
 			}
 			return prev;
@@ -594,9 +599,15 @@ export const convertLocalHighlightToDiscussion = (editorView, id, firebaseRef) =
 		localHighlight.from,
 		localHighlight.to,
 	);
-	firebaseRef
+	removeLocalHighlight(editorView, highlightId);
+	return firebaseRef
 		.child('discussions')
-		.child(id)
+		.child(discussionId)
 		.set(newDiscussionData);
-	removeLocalHighlight(editorView, id);
+};
+
+export const forceRemoveDiscussionHighlight = (editorView, discussionId) => {
+	const transaction = editorView.state.tr;
+	transaction.setMeta('removeDiscussion', { id: discussionId });
+	editorView.dispatch(transaction);
 };
