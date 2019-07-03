@@ -49,6 +49,14 @@ const RenderTest = (props) => {
 
 storiesOf('RenderTest', module).add('default', () => (
 	<React.Fragment>
+		{/* <div className="render-test" style={{ borderBottom: '1px solid black' }}>
+			<h1>Example Structure</h1>
+			<div className="grid">
+				<div className="editor client">Client Render</div>
+				<div className="editor server">Server render</div>
+			</div>
+			<div className="html">HTML Diff</div>
+		</div> */}
 		{Object.keys(testDocs).map((key) => {
 			return <RenderTest key={key} title={key} doc={testDocs[key]} />;
 		})}

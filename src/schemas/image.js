@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from '../components/Image/Image';
-import { renderHtmlChildren } from '../utilities';
+import { renderHtmlChildren, generateStyles } from '../utilities';
 
 export default {
 	image: {
@@ -41,7 +41,7 @@ export default {
 					{
 						src: node.attrs.url,
 						alt: node.attrs.caption,
-						width: `${node.attrs.size}%`,
+						...generateStyles(node.attrs),
 					},
 				],
 				['figcaption', {}, renderHtmlChildren(node, node.attrs.caption)],

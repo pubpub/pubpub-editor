@@ -546,7 +546,7 @@ export default {
 					url: 'https://assets.pubpub.org/_testing/41517872250621.png',
 					caption: 'Hello there!',
 					size: 50,
-					align: 'center',
+					align: 'left',
 				},
 			},
 		],

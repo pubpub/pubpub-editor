@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import { Selection } from 'prosemirror-state';
 import { DOMParser, Schema, Slice, Node } from 'prosemirror-model';
 import {
@@ -154,6 +155,17 @@ export const renderHtmlChildren = (node, html) => {
 	const outputElem = document.createElement('span');
 	outputElem.innerHTML = html;
 	return outputElem;
+};
+
+export const generateStyles = (attrs) => {
+	let width = attrs.size ? `${attrs.size}%` : undefined;
+	if (attrs.align === 'full') {
+		width = '100%';
+	}
+	return {
+		width: width,
+		height: attrs.height ? `${attrs.height}%` : undefined,
+	};
 };
 
 export const getJSON = (editorView) => {
