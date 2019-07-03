@@ -1,9 +1,10 @@
 import React from 'react';
 import Video from '../components/Video/Video';
+import { renderHtmlChildren } from '../utilities';
 
 export default {
 	video: {
-		atom: true,
+		// atom: true,
 		attrs: {
 			url: { default: null },
 			size: { default: 50 }, // number as percentage
@@ -12,13 +13,16 @@ export default {
 		},
 		parseDOM: [
 			{
-				tag: 'video',
+				tag: 'figure',
 				getAttrs: (node) => {
+					if (node.getAttribute('data-node-type') !== 'video') {
+						return false;
+					}
 					return {
-						url: node.getAttribute('src') || null,
+						url: node.firstChild.getAttribute('src') || null,
 						size: Number(node.getAttribute('data-size')) || 50,
 						align: node.getAttribute('data-align') || 'center',
-						caption: node.getAttribute('alt') || '',
+						caption: node.firstChild.getAttribute('alt') || '',
 					};
 				},
 			},
@@ -26,24 +30,27 @@ export default {
 		toDOM: (node) => {
 			return [
 				'figure',
-				{},
+				{
+					'data-node-type': 'video',
+					'data-size': node.attrs.size,
+					'data-align': node.attrs.align,
+				},
 				[
 					'video',
 					{
 						controls: true,
 						preload: 'metadata',
 						src: node.attrs.url,
-						'data-size': node.attrs.size,
-						'data-align': node.attrs.align,
 						alt: node.attrs.caption,
+						width: `${node.attrs.size}%`,
 					},
 				],
-				['figcaption', {}, node.attrs.caption],
+				['figcaption', {}, renderHtmlChildren(node, node.attrs.caption)],
 			];
 		},
 		inline: false,
 		group: 'block',
-		draggable: false,
+		// draggable: false,
 
 		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
 		// isNodeView: true,

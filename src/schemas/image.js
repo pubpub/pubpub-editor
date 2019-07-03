@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from '../components/Image/Image';
+import { renderHtmlChildren } from '../utilities';
 
 export default {
 	image: {
@@ -12,26 +13,38 @@ export default {
 		},
 		parseDOM: [
 			{
-				tag: 'img',
+				tag: 'figure',
 				getAttrs: (node) => {
+					const nodeType = node.getAttribute('data-node-type');
+					if (nodeType !== 'image') {
+						return false;
+					}
 					return {
-						url: node.getAttribute('src') || null,
+						url: node.firstChild.getAttribute('src') || null,
 						size: Number(node.getAttribute('data-size')) || 50,
 						align: node.getAttribute('data-align') || 'center',
-						caption: node.getAttribute('alt') || '',
+						caption: node.firstChild.getAttribute('alt') || '',
 					};
 				},
 			},
 		],
 		toDOM: (node) => {
 			return [
-				'img',
+				'figure',
 				{
-					src: node.attrs.url,
+					'data-node-type': 'image',
 					'data-size': node.attrs.size,
 					'data-align': node.attrs.align,
-					alt: node.attrs.caption,
 				},
+				[
+					'img',
+					{
+						src: node.attrs.url,
+						alt: node.attrs.caption,
+						width: `${node.attrs.size}%`,
+					},
+				],
+				['figcaption', {}, renderHtmlChildren(node, node.attrs.caption)],
 			];
 		},
 		inline: false,
@@ -39,7 +52,7 @@ export default {
 		draggable: true,
 
 		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
-		isNodeView: true,
+		// isNodeView: true,
 		onInsert: (view, attrs) => {
 			const imageNode = view.state.schema.nodes.image.create(attrs);
 			const transaction = view.state.tr.replaceSelectionWith(imageNode);
@@ -51,17 +64,17 @@ export default {
 			},
 			linkToSrc: true,
 		},
-		toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
-			return (
-				<div data-align-breakout={node.attrs.breakout} key={node.currIndex}>
-					<Image
-						attrs={node.attrs}
-						options={options}
-						isSelected={isSelected}
-						isEditable={isEditable}
-					/>
-				</div>
-			);
-		},
+		// toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
+		// 	return (
+		// 		<div data-align-breakout={node.attrs.breakout} key={node.currIndex}>
+		// 			<Image
+		// 				attrs={node.attrs}
+		// 				options={options}
+		// 				isSelected={isSelected}
+		// 				isEditable={isEditable}
+		// 			/>
+		// 		</div>
+		// 	);
+		// },
 	},
 };

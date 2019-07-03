@@ -59,7 +59,7 @@ const renderReactFromSpec = (elem, key, holeContent) => {
 		return null;
 	}
 	if (typeof elem === 'string') {
-		return elem;
+		return holeContent || elem;
 	}
 	if (elem.nodeType || elem.$$typeof) {
 		return elem;
@@ -75,18 +75,24 @@ const renderReactFromSpec = (elem, key, holeContent) => {
 		attrs = {};
 	}
 
-	if (elem[2] === 0) {
+	const start = hasAttrs ? 2 : 1;
+	if (holeContent && !Array.isArray(elem[start])) {
 		children = holeContent;
-	} else if (typeof elem[2] === 'string') {
-		children = elem[2];
+	} else if (typeof elem[start] === 'string') {
+		children = elem[start];
 	} else {
-		const start = attrs ? 2 : 1;
 		const childArray = elem.slice(start, elem.length);
 		if (childArray.length) {
-			children = childArray.map((child) => {
-				return renderReactFromSpec(child);
+			children = childArray.map((child, index) => {
+				const childKey = `${key}-${index}`;
+				return renderReactFromSpec(child, childKey, holeContent);
 			});
 		}
+	}
+
+	if ('class' in attrs) {
+		attrs.className = attrs.class;
+		delete attrs.class;
 	}
 	return React.createElement(elem[0], { ...attrs, key: key }, children);
 };
@@ -102,12 +108,12 @@ export const renderStatic = (schema = buildSchema(), nodeArray, editorProps) => 
 			children = marks.reduce((prev, curr, markIndex) => {
 				const currIndex = `${index}-${markIndex}`;
 				const MarkComponent = schema.marks[curr.type].spec;
-				return renderReactFromSpec(MarkComponent.toDOM(curr), currIndex);
+				// console.log('mark reduce', prev, curr, markIndex);
+				return renderReactFromSpec(MarkComponent.toDOM(curr), currIndex, prev);
 				// .toStatic(curr, prev, currIndex);
 				// return MarkComponent;
 			}, node.text);
 		}
-
 		// const nodeWithIndex = node;
 		// nodeWithIndex.currIndex = index;
 		// const nodeOptions = editorProps.nodeOptions || {};
@@ -124,15 +130,30 @@ export const renderStatic = (schema = buildSchema(), nodeArray, editorProps) => 
 		// return NodeComponent;
 
 		const NodeComponent = schema.nodes[node.type].spec;
-
+		// console.log('node is', node);
+		// console.log('Calculated children are', children);
+		// console.log('NodeComponent is', NodeComponent);
+		// console.log('-----');
 		const output = renderReactFromSpec(
 			NodeComponent.toDOM({ ...node, attrs: { ...node.attrs, key: index } }),
 			index,
 			children,
 		);
-		console.log(node, NodeComponent, children, output);
+		// console.log(node, NodeComponent, children, output);
 		return output;
 	});
+};
+
+export const renderHtmlChildren = (node, html) => {
+	const hasKey = node.attrs.key !== undefined;
+	if (hasKey) {
+		/* eslint-disable-next-line react/no-danger */
+		return <span key={node.attrs.key} dangerouslySetInnerHTML={{ __html: html }} />;
+	}
+
+	const outputElem = document.createElement('span');
+	outputElem.innerHTML = html;
+	return outputElem;
 };
 
 export const getJSON = (editorView) => {

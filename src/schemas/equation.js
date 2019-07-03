@@ -1,5 +1,6 @@
 import React from 'react';
 import Latex from '../components/Latex/Latex';
+import { renderHtmlChildren } from '../utilities';
 
 export default {
 	equation: {
@@ -10,42 +11,29 @@ export default {
 		},
 		parseDOM: [
 			{
-				tag: 'math-inline',
+				tag: 'span',
 				getAttrs: (node) => {
+					if (node.getAttribute('data-node-type') !== 'math-inline') {
+						return false;
+					}
+
 					return {
 						value: node.getAttribute('data-value') || '',
-						html: node.getAttribute('data-html') || '',
+						// html: node.getAttribute('data-html') || '',
+						html: node.firstChild.innerHTML || '',
 					};
 				},
 			},
 		],
 		toDOM: (node) => {
-			// return [
-			// 	'math-inline',
-			// 	{
-			// 		'data-value': node.attrs.value,
-			// 		'data-html': node.attrs.html,
-			// 	},
-			// ];
-			console.log('equation node', node);
-			const thing = node.attrs.key ? (
-				<span dangerouslySetInnerHTML={{ __html: node.attrs.html }} />
-			) : (
-				document.createElement('span')
-			);
-			if (!node.attrs.key) {
-				thing.innerHTML = node.attrs.html;
-			}
-			return thing;
 			return [
-				'math-inline',
+				'span',
 				{
-					class: 'latex-wrapper',
-					'data-type': 'math-inline',
+					'data-node-type': 'math-inline',
 					'data-value': node.attrs.value,
-					'data-html': node.attrs.html,
+					// 'data-html': node.attrs.html,
 				},
-				thing,
+				renderHtmlChildren(node, node.attrs.html),
 			];
 		},
 		inline: true,
@@ -64,17 +52,17 @@ export default {
 			view.dispatch(transaction);
 		},
 		defaultOptions: {},
-		toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
-			return (
-				<Latex
-					key={node.currIndex}
-					attrs={node.attrs}
-					options={options}
-					isSelected={isSelected}
-					isEditable={isEditable}
-				/>
-			);
-		},
+		// toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
+		// 	return (
+		// 		<Latex
+		// 			key={node.currIndex}
+		// 			attrs={node.attrs}
+		// 			options={options}
+		// 			isSelected={isSelected}
+		// 			isEditable={isEditable}
+		// 		/>
+		// 	);
+		// },
 	},
 	block_equation: {
 		atom: true,

@@ -8,7 +8,6 @@ import { requiredPlugins, optionalPlugins } from './plugins';
 import NodeViewReact from './nodeViewReact';
 import { renderStatic, buildSchema } from './utilities';
 
-
 require('./style.scss');
 
 const propTypes = {
@@ -28,6 +27,7 @@ const propTypes = {
 	getHighlightContent: PropTypes.func,
 	handleSingleClick: PropTypes.func,
 	handleDoubleClick: PropTypes.func,
+	isServer: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -44,6 +44,7 @@ const defaultProps = {
 	getHighlightContent: () => {},
 	handleSingleClick: undefined,
 	handleDoubleClick: undefined,
+	isServer: false,
 };
 
 class Editor extends Component {
@@ -138,30 +139,35 @@ class Editor extends Component {
 		});
 
 		/* Create and editorView and mount it into the editorRef node */
-		const editorView = new EditorView(
-			{ mount: this.editorRef.current },
-			{
-				state: state,
-				spellcheck: true,
-				editable: () => {
-					return !this.props.isReadOnly;
-				},
-				nodeViews: this.nodeViews,
-				handleKeyDown: keydownHandler({
-					/* Block Ctrl-S from launching the browser Save window */
-					'Mod-s': () => {
-						return true;
+		if (!this.props.isServer) {
+			const editorView = new EditorView(
+				{ mount: this.editorRef.current },
+				{
+					state: state,
+					spellcheck: true,
+					editable: () => {
+						return !this.props.isReadOnly;
 					},
-					// TODO: We need something here that allows the dev to
-					// disable certain keys when a inline-menu is open for example
-				}),
-				handleClickOn: this.props.handleSingleClick,
-				handleDoubleClickOn: this.props.handleDoubleClick,
-			},
-		);
+					nodeViews: this.nodeViews,
+					handleKeyDown: keydownHandler({
+						/* Block Ctrl-S from launching the browser Save window */
+						'Mod-s': () => {
+							return true;
+						},
+						// TODO: We need something here that allows the dev to
+						// disable certain keys when a inline-menu is open for example
+					}),
+					handleClickOn: this.props.handleSingleClick,
+					handleDoubleClickOn: this.props.handleDoubleClick,
+				},
+			);
 
-		const emptyInitTransaction = editorView.state.tr;
-		editorView.dispatch(emptyInitTransaction);
+			const emptyInitTransaction = editorView.state.tr;
+			editorView.dispatch(emptyInitTransaction);
+			setTimeout(() => {
+				editorView.dispatch(emptyInitTransaction);
+			}, 0);
+		}
 	}
 
 	render() {
@@ -169,9 +175,17 @@ class Editor extends Component {
 		/* render a static version of the doc for server-side */
 		/* friendliness. This static version is overwritten when the */
 		/* editorView is mounted into the editor dom node. */
-		console.log('=====');
-		console.log(ReactDOMServer.renderToStaticMarkup(renderStatic(this.schema, this.props.initialContent.content, this.props)));
-		console.log('=====');
+		// console.log('=====');
+		// console.log(ReactDOMServer.renderToStaticMarkup(renderStatic(this.schema, this.props.initialContent.content, this.props)));
+		// console.log('=====');
+		if (this.props.isServer) {
+			// console.log('=====');
+			const serverHtml = ReactDOMServer.renderToStaticMarkup(
+				renderStatic(this.schema, this.props.initialContent.content, this.props),
+			);
+			// console.log('=====');
+			this.props.onChange(serverHtml);
+		}
 		return (
 			<div
 				className={`editor ProseMirror ${this.props.isReadOnly ? 'read-only' : ''}`}
