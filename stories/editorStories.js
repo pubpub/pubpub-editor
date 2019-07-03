@@ -174,6 +174,7 @@ storiesOf('Editor', module)
 								convertLocalHighlightToDiscussion(
 									changeObject.view,
 									newDiscussionId,
+									newDiscussionId,
 									firebaseBranchRef,
 								),
 							);
