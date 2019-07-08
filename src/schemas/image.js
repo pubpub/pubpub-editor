@@ -15,8 +15,7 @@ export default {
 			{
 				tag: 'figure',
 				getAttrs: (node) => {
-					const nodeType = node.getAttribute('data-node-type');
-					if (nodeType !== 'image') {
+					if (node.getAttribute('data-node-type') !== 'image') {
 						return false;
 					}
 					return {
@@ -49,7 +48,7 @@ export default {
 		},
 		inline: false,
 		group: 'block',
-		draggable: true,
+		// draggable: true,
 
 		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
 		// isNodeView: true,
