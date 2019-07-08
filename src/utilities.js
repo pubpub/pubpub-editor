@@ -576,12 +576,7 @@ export const removeLocalHighlight = (editorView, id) => {
 	editorView.dispatch(transaction);
 };
 
-export const convertLocalHighlightToDiscussion = (
-	editorView,
-	highlightId,
-	discussionId,
-	firebaseRef,
-) => {
+export const convertLocalHighlightToDiscussion = (editorView, highlightId, firebaseRef) => {
 	const localHighlight = editorView.state.localHighlights$.activeDecorationSet
 		.find()
 		.filter((decoration) => {
@@ -602,12 +597,35 @@ export const convertLocalHighlightToDiscussion = (
 	removeLocalHighlight(editorView, highlightId);
 	return firebaseRef
 		.child('discussions')
-		.child(discussionId)
+		.child(highlightId)
 		.set(newDiscussionData);
 };
 
-export const forceRemoveDiscussionHighlight = (editorView, discussionId) => {
+export const reanchorDiscussion = (editorView, firebaseRef, discussionId) => {
+	const collabPlugin = editorView.state.collaborative$ || {};
+	const newCurrentKey = collabPlugin.mostRecentRemoteKey;
+	const selection = editorView.state.selection;
+	const newAnchor = selection.anchor;
+	const newHead = selection.head;
+
 	const transaction = editorView.state.tr;
 	transaction.setMeta('removeDiscussion', { id: discussionId });
 	editorView.dispatch(transaction);
+	firebaseRef
+		.child('discussions')
+		.child(discussionId)
+		.update({
+			currentKey: newCurrentKey,
+			selection: {
+				a: newAnchor,
+				h: newHead,
+				t: 'text',
+			},
+		});
 };
+
+// export const forceRemoveDiscussionHighlight = (editorView, discussionId) => {
+// 	const transaction = editorView.state.tr;
+// 	transaction.setMeta('removeDiscussion', { id: discussionId });
+// 	editorView.dispatch(transaction);
+// };
