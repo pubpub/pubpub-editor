@@ -601,6 +601,41 @@ export const convertLocalHighlightToDiscussion = (editorView, highlightId, fireb
 		.set(newDiscussionData);
 };
 
+export const getLocalHighlightText = (editorView, highlightId) => {
+	const localHighlight = editorView.state.localHighlights$.activeDecorationSet
+		.find()
+		.filter((decoration) => {
+			return decoration.type.attrs && decoration.type.attrs.class;
+		})
+		.reduce((prev, curr) => {
+			const decorationId = curr.type.attrs.class.replace('local-highlight lh-', '');
+			if (decorationId === highlightId) {
+				return curr;
+			}
+			return prev;
+		}, undefined);
+	if (!localHighlight) {
+		return null;
+	}
+
+	const fromPos = localHighlight.from;
+	const toPos = localHighlight.to;
+	const exact = editorView.state.doc.textBetween(fromPos, toPos);
+	const prefix = editorView.state.doc.textBetween(
+		Math.max(0, fromPos - 10),
+		Math.max(0, fromPos),
+	);
+	const suffix = editorView.state.doc.textBetween(
+		Math.min(editorView.state.doc.nodeSize - 2, toPos),
+		Math.min(editorView.state.doc.nodeSize - 2, toPos + 10),
+	);
+	return {
+		exact: exact,
+		prefix: prefix,
+		suffix: suffix,
+	};
+};
+
 export const reanchorDiscussion = (editorView, firebaseRef, discussionId) => {
 	const collabPlugin = editorView.state.collaborative$ || {};
 	const newCurrentKey = collabPlugin.mostRecentRemoteKey;
