@@ -175,6 +175,14 @@ export const createBranch = (baseFirebaseRef, newFirebaseRef, versionNumber) => 
 	});
 };
 
+export const storeCheckpoint = (firebaseRef, docNode, keyNumber) => {
+	return firebaseRef.child('checkpoint').set({
+		d: compressStateJSON({ doc: docNode.toJSON() }).d,
+		k: keyNumber,
+		t: firebaseTimestamp,
+	});
+};
+
 export const mergeBranch = (sourceFirebaseRef, destinationFirebaseRef) => {
 	/* TODO-BRANCH At the moment, this merge simply appends new changes in a merge */
 	/* It does not properly handle 'commonAncestor' or any similar */
@@ -213,7 +221,7 @@ export const mergeBranch = (sourceFirebaseRef, destinationFirebaseRef) => {
 		});
 };
 
-export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
+export const getFirebaseDoc = (firebaseRef, schema, versionNumber, updateOutdatedCheckpoint) => {
 	let mostRecentRemoteKey;
 	return firebaseRef
 		.child('checkpoint')
@@ -326,6 +334,14 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 				return stepResult.doc;
 			}, newDoc);
 			const currentKey = Number(versionNumber || latestKey);
+
+			/* Allow checkpoint to be stored if it is outdated. */
+			/* This is an opportune time to do so since we've */
+			/* already built the latest doc. */
+			const checkpointOutdated = !!steps.length;
+			if (checkpointOutdated && !versionNumber && updateOutdatedCheckpoint) {
+				storeCheckpoint(firebaseRef, updatedDoc, mostRecentRemoteKey);
+			}
 			return {
 				content: updatedDoc.toJSON(),
 				mostRecentRemoteKey: mostRecentRemoteKey,
@@ -530,14 +546,6 @@ export const restoreDiscussionMaps = (firebaseRef, schema, useMergeSteps) => {
 			}
 			console.error(err);
 		});
-};
-
-export const storeCheckpoint = (firebaseRef, docNode, keyNumber) => {
-	return firebaseRef.child('checkpoint').set({
-		d: compressStateJSON({ doc: docNode.toJSON() }).d,
-		k: keyNumber,
-		t: firebaseTimestamp,
-	});
 };
 
 export const formatDiscussionData = (editorView, from, to) => {
