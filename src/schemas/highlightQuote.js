@@ -1,5 +1,5 @@
-import React from 'react';
-import HighlightQuote from '../components/HighlightQuote/HighlightQuote';
+// import React from 'react';
+// import HighlightQuote from '../components/HighlightQuote/HighlightQuote';
 
 export default {
 	highlightQuote: {
@@ -54,16 +54,17 @@ export default {
 		isNodeView: true,
 		onInsert: undefined,
 		defaultOptions: {},
-		toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
-			return (
-				<HighlightQuote
-					key={node.currIndex}
-					attrs={node.attrs}
-					options={options}
-					isSelected={isSelected}
-					isEditable={isEditable}
-				/>
-			);
+		toStatic: (/* node, options, isSelected, isEditable, editorProps, children */) => {
+			return null;
+			// return (
+			// 	<HighlightQuote
+			// 		key={node.currIndex}
+			// 		attrs={node.attrs}
+			// 		options={options}
+			// 		isSelected={isSelected}
+			// 		isEditable={isEditable}
+			// 	/>
+			// );
 		},
 	},
 };
