@@ -155,13 +155,13 @@ export const createBranch = (baseFirebaseRef, newFirebaseRef, versionNumber) => 
 		.child('changes')
 		.orderByKey()
 		.startAt(String(0))
-		.endAt(typeof versionNumber === 'number' ? String(versionNumber) : null)
+		.endAt(String(versionNumber))
 		.once('value');
 	const getMerges = baseFirebaseRef
 		.child('merges')
 		.orderByKey()
 		.startAt(String(0))
-		.endAt(typeof versionNumber === 'number' ? String(versionNumber) : null)
+		.endAt(String(versionNumber))
 		.once('value');
 	return Promise.all([getChanges, getMerges]).then(([changesSnapshot, mergesSnapshot]) => {
 		const changesSnapshotVal = changesSnapshot.val() || {};
