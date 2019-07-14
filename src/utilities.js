@@ -176,6 +176,9 @@ export const createBranch = (baseFirebaseRef, newFirebaseRef, versionNumber) => 
 };
 
 export const getKeysAtData = (firstChange, latestChange) => {
+	if (!firstChange.toJSON() || !latestChange.toJSON()) {
+		return undefined;
+	}
 	return {
 		firstKeyAt: new Date(Object.values(firstChange.toJSON())[0].t),
 		latestKeyAt: new Date(Object.values(latestChange.toJSON())[0].t),
