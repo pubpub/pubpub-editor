@@ -469,7 +469,9 @@ export const restoreDiscussionMaps = (firebaseRef, schema, useMergeSteps) => {
 				/* across a merge are needed, and we're calling from without */
 				/* userMergeSteps (i.e. we're calling from clientside) */
 				const isMissingKeys = Object.keys(allChanges)
-					.sort()
+					.sort((foo, bar) => {
+						return Number(foo) - Number(bar);
+					})
 					.reduce((prev, curr, index, array) => {
 						const isLastElement = index === array.length - 1;
 						const nextElement = array[index + 1];
