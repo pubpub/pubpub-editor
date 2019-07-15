@@ -258,6 +258,24 @@ export const createBranch = (baseFirebaseRef, newFirebaseRef, versionNumber) => 
 	});
 };
 
+export const getKeysAtData = (firstChange, latestChange) => {
+	if (!firstChange || !latestChange || !firstChange.toJSON() || !latestChange.toJSON()) {
+		return undefined;
+	}
+	return {
+		firstKeyAt: new Date(Object.values(firstChange.toJSON())[0].t),
+		latestKeyAt: new Date(Object.values(latestChange.toJSON())[0].t),
+	};
+};
+
+export const storeCheckpoint = (firebaseRef, docNode, keyNumber) => {
+	return firebaseRef.child('checkpoint').set({
+		d: compressStateJSON({ doc: docNode.toJSON() }).d,
+		k: keyNumber,
+		t: firebaseTimestamp,
+	});
+};
+
 export const mergeBranch = (sourceFirebaseRef, destinationFirebaseRef) => {
 	/* TODO-BRANCH At the moment, this merge simply appends new changes in a merge */
 	/* It does not properly handle 'commonAncestor' or any similar */
@@ -296,7 +314,7 @@ export const mergeBranch = (sourceFirebaseRef, destinationFirebaseRef) => {
 		});
 };
 
-export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
+export const getFirebaseDoc = (firebaseRef, schema, versionNumber, updateOutdatedCheckpoint) => {
 	let mostRecentRemoteKey;
 	return firebaseRef
 		.child('checkpoint')
@@ -336,6 +354,11 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 				.startAt(String(mostRecentRemoteKey + 1))
 				.endAt(String(versionNumber))
 				.once('value');
+			const getFirstChange = firebaseRef
+				.child('changes')
+				.orderByKey()
+				.limitToFirst(1)
+				.once('value');
 			const getLatestChange = firebaseRef
 				.child('changes')
 				.orderByKey()
@@ -347,81 +370,103 @@ export const getFirebaseDoc = (firebaseRef, schema, versionNumber) => {
 				.limitToLast(1)
 				.once('value');
 
-			return Promise.all([newDoc, getChanges, getMerges, getLatestChange, getLatestMerge]);
+			return Promise.all([
+				newDoc,
+				getChanges,
+				getMerges,
+				getFirstChange,
+				getLatestChange,
+				getLatestMerge,
+			]);
 		})
-		.then(([newDoc, changesSnapshot, mergesSnapshot, latestChange, latestMerge]) => {
-			const changesSnapshotVal = changesSnapshot.val() || {};
-			const mergesSnapshotVal = mergesSnapshot.val() || {};
-			const allKeyables = { ...changesSnapshotVal, ...mergesSnapshotVal };
-			const steps = [];
-			const stepClientIds = [];
-			const keys = Object.keys(allKeyables);
-			mostRecentRemoteKey = keys.length ? Math.max(...keys) : mostRecentRemoteKey;
+		.then(
+			([newDoc, changesSnapshot, mergesSnapshot, firstChange, latestChange, latestMerge]) => {
+				const changesSnapshotVal = changesSnapshot.val() || {};
+				const mergesSnapshotVal = mergesSnapshot.val() || {};
+				const allKeyables = { ...changesSnapshotVal, ...mergesSnapshotVal };
+				const steps = [];
+				const stepClientIds = [];
+				const keys = Object.keys(allKeyables);
+				mostRecentRemoteKey = keys.length ? Math.max(...keys) : mostRecentRemoteKey;
 
-			const latestUpdates = {
-				...latestChange.val(),
-				...latestMerge.val(),
-			};
-			const latestKey = Object.keys(latestUpdates)
-				.map((key) => parseInt(key, 10))
-				.reduce((max, next) => Math.max(max, next), 0);
+				const latestUpdates = {
+					...latestChange.val(),
+					...latestMerge.val(),
+				};
+				const latestKey = Object.keys(latestUpdates)
+					.map((key) => parseInt(key, 10))
+					.reduce((max, next) => Math.max(max, next), 0);
 
-			const latestUpdateWrapped = latestUpdates[latestKey];
-			const latestUpdate = Array.isArray(latestUpdateWrapped)
-				? latestUpdateWrapped[latestUpdateWrapped.length - 1]
-				: latestUpdateWrapped;
+				const latestUpdateWrapped = latestUpdates[latestKey];
+				const latestUpdate = Array.isArray(latestUpdateWrapped)
+					? latestUpdateWrapped[latestUpdateWrapped.length - 1]
+					: latestUpdateWrapped;
 
-			const latestTimestamp = latestUpdate && latestUpdate.t;
+				const latestTimestamp = latestUpdate && latestUpdate.t;
 
-			const flattenedMergeStepArray = flattenMergeStepArray(allKeyables);
+				const flattenedMergeStepArray = flattenMergeStepArray(allKeyables);
 
-			const currentTimestamp =
-				flattenedMergeStepArray.length > 0
-					? flattenedMergeStepArray[flattenedMergeStepArray.length - 1].t
-					: null;
+				const currentTimestamp =
+					flattenedMergeStepArray.length > 0
+						? flattenedMergeStepArray[flattenedMergeStepArray.length - 1].t
+						: null;
 
-			/* Uncompress steps and add stepClientIds */
-			flattenedMergeStepArray.forEach((stepContent) => {
-				const compressedStepsJSON = stepContent.s;
-				const uncompressedSteps = compressedStepsJSON.map((compressedStepJSON) => {
-					return Step.fromJSON(schema, uncompressStepJSON(compressedStepJSON));
+				/* Uncompress steps and add stepClientIds */
+				flattenedMergeStepArray.forEach((stepContent) => {
+					const compressedStepsJSON = stepContent.s;
+					const uncompressedSteps = compressedStepsJSON.map((compressedStepJSON) => {
+						return Step.fromJSON(schema, uncompressStepJSON(compressedStepJSON));
+					});
+					steps.push(...uncompressedSteps);
+					stepClientIds.push(
+						...new Array(compressedStepsJSON.length).fill(stepContent.c),
+					);
 				});
-				steps.push(...uncompressedSteps);
-				stepClientIds.push(...new Array(compressedStepsJSON.length).fill(stepContent.c));
-			});
-			/* Uncompress steps and add stepClientIds */
-			// Object.keys(changesSnapshotVal).forEach((key) => {
-			// 	console.log('isArray', Array.isArray(changesSnapshotVal[key]));
-			// 	const compressedStepsJSON = changesSnapshotVal[key].s;
-			// 	const uncompressedSteps = compressedStepsJSON.map((compressedStepJSON) => {
-			// 		return Step.fromJSON(schema, uncompressStepJSON(compressedStepJSON));
-			// 	});
-			// 	steps.push(...uncompressedSteps);
-			// 	stepClientIds.push(
-			// 		...new Array(compressedStepsJSON.length).fill(changesSnapshotVal[key].c),
-			// 	);
-			// });
-			const updatedDoc = steps.reduce((prev, curr) => {
-				const stepResult = curr.apply(prev);
-				if (stepResult.failed) {
-					console.error('Failed with ', stepResult.failed);
+				/* Uncompress steps and add stepClientIds */
+				// Object.keys(changesSnapshotVal).forEach((key) => {
+				// 	console.log('isArray', Array.isArray(changesSnapshotVal[key]));
+				// 	const compressedStepsJSON = changesSnapshotVal[key].s;
+				// 	const uncompressedSteps = compressedStepsJSON.map((compressedStepJSON) => {
+				// 		return Step.fromJSON(schema, uncompressStepJSON(compressedStepJSON));
+				// 	});
+				// 	steps.push(...uncompressedSteps);
+				// 	stepClientIds.push(
+				// 		...new Array(compressedStepsJSON.length).fill(changesSnapshotVal[key].c),
+				// 	);
+				// });
+				const updatedDoc = steps.reduce((prev, curr) => {
+					const stepResult = curr.apply(prev);
+					if (stepResult.failed) {
+						console.error('Failed with ', stepResult.failed);
+					}
+					return stepResult.doc;
+				}, newDoc);
+				const currentKey = Number(versionNumber || latestKey);
+
+				/* Allow checkpoint to be stored if it is outdated. */
+				/* This is an opportune time to do so since we've */
+				/* already built the latest doc. */
+				const checkpointOutdated = !!steps.length;
+				if (checkpointOutdated && !versionNumber && updateOutdatedCheckpoint) {
+					storeCheckpoint(firebaseRef, updatedDoc, mostRecentRemoteKey);
 				}
-				return stepResult.doc;
-			}, newDoc);
-			const currentKey = Number(versionNumber || latestKey);
-			return {
-				content: updatedDoc.toJSON(),
-				mostRecentRemoteKey: mostRecentRemoteKey,
-				historyData: {
-					timestamps: {
-						[currentKey]: currentTimestamp,
-						[latestKey]: latestTimestamp,
+				return {
+					content: updatedDoc.toJSON(),
+					mostRecentRemoteKey: mostRecentRemoteKey,
+					historyData: {
+						timestamps: {
+							[currentKey]: currentTimestamp,
+							[latestKey]: latestTimestamp,
+						},
+						currentKey: currentKey,
+						latestKey: latestKey,
 					},
-					currentKey: currentKey,
-					latestKey: latestKey,
-				},
-			};
-		})
+					checkpointUpdates: checkpointOutdated
+						? getKeysAtData(firstChange, latestChange)
+						: undefined,
+				};
+			},
+		)
 		.catch((firebaseErr) => {
 			console.error('firebaseErr', firebaseErr);
 		});
@@ -507,7 +552,9 @@ export const restoreDiscussionMaps = (firebaseRef, schema, useMergeSteps) => {
 				/* across a merge are needed, and we're calling from without */
 				/* userMergeSteps (i.e. we're calling from clientside) */
 				const isMissingKeys = Object.keys(allChanges)
-					.sort()
+					.sort((foo, bar) => {
+						return Number(foo) - Number(bar);
+					})
 					.reduce((prev, curr, index, array) => {
 						const isLastElement = index === array.length - 1;
 						const nextElement = array[index + 1];
@@ -609,18 +656,10 @@ export const restoreDiscussionMaps = (firebaseRef, schema, useMergeSteps) => {
 		)
 		.catch((err) => {
 			if (err.message === 'No Discussions to map') {
-				return null;
+				return;
 			}
 			console.error(err);
 		});
-};
-
-export const storeCheckpoint = (firebaseRef, docNode, keyNumber) => {
-	return firebaseRef.child('checkpoint').set({
-		d: compressStateJSON({ doc: docNode.toJSON() }).d,
-		k: keyNumber,
-		t: firebaseTimestamp,
-	});
 };
 
 export const formatDiscussionData = (editorView, from, to) => {
@@ -659,7 +698,7 @@ export const removeLocalHighlight = (editorView, id) => {
 	editorView.dispatch(transaction);
 };
 
-export const convertLocalHighlightToDiscussion = (editorView, id, firebaseRef) => {
+export const convertLocalHighlightToDiscussion = (editorView, highlightId, firebaseRef) => {
 	const localHighlight = editorView.state.localHighlights$.activeDecorationSet
 		.find()
 		.filter((decoration) => {
@@ -667,7 +706,7 @@ export const convertLocalHighlightToDiscussion = (editorView, id, firebaseRef) =
 		})
 		.reduce((prev, curr) => {
 			const decorationId = curr.type.attrs.class.replace('local-highlight lh-', '');
-			if (decorationId === id) {
+			if (decorationId === highlightId) {
 				return curr;
 			}
 			return prev;
@@ -677,9 +716,73 @@ export const convertLocalHighlightToDiscussion = (editorView, id, firebaseRef) =
 		localHighlight.from,
 		localHighlight.to,
 	);
+	removeLocalHighlight(editorView, highlightId);
+	return firebaseRef
+		.child('discussions')
+		.child(highlightId)
+		.set(newDiscussionData);
+};
+
+export const getLocalHighlightText = (editorView, highlightId) => {
+	const localHighlight = editorView.state.localHighlights$.activeDecorationSet
+		.find()
+		.filter((decoration) => {
+			return decoration.type.attrs && decoration.type.attrs.class;
+		})
+		.reduce((prev, curr) => {
+			const decorationId = curr.type.attrs.class.replace('local-highlight lh-', '');
+			if (decorationId === highlightId) {
+				return curr;
+			}
+			return prev;
+		}, undefined);
+	if (!localHighlight) {
+		return null;
+	}
+
+	const fromPos = localHighlight.from;
+	const toPos = localHighlight.to;
+	const exact = editorView.state.doc.textBetween(fromPos, toPos);
+	const prefix = editorView.state.doc.textBetween(
+		Math.max(0, fromPos - 10),
+		Math.max(0, fromPos),
+	);
+	const suffix = editorView.state.doc.textBetween(
+		Math.min(editorView.state.doc.nodeSize - 2, toPos),
+		Math.min(editorView.state.doc.nodeSize - 2, toPos + 10),
+	);
+	return {
+		exact: exact,
+		prefix: prefix,
+		suffix: suffix,
+	};
+};
+
+export const reanchorDiscussion = (editorView, firebaseRef, discussionId) => {
+	const collabPlugin = editorView.state.collaborative$ || {};
+	const newCurrentKey = collabPlugin.mostRecentRemoteKey;
+	const selection = editorView.state.selection;
+	const newAnchor = selection.anchor;
+	const newHead = selection.head;
+
+	const transaction = editorView.state.tr;
+	transaction.setMeta('removeDiscussion', { id: discussionId });
+	editorView.dispatch(transaction);
 	firebaseRef
 		.child('discussions')
-		.child(id)
-		.set(newDiscussionData);
-	removeLocalHighlight(editorView, id);
+		.child(discussionId)
+		.update({
+			currentKey: newCurrentKey,
+			selection: {
+				a: newAnchor,
+				h: newHead,
+				t: 'text',
+			},
+		});
 };
+
+// export const forceRemoveDiscussionHighlight = (editorView, discussionId) => {
+// 	const transaction = editorView.state.tr;
+// 	transaction.setMeta('removeDiscussion', { id: discussionId });
+// 	editorView.dispatch(transaction);
+// };
