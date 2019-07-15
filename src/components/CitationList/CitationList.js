@@ -15,7 +15,10 @@ const CitationList = (props) => {
 	const attrs = props.attrs;
 	const listItems = attrs.listItems || [];
 	return (
-		<ol className={`citation-list-wrapper ${props.isSelected ? 'isSelected' : ''}`}>
+		<ol
+			className={`citation-list-wrapper ${props.isSelected ? 'isSelected' : ''}`}
+			tabIndex={-1}
+		>
 			{listItems.map((item) => {
 				return (
 					<li key={`citation-list-item-${item.count}`} className="citation-list-item">

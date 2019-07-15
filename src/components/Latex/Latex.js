@@ -14,7 +14,7 @@ const propTypes = {
 const Image = (props) => {
 	const attrs = props.attrs;
 	return (
-		<div className={`latex-wrapper ${attrs.isBlock ? 'block' : ''}`}>
+		<div className={`latex-wrapper ${attrs.isBlock ? 'block' : ''}`} tabIndex={-1}>
 			<div className={`render-wrapper ${props.isSelected ? 'isSelected' : ''}`}>
 				<span dangerouslySetInnerHTML={{ __html: attrs.html }} />
 			</div>

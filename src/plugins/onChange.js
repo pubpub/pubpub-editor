@@ -317,10 +317,10 @@ const getRangeBoundingBox = (editorView, fromPos, toPos) => {
 	const fromBoundingBox = editorView.coordsAtPos(fromPos);
 	const toBoundingBox = editorView.coordsAtPos(toPos);
 	return {
-		left: fromBoundingBox.left,
-		top: fromBoundingBox.top,
-		right: toBoundingBox.right,
-		bottom: toBoundingBox.bottom,
+		left: Math.min(fromBoundingBox.left, toBoundingBox.left),
+		top: Math.min(fromBoundingBox.top, toBoundingBox.top),
+		right: Math.max(fromBoundingBox.right, toBoundingBox.right),
+		bottom: Math.max(fromBoundingBox.bottom, toBoundingBox.bottom),
 	};
 };
 

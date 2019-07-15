@@ -64,6 +64,10 @@ class Editor extends Component {
 		this.createEditor();
 	}
 
+	shouldComponentUpdate() {
+		return false;
+	}
+
 	configurePlugins() {
 		const allPlugins = {
 			...optionalPlugins,
@@ -88,6 +92,7 @@ class Editor extends Component {
 				const passedProps = {
 					container: this.editorRef.current,
 					onChange: this.props.onChange,
+					initialContent: this.props.initialContent,
 					collaborativeOptions: this.props.collaborativeOptions,
 					placeholder: this.props.placeholder,
 					isReadOnly: this.props.isReadOnly,

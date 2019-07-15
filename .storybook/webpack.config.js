@@ -1,8 +1,7 @@
-/* eslint-disable no-param-reassign */
 const { resolve } = require('path');
 
-module.exports = (baseConfig) => {
-	baseConfig.module.rules.push({
+module.exports = ({ config }) => {
+	config.module.rules.push({
 		test: /\.scss$/,
 		use: [
 			{ loader: 'style-loader' }, // creates style nodes from JS strings
@@ -10,15 +9,15 @@ module.exports = (baseConfig) => {
 			{ loader: 'sass-loader' }, // compiles Sass to CSS
 		],
 	});
-	baseConfig.module.rules.push({
+	config.module.rules.push({
 		test: /\.(ttf|eot|svg|woff|woff2)$/,
 		use: [{ loader: 'file-loader' }],
 	});
 
-	baseConfig.resolve.modules = [
+	config.resolve.modules = [
 		resolve(__dirname, '../src'),
 		resolve(__dirname, '../stories'),
 		'node_modules',
 	];
-	return baseConfig;
+	return config;
 };

@@ -212,7 +212,7 @@ export const baseNodes = {
 		content: 'text*',
 		group: 'block',
 		code: true,
-		parseDOM: [{ tag: 'pre', preserveWhitespace: true }],
+		parseDOM: [{ tag: 'pre', preserveWhitespace: 'full' }],
 		toDOM: () => {
 			return ['pre', ['code', 0]];
 		},
@@ -278,8 +278,8 @@ export const baseMarks = {
 		toDOM: () => {
 			return ['em'];
 		},
-		toStatic: (mark, children) => {
-			return <em>{children}</em>;
+		toStatic: (mark, children, key) => {
+			return <em key={key}>{children}</em>;
 		},
 	},
 
@@ -298,8 +298,8 @@ export const baseMarks = {
 		toDOM: () => {
 			return ['strong'];
 		},
-		toStatic: (mark, children) => {
-			return <strong>{children}</strong>;
+		toStatic: (mark, children, key) => {
+			return <strong key={key}>{children}</strong>;
 		},
 	},
 	link: {
@@ -331,9 +331,9 @@ export const baseMarks = {
 			}
 			return ['a', attrs];
 		},
-		toStatic: (mark, children) => {
+		toStatic: (mark, children, key) => {
 			return (
-				<a href={mark.attrs.href} title={mark.attrs.title} target={mark.attrs.target}>
+				<a key={key} href={mark.attrs.href} title={mark.attrs.title} target={mark.attrs.target}>
 					{children}
 				</a>
 			);
@@ -345,8 +345,8 @@ export const baseMarks = {
 		toDOM: () => {
 			return ['sub'];
 		},
-		toStatic: (mark, children) => {
-			return <sub>{children}</sub>;
+		toStatic: (mark, children, key) => {
+			return <sub key={key}>{children}</sub>;
 		},
 	},
 	sup: {
@@ -354,8 +354,8 @@ export const baseMarks = {
 		toDOM: () => {
 			return ['sup'];
 		},
-		toStatic: (mark, children) => {
-			return <sup>{children}</sup>;
+		toStatic: (mark, children, key) => {
+			return <sup key={key}>{children}</sup>;
 		},
 	},
 	strike: {
@@ -363,8 +363,8 @@ export const baseMarks = {
 		toDOM: () => {
 			return ['s'];
 		},
-		toStatic: (mark, children) => {
-			return <s>{children}</s>;
+		toStatic: (mark, children, key) => {
+			return <s key={key}>{children}</s>;
 		},
 	},
 	code: {
@@ -372,8 +372,8 @@ export const baseMarks = {
 		toDOM: () => {
 			return ['code'];
 		},
-		toStatic: (mark, children) => {
-			return <code>{children}</code>;
+		toStatic: (mark, children, key) => {
+			return <code key={key}>{children}</code>;
 		},
 	},
 };

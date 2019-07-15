@@ -9,12 +9,11 @@ export default class NodeViewReact {
 		this.node = node;
 		this.options = options;
 		this.isSelected = false;
-		this.containerNode = node.type.spec.inline
+		this.containerElement = node.type.spec.inline
 			? document.createElement('span')
 			: document.createElement('div');
 		this.renderElement();
-
-		this.dom = this.containerNode;
+		this.dom = this.containerElement;
 	}
 
 	/* renderElement is not a requirement of the NodeView spec, but */
@@ -29,7 +28,7 @@ export default class NodeViewReact {
 				null,
 				null,
 			),
-			this.containerNode,
+			this.containerElement,
 		);
 	}
 
@@ -62,6 +61,10 @@ export default class NodeViewReact {
 			evt.type === 'keyup' ||
 			evt.type === 'paste'
 		);
+	}
+
+	destroy() {
+		ReactDOM.unmountComponentAtNode(this.containerElement);
 	}
 
 	ignoreMutation() {

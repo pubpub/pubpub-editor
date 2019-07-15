@@ -1,6 +1,7 @@
 /* eslint-disable react/no-danger */
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 require('./video.scss');
 
@@ -14,6 +15,7 @@ const propTypes = {
 const Video = (props) => {
 	const attrs = props.attrs;
 	const figFloat = attrs.align === 'left' || attrs.align === 'right' ? attrs.align : 'none';
+	const breakout = attrs.align === 'breakout';
 	let figMargin = '0em auto 1em';
 	if (attrs.align === 'left') {
 		figMargin = '1em 1em 1em 0px';
@@ -29,11 +31,13 @@ const Video = (props) => {
 	};
 
 	return (
-		<div className="figure-wrapper">
+		<div className={classNames('figure-wrapper', breakout && 'breakout')}>
 			<figure
-				className={`video ${props.isSelected ? 'isSelected' : ''} ${
-					props.isEditable ? 'isEditable' : ''
-				}`}
+				className={classNames(
+					'video',
+					props.isSelected && 'isSelected',
+					props.isEditable && 'isEditable',
+				)}
 				style={figStyle}
 			>
 				<video controls src={attrs.url} preload="metadata">
