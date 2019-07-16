@@ -85,6 +85,7 @@ export default (schema, props) => {
 		/* eslint-disable-next-line no-use-before-define */
 		new CollaborativePlugin({
 			firebaseRef: collabOptions.firebaseRef,
+			isReadOnly: props.isReadOnly,
 			initialContent: props.initialContent,
 			initialDocKey: collabOptions.initialDocKey,
 			localClientData: collabOptions.clientData,
@@ -204,14 +205,16 @@ class CollaborativePlugin extends Plugin {
 				this.view.dispatch(trans);
 
 				/* Retrieve and Listen to Cursors */
-				const cursorsRef = this.pluginProps.firebaseRef.child('cursors');
-				cursorsRef
-					.child(this.pluginProps.localClientId)
-					.onDisconnect()
-					.remove();
-				cursorsRef.on('child_added', this.issueDecoTransaction('setCursor'));
-				cursorsRef.on('child_changed', this.issueDecoTransaction('setCursor'));
-				cursorsRef.on('child_removed', this.issueDecoTransaction('removeCursor'));
+				if (!this.pluginProps.isReadOnly) {
+					const cursorsRef = this.pluginProps.firebaseRef.child('cursors');
+					cursorsRef
+						.child(this.pluginProps.localClientId)
+						.onDisconnect()
+						.remove();
+					cursorsRef.on('child_added', this.issueDecoTransaction('setCursor'));
+					cursorsRef.on('child_changed', this.issueDecoTransaction('setCursor'));
+					cursorsRef.on('child_removed', this.issueDecoTransaction('removeCursor'));
+				}
 
 				/* Retrieve and Listen to Discussions */
 				const discussionsRef = this.pluginProps.firebaseRef.child('discussions');

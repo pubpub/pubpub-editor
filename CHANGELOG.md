@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.0.1] - 2019-07-16
+- fix: Do not show collaborative cursors if isReadOnly is set.
+
 ## [6.0.0] - 2019-07-15
 - update: collaborative plugin now fires an onUpdateLatestKey callback with the latest remote
 key from Firebase.
