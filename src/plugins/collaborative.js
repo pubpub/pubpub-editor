@@ -272,12 +272,16 @@ class CollaborativePlugin extends Plugin {
 			meta.highlightsToRemove ||
 			meta.newHighlightsData ||
 			meta.appendedTransaction ||
-			meta.localHighlights
+			meta.localHighlights ||
+			meta.setDiscussion ||
+			meta.removeDiscussion ||
+			meta.setCursor ||
+			meta.removeCursor
 		) {
 			return null;
 		}
 
-		/* Don't send certain keys with to firebase */
+		/* Don't send certain keys to firebase */
 		Object.keys(meta).forEach((key) => {
 			if (key.indexOf('$') > -1 || key === 'addToHistory' || key === 'pointer') {
 				delete meta[key];

@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.0.3] - 2019-07-18
+- dev: Add to list of steps to not send.
+
 ## [6.0.2] - 2019-07-18
 - fix: Index error in citation plugin.
 
