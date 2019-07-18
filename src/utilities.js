@@ -530,7 +530,6 @@ export const restoreDiscussionMaps = (firebaseRef, schema, useMergeSteps) => {
 					const nextDoc = currentSteps.reduce((prev, curr) => {
 						const stepResult = curr.apply(prev);
 						if (stepResult.failed) {
-							console.log(changeKey);
 							console.error('Failed with ', stepResult.failed);
 						}
 						return stepResult.doc;
