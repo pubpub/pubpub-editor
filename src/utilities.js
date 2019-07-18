@@ -494,13 +494,18 @@ export const restoreDiscussionMaps = (firebaseRef, schema, useMergeSteps) => {
 
 				Object.keys(discussions).forEach((discussionId) => {
 					if (discussions[discussionId].currentKey === currentKey) {
-						newDiscussions[discussionId] = {
-							...discussions[discussionId],
-							selection: Selection.fromJSON(
+						try {
+							const thisSelection = Selection.fromJSON(
 								currentDoc,
 								uncompressSelectionJSON(discussions[discussionId].selection),
-							),
-						};
+							);
+							newDiscussions[discussionId] = {
+								...discussions[discussionId],
+								selection: thisSelection,
+							};
+						} catch (err) {
+							console.warn(`Warning on ${discussionId}: ${err}`);
+						}
 					}
 				});
 
@@ -525,6 +530,7 @@ export const restoreDiscussionMaps = (firebaseRef, schema, useMergeSteps) => {
 					const nextDoc = currentSteps.reduce((prev, curr) => {
 						const stepResult = curr.apply(prev);
 						if (stepResult.failed) {
+							console.log(changeKey);
 							console.error('Failed with ', stepResult.failed);
 						}
 						return stepResult.doc;
