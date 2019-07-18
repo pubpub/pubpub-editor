@@ -44,34 +44,6 @@ const CursorOptionsDemoPub = () => {
 	);
 };
 
-const CurosrOptionsDemoPub = () => {
-	const [editorView, setEditorView] = useState();
-
-	const cursorButtons = Object.keys(cursor).map((key) => ({
-		children: key,
-		onClick: () => {
-			cursor[key](editorView);
-			editorView.focus();
-		},
-	}));
-
-	return (
-		<div style={editorWrapperStyle}>
-			<div style={{ display: 'flex' }}>
-				{cursorButtons.map((props) => (
-					<button type="button" {...props} />
-				))}
-			</div>
-			<Editor
-				placeholder="Begin writing..."
-				initialContent={initialContent}
-				isReadOnly={false}
-				onChange={(editorChangeObject) => setEditorView(editorChangeObject.view)}
-			/>
-		</div>
-	);
-};
-
 storiesOf('Editor', module)
 	.add('default', () => (
 		<div style={editorWrapperStyle}>

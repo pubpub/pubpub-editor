@@ -333,7 +333,12 @@ export const baseMarks = {
 		},
 		toStatic: (mark, children, key) => {
 			return (
-				<a key={key} href={mark.attrs.href} title={mark.attrs.title} target={mark.attrs.target}>
+				<a
+					key={key}
+					href={mark.attrs.href}
+					title={mark.attrs.title}
+					target={mark.attrs.target}
+				>
 					{children}
 				</a>
 			);

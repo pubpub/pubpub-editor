@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const { resolve } = require('path');
 
 module.exports = ({ config }) => {

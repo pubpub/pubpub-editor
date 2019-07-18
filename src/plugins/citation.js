@@ -55,7 +55,8 @@ export default (schema) => {
 					/* updated due to new html in individual citations */
 					const citationListContentChanged = Object.keys(counts).reduce((prev, curr) => {
 						const currCitationData = counts[curr];
-						const prevCitationData = node.attrs.listItems[currCitationData.count - 1] || {};
+						const prevCitationData =
+							node.attrs.listItems[currCitationData.count - 1] || {};
 						const prevKey = `${prevCitationData.html}-${prevCitationData.unstructuredValue}`;
 						if (prevKey !== curr) {
 							return true;
