@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.0.2] - 2019-07-18
+- fix: Index error in citation plugin.
+
 ## [6.0.1] - 2019-07-16
 - fix: Do not show collaborative cursors if isReadOnly is set.
 
