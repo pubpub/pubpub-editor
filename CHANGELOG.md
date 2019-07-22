@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.0.5] - 2019-07-22
+- fix: Proper check for prosemirror-table plugin
+
 ## [6.0.4] - 2019-07-18
 - fix: Draw columns properly in readOnly mode.
 - fix: Add try around discussion restore selection.

@@ -2,7 +2,10 @@ import { keymap } from 'prosemirror-keymap';
 import { columnResizing, tableEditing, goToNextCell } from 'prosemirror-tables';
 
 export default (schema, props) => {
-	if (props.isReadOnly || !schema.nodes.table) {
+	if (!schema.nodes.table) {
+		return [];
+	}
+	if (props.isReadOnly) {
 		/* 
 			We pass in columnResizing() in readOnly mode because it is
 			required to draw the columns at the correct width. prosemirror-table
