@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.0.7] - 2019-07-23
+- fix: Use https for git package
+
 ## [6.0.6] - 2019-07-23
 - fix: Use prosemirror-view hotfix to handle selection bug.
 
