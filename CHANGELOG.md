@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.0.6] - 2019-07-23
+- fix: Use prosemirror-view hotfix to handle selection bug.
+
 ## [6.0.5] - 2019-07-22
 - fix: Proper check for prosemirror-table plugin
 

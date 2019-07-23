@@ -1,6 +1,6 @@
 {
   "name": "@pubpub/editor",
-  "version": "6.0.5",
+  "version": "6.0.6",
   "description": "PubPub Collaborative Editor",
   "main": "dist/index.js",
   "author": "PubPub Team <pubpub@media.mit.edu>",
@@ -35,7 +35,7 @@
     "prosemirror-state": "^1.2.3",
     "prosemirror-tables": "^0.7.11",
     "prosemirror-transform": "^1.1.3",
-    "prosemirror-view": "^1.9.11"
+    "prosemirror-view": "git+ssh://git@github.com/pubpub/prosemirror-view.git"
   },
   "peerDependencies": {
     "firebase": "^5.9.1",
