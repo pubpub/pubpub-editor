@@ -12,6 +12,10 @@ import { defaultNodes, defaultMarks } from './schemas';
 
 export const firebaseTimestamp = { '.sv': 'timestamp' };
 
+export const getEmptyDoc = () => {
+	return { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] };
+};
+
 export const docIsEmpty = (doc) => {
 	return (
 		doc.childCount === 0 ||

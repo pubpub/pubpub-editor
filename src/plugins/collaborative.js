@@ -85,6 +85,7 @@ export default (schema, props) => {
 		/* eslint-disable-next-line no-use-before-define */
 		new CollaborativePlugin({
 			firebaseRef: collabOptions.firebaseRef,
+			delayLoadingDocument: collabOptions.delayLoadingDocument,
 			isReadOnly: props.isReadOnly,
 			initialContent: props.initialContent,
 			initialDocKey: collabOptions.initialDocKey,
@@ -96,7 +97,7 @@ export default (schema, props) => {
 	];
 };
 
-const collaborativePluginKey = new PluginKey('collaborative');
+export const collaborativePluginKey = new PluginKey('collaborative');
 
 class CollaborativePlugin extends Plugin {
 	constructor(pluginProps) {
@@ -133,7 +134,9 @@ class CollaborativePlugin extends Plugin {
 			},
 			view: (view) => {
 				this.view = view;
-				this.loadDocument();
+				if (!this.pluginProps.delayLoadingDocument) {
+					this.loadDocument();
+				}
 				return {
 					update: (newView) => {
 						this.view = newView;

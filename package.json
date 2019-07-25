@@ -68,8 +68,11 @@
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.12.4",
+    "esm": "^3.2.25",
     "file-loader": "^3.0.1",
     "firebase": "^5.9.1",
+    "firebase-server": "^1.0.2",
+    "jest": "^24.8.0",
     "node-sass": "^4.11.0",
     "prettier": "^1.16.4",
     "prop-types": "^15.7.2",
@@ -84,5 +87,18 @@
   },
   "engines": {
     "node": "10.5.0"
-  }
+  },
+  "jest": {
+		"testEnvironment": "jsdom",
+		"moduleDirectories": [
+			"node_modules",
+			"<rootDir>/src"
+		],
+		"moduleNameMapper": {
+			"\\.[s]?css$": "<rootDir>/src/__tests__/utils/styleMock.js"
+		},
+		"testPathIgnorePatterns": [
+			"<rootDir>/src/__tests__/utils"
+		]
+	}
 }
