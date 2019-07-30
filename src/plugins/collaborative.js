@@ -38,38 +38,6 @@ import { generateHash, storeCheckpoint, firebaseTimestamp } from '../utilities';
 	10. view()
 */
 
-// Maybe only accept a new discussion if the remoteStep matches.
-// Since remoteStepKeys are updated each time
-// Probably want to rename 'selections' to 'cursors' in firebase
-
-/*
-cursors: {
-	clientId: {
-		backgroundColor
-		color
-		name
-		selection: {
-			a
-			h
-			type
-		}
-	}
-}
-discussions: {
-	discussionId: {
-		currentKey
-		initAnchor
-		initHead
-		initKey
-		selection: {
-			a
-			h
-			type
-		}
-	}
-}
-*/
-
 export default (schema, props) => {
 	const collabOptions = props.collaborativeOptions;
 	if (!collabOptions.firebaseRef) {
@@ -87,6 +55,7 @@ export default (schema, props) => {
 			firebaseRef: collabOptions.firebaseRef,
 			isReadOnly: props.isReadOnly,
 			initialContent: props.initialContent,
+			onError: props.onError,
 			initialDocKey: collabOptions.initialDocKey,
 			localClientData: collabOptions.clientData,
 			localClientId: localClientId,
@@ -200,7 +169,6 @@ class CollaborativePlugin extends Plugin {
 
 				this.pluginProps.onUpdateLatestKey(this.mostRecentRemoteKey);
 
-				// storeCheckpoint(this.pluginProps.firebaseRef, newDoc, this.mostRecentRemoteKey);
 				const trans = receiveTransaction(this.view.state, steps, stepClientIds);
 				this.view.dispatch(trans);
 
@@ -313,55 +281,45 @@ class CollaborativePlugin extends Plugin {
 			.transaction(
 				(existingRemoteSteps) => {
 					this.pluginProps.onStatusChange('saving');
-					if (existingRemoteSteps) {
-						return undefined;
-					}
-					return {
-						s: steps.map((step) => {
-							return compressStepJSON(step.toJSON());
-						}),
-						m: meta,
-						t: firebaseTimestamp,
-						/* Change Id */
-						id: uuidv4(),
-						/* Client Id */
-						cId: clientId,
-						/* Origin Branch Id */
-						bId: this.pluginProps.firebaseRef.key.replace('branch-', ''),
-					};
+					return existingRemoteSteps
+						? undefined
+						: {
+								s: steps.map((step) => {
+									return compressStepJSON(step.toJSON());
+								}),
+								m: meta,
+								t: firebaseTimestamp,
+								/* Change Id */
+								id: uuidv4(),
+								/* Client Id */
+								cId: clientId,
+								/* Origin Branch Id */
+								bId: this.pluginProps.firebaseRef.key.replace('branch-', ''),
+						  };
 				},
-				(error, committed, snapshot) => {
-					this.ongoingTransaction = false;
-					if (error) {
-						console.error('Error in sendCollab transaction', error, steps, clientId);
-						return null;
-					}
-
-					if (committed) {
-						this.pluginProps.onStatusChange('saved');
-
-						/* If multiple of saveEveryNSteps, update checkpoint */
-						const saveEveryNSteps = 100;
-						if (snapshot.key && snapshot.key % saveEveryNSteps === 0) {
-							storeCheckpoint(
-								this.pluginProps.firebaseRef,
-								newState.doc,
-								snapshot.key,
-							);
-						}
-					} else {
-						/* If the transaction did not commit changes, we need
-						to trigger sendCollabChanges to fire again. */
-						this.setResendTimeout();
-					}
-
-					return undefined;
-				},
+				null,
 				false,
 			)
-			.catch(() => {
+			.then((transactionResult) => {
+				const { committed, snapshot } = transactionResult;
 				this.ongoingTransaction = false;
-				this.setResendTimeout();
+				if (committed) {
+					this.pluginProps.onStatusChange('saved');
+
+					/* If multiple of saveEveryNSteps, update checkpoint */
+					const saveEveryNSteps = 100;
+					if (snapshot.key && snapshot.key % saveEveryNSteps === 0) {
+						storeCheckpoint(this.pluginProps.firebaseRef, newState.doc, snapshot.key);
+					}
+				} else {
+					/* If the transaction did not commit changes, we need
+					to trigger sendCollabChanges to fire again. */
+					this.setResendTimeout();
+				}
+			})
+			.catch((err) => {
+				console.error('Error in firebase transaction:', err);
+				this.pluginProps.onError(err);
 			});
 	}
 
