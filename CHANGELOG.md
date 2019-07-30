@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [6.1.0] - 2019-07-23
 - feature: Add onError prop that will be called with transaction and firebase errors.
+- dev: Simplify handling of collab meta keys
 
 ## [6.0.7] - 2019-07-23
 - fix: Use https for git package

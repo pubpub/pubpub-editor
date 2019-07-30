@@ -229,35 +229,14 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	sendCollabChanges(transaction, newState) {
-		// TODO: Rather than exclude - we should probably explicitly list the types of transactions we accept.
-		// Exluding only will break when others add custom plugin transactions.
-		const meta = transaction.meta;
-		if (
-			meta.finishedLoading ||
-			meta.collab$ ||
-			meta.rebase ||
-			meta.footnote ||
-			meta.highlightsToRemove ||
-			meta.newHighlightsData ||
-			meta.appendedTransaction ||
-			meta.localHighlights ||
-			meta.setDiscussion ||
-			meta.removeDiscussion ||
-			meta.setCursor ||
-			meta.removeCursor
-		) {
-			return null;
-		}
-
-		/* Don't send certain keys to firebase */
-		Object.keys(meta).forEach((key) => {
-			if (key.indexOf('$') > -1 || key === 'addToHistory' || key === 'pointer') {
-				delete meta[key];
-			}
+		const validMetaKeys = ['history$'];
+		const hasInvalidMetaKeys = Object.keys(transaction.meta).some((key) => {
+			const keyIsValid = validMetaKeys.includes(key);
+			return !keyIsValid;
 		});
-
 		const sendable = sendableSteps(newState);
-		if (!sendable) {
+
+		if (hasInvalidMetaKeys || !sendable) {
 			return null;
 		}
 
@@ -287,7 +266,6 @@ class CollaborativePlugin extends Plugin {
 								s: steps.map((step) => {
 									return compressStepJSON(step.toJSON());
 								}),
-								m: meta,
 								t: firebaseTimestamp,
 								/* Change Id */
 								id: uuidv4(),
