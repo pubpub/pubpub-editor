@@ -137,7 +137,9 @@ class CollaborativePlugin extends Plugin {
 				const stepClientIds = [];
 				const keys = Object.keys(changesSnapshotVal);
 				this.mostRecentRemoteKey = keys.length
-					? Math.max(...keys)
+					? keys.reduce((prev, curr) => {
+							return curr > prev ? curr : prev;
+					  }, 0)
 					: this.mostRecentRemoteKey;
 
 				/* Uncompress steps and add stepClientIds */

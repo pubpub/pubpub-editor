@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.1.2] - 2019-08-01
+- fix: getShortcutValues position bug
+- fix: Handle mostRecentKey calc for very large step arrays
+
 ## [6.1.1] - 2019-08-01
 - fix: Remove testing error
 
