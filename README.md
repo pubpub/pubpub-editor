@@ -41,6 +41,11 @@ const component = (props)=> {
             Also fired on editor initialization. */
             onChange={(changeObject)=>{}}
 
+            /* A function that will be called when the editor 
+            fails due to an invalid step, firebase error, or 
+            other transaction error. */
+            onError={(err)=>{}}
+
             /* A editor JSON document. */
             initialContent={{}}
 

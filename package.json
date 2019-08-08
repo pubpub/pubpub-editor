@@ -1,6 +1,6 @@
 {
   "name": "@pubpub/editor",
-  "version": "6.0.5",
+  "version": "6.1.3",
   "description": "PubPub Collaborative Editor",
   "main": "dist/index.js",
   "author": "PubPub Team <pubpub@media.mit.edu>",
@@ -35,7 +35,7 @@
     "prosemirror-state": "^1.2.3",
     "prosemirror-tables": "^0.7.11",
     "prosemirror-transform": "^1.1.3",
-    "prosemirror-view": "^1.9.11"
+    "prosemirror-view": "^1.9.13"
   },
   "peerDependencies": {
     "firebase": "^5.9.1",
@@ -89,16 +89,16 @@
     "node": "10.5.0"
   },
   "jest": {
-		"testEnvironment": "jsdom",
-		"moduleDirectories": [
-			"node_modules",
-			"<rootDir>/src"
-		],
-		"moduleNameMapper": {
-			"\\.[s]?css$": "<rootDir>/src/__tests__/utils/styleMock.js"
-		},
-		"testPathIgnorePatterns": [
-			"<rootDir>/src/__tests__/utils"
-		]
-	}
+    "testEnvironment": "jsdom",
+    "moduleDirectories": [
+      "node_modules",
+      "<rootDir>/src"
+    ],
+    "moduleNameMapper": {
+      "\\.[s]?css$": "<rootDir>/src/__tests__/utils/styleMock.js"
+    },
+    "testPathIgnorePatterns": [
+      "<rootDir>/src/__tests__/utils"
+    ]
+  }
 }

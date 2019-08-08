@@ -38,38 +38,6 @@ import { generateHash, storeCheckpoint, firebaseTimestamp } from '../utilities';
 	10. view()
 */
 
-// Maybe only accept a new discussion if the remoteStep matches.
-// Since remoteStepKeys are updated each time
-// Probably want to rename 'selections' to 'cursors' in firebase
-
-/*
-cursors: {
-	clientId: {
-		backgroundColor
-		color
-		name
-		selection: {
-			a
-			h
-			type
-		}
-	}
-}
-discussions: {
-	discussionId: {
-		currentKey
-		initAnchor
-		initHead
-		initKey
-		selection: {
-			a
-			h
-			type
-		}
-	}
-}
-*/
-
 export default (schema, props) => {
 	const collabOptions = props.collaborativeOptions;
 	if (!collabOptions.firebaseRef) {
@@ -88,6 +56,7 @@ export default (schema, props) => {
 			delayLoadingDocument: collabOptions.delayLoadingDocument,
 			isReadOnly: props.isReadOnly,
 			initialContent: props.initialContent,
+			onError: props.onError,
 			initialDocKey: collabOptions.initialDocKey,
 			localClientData: collabOptions.clientData,
 			localClientId: localClientId,
@@ -171,7 +140,9 @@ class CollaborativePlugin extends Plugin {
 				const stepClientIds = [];
 				const keys = Object.keys(changesSnapshotVal);
 				this.mostRecentRemoteKey = keys.length
-					? Math.max(...keys)
+					? keys.reduce((prev, curr) => {
+							return curr > prev ? curr : prev;
+					  }, 0)
 					: this.mostRecentRemoteKey;
 
 				/* Uncompress steps and add stepClientIds */
@@ -203,7 +174,6 @@ class CollaborativePlugin extends Plugin {
 
 				this.pluginProps.onUpdateLatestKey(this.mostRecentRemoteKey);
 
-				// storeCheckpoint(this.pluginProps.firebaseRef, newDoc, this.mostRecentRemoteKey);
 				const trans = receiveTransaction(this.view.state, steps, stepClientIds);
 				this.view.dispatch(trans);
 
@@ -264,35 +234,14 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	sendCollabChanges(transaction, newState) {
-		// TODO: Rather than exclude - we should probably explicitly list the types of transactions we accept.
-		// Exluding only will break when others add custom plugin transactions.
-		const meta = transaction.meta;
-		if (
-			meta.finishedLoading ||
-			meta.collab$ ||
-			meta.rebase ||
-			meta.footnote ||
-			meta.highlightsToRemove ||
-			meta.newHighlightsData ||
-			meta.appendedTransaction ||
-			meta.localHighlights ||
-			meta.setDiscussion ||
-			meta.removeDiscussion ||
-			meta.setCursor ||
-			meta.removeCursor
-		) {
-			return null;
-		}
-
-		/* Don't send certain keys to firebase */
-		Object.keys(meta).forEach((key) => {
-			if (key.indexOf('$') > -1 || key === 'addToHistory' || key === 'pointer') {
-				delete meta[key];
-			}
+		const validMetaKeys = ['history$'];
+		const hasInvalidMetaKeys = Object.keys(transaction.meta).some((key) => {
+			const keyIsValid = validMetaKeys.includes(key);
+			return !keyIsValid;
 		});
-
 		const sendable = sendableSteps(newState);
-		if (!sendable) {
+
+		if (hasInvalidMetaKeys || !sendable) {
 			return null;
 		}
 
@@ -316,55 +265,44 @@ class CollaborativePlugin extends Plugin {
 			.transaction(
 				(existingRemoteSteps) => {
 					this.pluginProps.onStatusChange('saving');
-					if (existingRemoteSteps) {
-						return undefined;
-					}
-					return {
-						s: steps.map((step) => {
-							return compressStepJSON(step.toJSON());
-						}),
-						m: meta,
-						t: firebaseTimestamp,
-						/* Change Id */
-						id: uuidv4(),
-						/* Client Id */
-						cId: clientId,
-						/* Origin Branch Id */
-						bId: this.pluginProps.firebaseRef.key.replace('branch-', ''),
-					};
+					return existingRemoteSteps
+						? undefined
+						: {
+								s: steps.map((step) => {
+									return compressStepJSON(step.toJSON());
+								}),
+								t: firebaseTimestamp,
+								/* Change Id */
+								id: uuidv4(),
+								/* Client Id */
+								cId: clientId,
+								/* Origin Branch Id */
+								bId: this.pluginProps.firebaseRef.key.replace('branch-', ''),
+						  };
 				},
-				(error, committed, snapshot) => {
-					this.ongoingTransaction = false;
-					if (error) {
-						console.error('Error in sendCollab transaction', error, steps, clientId);
-						return null;
-					}
-
-					if (committed) {
-						this.pluginProps.onStatusChange('saved');
-
-						/* If multiple of saveEveryNSteps, update checkpoint */
-						const saveEveryNSteps = 100;
-						if (snapshot.key && snapshot.key % saveEveryNSteps === 0) {
-							storeCheckpoint(
-								this.pluginProps.firebaseRef,
-								newState.doc,
-								snapshot.key,
-							);
-						}
-					} else {
-						/* If the transaction did not commit changes, we need
-						to trigger sendCollabChanges to fire again. */
-						this.setResendTimeout();
-					}
-
-					return undefined;
-				},
+				null,
 				false,
 			)
-			.catch(() => {
+			.then((transactionResult) => {
+				const { committed, snapshot } = transactionResult;
 				this.ongoingTransaction = false;
-				this.setResendTimeout();
+				if (committed) {
+					this.pluginProps.onStatusChange('saved');
+
+					/* If multiple of saveEveryNSteps, update checkpoint */
+					const saveEveryNSteps = 100;
+					if (snapshot.key && snapshot.key % saveEveryNSteps === 0) {
+						storeCheckpoint(this.pluginProps.firebaseRef, newState.doc, snapshot.key);
+					}
+				} else {
+					/* If the transaction did not commit changes, we need
+					to trigger sendCollabChanges to fire again. */
+					this.setResendTimeout();
+				}
+			})
+			.catch((err) => {
+				console.error('Error in firebase transaction:', err);
+				this.pluginProps.onError(err);
 			});
 	}
 

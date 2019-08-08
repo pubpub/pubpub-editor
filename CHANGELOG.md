@@ -6,6 +6,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.1.3] - 2019-08-01
+- update: Do not render placeholder if no placeholder prop has been passed in
+
+## [6.1.2] - 2019-08-01
+- fix: getShortcutValues position bug
+- fix: Handle mostRecentKey calc for very large step arrays
+
+## [6.1.1] - 2019-08-01
+- fix: Remove testing error
+
+## [6.1.0] - 2019-07-23
+- feature: Add onError prop that will be called with transaction and firebase errors.
+- dev: Simplify handling of collab meta keys
+
+## [6.0.7] - 2019-07-23
+- fix: Use https for git package
+
+## [6.0.6] - 2019-07-23
+- fix: Use prosemirror-view hotfix to handle selection bug.
+
 ## [6.0.5] - 2019-07-22
 - fix: Proper check for prosemirror-table plugin
 
