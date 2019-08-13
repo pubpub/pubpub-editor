@@ -140,9 +140,11 @@ class CollaborativePlugin extends Plugin {
 				const stepClientIds = [];
 				const keys = Object.keys(changesSnapshotVal);
 				this.mostRecentRemoteKey = keys.length
-					? keys.reduce((prev, curr) => {
-							return curr > prev ? curr : prev;
-					  }, 0)
+					? keys
+							.map((key) => Number(key))
+							.reduce((prev, curr) => {
+								return curr > prev ? curr : prev;
+							}, 0)
 					: this.mostRecentRemoteKey;
 
 				/* Uncompress steps and add stepClientIds */
@@ -213,24 +215,32 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	receiveCollabChanges(snapshot) {
-		this.mostRecentRemoteKey = Number(snapshot.key);
-		const snapshotVal = snapshot.val();
-		const compressedStepsJSON = snapshotVal.s;
-		const clientId = snapshotVal.cId;
-		const meta = snapshotVal.m;
-		const newSteps = compressedStepsJSON.map((compressedStepJSON) => {
-			return Step.fromJSON(this.view.state.schema, uncompressStepJSON(compressedStepJSON));
-		});
-		const newStepsClientIds = new Array(newSteps.length).fill(clientId);
-		const trans = receiveTransaction(this.view.state, newSteps, newStepsClientIds);
-
-		if (meta) {
-			Object.keys(meta).forEach((metaKey) => {
-				trans.setMeta(metaKey, meta[metaKey]);
+		try {
+			this.mostRecentRemoteKey = Number(snapshot.key);
+			const snapshotVal = snapshot.val();
+			const compressedStepsJSON = snapshotVal.s;
+			const clientId = snapshotVal.cId;
+			const meta = snapshotVal.m;
+			const newSteps = compressedStepsJSON.map((compressedStepJSON) => {
+				return Step.fromJSON(
+					this.view.state.schema,
+					uncompressStepJSON(compressedStepJSON),
+				);
 			});
+			const newStepsClientIds = new Array(newSteps.length).fill(clientId);
+			const trans = receiveTransaction(this.view.state, newSteps, newStepsClientIds);
+
+			if (meta) {
+				Object.keys(meta).forEach((metaKey) => {
+					trans.setMeta(metaKey, meta[metaKey]);
+				});
+			}
+			this.pluginProps.onUpdateLatestKey(this.mostRecentRemoteKey);
+			return this.view.dispatch(trans);
+		} catch (err) {
+			console.error('Error in recieveCollabChanges:', err);
+			this.pluginProps.onError(err);
 		}
-		this.pluginProps.onUpdateLatestKey(this.mostRecentRemoteKey);
-		return this.view.dispatch(trans);
 	}
 
 	sendCollabChanges(transaction, newState) {

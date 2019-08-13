@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.1.4] - 2019-08-08
+- fix: mostRecentKey calc type error
+
 ## [6.1.3] - 2019-08-01
 - update: Do not render placeholder if no placeholder prop has been passed in
 
