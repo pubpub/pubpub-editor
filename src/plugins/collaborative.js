@@ -237,6 +237,7 @@ class CollaborativePlugin extends Plugin {
 		} catch (err) {
 			console.error('Error in recieveCollabChanges:', err);
 			this.pluginProps.onError(err);
+			return null;
 		}
 	}
 
@@ -248,7 +249,7 @@ class CollaborativePlugin extends Plugin {
 		});
 		const sendable = sendableSteps(newState);
 
-		if (hasInvalidMetaKeys || !sendable) {
+		if (this.pluginProps.isReadOnly || hasInvalidMetaKeys || !sendable) {
 			return null;
 		}
 

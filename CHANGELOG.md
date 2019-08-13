@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- fix: Collaborative lint and readOnly catch
 
 ## [6.1.4] - 2019-08-08
 - fix: mostRecentKey calc type error
