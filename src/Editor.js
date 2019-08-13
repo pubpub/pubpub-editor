@@ -6,7 +6,7 @@ import { EditorView } from 'prosemirror-view';
 import { keydownHandler } from 'prosemirror-keymap';
 import { requiredPlugins, optionalPlugins } from './plugins';
 import NodeViewReact from './nodeViewReact';
-import { renderStatic, buildSchema } from './utilities';
+import { renderStatic, buildSchema } from './utils';
 
 require('./style.scss');
 
@@ -164,6 +164,7 @@ class Editor extends Component {
 
 			const emptyInitTransaction = editorView.state.tr;
 			editorView.dispatch(emptyInitTransaction);
+			// TODO: Is this timeout necessary
 			setTimeout(() => {
 				editorView.dispatch(emptyInitTransaction);
 			}, 0);

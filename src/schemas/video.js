@@ -1,6 +1,6 @@
 import React from 'react';
 import Video from '../components/Video/Video';
-import { renderHtmlChildren, generateStyles } from '../utilities';
+import { renderHtmlChildren, generateStyles } from '../utils/schemaUtils';
 
 export default {
 	video: {

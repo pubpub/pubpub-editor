@@ -1,6 +1,6 @@
-import React from 'react';
-import Image from '../components/Image/Image';
-import { renderHtmlChildren, generateStyles } from '../utilities';
+// import React from 'react';
+// import Image from '../components/Image/Image';
+import { renderHtmlChildren, generateStyles } from '../utils/schemaUtils';
 
 export default {
 	image: {

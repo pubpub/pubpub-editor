@@ -1,5 +1,6 @@
-import React from 'react';
-import Iframe from '../components/Iframe/Iframe';
+// import React from 'react';
+// import Iframe from '../components/Iframe/Iframe';
+import { renderHtmlChildren, generateStyles } from '../utils/schemaUtils';
 
 export default {
 	iframe: {
@@ -13,53 +14,64 @@ export default {
 		},
 		parseDOM: [
 			{
-				tag: 'iframe',
+				tag: 'figure',
 				getAttrs: (node) => {
+					if (node.getAttribute('data-node-type') !== 'iframe') {
+						return false;
+					}
 					return {
-						url: node.getAttribute('src') || '',
+						url: node.firstChild.getAttribute('src') || null,
 						size: Number(node.getAttribute('data-size')) || 75,
-						height: Number(node.getAttribute('height')) || 419,
+						height: Number(node.firstChild.getAttribute('height')) || 419,
 						align: node.getAttribute('data-align') || 'center',
-						caption: node.getAttribute('alt') || '',
+						caption: node.firstChild.getAttribute('alt') || '',
 					};
 				},
 			},
 		],
 		toDOM: (node) => {
 			return [
-				'iframe',
+				'figure',
 				{
-					src: node.attrs.url,
+					'data-node-type': 'iframe',
 					'data-size': node.attrs.size,
-					height: node.attrs.height,
 					'data-align': node.attrs.align,
-					alt: node.attrs.caption,
 				},
+				[
+					'iframe',
+					{
+						alt: node.attrs.caption,
+						src: node.attrs.url,
+						...generateStyles(node.attrs),
+						height: node.attrs.height,
+					},
+				],
+				['figcaption', {}, renderHtmlChildren(node, node.attrs.caption)],
 			];
 		},
 		inline: false,
 		group: 'block',
-		draggable: false,
+		// draggable: false,
 
 		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
-		isNodeView: true,
+		// isNodeView: true,
 		onInsert: (view, attrs) => {
 			const iframeNode = view.state.schema.nodes.iframe.create(attrs);
 			const transaction = view.state.tr.replaceSelectionWith(iframeNode);
 			view.dispatch(transaction);
 		},
 		defaultOptions: {},
-		toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
-			return (
-				<div data-align-breakout={node.attrs.breakout} key={node.currIndex}>
-					<Iframe
-						attrs={node.attrs}
-						options={options}
-						isSelected={isSelected}
-						isEditable={isEditable}
-					/>
-				</div>
-			);
-		},
+		// toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
+		// 	return (
+		// 		<div data-align-breakout={node.attrs.breakout} key={node.currIndex}>
+		// 			<Iframe
+		// 				attrs={node.attrs}
+		// 				options={options}
+		// 				isSelected={isSelected}
+		// 				isEditable={isEditable}
+		// 			/>
+		// 		</div>
+		// 	);
+		// },
 	},
 };

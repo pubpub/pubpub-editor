@@ -1,6 +1,6 @@
 import { Plugin } from 'prosemirror-state';
 import { DecorationSet, Decoration } from 'prosemirror-view';
-import { docIsEmpty } from '../utilities';
+import { docIsEmpty } from '../utils';
 
 export default (schema, props) => {
 	return new Plugin({

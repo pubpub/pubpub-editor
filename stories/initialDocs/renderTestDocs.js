@@ -534,16 +534,16 @@ export default {
 	// 		},
 	// 	],
 	// },
-	image: {
+	audio: {
 		type: 'doc',
 		attrs: {
 			meta: {},
 		},
 		content: [
 			{
-				type: 'image',
+				type: 'audio',
 				attrs: {
-					url: 'https://assets.pubpub.org/_testing/41517872250621.png',
+					url: 'http://www.noiseaddicts.com/samples_1w72b820/3819.mp3',
 					caption: 'Hello <em>there</em>!',
 					size: 50,
 					align: 'left',
@@ -551,42 +551,110 @@ export default {
 			},
 		],
 	},
-	video: {
+	// 'inline-equation': {
+	// 	type: 'doc',
+	// 	attrs: {
+	// 		meta: {},
+	// 	},
+	// 	content: [
+	// 		{
+	// 			type: 'paragraph',
+	// 			content: [
+	// 				{
+	// 					type: 'equation',
+	// 					attrs: {
+	// 						value: '\\sum_ix^i',
+	// 						html:
+	// 							'<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mo>∑</mo><mi>i</mi></msub><msup><mi>x</mi><mi>i</mi></msup></mrow><annotation encoding="application/x-tex">sum_ix^i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.824664em;"></span><span class="strut bottom" style="height:1.124374em;vertical-align:-0.29971000000000003em;"></span><span class="base"><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:-0.0000050000000000050004em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.16195399999999993em;"><span style="top:-2.40029em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.29971000000000003em;"></span></span></span></span></span><span class="mord"><span class="mord mathit">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight">i</span></span></span></span></span></span></span></span></span></span></span>',
+	// 					},
+	// 				},
+	// 			],
+	// 		},
+	// 	],
+	// },
+	// 'block-equation': {
+	// 	type: 'doc',
+	// 	attrs: {
+	// 		meta: {},
+	// 	},
+	// 	content: [
+	// 		{
+	// 			type: 'block_equation',
+	// 			attrs: {
+	// 				value: '\\sum_ix^i',
+	// 				html:
+	// 					'<span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><munder><mo>∑</mo><mi>i</mi></munder><msup><mi>x</mi><mi>i</mi></msup></mrow><annotation encoding="application/x-tex">\\sum_ix^i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.327674em;vertical-align:-1.277669em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.0500050000000003em;"><span style="top:-1.872331em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span><span style="top:-3.050005em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.277669em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord"><span class="mord mathdefault">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8746639999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">i</span></span></span></span></span></span></span></span></span></span></span></span>',
+	// 			},
+	// 		},
+	// 	],
+	// },
+	// file: {
+	// 	type: 'doc',
+	// 	attrs: {
+	// 		meta: {},
+	// 	},
+	// 	content: [
+	// 		{
+	// 			type: 'file',
+	// 			attrs: {
+	// 				url: 'http://www.noiseaddicts.com/samples_1w72b820/3819.mp3',
+	// 				caption: 'Hello <em>there</em>!',
+	// 				fileName: 'myFile.txt',
+	// 				fileSize: '20138',
+	// 			},
+	// 		},
+	// 	],
+	// },
+	iframe: {
 		type: 'doc',
 		attrs: {
 			meta: {},
 		},
 		content: [
 			{
-				type: 'video',
+				type: 'iframe',
 				attrs: {
-					url: 'http://techslides.com/demos/sample-videos/small.mp4',
-					caption: 'Most videos are <b>colorful</b> - but some are black and white.',
+					url: 'https://www.youtube.com/embed/RK1K2bCg4J8',
+					caption: 'Hello <em>there</em>!',
+					align: 'full',
 					size: 50,
-					align: 'center',
+					height: 350,
 				},
 			},
 		],
 	},
-	'inline-equation': {
-		type: 'doc',
-		attrs: {
-			meta: {},
-		},
-		content: [
-			{
-				type: 'paragraph',
-				content: [
-					{
-						type: 'equation',
-						attrs: {
-							value: '\\sum_ix^i',
-							html:
-								'<span class="katex"><span class="katex-mathml"><math><semantics><mrow><msub><mo>∑</mo><mi>i</mi></msub><msup><mi>x</mi><mi>i</mi></msup></mrow><annotation encoding="application/x-tex">sum_ix^i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.824664em;"></span><span class="strut bottom" style="height:1.124374em;vertical-align:-0.29971000000000003em;"></span><span class="base"><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:-0.0000050000000000050004em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.16195399999999993em;"><span style="top:-2.40029em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.29971000000000003em;"></span></span></span></span></span><span class="mord"><span class="mord mathit">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.824664em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight">i</span></span></span></span></span></span></span></span></span></span></span>',
-						},
-					},
-				],
-			},
-		],
-	},
+	// image: {
+	// 	type: 'doc',
+	// 	attrs: {
+	// 		meta: {},
+	// 	},
+	// 	content: [
+	// 		{
+	// 			type: 'image',
+	// 			attrs: {
+	// 				url: 'https://assets.pubpub.org/_testing/41517872250621.png',
+	// 				caption: 'Hello <em>there</em>!',
+	// 				size: 50,
+	// 				align: 'left',
+	// 			},
+	// 		},
+	// 	],
+	// },
+	// video: {
+	// 	type: 'doc',
+	// 	attrs: {
+	// 		meta: {},
+	// 	},
+	// 	content: [
+	// 		{
+	// 			type: 'video',
+	// 			attrs: {
+	// 				url: 'http://techslides.com/demos/sample-videos/small.mp4',
+	// 				caption: 'Most videos are <b>colorful</b> - but some are black and white.',
+	// 				size: 50,
+	// 				align: 'center',
+	// 			},
+	// 		},
+	// 	],
+	// },
 };

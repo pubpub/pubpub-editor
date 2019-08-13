@@ -8,7 +8,7 @@ import {
 	setLocalHighlight,
 	removeLocalHighlight,
 	convertLocalHighlightToDiscussion,
-} from '../src/utilities';
+} from '../src/utils';
 
 const rootKey = 'test3';
 const branchKey = 'branch-f4bf24f7-6184-4f5f-b2d3-2b9d2563cb62';
