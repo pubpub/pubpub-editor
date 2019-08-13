@@ -17,7 +17,8 @@
     "prepublish-soon": "npm run lint && rm -rf node_modules && npm install && npm run build",
     "prepublishOnly": "npm run build",
     "pretty": "prettier --write '**/*.js'",
-    "start": "start-storybook -p 9002 -c .storybook"
+    "start": "start-storybook -p 9002 -c .storybook",
+    "test": "jest --silent"
   },
   "dependencies": {
     "classnames": "^2.2.6",
