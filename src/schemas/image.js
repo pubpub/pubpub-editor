@@ -19,7 +19,7 @@ export default {
 						return false;
 					}
 					return {
-						url: node.firstChild.getAttribute('src') || null,
+						url: node.getAttribute('url') || null,
 						size: Number(node.getAttribute('data-size')) || 50,
 						align: node.getAttribute('data-align') || 'center',
 						caption: node.firstChild.getAttribute('alt') || '',
@@ -28,17 +28,19 @@ export default {
 			},
 		],
 		toDOM: (node) => {
+			const resizeFunc = node.type.spec.defaultOptions.onResizeUrl;
 			return [
 				'figure',
 				{
 					'data-node-type': 'image',
 					'data-size': node.attrs.size,
 					'data-align': node.attrs.align,
+					'data-url': node.attrs.url,
 				},
 				[
 					'img',
 					{
-						src: node.attrs.url,
+						src: resizeFunc(node.attrs.url),
 						alt: node.attrs.caption,
 						...generateStyles(node.attrs),
 					},

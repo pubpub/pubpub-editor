@@ -135,7 +135,11 @@ export const renderStatic = (schema = buildSchema(), nodeArray, editorProps) => 
 		// console.log('NodeComponent is', NodeComponent);
 		// console.log('-----');
 		const output = renderReactFromSpec(
-			NodeComponent.toDOM({ ...node, attrs: { ...node.attrs, key: index } }),
+			NodeComponent.toDOM({
+				...node,
+				attrs: { ...node.attrs, key: index },
+				type: schema.nodes[node.type],
+			}),
 			index,
 			children,
 		);

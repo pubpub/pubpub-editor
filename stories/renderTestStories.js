@@ -23,7 +23,8 @@ const RenderTest = (props) => {
 				<div className="editor client">
 					<Editor
 						initialContent={props.doc}
-						isReadOnly={false}
+						/* We set readOnly for table so table plugins don't muck with diff */
+						isReadOnly={props.title === 'table'}
 						onChange={(eco) => {
 							setClientHtml(beautify.html(eco.view.dom.innerHTML, beautifyOptions));
 						}}

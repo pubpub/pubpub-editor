@@ -8,7 +8,7 @@ import image from './image';
 import table from './table';
 import video from './video';
 import audio from './audio';
-import highlightQuote from './highlightQuote';
+import deprecated from './deprecated';
 
 export const defaultNodes = {
 	...baseNodes,
@@ -21,7 +21,7 @@ export const defaultNodes = {
 	...table,
 	...video,
 	...audio,
-	...highlightQuote,
+	...deprecated,
 };
 
 export const defaultMarks = {

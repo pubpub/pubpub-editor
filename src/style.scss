@@ -51,6 +51,19 @@
 		text-align: left;
 		background-color: #F0F0F4;
 	}
+	span.footnote {
+		vertical-align: super;
+		font-size: 0.85em;
+	}
+	span.citation {
+		font-weight: bold;
+		&:before {
+			content: "[";
+		}
+		&:after {
+			content: "]";
+		}
+	}
 }
 @import "./components/File/fileicon.scss";
 

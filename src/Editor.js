@@ -176,17 +176,15 @@ class Editor extends Component {
 		/* render a static version of the doc for server-side */
 		/* friendliness. This static version is overwritten when the */
 		/* editorView is mounted into the editor dom node. */
-		// console.log('=====');
-		// console.log(ReactDOMServer.renderToStaticMarkup(renderStatic(this.schema, this.props.initialContent.content, this.props)));
-		// console.log('=====');
+
+		/* This following if is only for renderTest stories */
 		if (this.props.isServer) {
-			// console.log('=====');
 			const serverHtml = ReactDOMServer.renderToStaticMarkup(
 				renderStatic(this.schema, this.props.initialContent.content, this.props),
 			);
-			// console.log('=====');
 			this.props.onChange(serverHtml);
 		}
+
 		return (
 			<div
 				className={`editor ProseMirror ${this.props.isReadOnly ? 'read-only' : ''}`}
