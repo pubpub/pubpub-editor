@@ -49,18 +49,32 @@ figure {
 /* Element whose sibling is a citationlist or footnote list? */
 /* Need to add showFootnoteList and showCitationList options to pubs (?) */
 
+// Interim plan. 
+// If it has a citation list, or if it has a footnote list - don't show in the footer (or just collapse so clicks can still work?)
+// Remove footnotelist and citationList from dropdown
+// Go to individual pubs, and request removal. Or do it ourselves - only ~150
+// Go through firebase and remove all steps that write footnotelist or citationlist
+
+
 // Find all pubs that have footnotelist and citationlist
 // Do we include citation render information in doc? We could simply render on load.
 	// Would allow us to switch how it is handled (APA, etc)
 
+ // var x = document.querySelectorAll(".footnote");
+ // x.forEach((elem)=> {
+	//  elem.addEventListener("mouseenter", (evt)=> {
+	//  	console.log(evt.target.getBoundingClientRect());
+	//  }); 
+ // });
+
 /*
 - Footnote titles
+	- Firebase migration tooling. 
+	- Process that looks at every firebase pub, iterates over all steps.
+		allows you mutate/remove/add steps
+	- 
 - Hover/click functionality on footnotes, citations
 - Pub Footer designed and rendering footnote/citation content
-- Pub options for rendering footer content (?)
-- Footnote/citation importing confirmation
-- 
-
-
+- ✓ Footnote/citation importing confirmation
 
 */
