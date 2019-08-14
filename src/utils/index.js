@@ -87,7 +87,9 @@ const renderReactFromSpec = (elem, key, holeContent) => {
 	}
 
 	const start = hasAttrs ? 2 : 1;
-	if (holeContent && !Array.isArray(elem[start])) {
+	if (elem[0] === 'br') {
+		children = undefined;
+	} else if (holeContent && !Array.isArray(elem[start])) {
 		children = holeContent;
 	} else if (typeof elem[start] === 'string') {
 		children = elem[start];
@@ -105,6 +107,7 @@ const renderReactFromSpec = (elem, key, holeContent) => {
 		attrs.className = attrs.class;
 		delete attrs.class;
 	}
+
 	return React.createElement(elem[0], { ...attrs, key: key }, children);
 };
 

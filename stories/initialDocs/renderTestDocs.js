@@ -16,6 +16,36 @@ export default {
 			},
 		],
 	},
+	emptyParagraph: {
+		type: 'doc',
+		attrs: {
+			meta: {},
+		},
+		content: [
+			{
+				type: 'paragraph',
+				content: [
+					{
+						type: 'text',
+						text: 'Welcome to my introduction! ',
+					},
+				],
+			},
+			{
+				type: 'paragraph',
+				content: [],
+			},
+			{
+				type: 'paragraph',
+				content: [
+					{
+						type: 'text',
+						text: 'Welcome to my introduction! ',
+					},
+				],
+			},
+		],
+	},
 	blockquote: {
 		type: 'doc',
 		attrs: {

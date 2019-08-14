@@ -24,7 +24,11 @@ export const baseNodes = {
 			},
 		],
 		toDOM: (node) => {
-			return ['p', { class: node.attrs.class }, 0];
+			/* On server rendering, the placeholder <br /> tag is not inserted. */
+			/* The following check ensures spacing is maintained when server rendering */
+			const isEmpty = Array.isArray(node.content) && !node.content.length;
+			const children = isEmpty ? ['br'] : 0;
+			return ['p', { class: node.attrs.class }, children];
 		},
 		// toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
 		// 	const attrs = {};
