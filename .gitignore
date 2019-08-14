@@ -9,3 +9,4 @@ webpack-stats.json
 stories/config/secrets.js
 stories/_config.js
 out
+.vscode
