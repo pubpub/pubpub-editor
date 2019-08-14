@@ -8,7 +8,8 @@
 	.render-wrapper {
 		display: none;
 		position: absolute;
-		bottom: 1em;
+		z-index: 1;
+		top: 1.5em;
 		left: 0;
 		width: 400px;
 		padding: 15px;
