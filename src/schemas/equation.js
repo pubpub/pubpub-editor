@@ -1,5 +1,5 @@
-import React from 'react';
-import Latex from '../components/Latex/Latex';
+// import React from 'react';
+// import Latex from '../components/Latex/Latex';
 import { renderHtmlChildren } from '../utils/schemaUtils';
 
 export default {
