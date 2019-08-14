@@ -36,12 +36,6 @@
 	}
 	span.citation {
 		font-weight: bold;
-		&:before {
-			content: "[";
-		}
-		&:after {
-			content: "]";
-		}
 	}
 	@import "./collab.scss";
 	@import './figure.scss';

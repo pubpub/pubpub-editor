@@ -46,3 +46,21 @@ figure {
 
 /* Need to use [data-align="breakout"] in pubs */
 /* Need to make sure footnote importing formats to the right type now not <footnote> */
+/* Element whose sibling is a citationlist or footnote list? */
+/* Need to add showFootnoteList and showCitationList options to pubs (?) */
+
+// Find all pubs that have footnotelist and citationlist
+// Do we include citation render information in doc? We could simply render on load.
+	// Would allow us to switch how it is handled (APA, etc)
+
+/*
+- Footnote titles
+- Hover/click functionality on footnotes, citations
+- Pub Footer designed and rendering footnote/citation content
+- Pub options for rendering footer content (?)
+- Footnote/citation importing confirmation
+- 
+
+
+
+*/

@@ -28,6 +28,7 @@ export default {
 			},
 		],
 		toDOM: (node) => {
+			const inlineRenderFunc = node.type.spec.defaultOptions.inlineRenderer;
 			return [
 				'span',
 				{
@@ -38,7 +39,7 @@ export default {
 					'data-count': node.attrs.count,
 					class: 'citation',
 				},
-				String(node.attrs.count),
+				inlineRenderFunc(node.attrs.count),
 			];
 		},
 		// toDOM: (node) => {
@@ -63,7 +64,11 @@ export default {
 			const transaction = view.state.tr.replaceSelectionWith(citationNode);
 			view.dispatch(transaction);
 		},
-		defaultOptions: {},
+		defaultOptions: {
+			inlineRenderer: (count) => {
+				return `[${count}]`;
+			},
+		},
 		// toStatic: (node, options, isSelected, isEditable, editorProps /* children */) => {
 		// 	return (
 		// 		<Citation
