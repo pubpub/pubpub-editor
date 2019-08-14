@@ -38,6 +38,7 @@ export default {
 					'data-file-name': node.attrs.fileName,
 					'data-file-size': node.attrs.fileSize,
 					'data-caption': node.attrs.caption,
+					class: 'file',
 				},
 				[
 					'div',

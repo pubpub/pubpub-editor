@@ -25,7 +25,7 @@ export const dispatchEmptyTransaction = (editorView) => {
 	editorView.dispatch(emptyInitTransaction);
 };
 
-export const buildSchema = (customNodes = {}, customMarks = {}) => {
+export const buildSchema = (customNodes = {}, customMarks = {}, nodeOptions = {}) => {
 	const schemaNodes = {
 		...defaultNodes,
 		...customNodes,
@@ -34,6 +34,17 @@ export const buildSchema = (customNodes = {}, customMarks = {}) => {
 		...defaultMarks,
 		...customMarks,
 	};
+
+	/* Overwrite defaultOptions with custom supplied nodeOptions */
+	Object.keys(nodeOptions).forEach((nodeKey) => {
+		const nodeSpec = schemaNodes[nodeKey];
+		if (nodeSpec) {
+			schemaNodes[nodeKey].defaultOptions = {
+				...nodeSpec.defaultOptions,
+				...nodeOptions[nodeKey],
+			};
+		}
+	});
 
 	/* Filter out undefined (e.g. overwritten) nodes and marks */
 	Object.keys(schemaNodes).forEach((nodeKey) => {

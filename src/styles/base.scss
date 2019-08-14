@@ -1,0 +1,51 @@
+@import "~prosemirror-view/style/prosemirror.css";
+@import "~prosemirror-gapcursor/style/gapcursor.css";
+@import "~prosemirror-tables/style/tables.css";
+
+.editor {
+	&:focus {
+		outline: none !important;
+	}
+	.prosemirror-placeholder {
+		opacity: 0.5;
+		width: 0;
+		display: inline-block;
+		overflow: visible;
+		white-space: nowrap;
+		position: absolute;
+		pointer-events: none;
+		user-select: none;
+	}
+	.ProseMirror-selectednode {
+		outline: 2px solid #BBBDC0;
+	}
+	&.read-only {
+		.ProseMirror-selectednode {
+			outline: 0px solid #BBBDC0;
+		}
+	}
+	h1, h2, h3, h4, h5, h6 {
+		a {
+			text-decoration: none;
+			color: inherit;
+		}
+	}
+	span.footnote {
+		vertical-align: super;
+		font-size: 0.85em;
+	}
+	span.citation {
+		font-weight: bold;
+		&:before {
+			content: "[";
+		}
+		&:after {
+			content: "]";
+		}
+	}
+	@import "./collab.scss";
+	@import './figure.scss';
+	@import './file.scss';
+	@import "./latex.scss";
+	@import './table.scss';
+}

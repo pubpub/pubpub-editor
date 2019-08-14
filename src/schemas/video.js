@@ -1,6 +1,6 @@
 // import React from 'react';
 // import Video from '../components/Video/Video';
-import { renderHtmlChildren, generateStyles } from '../utils/schemaUtils';
+import { renderHtmlChildren } from '../utils/schemaUtils';
 
 export default {
 	video: {
@@ -42,7 +42,6 @@ export default {
 						preload: 'metadata',
 						src: node.attrs.url,
 						alt: node.attrs.caption,
-						...generateStyles(node.attrs),
 					},
 				],
 				['figcaption', {}, renderHtmlChildren(node, node.attrs.caption)],

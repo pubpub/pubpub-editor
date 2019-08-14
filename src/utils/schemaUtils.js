@@ -13,14 +13,3 @@ export const renderHtmlChildren = (node, html) => {
 	outputElem.innerHTML = html;
 	return outputElem;
 };
-
-export const generateStyles = (attrs) => {
-	let width = attrs.size ? `${attrs.size}%` : undefined;
-	if (attrs.align === 'full') {
-		width = '100%';
-	}
-	return {
-		width: width,
-		height: attrs.height ? `${attrs.height}%` : undefined,
-	};
-};

@@ -5,10 +5,10 @@ import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { keydownHandler } from 'prosemirror-keymap';
 import { requiredPlugins, optionalPlugins } from './plugins';
-import NodeViewReact from './nodeViewReact';
+// import NodeViewReact from './nodeViewReact';
 import { renderStatic, buildSchema } from './utils';
 
-require('./style.scss');
+require('./styles/base.scss');
 
 const propTypes = {
 	customNodes:
@@ -52,18 +52,22 @@ class Editor extends Component {
 		super(props);
 
 		this.configurePlugins = this.configurePlugins.bind(this);
-		this.configureNodeViews = this.configureNodeViews.bind(this);
+		// this.configureNodeViews = this.configureNodeViews.bind(this);
 		this.createEditor = this.createEditor.bind(this);
 
 		this.editorRef = React.createRef();
-		this.schema = buildSchema(this.props.customNodes, this.props.customMarks);
+		this.schema = buildSchema(
+			this.props.customNodes,
+			this.props.customMarks,
+			this.props.nodeOptions,
+		);
 		this.plugins = undefined;
-		this.nodeViews = undefined;
+		// this.nodeViews = undefined;
 	}
 
 	componentDidMount() {
 		this.plugins = this.configurePlugins();
-		this.nodeViews = this.configureNodeViews();
+		// this.nodeViews = this.configureNodeViews();
 		this.createEditor();
 	}
 
@@ -113,22 +117,22 @@ class Editor extends Component {
 			}, []);
 	}
 
-	configureNodeViews() {
-		const nodeViews = {};
-		const usedNodes = this.schema.nodes;
-		Object.keys(usedNodes).forEach((nodeName) => {
-			const nodeSpec = usedNodes[nodeName].spec;
-			if (nodeSpec.isNodeView) {
-				nodeViews[nodeName] = (node, view, getPos, decorations) => {
-					const customOptions = this.props.nodeOptions[nodeName] || {};
-					const mergedOptions = { ...nodeSpec.defaultOptions, ...customOptions };
-					return new NodeViewReact(node, view, getPos, decorations, mergedOptions);
-				};
-			}
-		});
+	// configureNodeViews() {
+	// 	const nodeViews = {};
+	// 	const usedNodes = this.schema.nodes;
+	// 	Object.keys(usedNodes).forEach((nodeName) => {
+	// 		const nodeSpec = usedNodes[nodeName].spec;
+	// 		if (nodeSpec.isNodeView) {
+	// 			nodeViews[nodeName] = (node, view, getPos, decorations) => {
+	// 				const customOptions = this.props.nodeOptions[nodeName] || {};
+	// 				const mergedOptions = { ...nodeSpec.defaultOptions, ...customOptions };
+	// 				return new NodeViewReact(node, view, getPos, decorations, mergedOptions);
+	// 			};
+	// 		}
+	// 	});
 
-		return nodeViews;
-	}
+	// 	return nodeViews;
+	// }
 
 	createEditor() {
 		/* Create the Editor State */
@@ -148,7 +152,7 @@ class Editor extends Component {
 					editable: () => {
 						return !this.props.isReadOnly;
 					},
-					nodeViews: this.nodeViews,
+					// nodeViews: this.nodeViews,
 					handleKeyDown: keydownHandler({
 						/* Block Ctrl-S from launching the browser Save window */
 						'Mod-s': () => {

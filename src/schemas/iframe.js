@@ -1,6 +1,6 @@
 // import React from 'react';
 // import Iframe from '../components/Iframe/Iframe';
-import { renderHtmlChildren, generateStyles } from '../utils/schemaUtils';
+import { renderHtmlChildren } from '../utils/schemaUtils';
 
 export default {
 	iframe: {
@@ -42,7 +42,6 @@ export default {
 					{
 						alt: node.attrs.caption,
 						src: node.attrs.url,
-						...generateStyles(node.attrs),
 						height: node.attrs.height,
 					},
 				],
