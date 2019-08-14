@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOMServer from 'react-dom/server';
+// import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
@@ -27,7 +27,7 @@ const propTypes = {
 	getHighlightContent: PropTypes.func,
 	handleSingleClick: PropTypes.func,
 	handleDoubleClick: PropTypes.func,
-	isServer: PropTypes.bool,
+	// isServer: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -44,7 +44,7 @@ const defaultProps = {
 	getHighlightContent: () => {},
 	handleSingleClick: undefined,
 	handleDoubleClick: undefined,
-	isServer: false,
+	// isServer: false,
 };
 
 class Editor extends Component {
@@ -143,56 +143,45 @@ class Editor extends Component {
 		});
 
 		/* Create and editorView and mount it into the editorRef node */
-		if (!this.props.isServer) {
-			const editorView = new EditorView(
-				{ mount: this.editorRef.current },
-				{
-					state: state,
-					spellcheck: true,
-					editable: () => {
-						return !this.props.isReadOnly;
-					},
-					// nodeViews: this.nodeViews,
-					handleKeyDown: keydownHandler({
-						/* Block Ctrl-S from launching the browser Save window */
-						'Mod-s': () => {
-							return true;
-						},
-						// TODO: We need something here that allows the dev to
-						// disable certain keys when a inline-menu is open for example
-					}),
-					handleClickOn: this.props.handleSingleClick,
-					handleDoubleClickOn: this.props.handleDoubleClick,
+		const editorView = new EditorView(
+			{ mount: this.editorRef.current },
+			{
+				state: state,
+				spellcheck: true,
+				editable: () => {
+					return !this.props.isReadOnly;
 				},
-			);
+				// nodeViews: this.nodeViews,
+				handleKeyDown: keydownHandler({
+					/* Block Ctrl-S from launching the browser Save window */
+					'Mod-s': () => {
+						return true;
+					},
+					// TODO: We need something here that allows the dev to
+					// disable certain keys when a inline-menu is open for example
+				}),
+				handleClickOn: this.props.handleSingleClick,
+				handleDoubleClickOn: this.props.handleDoubleClick,
+			},
+		);
 
-			const emptyInitTransaction = editorView.state.tr;
-			editorView.dispatch(emptyInitTransaction);
-			// TODO: Is this timeout necessary
-			setTimeout(() => {
-				editorView.dispatch(emptyInitTransaction);
-			}, 0);
-		}
+		const emptyInitTransaction = editorView.state.tr;
+		editorView.dispatch(emptyInitTransaction);
+		// TODO: Is this timeout necessary
+		// setTimeout(() => {
+		// 	editorView.dispatch(emptyInitTransaction);
+		// }, 0);
 	}
 
 	render() {
 		/* Before createEditor is called from componentDidMount, we */
-		/* render a static version of the doc for server-side */
-		/* friendliness. This static version is overwritten when the */
-		/* editorView is mounted into the editor dom node. */
-
-		/* This following if is only for renderTest stories */
-		if (this.props.isServer) {
-			const serverHtml = ReactDOMServer.renderToStaticMarkup(
-				renderStatic(this.schema, this.props.initialContent.content, this.props),
-			);
-			this.props.onChange(serverHtml);
-		}
-
+		/* generate a static version of the doc for server-side rendering. */
+		/* This static version is overwritten when the editorView is */
+		/* mounted into the editor dom node. */
 		return (
 			<div
-				className={`editor ProseMirror ${this.props.isReadOnly ? 'read-only' : ''}`}
 				ref={this.editorRef}
+				className={`editor ProseMirror ${this.props.isReadOnly ? 'read-only' : ''}`}
 			>
 				{renderStatic(this.schema, this.props.initialContent.content, this.props)}
 			</div>

@@ -1,13 +1,24 @@
 /* eslint-disable no-console */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
+import ReactDOMServer from 'react-dom/server';
 import { storiesOf } from '@storybook/react';
 import beautify from 'js-beautify';
 import Diff from 'react-stylable-diff';
 import Editor from '../src/index';
 import testDocs from './initialDocs/renderTestDocs';
+import { renderStatic, buildSchema } from '../src/utils';
 
 require('./renderTest.scss');
+
+const ServerEditor = (props) => {
+	const schema = buildSchema();
+	const serverHtml = ReactDOMServer.renderToStaticMarkup(
+		renderStatic(schema, props.initialContent.content, props),
+	);
+	props.onChange(serverHtml);
+	return <div className="editor ProseMirror" dangerouslySetInnerHTML={{ __html: serverHtml }} />;
+};
 
 const RenderTest = (props) => {
 	const [clientHtml, setClientHtml] = useState('');
@@ -31,10 +42,10 @@ const RenderTest = (props) => {
 					/>
 				</div>
 				<div className="editor server">
-					<Editor
+					<ServerEditor
 						initialContent={props.doc}
 						isReadOnly={false}
-						isServer={true}
+						// isServer={true}
 						onChange={(html) => {
 							setServerHtml(beautify.html(html, beautifyOptions));
 						}}
