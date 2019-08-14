@@ -17,6 +17,7 @@ const ServerEditor = (props) => {
 		renderStatic(schema, props.initialContent.content, props),
 	);
 	props.onChange(serverHtml);
+	/* eslint-disable-next-line react/no-danger */
 	return <div className="editor ProseMirror" dangerouslySetInnerHTML={{ __html: serverHtml }} />;
 };
 
