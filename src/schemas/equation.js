@@ -75,7 +75,6 @@ export default {
 				{
 					'data-node-type': 'math-block',
 					'data-value': node.attrs.value,
-					// 'data-html': node.attrs.html,
 				},
 				renderHtmlChildren(node, node.attrs.html),
 			];

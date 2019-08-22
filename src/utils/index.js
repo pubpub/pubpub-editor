@@ -69,6 +69,12 @@ export const buildSchema = (customNodes = {}, customMarks = {}, nodeOptions = {}
 	});
 };
 
+/* This function implements a server-friendly (via React)
+   DOM renderer based on ProseMirror's DOMOutputSpec structure:
+   https://prosemirror.net/docs/ref/#model.DOMOutputSpec
+   Having this function allows us to specify a single toDOM()
+   function in each schema, and render that with React on the
+   server and ProseMirror on the client. */
 const renderReactFromSpec = (elem, key, holeContent) => {
 	if (!elem) {
 		return null;
