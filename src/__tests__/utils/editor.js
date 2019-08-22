@@ -2,7 +2,7 @@ import { Node } from 'prosemirror-model';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 
-import { buildSchema, getEmptyDoc } from '../../utilities';
+import { buildSchema, getEmptyDoc } from '../../utils';
 
 const schema = buildSchema();
 
