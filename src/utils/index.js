@@ -13,6 +13,10 @@ import { defaultNodes, defaultMarks } from '../schemas';
 
 export const firebaseTimestamp = { '.sv': 'timestamp' };
 
+export const getEmptyDoc = () => {
+	return { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] };
+};
+
 export const docIsEmpty = (doc) => {
 	return (
 		doc.childCount === 0 ||
@@ -553,13 +557,18 @@ export const restoreDiscussionMaps = (firebaseRef, schema, useMergeSteps) => {
 
 				Object.keys(discussions).forEach((discussionId) => {
 					if (discussions[discussionId].currentKey === currentKey) {
-						newDiscussions[discussionId] = {
-							...discussions[discussionId],
-							selection: Selection.fromJSON(
+						try {
+							const thisSelection = Selection.fromJSON(
 								currentDoc,
 								uncompressSelectionJSON(discussions[discussionId].selection),
-							),
-						};
+							);
+							newDiscussions[discussionId] = {
+								...discussions[discussionId],
+								selection: thisSelection,
+							};
+						} catch (err) {
+							console.warn(`Warning on ${discussionId}: ${err}`);
+						}
 					}
 				});
 

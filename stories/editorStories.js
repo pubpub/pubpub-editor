@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { storiesOf } from '@storybook/react';
 import Editor, { cursor } from '../src/index';
 import { editorWrapperStyle, initFirebase, clientData } from './_utilities';
-import initialContent from './initialDocs/fullDoc';
+import initialContent from './initialDocs/plainDoc';
 import {
 	setLocalHighlight,
 	removeLocalHighlight,
@@ -53,7 +53,7 @@ storiesOf('Editor', module)
 				// isReadOnly={true}
 				onChange={(changeObject) => {
 					// console.log('====');
-					// console.log(changeObject.view.state.doc.toJSON(), null, 4));
+					// console.log(JSON.stringify(changeObject.view.state.doc.toJSON(), null, 4));
 					// console.log(changeObject.menuItems);
 					// console.log(getCollabJSONs(changeObject.view));
 					if (changeObject.updateNode && changeObject.selectedNode.attrs.size === 50) {
@@ -158,7 +158,6 @@ storiesOf('Editor', module)
 						key={firebaseBranchRef ? 'ready' : 'unready'}
 						placeholder="Begin writing..."
 						onChange={(evt) => {
-							console.log(evt.view.state);
 							updatechangeObject(evt);
 						}}
 						collaborativeOptions={{

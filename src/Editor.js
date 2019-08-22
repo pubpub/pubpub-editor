@@ -18,6 +18,7 @@ const propTypes = {
 		PropTypes.object /* An object with nodeName keys and values of objects of overriding options. For example: nodeOptions = { image: { linkToSrc: false } } */,
 	collaborativeOptions: PropTypes.object,
 	onChange: PropTypes.func,
+	onError: PropTypes.func,
 	initialContent: PropTypes.object,
 	placeholder: PropTypes.string,
 	isReadOnly: PropTypes.bool,
@@ -25,7 +26,6 @@ const propTypes = {
 	getHighlightContent: PropTypes.func,
 	handleSingleClick: PropTypes.func,
 	handleDoubleClick: PropTypes.func,
-	// isServer: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -35,6 +35,7 @@ const defaultProps = {
 	nodeOptions: {},
 	collaborativeOptions: {},
 	onChange: () => {},
+	onError: () => {},
 	initialContent: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] },
 	placeholder: '',
 	isReadOnly: false,
@@ -93,6 +94,7 @@ class Editor extends Component {
 				const passedProps = {
 					container: this.editorRef.current,
 					onChange: this.props.onChange,
+					onError: this.props.onError,
 					initialContent: this.props.initialContent,
 					collaborativeOptions: this.props.collaborativeOptions,
 					placeholder: this.props.placeholder,
@@ -138,6 +140,15 @@ class Editor extends Component {
 				}),
 				handleClickOn: this.props.handleSingleClick,
 				handleDoubleClickOn: this.props.handleDoubleClick,
+				dispatchTransaction: (transaction) => {
+					try {
+						const newState = editorView.state.apply(transaction);
+						editorView.updateState(newState);
+					} catch (err) {
+						console.error('Error applying transaction:', err);
+						this.props.onError(err);
+					}
+				},
 			},
 		);
 

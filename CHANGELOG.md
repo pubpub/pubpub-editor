@@ -6,6 +6,47 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 - update: add getNotes function
+- update: Move to native prosemirror rendering rather than nodeviews
+- fix: Collaborative lint and readOnly catch
+
+## [6.1.4] - 2019-08-08
+- fix: mostRecentKey calc type error
+
+## [6.1.3] - 2019-08-01
+- update: Do not render placeholder if no placeholder prop has been passed in
+
+## [6.1.2] - 2019-08-01
+- fix: getShortcutValues position bug
+- fix: Handle mostRecentKey calc for very large step arrays
+
+## [6.1.1] - 2019-08-01
+- fix: Remove testing error
+
+## [6.1.0] - 2019-07-23
+- feature: Add onError prop that will be called with transaction and firebase errors.
+- dev: Simplify handling of collab meta keys
+
+## [6.0.7] - 2019-07-23
+- fix: Use https for git package
+
+## [6.0.6] - 2019-07-23
+- fix: Use prosemirror-view hotfix to handle selection bug.
+
+## [6.0.5] - 2019-07-22
+- fix: Proper check for prosemirror-table plugin
+
+## [6.0.4] - 2019-07-18
+- fix: Draw columns properly in readOnly mode.
+- fix: Add try around discussion restore selection.
+
+## [6.0.3] - 2019-07-18
+- dev: Add to list of steps to not send.
+
+## [6.0.2] - 2019-07-18
+- fix: Index error in citation plugin.
+
+## [6.0.1] - 2019-07-16
+- fix: Do not show collaborative cursors if isReadOnly is set.
 
 ## [6.0.0] - 2019-07-15
 - update: collaborative plugin now fires an onUpdateLatestKey callback with the latest remote

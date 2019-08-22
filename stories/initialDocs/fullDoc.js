@@ -222,7 +222,7 @@ const doc = {
 							attrs: {
 								colspan: 1,
 								rowspan: 1,
-								colwidth: null,
+								colwidth: [78],
 								background: null,
 							},
 							content: [
@@ -296,7 +296,7 @@ const doc = {
 							attrs: {
 								colspan: 1,
 								rowspan: 1,
-								colwidth: null,
+								colwidth: [78],
 								background: null,
 							},
 							content: [
@@ -370,7 +370,7 @@ const doc = {
 							attrs: {
 								colspan: 1,
 								rowspan: 1,
-								colwidth: null,
+								colwidth: [78],
 								background: null,
 							},
 							content: [

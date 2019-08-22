@@ -377,7 +377,7 @@ const getShortcutValues = (editorView) => {
 	// if so, we need to correct for this.
 	if (currentNode !== editorState.selection.$to.parent) {
 		const child = editorState.selection.$to.parent.childAfter(
-			editorState.selection.$to.parentOffset - 1,
+			Math.max(editorState.selection.$to.parentOffset - 1, 0),
 		);
 		if (child.node === currentNode) {
 			parentOffset -= child.offset;

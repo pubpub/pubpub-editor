@@ -7,7 +7,7 @@ export default (schema, props) => {
 		props: {
 			decorations: (state) => {
 				const doc = state.doc;
-				if (docIsEmpty(doc)) {
+				if (docIsEmpty(doc) && props.placeholder) {
 					const placeHolderElem = document.createElement('span');
 					placeHolderElem.className = 'prosemirror-placeholder';
 					placeHolderElem.innerHTML = props.placeholder;
