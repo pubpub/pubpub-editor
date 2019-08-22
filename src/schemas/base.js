@@ -1,5 +1,3 @@
-// import React from 'react';
-
 export const baseNodes = {
 	doc: {
 		content: 'block+',
@@ -30,18 +28,6 @@ export const baseNodes = {
 			const children = isEmpty ? ['br'] : 0;
 			return ['p', { class: node.attrs.class }, children];
 		},
-		// toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
-		// 	const attrs = {};
-		// 	if (node.attrs && node.attrs.class) {
-		// 		attrs.className = node.attrs.class;
-		// 	}
-		// 	const emptyChildren = <br />;
-		// 	return (
-		// 		<p {...attrs} key={node.currIndex}>
-		// 			{children || emptyChildren}
-		// 		</p>
-		// 	);
-		// },
 	},
 	blockquote: {
 		content: 'block+',
@@ -50,9 +36,6 @@ export const baseNodes = {
 		toDOM: () => {
 			return ['blockquote', 0];
 		},
-		// toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
-		// 	return <blockquote key={node.currIndex}>{children}</blockquote>;
-		// },
 	},
 	horizontal_rule: {
 		group: 'block',
@@ -67,9 +50,6 @@ export const baseNodes = {
 				),
 			);
 		},
-		// toStatic: (node) => {
-		// 	return <hr key={node.currIndex} />;
-		// },
 	},
 	heading: {
 		attrs: {
@@ -120,51 +100,6 @@ export const baseNodes = {
 		toDOM: (node) => {
 			return [`h${node.attrs.level}`, { id: node.attrs.id }, 0];
 		},
-		// toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
-		// 	if (node.attrs.level === 1) {
-		// 		return (
-		// 			<h1 key={node.currIndex} id={node.attrs.id}>
-		// 				{children}
-		// 			</h1>
-		// 		);
-		// 	}
-		// 	if (node.attrs.level === 2) {
-		// 		return (
-		// 			<h2 key={node.currIndex} id={node.attrs.id}>
-		// 				{children}
-		// 			</h2>
-		// 		);
-		// 	}
-		// 	if (node.attrs.level === 3) {
-		// 		return (
-		// 			<h3 key={node.currIndex} id={node.attrs.id}>
-		// 				{children}
-		// 			</h3>
-		// 		);
-		// 	}
-		// 	if (node.attrs.level === 4) {
-		// 		return (
-		// 			<h4 key={node.currIndex} id={node.attrs.id}>
-		// 				{children}
-		// 			</h4>
-		// 		);
-		// 	}
-		// 	if (node.attrs.level === 5) {
-		// 		return (
-		// 			<h5 key={node.currIndex} id={node.attrs.id}>
-		// 				{children}
-		// 			</h5>
-		// 		);
-		// 	}
-		// 	if (node.attrs.level === 6) {
-		// 		return (
-		// 			<h6 key={node.currIndex} id={node.attrs.id}>
-		// 				{children}
-		// 			</h6>
-		// 		);
-		// 	}
-		// 	return null;
-		// },
 	},
 	ordered_list: {
 		content: 'list_item+',
@@ -181,14 +116,6 @@ export const baseNodes = {
 		toDOM: (node) => {
 			return ['ol', { start: node.attrs.order === 1 ? null : node.attrs.order }, 0];
 		},
-		// toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
-		// 	const attrs = { start: node.attrs.order === 1 ? null : node.attrs.order };
-		// 	return (
-		// 		<ol key={node.currIndex} {...attrs}>
-		// 			{children}
-		// 		</ol>
-		// 	);
-		// },
 	},
 	bullet_list: {
 		content: 'list_item+',
@@ -197,9 +124,6 @@ export const baseNodes = {
 		toDOM: () => {
 			return ['ul', 0];
 		},
-		// toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
-		// 	return <ul key={node.currIndex}>{children}</ul>;
-		// },
 	},
 	list_item: {
 		content: 'paragraph block*',
@@ -208,9 +132,6 @@ export const baseNodes = {
 		toDOM: () => {
 			return ['li', 0];
 		},
-		// toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
-		// 	return <li key={node.currIndex}>{children}</li>;
-		// },
 	},
 	code_block: {
 		content: 'text*',
@@ -220,13 +141,6 @@ export const baseNodes = {
 		toDOM: () => {
 			return ['pre', ['code', 0]];
 		},
-		// toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
-		// 	return (
-		// 		<pre key={node.currIndex}>
-		// 			<code>{children}</code>
-		// 		</pre>
-		// 	);
-		// },
 	},
 	text: {
 		inline: true,
@@ -234,13 +148,6 @@ export const baseNodes = {
 		toDOM: (node) => {
 			return node.text;
 		},
-		// toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
-		// 	return editorProps.renderStaticMarkup ? (
-		// 		children
-		// 	) : (
-		// 		<span key={node.currIndex}>{children}</span>
-		// 	);
-		// },
 	},
 	hard_break: {
 		inline: true,
@@ -250,23 +157,7 @@ export const baseNodes = {
 		toDOM: () => {
 			return ['br'];
 		},
-		// toStatic: (node) => {
-		// 	return <br key={node.currIndex} />;
-		// },
 	},
-	// none: {
-	// 	// empty schema block
-	// 	/* It's not clear to me that the none schema is used. */
-	// 	/* At the moment, it's not included in the defaultNodes prop */
-	// 	/* by default. */
-	// 	group: 'block',
-	// 	toDOM: () => {
-	// 		return ['span'];
-	// 	},
-	// 	toStatic: (node, options, isSelected, isEditable, editorProps, children) => {
-	// 		return <span key={node.currIndex}>{children}</span>;
-	// 	},
-	// },
 };
 
 export const baseMarks = {
@@ -282,17 +173,16 @@ export const baseMarks = {
 		toDOM: () => {
 			return ['em'];
 		},
-		// toStatic: (mark, children, key) => {
-		// 	return <em key={key}>{children}</em>;
-		// },
 	},
 
 	strong: {
 		parseDOM: [
 			{ tag: 'strong' },
-			// This works around a Google Docs misbehavior where
-			// pasted content will be inexplicably wrapped in `<b>`
-			// tags with a font-weight normal.
+			/*
+			This works around a Google Docs misbehavior where
+			pasted content will be inexplicably wrapped in `<b>`
+			tags with a font-weight normal.
+			*/
 			{ tag: 'b', getAttrs: (node) => node.style.fontWeight !== 'normal' && null },
 			{
 				style: 'font-weight',
@@ -302,9 +192,6 @@ export const baseMarks = {
 		toDOM: () => {
 			return ['strong'];
 		},
-		// toStatic: (mark, children, key) => {
-		// 	return <strong key={key}>{children}</strong>;
-		// },
 	},
 	link: {
 		inclusive: false,
@@ -335,49 +222,29 @@ export const baseMarks = {
 			}
 			return ['a', attrs];
 		},
-		// toStatic: (mark, children, key) => {
-		// 	return (
-		// 		<a key={key} href={mark.attrs.href} title={mark.attrs.title} target={mark.attrs.target}>
-		// 			{children}
-		// 		</a>
-		// 	);
-		// },
-		toEditable: () => {} /* This is a workaround to make the LinkMenu function within tables */,
 	},
 	sub: {
 		parseDOM: [{ tag: 'sub' }],
 		toDOM: () => {
 			return ['sub'];
 		},
-		// toStatic: (mark, children, key) => {
-		// 	return <sub key={key}>{children}</sub>;
-		// },
 	},
 	sup: {
 		parseDOM: [{ tag: 'sup' }],
 		toDOM: () => {
 			return ['sup'];
 		},
-		// toStatic: (mark, children, key) => {
-		// 	return <sup key={key}>{children}</sup>;
-		// },
 	},
 	strike: {
 		parseDOM: [{ tag: 's' }, { tag: 'strike' }, { tag: 'del' }],
 		toDOM: () => {
 			return ['s'];
 		},
-		// toStatic: (mark, children, key) => {
-		// 	return <s key={key}>{children}</s>;
-		// },
 	},
 	code: {
 		parseDOM: [{ tag: 'code' }],
 		toDOM: () => {
 			return ['code'];
 		},
-		// toStatic: (mark, children, key) => {
-		// 	return <code key={key}>{children}</code>;
-		// },
 	},
 };

@@ -31,39 +31,6 @@ export default (schema) => {
 				return true;
 			});
 
-			/* Check all FootnoteList nodes to make sure they are updated if */
-			/* didUpdate is true, or if the list is empty, but counts is not */
-			// newState.doc.nodesBetween(0, newState.doc.nodeSize - 2, (node, nodePos) => {
-			// 	if (node.type.name === 'footnoteList') {
-			// 		/* Test whether the values of the footnote list should be */
-			// 		/* updated due to new values in individual footnotes */
-			// 		const footnoteContentChanged = footnoteItems.reduce((prev, curr, index) => {
-			// 			const prevFootnoteData = node.attrs.listItems[index] || {};
-			// 			if (
-			// 				prevFootnoteData.value !== curr.value ||
-			// 				prevFootnoteData.structuredValue !== curr.structuredValue
-			// 			) {
-			// 				return true;
-			// 			}
-			// 			return prev;
-			// 		}, false);
-
-			// 		if (
-			// 			node.attrs.listItems.length !== footnoteItems.length ||
-			// 			didUpdate ||
-			// 			footnoteContentChanged
-			// 		) {
-			// 			didUpdate = true;
-			// 			newTransaction.setNodeMarkup(nodePos, null, {
-			// 				...node.attrs,
-			// 				listItems: footnoteItems,
-			// 			});
-			// 			newTransaction.setMeta('footnote', true);
-			// 		}
-			// 	}
-			// 	return true;
-			// });
-
 			return didUpdate ? newTransaction : null;
 		},
 	});

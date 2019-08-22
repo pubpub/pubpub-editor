@@ -622,18 +622,14 @@ class CollaborativePlugin extends Plugin {
 		if (cursorData.initials) {
 			const innerCircleInitials = document.createElement('span');
 			innerCircleInitials.className = `initials ${formattedDataId}`;
-			innerStyle += `.initials.${formattedDataId}::after { content: "${
-				cursorData.initials
-			}"; } `;
+			innerStyle += `.initials.${formattedDataId}::after { content: "${cursorData.initials}"; } `;
 			hoverItemsWrapper.appendChild(innerCircleInitials);
 		}
 		/* If Image exists - add to hover items wrapper */
 		if (cursorData.image) {
 			const innerCircleImage = document.createElement('span');
 			innerCircleImage.className = `image ${formattedDataId}`;
-			innerStyle += `.image.${formattedDataId}::after { background-image: url('${
-				cursorData.image
-			}'); } `;
+			innerStyle += `.image.${formattedDataId}::after { background-image: url('${cursorData.image}'); } `;
 			hoverItemsWrapper.appendChild(innerCircleImage);
 		}
 
@@ -653,9 +649,7 @@ class CollaborativePlugin extends Plugin {
 			innerChildBar.style.backgroundColor = cursorData.cursorColor;
 			innerChildCircleSmall.style.backgroundColor = cursorData.cursorColor;
 			innerChildCircleBig.style.backgroundColor = cursorData.cursorColor;
-			innerStyle += `.name.${formattedDataId}::after { background-color: ${
-				cursorData.cursorColor
-			} !important; } `;
+			innerStyle += `.name.${formattedDataId}::after { background-color: ${cursorData.cursorColor} !important; } `;
 		}
 		style.innerHTML = innerStyle;
 		// console.timeEnd('redner2');

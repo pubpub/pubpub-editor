@@ -1,5 +1,3 @@
-// import React from 'react';
-// import Iframe from '../components/Iframe/Iframe';
 import { renderHtmlChildren } from '../utils/schemaUtils';
 
 export default {
@@ -50,27 +48,13 @@ export default {
 		},
 		inline: false,
 		group: 'block',
-		// draggable: false,
 
-		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
-		// isNodeView: true,
+		/* These are not part of the standard Prosemirror Schema spec */
 		onInsert: (view, attrs) => {
 			const iframeNode = view.state.schema.nodes.iframe.create(attrs);
 			const transaction = view.state.tr.replaceSelectionWith(iframeNode);
 			view.dispatch(transaction);
 		},
 		defaultOptions: {},
-		// toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
-		// 	return (
-		// 		<div data-align-breakout={node.attrs.breakout} key={node.currIndex}>
-		// 			<Iframe
-		// 				attrs={node.attrs}
-		// 				options={options}
-		// 				isSelected={isSelected}
-		// 				isEditable={isEditable}
-		// 			/>
-		// 		</div>
-		// 	);
-		// },
 	},
 };

@@ -1,5 +1,3 @@
-// import React from 'react';
-// import File from '../components/File/File';
 import { renderHtmlChildren } from '../utils/schemaUtils';
 
 export default {
@@ -79,39 +77,15 @@ export default {
 				['figcaption', {}, renderHtmlChildren(node, node.attrs.caption)],
 			];
 		},
-		// toDOM: (node) => {
-		// 	return [
-		// 		'file',
-		// 		{
-		// 			'data-url': node.attrs.url,
-		// 			'data-fileName': node.attrs.fileName,
-		// 			'data-fileSize': node.attrs.fileSize,
-		// 			'data-caption': node.attrs.caption,
-		// 		},
-		// 	];
-		// },
 		inline: false,
 		group: 'block',
-		// draggable: true,
 
-		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
-		// isNodeView: true,
+		/* These are not part of the standard Prosemirror Schema spec */
 		onInsert: (view, attrs) => {
 			const fileNode = view.state.schema.nodes.file.create(attrs);
 			const transaction = view.state.tr.replaceSelectionWith(fileNode);
 			view.dispatch(transaction);
 		},
 		defaultOptions: {},
-		// toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
-		// 	return (
-		// 		<File
-		// 			key={node.currIndex}
-		// 			attrs={node.attrs}
-		// 			options={options}
-		// 			isSelected={isSelected}
-		// 			isEditable={isEditable}
-		// 		/>
-		// 	);
-		// },
 	},
 };

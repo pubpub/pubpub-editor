@@ -1,5 +1,3 @@
-// import React from 'react';
-// import Image from '../components/Image/Image';
 import { renderHtmlChildren } from '../utils/schemaUtils';
 
 export default {
@@ -49,10 +47,8 @@ export default {
 		},
 		inline: false,
 		group: 'block',
-		// draggable: true,
 
-		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
-		// isNodeView: true,
+		/* These are not part of the standard Prosemirror Schema spec */
 		onInsert: (view, attrs) => {
 			const imageNode = view.state.schema.nodes.image.create(attrs);
 			const transaction = view.state.tr.replaceSelectionWith(imageNode);
@@ -64,17 +60,5 @@ export default {
 			},
 			linkToSrc: true,
 		},
-		// toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
-		// 	return (
-		// 		<div data-align-breakout={node.attrs.breakout} key={node.currIndex}>
-		// 			<Image
-		// 				attrs={node.attrs}
-		// 				options={options}
-		// 				isSelected={isSelected}
-		// 				isEditable={isEditable}
-		// 			/>
-		// 		</div>
-		// 	);
-		// },
 	},
 };

@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-// import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
 import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { keydownHandler } from 'prosemirror-keymap';
 import { requiredPlugins, optionalPlugins } from './plugins';
-// import NodeViewReact from './nodeViewReact';
 import { renderStatic, buildSchema } from './utils';
 
 require('./styles/base.scss');
@@ -44,7 +42,6 @@ const defaultProps = {
 	getHighlightContent: () => {},
 	handleSingleClick: undefined,
 	handleDoubleClick: undefined,
-	// isServer: false,
 };
 
 class Editor extends Component {
@@ -52,7 +49,6 @@ class Editor extends Component {
 		super(props);
 
 		this.configurePlugins = this.configurePlugins.bind(this);
-		// this.configureNodeViews = this.configureNodeViews.bind(this);
 		this.createEditor = this.createEditor.bind(this);
 
 		this.editorRef = React.createRef();
@@ -62,12 +58,10 @@ class Editor extends Component {
 			this.props.nodeOptions,
 		);
 		this.plugins = undefined;
-		// this.nodeViews = undefined;
 	}
 
 	componentDidMount() {
 		this.plugins = this.configurePlugins();
-		// this.nodeViews = this.configureNodeViews();
 		this.createEditor();
 	}
 
@@ -117,23 +111,6 @@ class Editor extends Component {
 			}, []);
 	}
 
-	// configureNodeViews() {
-	// 	const nodeViews = {};
-	// 	const usedNodes = this.schema.nodes;
-	// 	Object.keys(usedNodes).forEach((nodeName) => {
-	// 		const nodeSpec = usedNodes[nodeName].spec;
-	// 		if (nodeSpec.isNodeView) {
-	// 			nodeViews[nodeName] = (node, view, getPos, decorations) => {
-	// 				const customOptions = this.props.nodeOptions[nodeName] || {};
-	// 				const mergedOptions = { ...nodeSpec.defaultOptions, ...customOptions };
-	// 				return new NodeViewReact(node, view, getPos, decorations, mergedOptions);
-	// 			};
-	// 		}
-	// 	});
-
-	// 	return nodeViews;
-	// }
-
 	createEditor() {
 		/* Create the Editor State */
 		const state = EditorState.create({
@@ -151,7 +128,6 @@ class Editor extends Component {
 				editable: () => {
 					return !this.props.isReadOnly;
 				},
-				// nodeViews: this.nodeViews,
 				handleKeyDown: keydownHandler({
 					/* Block Ctrl-S from launching the browser Save window */
 					'Mod-s': () => {
@@ -167,10 +143,6 @@ class Editor extends Component {
 
 		const emptyInitTransaction = editorView.state.tr;
 		editorView.dispatch(emptyInitTransaction);
-		// TODO: Is this timeout necessary
-		// setTimeout(() => {
-		// 	editorView.dispatch(emptyInitTransaction);
-		// }, 0);
 	}
 
 	render() {

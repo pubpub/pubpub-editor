@@ -122,32 +122,11 @@ export const renderStatic = (schema = buildSchema(), nodeArray, editorProps) => 
 			children = marks.reduce((prev, curr, markIndex) => {
 				const currIndex = `${index}-${markIndex}`;
 				const MarkComponent = schema.marks[curr.type].spec;
-				// console.log('mark reduce', prev, curr, markIndex);
 				return renderReactFromSpec(MarkComponent.toDOM(curr), currIndex, prev);
-				// .toStatic(curr, prev, currIndex);
-				// return MarkComponent;
 			}, node.text);
 		}
-		// const nodeWithIndex = node;
-		// nodeWithIndex.currIndex = index;
-		// const nodeOptions = editorProps.nodeOptions || {};
-		// const customOptions = nodeOptions[node.type] || {};
-		// const mergedOptions = { ...schema.nodes[node.type].spec.defaultOptions, ...customOptions };
-		// const NodeComponent = schema.nodes[node.type].spec.toStatic(
-		// 	nodeWithIndex,
-		// 	mergedOptions,
-		// 	false,
-		// 	false,
-		// 	{ ...editorProps, renderStaticMarkup: true },
-		// 	children,
-		// );
-		// return NodeComponent;
 
 		const NodeComponent = schema.nodes[node.type].spec;
-		// console.log('node is', node);
-		// console.log('Calculated children are', children);
-		// console.log('NodeComponent is', NodeComponent);
-		// console.log('-----');
 		const output = renderReactFromSpec(
 			NodeComponent.toDOM({
 				...node,
@@ -157,7 +136,6 @@ export const renderStatic = (schema = buildSchema(), nodeArray, editorProps) => 
 			index,
 			children,
 		);
-		// console.log(node, NodeComponent, children, output);
 		return output;
 	});
 };
