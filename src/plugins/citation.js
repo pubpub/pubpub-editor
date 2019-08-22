@@ -11,7 +11,7 @@ export default (schema) => {
 			const newTransaction = newState.tr;
 			newState.doc.nodesBetween(0, newState.doc.nodeSize - 2, (node, nodePos) => {
 				if (node.type.name === 'citation') {
-					const key = `${node.attrs.html}-${node.attrs.unstructuredValue}`;
+					const key = `${node.attrs.value}-${node.attrs.unstructuredValue}`;
 					const existingCount = counts[key] && counts[key].count;
 					const nextCount = Object.keys(counts).length + 1;
 					if (existingCount && node.attrs.count !== existingCount) {

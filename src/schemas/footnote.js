@@ -8,7 +8,7 @@ export default {
 		attrs: {
 			value: { default: '' },
 			structuredValue: { default: '' },
-			structuredHtml: { default: '' },
+			// structuredHtml: { default: '' },
 			count: { default: 0 },
 		},
 		parseDOM: [
@@ -21,7 +21,7 @@ export default {
 					return {
 						value: node.getAttribute('data-value') || '',
 						structuredValue: node.getAttribute('data-structured-value') || '',
-						structuredHtml: node.getAttribute('data-structured-html') || '',
+						// structuredHtml: node.getAttribute('data-structured-html') || '',
 						count: Number(node.getAttribute('data-count')) || 0,
 					};
 				},
@@ -45,7 +45,7 @@ export default {
 					'data-node-type': 'footnote',
 					'data-value': node.attrs.value,
 					'date-structured-value': node.attrs.structuredValue,
-					'date-structured-html': node.attrs.structuredHtml,
+					// 'date-structured-html': node.attrs.structuredHtml,
 					'data-count': node.attrs.count,
 					class: 'footnote',
 				},

@@ -24,7 +24,7 @@ export default (schema) => {
 						count: footnoteCount,
 						value: node.attrs.value,
 						structuredValue: node.attrs.structuredValue,
-						structuredHtml: node.attrs.structuredHtml,
+						// structuredHtml: node.attrs.structuredHtml,
 					});
 					footnoteCount += 1;
 				}
