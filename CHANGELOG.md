@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 - fix: Collaborative lint and readOnly catch
 
+## [6.1.5] - 2019-08-22
+- fix: Handle setSelection properly to avoid crashes casued by new prosemirror-state
+
 ## [6.1.4] - 2019-08-08
 - fix: mostRecentKey calc type error
 

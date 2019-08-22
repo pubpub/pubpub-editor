@@ -98,10 +98,11 @@ export default (schema) => {
 				}
 				return true;
 			});
-			if (didUpdate) {
+			if (didUpdate && newTransaction.doc.selection) {
 				/* Numbers being updated when html changes causes the node to lose focus. */
 				/* This refocuses the node */
-				newTransaction.setSelection(newState.selection);
+
+				newTransaction.setSelection(newTransaction.doc.selection);
 			}
 			return didUpdate ? newTransaction : null;
 		},

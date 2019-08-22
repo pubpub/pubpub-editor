@@ -403,12 +403,12 @@ const getShortcutValues = (editorView) => {
 						/* Useful for selecting the entire shortcut text */
 						/* right before inserting/replacing with a node or */
 						/* other content. */
-						const selectionnew = new TextSelection(
-							editorState.doc.resolve(start),
-							editorState.doc.resolve(end),
-						);
 						const transaction = editorState.tr;
-						transaction.setSelection(selectionnew);
+						const selectionNew = new TextSelection(
+							transaction.doc.resolve(start),
+							transaction.doc.resolve(end),
+						);
+						transaction.setSelection(selectionNew);
 						editorView.dispatch(transaction);
 				  }
 				: undefined,
@@ -521,7 +521,7 @@ export default (schema, props) => {
 							if (editorView.state.selection.node.type.isInline) {
 								/* Inline nodeviews lose focus on content change */
 								/* this fixes that issue. */
-								const sel = NodeSelection.create(editorView.state.doc, start);
+								const sel = NodeSelection.create(transaction.doc, start);
 								transaction.setSelection(sel);
 							}
 							editorView.dispatch(transaction);
