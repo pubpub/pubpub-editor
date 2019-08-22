@@ -550,7 +550,7 @@ export default (schema, props) => {
 						/* simply result in losing focus. */
 					};
 
-					const isNodeView = !!editorView.state.selection.node;
+					const isNode = !!editorView.state.selection.node;
 
 					props.onChange({
 						/* The current editor view. */
@@ -566,12 +566,12 @@ export default (schema, props) => {
 						/* The text, prefix, and suffix of the current selection */
 						selectedText: getSelectedText(editorView),
 						/* If the active selection is of a NodeView, provide the selected node. */
-						selectedNode: isNodeView ? editorView.state.selection.node : undefined,
+						selectedNode: isNode ? editorView.state.selection.node : undefined,
 						/* If the active selection is of a NodeView, provide a function to update the selected node. */
 						/* The updateNode function expects an object of attrs as its sole input */
-						updateNode: isNodeView ? updateAttrs : undefined,
+						updateNode: isNode ? updateAttrs : undefined,
 						/* If the active selection is of a NodeView, provide a function to change the selected node. */
-						changeNode: isNodeView ? changeNode : undefined,
+						changeNode: isNode ? changeNode : undefined,
 						/* The full list of available node insert functions. */
 						/* Each insert function expect an object of attrs as */
 						/* its sole input. */
