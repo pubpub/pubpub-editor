@@ -1,3 +1,4 @@
+import React from 'react';
 import { Selection } from 'prosemirror-state';
 import { DOMParser, Schema, Slice, Node } from 'prosemirror-model';
 import {
@@ -8,7 +9,7 @@ import {
 	compressStateJSON,
 } from 'prosemirror-compress-pubpub';
 import { Step, Mapping } from 'prosemirror-transform';
-import { defaultNodes, defaultMarks } from './schemas';
+import { defaultNodes, defaultMarks } from '../schemas';
 
 export const firebaseTimestamp = { '.sv': 'timestamp' };
 
@@ -28,7 +29,7 @@ export const dispatchEmptyTransaction = (editorView) => {
 	editorView.dispatch(emptyInitTransaction);
 };
 
-export const buildSchema = (customNodes = {}, customMarks = {}) => {
+export const buildSchema = (customNodes = {}, customMarks = {}, nodeOptions = {}) => {
 	const schemaNodes = {
 		...defaultNodes,
 		...customNodes,
@@ -37,6 +38,17 @@ export const buildSchema = (customNodes = {}, customMarks = {}) => {
 		...defaultMarks,
 		...customMarks,
 	};
+
+	/* Overwrite defaultOptions with custom supplied nodeOptions */
+	Object.keys(nodeOptions).forEach((nodeKey) => {
+		const nodeSpec = schemaNodes[nodeKey];
+		if (nodeSpec) {
+			schemaNodes[nodeKey].defaultOptions = {
+				...nodeSpec.defaultOptions,
+				...nodeOptions[nodeKey],
+			};
+		}
+	});
 
 	/* Filter out undefined (e.g. overwritten) nodes and marks */
 	Object.keys(schemaNodes).forEach((nodeKey) => {
@@ -57,6 +69,58 @@ export const buildSchema = (customNodes = {}, customMarks = {}) => {
 	});
 };
 
+/* This function implements a server-friendly (via React)
+   DOM renderer based on ProseMirror's DOMOutputSpec structure:
+   https://prosemirror.net/docs/ref/#model.DOMOutputSpec
+   Having this function allows us to specify a single toDOM()
+   function in each schema, and render that with React on the
+   server and ProseMirror on the client. */
+const renderReactFromSpec = (elem, key, holeContent) => {
+	if (!elem) {
+		return null;
+	}
+	if (typeof elem === 'string') {
+		return holeContent || elem;
+	}
+	if (elem.nodeType || elem.$$typeof) {
+		return elem;
+	}
+
+	let attrs;
+	let children;
+	const hasAttrs =
+		elem[1] && typeof elem[1] === 'object' && !elem[1].nodeType && !Array.isArray(elem[1]);
+	if (hasAttrs) {
+		attrs = elem[1];
+	} else {
+		attrs = {};
+	}
+
+	const start = hasAttrs ? 2 : 1;
+	if (elem[0] === 'br') {
+		children = undefined;
+	} else if (holeContent && !Array.isArray(elem[start])) {
+		children = holeContent;
+	} else if (typeof elem[start] === 'string') {
+		children = elem[start];
+	} else {
+		const childArray = elem.slice(start, elem.length);
+		if (childArray.length) {
+			children = childArray.map((child, index) => {
+				const childKey = `${key}-${index}`;
+				return renderReactFromSpec(child, childKey, holeContent);
+			});
+		}
+	}
+
+	if ('class' in attrs) {
+		attrs.className = attrs.class;
+		delete attrs.class;
+	}
+
+	return React.createElement(elem[0], { ...attrs, key: key }, children);
+};
+
 export const renderStatic = (schema = buildSchema(), nodeArray, editorProps) => {
 	return nodeArray.map((node, index) => {
 		let children;
@@ -67,25 +131,22 @@ export const renderStatic = (schema = buildSchema(), nodeArray, editorProps) => 
 			const marks = node.marks || [];
 			children = marks.reduce((prev, curr, markIndex) => {
 				const currIndex = `${index}-${markIndex}`;
-				const MarkComponent = schema.marks[curr.type].spec.toStatic(curr, prev, currIndex);
-				return MarkComponent;
+				const MarkComponent = schema.marks[curr.type].spec;
+				return renderReactFromSpec(MarkComponent.toDOM(curr), currIndex, prev);
 			}, node.text);
 		}
 
-		const nodeWithIndex = node;
-		nodeWithIndex.currIndex = index;
-		const nodeOptions = editorProps.nodeOptions || {};
-		const customOptions = nodeOptions[node.type] || {};
-		const mergedOptions = { ...schema.nodes[node.type].spec.defaultOptions, ...customOptions };
-		const NodeComponent = schema.nodes[node.type].spec.toStatic(
-			nodeWithIndex,
-			mergedOptions,
-			false,
-			false,
-			{ ...editorProps, renderStaticMarkup: true },
+		const NodeComponent = schema.nodes[node.type].spec;
+		const output = renderReactFromSpec(
+			NodeComponent.toDOM({
+				...node,
+				attrs: { ...node.attrs, key: index },
+				type: schema.nodes[node.type],
+			}),
+			index,
 			children,
 		);
-		return NodeComponent;
+		return output;
 	});
 };
 
@@ -233,6 +294,10 @@ export const mergeBranch = (sourceFirebaseRef, destinationFirebaseRef) => {
 				.set(Object.values(changesSnapshotVal));
 			return Promise.all([setLastMergeKey, appendMerge]);
 		});
+};
+
+export const jsonToNode = (doc, schema) => {
+	return Node.fromJSON(schema, doc);
 };
 
 export const getFirebaseDoc = (firebaseRef, schema, versionNumber, updateOutdatedCheckpoint) => {
@@ -705,6 +770,38 @@ export const reanchorDiscussion = (editorView, firebaseRef, discussionId) => {
 				t: 'text',
 			},
 		});
+};
+
+export const getNotes = (doc) => {
+	const citationCounts = {}; /* counts is an object with items of the following form. { citationHtml: { count: citationCount, value: citationValue } } */
+	const footnoteItems = [];
+	const citationItems = [];
+
+	doc.nodesBetween(0, doc.nodeSize - 2, (node) => {
+		if (node.type.name === 'footnote') {
+			footnoteItems.push({
+				structuredValue: node.attrs.structuredValue,
+				unstructuredValue: node.attrs.value,
+			});
+		}
+		if (node.type.name === 'citation') {
+			const key = `${node.attrs.html}-${node.attrs.unstructuredValue}`;
+			const existingCount = citationCounts[key];
+			if (!existingCount) {
+				citationCounts[key] = true;
+				citationItems.push({
+					structuredValue: node.attrs.value,
+					unstructuredValue: node.attrs.unstructuredValue,
+				});
+			}
+		}
+		return true;
+	});
+
+	return {
+		footnotes: footnoteItems,
+		citations: citationItems,
+	};
 };
 
 // export const forceRemoveDiscussionHighlight = (editorView, discussionId) => {

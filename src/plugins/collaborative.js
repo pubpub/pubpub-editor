@@ -10,7 +10,7 @@ import {
 	uncompressStepJSON,
 } from 'prosemirror-compress-pubpub';
 import uuidv4 from 'uuid/v4';
-import { generateHash, storeCheckpoint, firebaseTimestamp } from '../utilities';
+import { generateHash, storeCheckpoint, firebaseTimestamp } from '../utils';
 
 /*
 	Load doc from firebase

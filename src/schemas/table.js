@@ -1,4 +1,3 @@
-import React from 'react';
 import { tableNodes } from 'prosemirror-tables';
 import { Fragment } from 'prosemirror-model';
 
@@ -36,43 +35,6 @@ pmTableNodes.table.onInsert = (view) => {
 	for (let i = 0; i < numRows; i += 1) rows.push(rowNode);
 	const tableNode = tableType.create(null, Fragment.from(rows));
 	view.dispatch(tr.replaceSelectionWith(tableNode).scrollIntoView());
-};
-pmTableNodes.table.toStatic = (node, options, isSelected, isEditable, editorProps, children) => {
-	return (
-		<table key={node.currIndex}>
-			<tbody>{children}</tbody>
-		</table>
-	);
-};
-pmTableNodes.table_cell.toStatic = (
-	node,
-	options,
-	isSelected,
-	isEditable,
-	editorProps,
-	children,
-) => {
-	return <td key={node.currIndex}>{children}</td>;
-};
-pmTableNodes.table_header.toStatic = (
-	node,
-	options,
-	isSelected,
-	isEditable,
-	editorProps,
-	children,
-) => {
-	return <th key={node.currIndex}>{children}</th>;
-};
-pmTableNodes.table_row.toStatic = (
-	node,
-	options,
-	isSelected,
-	isEditable,
-	editorProps,
-	children,
-) => {
-	return <tr key={node.currIndex}>{children}</tr>;
 };
 
 export default pmTableNodes;

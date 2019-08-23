@@ -1,5 +1,4 @@
-import React from 'react';
-import Video from '../components/Video/Video';
+import { renderHtmlChildren } from '../utils/schemaUtils';
 
 export default {
 	video: {
@@ -12,51 +11,49 @@ export default {
 		},
 		parseDOM: [
 			{
-				tag: 'video',
+				tag: 'figure',
 				getAttrs: (node) => {
+					if (node.getAttribute('data-node-type') !== 'video') {
+						return false;
+					}
 					return {
-						url: node.getAttribute('src') || null,
+						url: node.firstChild.getAttribute('src') || null,
 						size: Number(node.getAttribute('data-size')) || 50,
 						align: node.getAttribute('data-align') || 'center',
-						caption: node.getAttribute('alt') || '',
+						caption: node.firstChild.getAttribute('alt') || '',
 					};
 				},
 			},
 		],
 		toDOM: (node) => {
 			return [
-				'video',
+				'figure',
 				{
-					src: node.attrs.url,
+					'data-node-type': 'video',
 					'data-size': node.attrs.size,
 					'data-align': node.attrs.align,
-					alt: node.attrs.caption,
 				},
+				[
+					'video',
+					{
+						controls: true,
+						preload: 'metadata',
+						src: node.attrs.url,
+						alt: node.attrs.caption,
+					},
+				],
+				['figcaption', {}, renderHtmlChildren(node, node.attrs.caption)],
 			];
 		},
 		inline: false,
 		group: 'block',
-		draggable: false,
 
-		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
-		isNodeView: true,
+		/* These are not part of the standard Prosemirror Schema spec */
 		onInsert: (view, attrs) => {
 			const videoNode = view.state.schema.nodes.video.create(attrs);
 			const transaction = view.state.tr.replaceSelectionWith(videoNode);
 			view.dispatch(transaction);
 		},
 		defaultOptions: {},
-		toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
-			return (
-				<div data-align-breakout={node.attrs.breakout} key={node.currIndex}>
-					<Video
-						attrs={node.attrs}
-						options={options}
-						isSelected={isSelected}
-						isEditable={isEditable}
-					/>
-				</div>
-			);
-		},
 	},
 };

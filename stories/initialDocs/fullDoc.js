@@ -90,7 +90,7 @@ const doc = {
 			type: 'video',
 			attrs: {
 				url: 'http://techslides.com/demos/sample-videos/small.mp4',
-				caption: 'Most videos are colorful - but some are black and white.',
+				caption: 'Most videos are <b>colorful</b> - but some are black and white.',
 			},
 		},
 		{

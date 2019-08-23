@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [6.2.0] - 2019-08-22
+- update: add getNotes function
+- update: Move to native prosemirror rendering rather than nodeviews
 - fix: Collaborative lint and readOnly catch
 
 ## [6.1.5] - 2019-08-22

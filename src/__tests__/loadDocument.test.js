@@ -2,7 +2,7 @@
 import { configureTest } from './utils/configure';
 import { createEditorViewWithInitialDoc } from './utils/editor';
 import collaborative, { collaborativePluginKey } from '../plugins/collaborative';
-import { getEmptyDoc } from '../utilities';
+import { getEmptyDoc } from '../utils';
 
 const { doc, branchRef } = configureTest('simple');
 

@@ -1,5 +1,4 @@
-import React from 'react';
-import File from '../components/File/File';
+import { renderHtmlChildren } from '../utils/schemaUtils';
 
 export default {
 	file: {
@@ -12,50 +11,81 @@ export default {
 		},
 		parseDOM: [
 			{
-				tag: 'file',
+				tag: 'figure',
 				getAttrs: (node) => {
+					if (node.getAttribute('data-node-type') !== 'file') {
+						return false;
+					}
 					return {
 						url: node.getAttribute('data-url') || null,
-						fileName: node.getAttribute('data-fileName') || null,
-						fileSize: Number(node.getAttribute('data-fileSize')) || null,
+						fileName: node.getAttribute('data-file-name') || null,
+						fileSize: node.getAttribute('data-file-size') || null,
 						caption: node.getAttribute('data-caption') || '',
 					};
 				},
 			},
 		],
 		toDOM: (node) => {
+			const attrs = node.attrs;
+			const extension = attrs.fileName ? attrs.fileName.split('.').pop() : '';
 			return [
-				'file',
+				'figure',
 				{
+					'data-node-type': 'file',
 					'data-url': node.attrs.url,
-					'data-fileName': node.attrs.fileName,
-					'data-fileSize': node.attrs.fileSize,
+					'data-file-name': node.attrs.fileName,
+					'data-file-size': node.attrs.fileSize,
 					'data-caption': node.attrs.caption,
+					class: 'file',
 				},
+				[
+					'div',
+					{ class: 'bp3-card bp3-elevation-2 details' },
+					[
+						'div',
+						{
+							'data-type': extension.substring(0, 4),
+							class: 'file-icon file-icon-default',
+						},
+					],
+					[
+						'div',
+						{ class: 'file-name' },
+						[
+							'a',
+							{
+								href: attrs.url,
+								target: '_blank',
+								rel: 'noopener noreferrer',
+								download: attrs.fileName,
+							},
+							['span', {}, attrs.fileName],
+						],
+					],
+					['div', { class: 'file-size' }, attrs.fileSize],
+					[
+						'a',
+						{
+							href: attrs.url,
+							target: '_blank',
+							rel: 'noopener noreferrer',
+							download: attrs.fileName,
+							class: 'bp3-button bp3-icon-download',
+						},
+					],
+				],
+				['figcaption', {}, renderHtmlChildren(node, node.attrs.caption)],
 			];
 		},
 		inline: false,
 		group: 'block',
-		draggable: true,
 
-		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
-		isNodeView: true,
+		/* These are not part of the standard Prosemirror Schema spec */
 		onInsert: (view, attrs) => {
 			const fileNode = view.state.schema.nodes.file.create(attrs);
 			const transaction = view.state.tr.replaceSelectionWith(fileNode);
 			view.dispatch(transaction);
 		},
 		defaultOptions: {},
-		toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
-			return (
-				<File
-					key={node.currIndex}
-					attrs={node.attrs}
-					options={options}
-					isSelected={isSelected}
-					isEditable={isEditable}
-				/>
-			);
-		},
 	},
 };

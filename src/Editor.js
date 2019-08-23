@@ -4,10 +4,9 @@ import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { keydownHandler } from 'prosemirror-keymap';
 import { requiredPlugins, optionalPlugins } from './plugins';
-import NodeViewReact from './nodeViewReact';
-import { renderStatic, buildSchema } from './utilities';
+import { renderStatic, buildSchema } from './utils';
 
-require('./style.scss');
+require('./styles/base.scss');
 
 const propTypes = {
 	customNodes:
@@ -51,18 +50,19 @@ class Editor extends Component {
 		super(props);
 
 		this.configurePlugins = this.configurePlugins.bind(this);
-		this.configureNodeViews = this.configureNodeViews.bind(this);
 		this.createEditor = this.createEditor.bind(this);
 
 		this.editorRef = React.createRef();
-		this.schema = buildSchema(this.props.customNodes, this.props.customMarks);
+		this.schema = buildSchema(
+			this.props.customNodes,
+			this.props.customMarks,
+			this.props.nodeOptions,
+		);
 		this.plugins = undefined;
-		this.nodeViews = undefined;
 	}
 
 	componentDidMount() {
 		this.plugins = this.configurePlugins();
-		this.nodeViews = this.configureNodeViews();
 		this.createEditor();
 	}
 
@@ -113,23 +113,6 @@ class Editor extends Component {
 			}, []);
 	}
 
-	configureNodeViews() {
-		const nodeViews = {};
-		const usedNodes = this.schema.nodes;
-		Object.keys(usedNodes).forEach((nodeName) => {
-			const nodeSpec = usedNodes[nodeName].spec;
-			if (nodeSpec.isNodeView) {
-				nodeViews[nodeName] = (node, view, getPos, decorations) => {
-					const customOptions = this.props.nodeOptions[nodeName] || {};
-					const mergedOptions = { ...nodeSpec.defaultOptions, ...customOptions };
-					return new NodeViewReact(node, view, getPos, decorations, mergedOptions);
-				};
-			}
-		});
-
-		return nodeViews;
-	}
-
 	createEditor() {
 		/* Create the Editor State */
 		const state = EditorState.create({
@@ -147,7 +130,6 @@ class Editor extends Component {
 				editable: () => {
 					return !this.props.isReadOnly;
 				},
-				nodeViews: this.nodeViews,
 				handleKeyDown: keydownHandler({
 					/* Block Ctrl-S from launching the browser Save window */
 					'Mod-s': () => {
@@ -176,13 +158,13 @@ class Editor extends Component {
 
 	render() {
 		/* Before createEditor is called from componentDidMount, we */
-		/* render a static version of the doc for server-side */
-		/* friendliness. This static version is overwritten when the */
-		/* editorView is mounted into the editor dom node. */
+		/* generate a static version of the doc for server-side rendering. */
+		/* This static version is overwritten when the editorView is */
+		/* mounted into the editor dom node. */
 		return (
 			<div
-				className={`editor ProseMirror ${this.props.isReadOnly ? 'read-only' : ''}`}
 				ref={this.editorRef}
+				className={`editor ProseMirror ${this.props.isReadOnly ? 'read-only' : ''}`}
 			>
 				{renderStatic(this.schema, this.props.initialContent.content, this.props)}
 			</div>

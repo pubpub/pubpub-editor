@@ -1,5 +1,4 @@
-import React from 'react';
-import Latex from '../components/Latex/Latex';
+import { renderHtmlChildren } from '../utils/schemaUtils';
 
 export default {
 	equation: {
@@ -10,30 +9,34 @@ export default {
 		},
 		parseDOM: [
 			{
-				tag: 'math-inline',
+				tag: 'span',
 				getAttrs: (node) => {
+					if (node.getAttribute('data-node-type') !== 'math-inline') {
+						return false;
+					}
+
 					return {
 						value: node.getAttribute('data-value') || '',
-						html: node.getAttribute('data-html') || '',
+						html: node.firstChild.innerHTML || '',
 					};
 				},
 			},
 		],
 		toDOM: (node) => {
 			return [
-				'math-inline',
+				'span',
 				{
+					'data-node-type': 'math-inline',
 					'data-value': node.attrs.value,
-					'data-html': node.attrs.html,
 				},
+				renderHtmlChildren(node, node.attrs.html),
 			];
 		},
 		inline: true,
 		group: 'inline',
 		draggable: false,
 
-		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
-		isNodeView: true,
+		/* These are not part of the standard Prosemirror Schema spec */
 		onInsert: (view) => {
 			const equationNode = view.state.schema.nodes.equation.create({
 				value: '\\sum_ix^i',
@@ -44,17 +47,6 @@ export default {
 			view.dispatch(transaction);
 		},
 		defaultOptions: {},
-		toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
-			return (
-				<Latex
-					key={node.currIndex}
-					attrs={node.attrs}
-					options={options}
-					isSelected={isSelected}
-					isEditable={isEditable}
-				/>
-			);
-		},
 	},
 	block_equation: {
 		atom: true,
@@ -64,30 +56,34 @@ export default {
 		},
 		parseDOM: [
 			{
-				tag: 'math-block',
+				tag: 'div',
 				getAttrs: (node) => {
+					if (node.getAttribute('data-node-type') !== 'math-block') {
+						return false;
+					}
+
 					return {
 						value: node.getAttribute('data-value') || '',
-						html: node.getAttribute('data-html') || '',
+						html: node.firstChild.innerHTML || '',
 					};
 				},
 			},
 		],
 		toDOM: (node) => {
 			return [
-				'math-block',
+				'div',
 				{
+					'data-node-type': 'math-block',
 					'data-value': node.attrs.value,
-					'data-html': node.attrs.html,
 				},
+				renderHtmlChildren(node, node.attrs.html),
 			];
 		},
+
 		inline: false,
 		group: 'block',
-		draggable: false,
 
-		/* NodeView Options. These are not part of the standard Prosemirror Schema spec */
-		isNodeView: true,
+		/* These are not part of the standard Prosemirror Schema spec */
 		onInsert: (view) => {
 			const equationNode = view.state.schema.nodes.block_equation.create({
 				value: '\\sum_ix^i',
@@ -98,16 +94,5 @@ export default {
 			view.dispatch(transaction);
 		},
 		defaultOptions: {},
-		toStatic: (node, options, isSelected, isEditable /* editorProps, children */) => {
-			return (
-				<Latex
-					key={node.currIndex}
-					attrs={node.attrs}
-					options={options}
-					isSelected={isSelected}
-					isEditable={isEditable}
-				/>
-			);
-		},
 	},
 };

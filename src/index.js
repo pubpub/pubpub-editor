@@ -1,5 +1,5 @@
 import * as cursor from './cursor';
 
 export default from './Editor';
-export * from './utilities';
+export * from './utils';
 export { cursor };
