@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.2.2] - 2019-09-06
+- fix: Paste collab sync bug
+
 ## [6.2.1] - 2019-09-06
 - fix: Image copy and paste bug
 

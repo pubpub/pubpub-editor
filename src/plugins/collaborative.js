@@ -245,7 +245,7 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	sendCollabChanges(transaction, newState) {
-		const validMetaKeys = ['history$'];
+		const validMetaKeys = ['history$', 'paste', 'uiEvent'];
 		const hasInvalidMetaKeys = Object.keys(transaction.meta).some((key) => {
 			const keyIsValid = validMetaKeys.includes(key);
 			return !keyIsValid;
