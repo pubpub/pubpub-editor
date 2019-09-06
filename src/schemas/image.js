@@ -17,7 +17,7 @@ export default {
 						return false;
 					}
 					return {
-						url: node.getAttribute('url') || null,
+						url: node.getAttribute('data-url') || null,
 						size: Number(node.getAttribute('data-size')) || 50,
 						align: node.getAttribute('data-align') || 'center',
 						caption: node.firstChild.getAttribute('alt') || '',
