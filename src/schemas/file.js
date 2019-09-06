@@ -62,7 +62,11 @@ export default {
 							['span', {}, attrs.fileName],
 						],
 					],
-					['div', { class: 'file-size' }, attrs.fileSize],
+					[
+						'div',
+						{ class: 'file-size' },
+						attrs.fileSize ? attrs.fileSize.toString() : '',
+					],
 					[
 						'a',
 						{
