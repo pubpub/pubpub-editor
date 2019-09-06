@@ -21,7 +21,9 @@
     "test": "jest --silent"
   },
   "dependencies": {
+    "camelcase-css": "^2.0.1",
     "classnames": "^2.2.6",
+    "css": "^2.2.4",
     "katex": "^0.10.2",
     "prosemirror-collab": "^1.1.2",
     "prosemirror-commands": "^1.0.8",

@@ -9,6 +9,9 @@ import {
 	compressStateJSON,
 } from 'prosemirror-compress-pubpub';
 import { Step, Mapping } from 'prosemirror-transform';
+import css from 'css';
+import camelCaseCss from 'camelcase-css';
+
 import { defaultNodes, defaultMarks } from '../schemas';
 
 export const firebaseTimestamp = { '.sv': 'timestamp' };
@@ -69,6 +72,22 @@ export const buildSchema = (customNodes = {}, customMarks = {}, nodeOptions = {}
 	});
 };
 
+const parseStyleToObject = (style) => {
+	try {
+		const styleObj = {};
+		const wrappedStyle = `.whatever { ${style} } `;
+		const cssAst = css.parse(wrappedStyle);
+		const { declarations } = cssAst.stylesheet.rules[0];
+		declarations.forEach(({ property, value }) => {
+			const camelCaseProperty = camelCaseCss(property);
+			styleObj[camelCaseProperty] = value;
+		});
+		return styleObj;
+	} catch (_) {
+		return {};
+	}
+};
+
 /* This function implements a server-friendly (via React)
    DOM renderer based on ProseMirror's DOMOutputSpec structure:
    https://prosemirror.net/docs/ref/#model.DOMOutputSpec
@@ -116,6 +135,10 @@ const renderReactFromSpec = (elem, key, holeContent) => {
 	if ('class' in attrs) {
 		attrs.className = attrs.class;
 		delete attrs.class;
+	}
+
+	if ('style' in attrs && typeof attrs.style === 'string') {
+		attrs.style = parseStyleToObject(attrs.style);
 	}
 
 	return React.createElement(elem[0], { ...attrs, key: key }, children);

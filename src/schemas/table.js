@@ -10,10 +10,11 @@ const pmTableNodes = tableNodes({
 			getFromDOM: (dom) => {
 				return dom.style.backgroundColor || null;
 			},
-			setDOMAttr: (value, attrs) => {
+			setDOMAttr: (value /* , attrs */) => {
 				if (value) {
 					/* eslint-disable-next-line no-param-reassign */
-					attrs.style = `(attrs.style || '') background-color: ${value};`;
+					// TODO(ian): figure out what we want to do here
+					// attrs.style = `background-color: ${value}; ${attrs.style || ''}`;
 				}
 			},
 		},
