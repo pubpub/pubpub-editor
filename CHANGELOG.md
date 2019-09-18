@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.2.7] - 2019-09-18
+- fix: getNotes citation keying bug
+
 ## [6.2.6] - 2019-09-06
 - fix: Add left/right padding to float figures
 
