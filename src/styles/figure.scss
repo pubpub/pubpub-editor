@@ -12,11 +12,11 @@ figure {
 
 	&[data-align='left'] {
 		float: left;
-		margin-right: 1em;
+		margin: 0.5em 1.5em 0.5em 0em;
 	}
 	&[data-align='right'] {
 		float: right;
-		margin-left: 1em;
+		margin: 0.5em 0em 0.5em 1.5em;
 	}
 	@for $i from 1 through 100 {
 		&[data-size='#{$i}'] {
