@@ -20,5 +20,9 @@ module.exports = ({ config }) => {
 		resolve(__dirname, '../stories'),
 		'node_modules',
 	];
+	config.node = {
+		...config.node,
+		fs: "empty",
+	}
 	return config;
 };
