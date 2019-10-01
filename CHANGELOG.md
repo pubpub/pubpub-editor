@@ -6,14 +6,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [6.2.6] - 2019-10-01
+## [6.2.8] - 2019-10-01
 - Shim `fs` require from `css` dependency in browser environment.
 
+## [6.2.7] - 2019-09-18
+- fix: getNotes citation keying bug
+- update: Tweak margin on float figures
+
+## [6.2.6] - 2019-09-06
+- fix: Add left/right padding to float figures
+
 ## [6.2.5] - 2019-09-06
-- Temporarily fix for an issue with React-rendering of editor content with inline styles
+- fix: Temporarily fix for an issue with React-rendering of editor content with inline styles
 
 ## [6.2.4] - 2019-09-06
-- Fixed an issue with file embeds crashing the editor under certain circumstances
+- fix: Fixed an issue with file embeds crashing the editor under certain circumstances
 
 ## [6.2.2] - 2019-09-06
 - fix: Paste collab sync bug

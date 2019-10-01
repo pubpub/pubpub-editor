@@ -808,7 +808,7 @@ export const getNotes = (doc) => {
 			});
 		}
 		if (node.type.name === 'citation') {
-			const key = `${node.attrs.html}-${node.attrs.unstructuredValue}`;
+			const key = `${node.attrs.value}-${node.attrs.unstructuredValue}`;
 			const existingCount = citationCounts[key];
 			if (!existingCount) {
 				citationCounts[key] = true;
