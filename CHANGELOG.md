@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.2.6] - 2019-10-01
+- Shim `fs` require from `css` dependency in browser environment.
+
 ## [6.2.5] - 2019-09-06
 - Temporarily fix for an issue with React-rendering of editor content with inline styles
 
