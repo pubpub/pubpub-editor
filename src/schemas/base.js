@@ -54,6 +54,7 @@ export const baseNodes = {
 	heading: {
 		attrs: {
 			level: { default: 1 },
+			fixedId: { default: '' },
 			id: { default: '' },
 		},
 		content: 'inline*',
@@ -98,7 +99,7 @@ export const baseNodes = {
 			},
 		],
 		toDOM: (node) => {
-			return [`h${node.attrs.level}`, { id: node.attrs.id }, 0];
+			return [`h${node.attrs.level}`, { id: node.attrs.fixedId || node.attrs.id }, 0];
 		},
 	},
 	ordered_list: {

@@ -198,6 +198,15 @@ export const getCollabJSONs = (editorView, collabIds) => {
 	return collabPlugin ? collabPlugin.getJSONs(collabIds) : null;
 };
 
+export const importDocJson = (editorView, docJson) => {
+	const doc = Node.fromJSON(editorView.state.schema, docJson);
+	const tr = editorView.state.tr;
+	tr.setSelection(Selection.atStart(editorView.state.doc));
+	tr.replaceSelection(new Slice(doc.content, 0, 0));
+	editorView.dispatch(tr);
+	return doc;
+};
+
 export const importHtml = (editorView, htmlString) => {
 	/* Create wrapper DOM node */
 	const wrapperElem = document.createElement('div');

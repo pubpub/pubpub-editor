@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.2.9] - 2019-10-07
+- Add new importDocJson utility for PubPub to consume
+- Add fixedHeader attr to `heading` schema type
+
 ## [6.2.8] - 2019-10-01
 - Shim `fs` require from `css` dependency in browser environment.
 
