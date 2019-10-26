@@ -11,13 +11,13 @@ import { renderStatic, buildSchema } from './utils';
 require('./styles/base.scss');
 
 const propTypes = {
-	customNodes:
-		PropTypes.object /* Object of custom nodes. To remove default node, override. For example, { image: null, header: null } */,
+	/* Object of custom nodes. To remove default node, override. For example, { image: null, header: null } */
+	customNodes: PropTypes.object,
 	customMarks: PropTypes.object,
-	customPlugins:
-		PropTypes.object /* All customPlugins values should be a function, which is passed schema and props - and returns a Plugin */,
-	nodeOptions:
-		PropTypes.object /* An object with nodeName keys and values of objects of overriding options. For example: nodeOptions = { image: { linkToSrc: false } } */,
+	/* All customPlugins values should be a function, which is passed schema and props - and returns a Plugin */
+	customPlugins: PropTypes.object,
+	/* An object with nodeName keys and values of objects of overriding options. For example: nodeOptions = { image: { linkToSrc: false } } */
+	nodeOptions: PropTypes.object,
 	collaborativeOptions: PropTypes.object,
 	onChange: PropTypes.func,
 	onError: PropTypes.func,
