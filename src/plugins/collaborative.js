@@ -326,6 +326,7 @@ class CollaborativePlugin extends Plugin {
 	}
 
 	apply(transaction, pluginState, prevEditorState, editorState) {
+		console.log('in apply');
 		/* Remove Stale Cursors */
 		pluginState.cursorDecorations.find().forEach((decoration) => {
 			const expirationTime = 1000 * 60 * 5; /* 5 minutes */

@@ -74,8 +74,8 @@ export default (schema, props) => {
 			initialDocKey: collabOptions.initialDocKey,
 			localClientData: collabOptions.clientData,
 			localClientId: localClientId,
-			onStatusChange: collabOptions.onStatusChange,
-			onUpdateLatestKey: collabOptions.onUpdateLatestKey,
+			onStatusChange: collabOptions.onStatusChange || function() {},
+			onUpdateLatestKey: collabOptions.onUpdateLatestKey || function() {},
 		}),
 	];
 };
@@ -103,7 +103,7 @@ class CollaborativePlugin extends Plugin {
 		this.spec = {
 			state: {
 				init: () => {
-					return { isLoaded: false };
+					return { isLoaded: false, sendCollabChanges: this.sendCollabChanges };
 				},
 				apply: (transaction, pluginState) => {
 					return {
@@ -131,7 +131,7 @@ class CollaborativePlugin extends Plugin {
 		// if (this.startedLoad) {
 		// 	return null;
 		// }
-		// this.startedLoad = true;
+		this.startedLoad = true;
 
 		// console.time('restoringdiscussions');
 		// restoreDiscussionMaps(this.pluginProps.firebaseRef, this.view.state.schema).then(() => {
@@ -209,6 +209,7 @@ class CollaborativePlugin extends Plugin {
 	/* We store the new keyable in pendingRemoteKeyables, and then */
 	/* process all existing stored keyables. */
 	receiveCollabChanges(snapshot) {
+		console.log('In receive');
 		this.pendingRemoteKeyables.push(snapshot);
 		this.processStoredKeyables();
 	}
@@ -240,9 +241,9 @@ class CollaborativePlugin extends Plugin {
 			hasInvalidMetaKeys ||
 			!sendable
 		) {
+			console.log('ongoing, sendable', this.ongoingTransaction, !sendable);
 			return null;
 		}
-
 		this.ongoingTransaction = true;
 		const steps = sendable.steps;
 		const clientId = sendable.clientID;
@@ -268,6 +269,7 @@ class CollaborativePlugin extends Plugin {
 			)
 			.then((transactionResult) => {
 				const { committed, snapshot } = transactionResult;
+				console.log('finished trans with', committed);
 				this.ongoingTransaction = false;
 				if (committed) {
 					this.pluginProps.onStatusChange('saved');
@@ -277,9 +279,12 @@ class CollaborativePlugin extends Plugin {
 					if (snapshot.key && snapshot.key % saveEveryNSteps === 0) {
 						storeCheckpoint(this.pluginProps.firebaseRef, newState.doc, snapshot.key);
 					}
-				} else {
-					this.processStoredKeyables();
 				}
+				//  else {
+				// 	this.processStoredKeyables();
+				// }
+				// console.log(sendableSteps(this.view.state));
+				this.processStoredKeyables();
 			})
 			.catch((err) => {
 				console.error('Error in firebase transaction:', err);
@@ -293,7 +298,9 @@ class CollaborativePlugin extends Plugin {
 		/* it will either fail, causing this function to be called again, or it */
 		/* will succeed, which will cause a new keyable child to sync, triggering */
 		/* receiveCollabChanges, and thus this function. */
+		console.log('in process stored');
 		if (!this.ongoingTransaction) {
+			console.log('past ongoing');
 			this.pendingRemoteKeyables.forEach((snapshot) => {
 				try {
 					this.mostRecentRemoteKey = Number(snapshot.key);
@@ -317,6 +324,12 @@ class CollaborativePlugin extends Plugin {
 				}
 			});
 			this.pendingRemoteKeyables = [];
+			if (sendableSteps(this.view.state)) {
+				console.log('have steps to send!');
+				this.sendCollabChanges(this.view.state.tr, this.view.state);
+				// const emptyInitTransaction = this.view.state.tr;
+   	// 			this.view.dispatch(emptyInitTransaction);
+			}
 		}
 	}
 }

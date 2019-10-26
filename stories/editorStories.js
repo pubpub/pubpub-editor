@@ -217,7 +217,7 @@ storiesOf('Editor', module)
 						Convert Highlight to Discussion
 					</button>
 
-					<Editor
+					<Editor2
 						key={firebaseBranchRef ? 'ready' : 'unready'}
 						placeholder="Begin writing..."
 						onChange={(evt) => {

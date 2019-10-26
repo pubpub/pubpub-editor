@@ -36,6 +36,7 @@ const defaultProps = {
 	customPlugins: {} /* defaults: inputRules, keymap, headerIds, placeholder */,
 	nodeOptions: {},
 	collaborativeOptions: {
+		// TODO: this doesn't work here
 		onStatusChange: () => {},
 		onUpdateLatestKey: () => {},
 	},
@@ -137,6 +138,7 @@ const Editor = (props) => {
 			{
 				state: state,
 				dispatchTransaction: (transaction) => {
+					console.log('in dispatch');
 					const newState = view.state.apply(transaction);
 					view.updateState(newState);
 					if (props.collaborativeOptions.firebaseRef) {

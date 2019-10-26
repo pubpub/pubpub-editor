@@ -7,7 +7,7 @@ import buildHeaderIds from './headerIds';
 import buildPlaceholder from './placeholder';
 import buildLocalHighlights from './localHighlights';
 import buildTable from './table';
-import buildCollaborative from './collaborative';
+import buildCollaborative from './collaborative2';
 import buildCitation from './citation';
 import buildFootnote from './footnote';
 
