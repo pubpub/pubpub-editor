@@ -551,9 +551,16 @@ export default (schema, props) => {
 					};
 
 					const isNode = !!editorView.state.selection.node;
-
+					// const hasFocus = editorView.hasFocus();
 					props.onChange({
 						/* The current editor view. */
+						// view: {
+						// 	state: editorView.state,
+						// 	dispatch: editorView.dispatch,
+						// 	hasFocus: () => {
+						// 		return hasFocus;
+						// 	},
+						// },
 						view: editorView,
 						/* The active selection. */
 						selection: editorView.state.selection,

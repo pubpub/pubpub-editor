@@ -87,6 +87,7 @@ class CollaborativePlugin extends Plugin {
 		super({ key: collaborativePluginKey });
 		this.pluginProps = pluginProps;
 
+		this.lastTime = Date.now();
 		/* Bind plugin functions */
 		this.loadDocument = this.loadDocument.bind(this);
 		this.sendCollabChanges = this.sendCollabChanges.bind(this);
@@ -209,7 +210,7 @@ class CollaborativePlugin extends Plugin {
 	/* We store the new keyable in pendingRemoteKeyables, and then */
 	/* process all existing stored keyables. */
 	receiveCollabChanges(snapshot) {
-		console.log('In receive');
+		// console.log('In receive');
 		this.pendingRemoteKeyables.push(snapshot);
 		this.processStoredKeyables();
 	}
@@ -241,13 +242,16 @@ class CollaborativePlugin extends Plugin {
 			hasInvalidMetaKeys ||
 			!sendable
 		) {
-			console.log('ongoing, sendable', this.ongoingTransaction, !sendable);
+			// console.log('ongoing, sendable', this.ongoingTransaction, sendable);
 			return null;
 		}
 		this.ongoingTransaction = true;
 		const steps = sendable.steps;
 		const clientId = sendable.clientID;
 		const branchId = this.pluginProps.firebaseRef.key.replace('branch-', '');
+		const thisTime = Date.now();
+		console.log('Time in between', thisTime - this.lastTime);
+		this.lastTime = thisTime;
 		return this.pluginProps.firebaseRef
 			.child('changes')
 			.child(this.mostRecentRemoteKey + 1)
@@ -269,7 +273,7 @@ class CollaborativePlugin extends Plugin {
 			)
 			.then((transactionResult) => {
 				const { committed, snapshot } = transactionResult;
-				console.log('finished trans with', committed);
+				// console.log('finished trans with', committed);
 				this.ongoingTransaction = false;
 				if (committed) {
 					this.pluginProps.onStatusChange('saved');
@@ -298,9 +302,9 @@ class CollaborativePlugin extends Plugin {
 		/* it will either fail, causing this function to be called again, or it */
 		/* will succeed, which will cause a new keyable child to sync, triggering */
 		/* receiveCollabChanges, and thus this function. */
-		console.log('in process stored');
+		// console.log('in process stored');
 		if (!this.ongoingTransaction) {
-			console.log('past ongoing');
+			// console.log('past ongoing');
 			this.pendingRemoteKeyables.forEach((snapshot) => {
 				try {
 					this.mostRecentRemoteKey = Number(snapshot.key);
@@ -325,7 +329,7 @@ class CollaborativePlugin extends Plugin {
 			});
 			this.pendingRemoteKeyables = [];
 			if (sendableSteps(this.view.state)) {
-				console.log('have steps to send!');
+				// console.log('have steps to send!');
 				this.sendCollabChanges(this.view.state.tr, this.view.state);
 				// const emptyInitTransaction = this.view.state.tr;
    	// 			this.view.dispatch(emptyInitTransaction);

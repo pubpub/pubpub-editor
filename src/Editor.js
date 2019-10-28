@@ -142,7 +142,7 @@ class Editor extends Component {
 				handleDoubleClickOn: this.props.handleDoubleClick,
 				dispatchTransaction: (transaction) => {
 					try {
-						console.log('in editor dispatch');
+						console.log('in editor dispatch!');
 						const newState = editorView.state.apply(transaction);
 						editorView.updateState(newState);
 					} catch (err) {
