@@ -88,8 +88,8 @@ const Editor = (props) => {
 						view.updateState(newState);
 						if (props.collaborativeOptions.firebaseRef) {
 							collaborativePluginKey
-								.get(newState)
-								.sendCollabChanges(transaction, newState);
+								.getState(newState)
+								.sendCollabChanges(view, transaction, newState);
 						}
 					} catch (err) {
 						console.error('Error applying transaction:', err);

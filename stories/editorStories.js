@@ -10,7 +10,7 @@ import {
 	convertLocalHighlightToDiscussion,
 } from '../src/utils';
 
-const rootKey = 'test3';
+const rootKey = 'test4';
 const branchKey = 'branch-f4bf24f7-6184-4f5f-b2d3-2b9d2563cb62';
 const firebaseRootRef = initFirebase(rootKey, '');
 const firebaseBranchRef = firebaseRootRef.child(branchKey);
