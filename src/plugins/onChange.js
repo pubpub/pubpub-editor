@@ -16,6 +16,7 @@ import {
 	toggleHeaderColumn,
 	toggleHeaderCell,
 } from 'prosemirror-tables';
+// import { collaborativePluginKey } from './plugins/collaborative';
 
 const getInsertFunctions = (editorView) => {
 	/* Gather all node insert functions. These will be used to populate menus. */

@@ -4,6 +4,7 @@ import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { keydownHandler } from 'prosemirror-keymap';
 import { getPlugins } from './plugins';
+import { collaborativePluginKey } from './plugins/collaborative';
 import { renderStatic, buildSchema } from './utils';
 
 require('./styles/base.scss');
@@ -56,7 +57,13 @@ const Editor = (props) => {
 			{ mount: editorRef.current },
 			{
 				state: state,
-				editable: () => {
+				editable: (editorState) => {
+					if (
+						props.collaborativeOptions.firebaseRef &&
+						!collaborativePluginKey.getState(editorState).isLoaded
+					) {
+						return false;
+					}
 					return !props.isReadOnly;
 				},
 				handleKeyDown: keydownHandler({
@@ -72,7 +79,9 @@ const Editor = (props) => {
 						const newState = view.state.apply(transaction);
 						view.updateState(newState);
 						if (props.collaborativeOptions.firebaseRef) {
-							state.collaborative$.sendCollabChanges(transaction, newState);
+							collaborativePluginKey
+								.get(newState)
+								.sendCollabChanges(transaction, newState);
 						}
 					} catch (err) {
 						console.error('Error applying transaction:', err);

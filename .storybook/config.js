@@ -1,8 +1,5 @@
 import { configure } from '@storybook/react';
-import { setOptions } from '@storybook/addon-options';
-import { FocusStyleManager } from '@blueprintjs/core';
-
-FocusStyleManager.onlyShowFocusOnTabs();
+import { withOptions } from '@storybook/addon-options';
 
 /* Require stories */
 const req = require.context('../stories/', true, /Stories\.js$/);
@@ -10,8 +7,8 @@ function loadStories() {
 	req.keys().forEach(req);
 }
 /* Set Storybook options */
-setOptions({
-	showAddonPanel: false,
+withOptions({
+	showPanel: false,
 });
 
 configure(loadStories, module);

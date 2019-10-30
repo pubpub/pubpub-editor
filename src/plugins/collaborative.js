@@ -1,10 +1,12 @@
-import { EditorState, Plugin, PluginKey } from 'prosemirror-state';
+import { Plugin, PluginKey } from 'prosemirror-state';
 import { collab, receiveTransaction, sendableSteps } from 'prosemirror-collab';
 import { Step } from 'prosemirror-transform';
 import { Node } from 'prosemirror-model';
 import { compressStepJSON, uncompressStepJSON } from 'prosemirror-compress-pubpub';
 import uuidv4 from 'uuid/v4';
 import { generateHash, storeCheckpoint, firebaseTimestamp } from '../utils';
+import buildDiscussions from './discussions';
+import buildCursors from './cursors';
 
 /*
 Rough workflow:
@@ -24,6 +26,7 @@ Attempt to process all stored keyables
 If there is an ongoing transaction, it will eventually finish and trigger a new receiveCollabChanges
 	or, it will fail and that will cause processStoredKeyables to fire.
 */
+export const collaborativePluginKey = new PluginKey('collaborative');
 
 export default (schema, props) => {
 	const collabOptions = props.collaborativeOptions;
@@ -50,10 +53,10 @@ export default (schema, props) => {
 			onStatusChange: collabOptions.onStatusChange || function() {},
 			onUpdateLatestKey: collabOptions.onUpdateLatestKey || function() {},
 		}),
+		buildDiscussions(schema, props, collaborativePluginKey),
+		buildCursors(schema, props, collaborativePluginKey),
 	];
 };
-
-export const collaborativePluginKey = new PluginKey('collaborative');
 
 class CollaborativePlugin extends Plugin {
 	constructor(pluginProps) {
@@ -67,7 +70,6 @@ class CollaborativePlugin extends Plugin {
 		this.processStoredKeyables = this.processStoredKeyables.bind(this);
 
 		/* Init plugin variables */
-		this.startedLoad = false;
 		this.mostRecentRemoteKey = pluginProps.initialDocKey;
 		this.ongoingTransaction = false;
 		this.pendingRemoteKeyables = [];
@@ -76,33 +78,33 @@ class CollaborativePlugin extends Plugin {
 		this.spec = {
 			state: {
 				init: () => {
-					return { isLoaded: false, sendCollabChanges: this.sendCollabChanges };
+					return {
+						isLoaded: false,
+						localClientId: pluginProps.localClientId,
+						localClientData: pluginProps.localClientData,
+					};
 				},
 				apply: (transaction, pluginState) => {
 					return {
 						isLoaded: transaction.meta.finishedLoading || pluginState.isLoaded,
 						mostRecentRemoteKey: this.mostRecentRemoteKey,
-						sendCollabChanges: this.sendCollabChanges,
+						localClientId: pluginProps.localClientId,
+						localClientData: pluginProps.localClientData,
 					};
 				},
 			},
 			view: (view) => {
 				this.view = view;
-				if (!this.startedLoad) {
-					this.loadDocument();
-				}
-
-				return {
-					update: (newView) => {
-						this.view = newView;
-					},
-				};
+				this.loadDocument();
+				return {};
 			},
 		};
 	}
 
 	loadDocument() {
-		this.startedLoad = true;
+		if (this.pluginProps.delayLoadingDocument) {
+			return null;
+		}
 		return this.pluginProps.firebaseRef
 			.child('changes')
 			.orderByKey()
@@ -141,12 +143,9 @@ class CollaborativePlugin extends Plugin {
 					this.view.state.schema,
 					this.pluginProps.initialContent,
 				);
-				this.view.updateState(
-					EditorState.create({
-						doc: newDoc,
-						plugins: this.view.state.plugins,
-					}),
-				);
+				const newState = this.view.state;
+				newState.doc = newDoc;
+				this.view.updateState(newState);
 
 				this.pluginProps.onUpdateLatestKey(this.mostRecentRemoteKey);
 

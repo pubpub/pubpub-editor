@@ -1,5 +1,6 @@
 import { Plugin } from 'prosemirror-state';
 import { DecorationSet, Decoration } from 'prosemirror-view';
+import { collaborativePluginKey } from './collaborative';
 import { docIsEmpty } from '../utils';
 
 export default (schema, props) => {
@@ -10,7 +11,12 @@ export default (schema, props) => {
 				if (docIsEmpty(doc) && props.placeholder) {
 					const placeHolderElem = document.createElement('span');
 					placeHolderElem.className = 'prosemirror-placeholder';
-					placeHolderElem.innerHTML = props.placeholder;
+					const collaborativePluginState = collaborativePluginKey.getState(state);
+					const placeholderText =
+						props.collaborativeOptions.firebaseRef && !collaborativePluginState.isLoaded
+							? 'Loading...'
+							: props.placeholder;
+					placeHolderElem.innerHTML = placeholderText;
 					return DecorationSet.create(doc, [
 						Decoration.widget(doc.childCount, placeHolderElem),
 					]);
