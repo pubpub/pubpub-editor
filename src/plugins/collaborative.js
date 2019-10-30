@@ -10,7 +10,7 @@ import buildCursors from './cursors';
 
 export const collaborativePluginKey = new PluginKey('collaborative');
 /*
-Rough workflow:
+Rough pipeline:
 Client types changes
 Client sets ongoingTransaction=true and writes a transation
 if that transaction succeeds
