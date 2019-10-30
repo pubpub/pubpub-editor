@@ -221,7 +221,7 @@ const buildCollab = (schema, props, localClientId) => {
 				return {
 					isLoaded: false,
 					localClientId: localClientId,
-					localClientData: props.collaborativeOptions.localClientData,
+					localClientData: props.collaborativeOptions.clientData,
 					sendCollabChanges: sendCollabChanges,
 				};
 			},
@@ -230,7 +230,7 @@ const buildCollab = (schema, props, localClientId) => {
 					isLoaded: transaction.meta.finishedLoading || pluginState.isLoaded,
 					mostRecentRemoteKey: mostRecentRemoteKey,
 					localClientId: localClientId,
-					localClientData: props.collaborativeOptions.localClientData,
+					localClientData: props.collaborativeOptions.clientData,
 					sendCollabChanges: sendCollabChanges,
 				};
 			},

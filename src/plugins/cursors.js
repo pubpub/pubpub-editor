@@ -217,24 +217,10 @@ export default (schema, props, collaborativePluginKey) => {
 								: compressSelectionJSON(selection.toJSON()),
 						};
 
-						/*
-							This timeout is due to a bug I could only reproduce at the pubpub
-							level. I could not reproduce it in pubpub-editor storybook. Without
-							the timeout, click-and-drag to create a selection acts oddly. The
-							selection doesn't take. It's not entirely consistent though which
-							makes it feel like a race condition. Disabling all firebase listeners
-							at the pubpub level does not seem to resolve the issue. Disabling the
-							editor onChange handler (at the same time as the disabled firebase
-							listeners) also does not resolve the issue. It's unclear to me what is
-							different at that point between pubpub-editor storybook and the editor
-							used in PubBody.
-						*/
-						setTimeout(() => {
-							props.collaborativeOptions.firebaseRef
-								.child('cursors')
-								.child(localClientId)
-								.set(firebaseCursorData);
-						}, 0);
+						props.collaborativeOptions.firebaseRef
+							.child('cursors')
+							.child(localClientId)
+							.set(firebaseCursorData);
 					}
 				}
 
