@@ -50,7 +50,15 @@ const Editor = (props) => {
 		const state = EditorState.create({
 			doc: schema.nodeFromJSON(props.initialContent),
 			schema: schema,
-			plugins: getPlugins(schema, props),
+			plugins: getPlugins(schema, {
+				customPlugins: props.customPlugins,
+				collaborativeOptions: props.collaborativeOptions,
+				onChange: props.onChange,
+				onError: props.onError,
+				initialContent: props.initialContent,
+				placeholder: props.placeholder,
+				isReadOnly: props.isReadOnly,
+			}),
 		});
 
 		const view = new EditorView(

@@ -22,7 +22,7 @@ module.exports = ({ config }) => {
 	];
 	config.node = {
 		...config.node,
-		fs: "empty",
-	}
+		fs: 'empty',
+	};
 	return config;
 };
