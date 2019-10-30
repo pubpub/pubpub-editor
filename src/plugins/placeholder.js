@@ -9,17 +9,24 @@ export default (schema, props) => {
 			decorations: (state) => {
 				const doc = state.doc;
 				if (docIsEmpty(doc) && props.placeholder) {
-					const placeHolderElem = document.createElement('span');
-					placeHolderElem.className = 'prosemirror-placeholder';
-					const collaborativePluginState = collaborativePluginKey.getState(state);
-					const placeholderText =
-						props.collaborativeOptions.firebaseRef && !collaborativePluginState.isLoaded
-							? 'Loading...'
-							: props.placeholder;
-					placeHolderElem.innerHTML = placeholderText;
-					return DecorationSet.create(doc, [
-						Decoration.widget(doc.childCount, placeHolderElem),
-					]);
+					const decorations = [];
+					state.doc.descendants((node, pos) => {
+						const collaborativePluginState = collaborativePluginKey.getState(state);
+						const placeholderText =
+							props.collaborativeOptions.firebaseRef &&
+							!collaborativePluginState.isLoaded
+								? 'Loading...'
+								: props.placeholder;
+						if (node.type.isBlock && node.childCount === 0) {
+							decorations.push(
+								Decoration.node(pos, pos + node.nodeSize, {
+									class: 'prosemirror-placeholder',
+									'data-content': placeholderText,
+								}),
+							);
+						}
+					});
+					return DecorationSet.create(state.doc, decorations);
 				}
 				return null;
 			},
