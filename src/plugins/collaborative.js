@@ -48,13 +48,20 @@ const buildCollab = (schema, props, localClientId) => {
 	/* triggering sendCollabChanges to be called again, thus syncing our local */
 	/* uncommitted steps. */
 	const sendCollabChanges = (view, transaction, newState) => {
-		const validMetaKeys = ['history$', 'paste', 'uiEvent'];
+		const validMetaKeys = ['plugin$', 'history$', 'paste', 'uiEvent'];
 		const hasInvalidMetaKeys = Object.keys(transaction.meta).some((key) => {
 			const keyIsValid = validMetaKeys.includes(key);
 			return !keyIsValid;
 		});
 
 		const sendable = sendableSteps(newState);
+
+		// if (sendable && hasInvalidMetaKeys) {
+		// 	console.log('not sending:', sendable.steps, transaction.meta);
+		// }
+		// if (sendable && !hasInvalidMetaKeys) {
+		// 	console.log('sending:', sendable.steps);
+		// }
 
 		if (props.isReadOnly || ongoingTransaction || hasInvalidMetaKeys || !sendable) {
 			return null;
