@@ -7,11 +7,9 @@ export const discussionsPluginKey = new PluginKey('discussions');
 
 export default (schema, props, collabDocPluginKey) => {
 	const syncDiscussions = (discussionDecorations, editorState) => {
-		console.log('syncDiscussions');
 		discussionDecorations
 			.find()
 			.filter((discussionDecoration) => {
-				console.log(discussionDecoration.spec.key.indexOf('discussion-widget-') === -1);
 				return discussionDecoration.spec.key.indexOf('discussion-widget-') === -1;
 			})
 			.forEach((discussionDecoration) => {
@@ -33,7 +31,7 @@ export default (schema, props, collabDocPluginKey) => {
 							onStatusChange('saving');
 							return {
 								...existingDiscussionData,
-								currentKey: mostRecentRemoteKey + 1,
+								currentKey: mostRecentRemoteKey,
 								selection: {
 									a: discussionDecoration.from,
 									h: discussionDecoration.to,
@@ -75,22 +73,12 @@ export default (schema, props, collabDocPluginKey) => {
 				uncompressSelectionJSON(discussionData.selection),
 			);
 		} catch (err) {
-			console.log('early return');
 			return [];
 		}
 
-		console.log(
-			discussionData.currentKey,
-			collabDocPluginKey.getState(editorState).mostRecentRemoteKey,
-			discussionData.currentKey ===
-				collabDocPluginKey.getState(editorState).mostRecentRemoteKey,
-			!sendableSteps(editorState),
-			!alreadyHandled,
-		);
-
 		if (
-			// discussionData.currentKey ===
-			// 	collabDocPluginKey.getState(editorState).mostRecentRemoteKey &&
+			discussionData.currentKey ===
+				collabDocPluginKey.getState(editorState).mostRecentRemoteKey &&
 			!sendableSteps(editorState) &&
 			!alreadyHandled
 		) {
@@ -128,8 +116,6 @@ export default (schema, props, collabDocPluginKey) => {
 			},
 			apply: (transaction, pluginState, prevEditorState, editorState) => {
 				/* Discussion Decorations to remove */
-				console.log('got a transaction', transaction.meta);
-
 				const discussionDecorationsToRemove = pluginState.discussionDecorations
 					.find()
 					.filter((decoration) => {

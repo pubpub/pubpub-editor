@@ -121,8 +121,8 @@ export default (schema, props, collabDocPluginKey, localClientId) => {
 			try {
 				const { steps, clientIds } = extractSnapshot(snapshot.val());
 				const trans = receiveTransaction(view.state, steps, clientIds);
-				view.dispatch(trans);
 				mostRecentRemoteKey = Number(snapshot.key);
+				view.dispatch(trans);
 				onUpdateLatestKey(mostRecentRemoteKey);
 			} catch (err) {
 				console.error('Error in recieveCollabChanges:', err);
@@ -166,6 +166,13 @@ export default (schema, props, collabDocPluginKey, localClientId) => {
 					allStepClientIds.push(...clientIds);
 				});
 
+				/* We have to use .reduce here rather than simply calling */
+				/* Math.max(keys) because sometimes the keys array is larger */
+				/* than the allowed input size of Math.max() */
+				mostRecentRemoteKey = keys.length
+					? keys.map((k) => Number(k)).reduce((a, b) => Math.max(a, b), 0)
+					: mostRecentRemoteKey;
+
 				/* Update the prosemirror view with new doc */
 				/* TODO: I do not think we need this for any situations */
 				/* Delete when confirmed */
@@ -175,13 +182,6 @@ export default (schema, props, collabDocPluginKey, localClientId) => {
 
 				const trans = receiveTransaction(view.state, allSteps, allStepClientIds);
 				view.dispatch(trans);
-
-				/* We have to use .reduce here rather than simply calling */
-				/* Math.max(keys) because sometimes the keys array is larger */
-				/* than the allowed input size of Math.max() */
-				mostRecentRemoteKey = keys.length
-					? keys.map((k) => Number(k)).reduce((a, b) => Math.max(a, b), 0)
-					: mostRecentRemoteKey;
 				onUpdateLatestKey(mostRecentRemoteKey);
 
 				/* Set finishedLoading flag */
