@@ -5,6 +5,7 @@ import { EditorView } from 'prosemirror-view';
 import { keydownHandler } from 'prosemirror-keymap';
 import { getPlugins } from './plugins';
 import { collabDocPluginKey } from './plugins/collaborative';
+import { getChangeObject } from './plugins/onChange';
 import { renderStatic, buildSchema } from './utils';
 
 require('./styles/base.scss');
@@ -70,9 +71,10 @@ const Editor = (props) => {
 			{
 				state: state,
 				editable: (editorState) => {
+					const collaborativePluginState = collabDocPluginKey.getState(editorState) || {};
 					if (
-						props.collaborativeOptions.firebaseRef &&
-						!collabDocPluginKey.getState(editorState).isLoaded
+						props.collaborativeOptions.clientData &&
+						!collaborativePluginState.isLoaded
 					) {
 						return false;
 					}
@@ -100,6 +102,8 @@ const Editor = (props) => {
 				},
 			},
 		);
+
+		props.onChange(getChangeObject(view));
 	}, []);
 
 	/* Before createEditor is called from componentDidMount, we */
