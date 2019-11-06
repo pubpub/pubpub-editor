@@ -1,6 +1,6 @@
 import { Plugin } from 'prosemirror-state';
 import { DecorationSet, Decoration } from 'prosemirror-view';
-import { collaborativePluginKey } from './collaborative';
+import { collabDocPluginKey } from './collaborative';
 import { docIsEmpty } from '../utils';
 
 export default (schema, props) => {
@@ -11,7 +11,7 @@ export default (schema, props) => {
 				if (docIsEmpty(doc) && props.placeholder) {
 					const decorations = [];
 					state.doc.descendants((node, pos) => {
-						const collaborativePluginState = collaborativePluginKey.getState(state);
+						const collaborativePluginState = collabDocPluginKey.getState(state);
 						const placeholderText =
 							props.collaborativeOptions.firebaseRef &&
 							!collaborativePluginState.isLoaded

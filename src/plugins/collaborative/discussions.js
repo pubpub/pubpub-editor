@@ -5,7 +5,7 @@ import { uncompressSelectionJSON } from 'prosemirror-compress-pubpub';
 
 export const discussionsPluginKey = new PluginKey('discussions');
 
-export default (schema, props, collaborativePluginKey) => {
+export default (schema, props, collabDocPluginKey) => {
 	const syncDiscussions = (discussionDecorations, editorState) => {
 		discussionDecorations
 			.find()
@@ -23,7 +23,7 @@ export default (schema, props, collaborativePluginKey) => {
 					.child(discussionId)
 					.transaction(
 						(existingDiscussionData) => {
-							const mostRecentRemoteKey = collaborativePluginKey.getState(editorState)
+							const mostRecentRemoteKey = collabDocPluginKey.getState(editorState)
 								.mostRecentRemoteKey;
 							if (existingDiscussionData.currentKey >= mostRecentRemoteKey) {
 								return undefined;
@@ -78,7 +78,7 @@ export default (schema, props, collaborativePluginKey) => {
 
 		if (
 			discussionData.currentKey ===
-				collaborativePluginKey.getState(editorState).mostRecentRemoteKey &&
+				collabDocPluginKey.getState(editorState).mostRecentRemoteKey &&
 			!sendableSteps(editorState) &&
 			!alreadyHandled
 		) {

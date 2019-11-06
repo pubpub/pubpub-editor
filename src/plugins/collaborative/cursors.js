@@ -4,9 +4,9 @@ import { compressSelectionJSON, uncompressSelectionJSON } from 'prosemirror-comp
 
 export const cursorsPluginKey = new PluginKey('cursors');
 
-export default (schema, props, collaborativePluginKey) => {
+export default (schema, props, collabDocPluginKey) => {
 	const generateCursorDecorations = (cursorData, editorState) => {
-		const { localClientId } = collaborativePluginKey.getState(editorState);
+		const { localClientId } = collabDocPluginKey.getState(editorState);
 		if (cursorData.id === localClientId) {
 			return [];
 		}
@@ -126,7 +126,7 @@ export default (schema, props, collaborativePluginKey) => {
 				};
 			},
 			apply: (transaction, pluginState, prevEditorState, editorState) => {
-				const { localClientId, localClientData } = collaborativePluginKey.getState(
+				const { localClientId, localClientData } = collabDocPluginKey.getState(
 					editorState,
 				);
 				/* Remove Stale Cursors */
@@ -243,7 +243,7 @@ export default (schema, props, collaborativePluginKey) => {
 
 			/* Retrieve and Listen to Cursors */
 			if (!props.isReadOnly) {
-				const { localClientId } = collaborativePluginKey.getState(view.state);
+				const { localClientId } = collabDocPluginKey.getState(view.state);
 				const cursorsRef = props.collaborativeOptions.firebaseRef.child('cursors');
 				cursorsRef
 					.child(localClientId)

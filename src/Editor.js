@@ -4,7 +4,7 @@ import { EditorState } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
 import { keydownHandler } from 'prosemirror-keymap';
 import { getPlugins } from './plugins';
-import { collaborativePluginKey } from './plugins/collaborative';
+import { collabDocPluginKey } from './plugins/collaborative';
 import { renderStatic, buildSchema } from './utils';
 
 require('./styles/base.scss');
@@ -44,13 +44,17 @@ const defaultProps = {
 
 const Editor = (props) => {
 	const editorRef = useRef();
-	const schema = buildSchema(props.customNodes, props.customMarks, props.nodeOptions);
+	const schema = useRef(null);
+
+	if (schema.current === null) {
+		schema.current = buildSchema(props.customNodes, props.customMarks, props.nodeOptions);
+	}
 
 	useEffect(() => {
 		const state = EditorState.create({
-			doc: schema.nodeFromJSON(props.initialContent),
-			schema: schema,
-			plugins: getPlugins(schema, {
+			doc: schema.current.nodeFromJSON(props.initialContent),
+			schema: schema.current,
+			plugins: getPlugins(schema.current, {
 				customPlugins: props.customPlugins,
 				collaborativeOptions: props.collaborativeOptions,
 				onChange: props.onChange,
@@ -68,7 +72,7 @@ const Editor = (props) => {
 				editable: (editorState) => {
 					if (
 						props.collaborativeOptions.firebaseRef &&
-						!collaborativePluginKey.getState(editorState).isLoaded
+						!collabDocPluginKey.getState(editorState).isLoaded
 					) {
 						return false;
 					}
@@ -87,9 +91,7 @@ const Editor = (props) => {
 						const newState = view.state.apply(transaction);
 						view.updateState(newState);
 						if (props.collaborativeOptions.firebaseRef) {
-							collaborativePluginKey
-								.getState(newState)
-								.sendCollabChanges(view, transaction, newState);
+							collabDocPluginKey.getState(newState).sendCollabChanges(newState);
 						}
 					} catch (err) {
 						console.error('Error applying transaction:', err);
@@ -109,7 +111,7 @@ const Editor = (props) => {
 			ref={editorRef}
 			className={`editor ProseMirror ${props.isReadOnly ? 'read-only' : ''}`}
 		>
-			{renderStatic(schema, props.initialContent.content, props)}
+			{renderStatic(schema.current, props.initialContent.content, props)}
 		</div>
 	);
 };
