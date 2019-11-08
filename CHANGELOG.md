@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.3.1] - 2019-11-08
+- When renderForPandoc is true, render math `script` tags using React and dangerouslySetInnerHTML
+  to prevent ReactDOM from adding HTML character entities to the tag content.
+
 ## [6.3.0] - 2019-11-08
 - Render media captions with div instead of span
 - New renderForPandoc attr for equations
