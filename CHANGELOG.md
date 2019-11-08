@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.3.0] - 2019-11-08
+- Render media captions with div instead of span
+- New renderForPandoc attr for equations
+- Replace `colspan` with `colSpan` for React
+
 ## [6.2.9] - 2019-10-07
 - Add new importDocJson utility for PubPub to consume
 - Add fixedHeader attr to `heading` schema type
