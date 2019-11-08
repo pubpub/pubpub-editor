@@ -42,7 +42,7 @@ export default {
 						alt: node.attrs.caption,
 					},
 				],
-				['figcaption', {}, renderHtmlChildren(node, node.attrs.caption)],
+				['figcaption', {}, renderHtmlChildren(node, node.attrs.caption, 'div')],
 			];
 		},
 		inline: false,

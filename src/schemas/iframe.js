@@ -43,7 +43,7 @@ export default {
 						height: node.attrs.height,
 					},
 				],
-				['figcaption', {}, renderHtmlChildren(node, node.attrs.caption)],
+				['figcaption', {}, renderHtmlChildren(node, node.attrs.caption, 'div')],
 			];
 		},
 		inline: false,
