@@ -6,6 +6,7 @@ export default {
 		attrs: {
 			value: { default: '' },
 			html: { default: '' },
+			renderForPandoc: { default: false },
 		},
 		parseDOM: [
 			{
@@ -23,6 +24,9 @@ export default {
 			},
 		],
 		toDOM: (node) => {
+			if (node.attrs.renderForPandoc) {
+				return ['script', { type: 'math/tex' }, node.attrs.value];
+			}
 			return [
 				'span',
 				{
@@ -53,6 +57,7 @@ export default {
 		attrs: {
 			value: { default: '' },
 			html: { default: '' },
+			renderForPandoc: { default: false },
 		},
 		parseDOM: [
 			{
@@ -70,6 +75,9 @@ export default {
 			},
 		],
 		toDOM: (node) => {
+			if (node.attrs.renderForPandoc) {
+				return ['script', { type: 'math/tex-display' }, node.attrs.value];
+			}
 			return [
 				'div',
 				{
