@@ -20,6 +20,7 @@ const propTypes = {
 	nodeOptions: PropTypes.object,
 	collaborativeOptions: PropTypes.object,
 	onChange: PropTypes.func,
+	onKeyPress: PropTypes.func,
 	onError: PropTypes.func,
 	initialContent: PropTypes.object,
 	placeholder: PropTypes.string,
@@ -36,6 +37,7 @@ const defaultProps = {
 	collaborativeOptions: {},
 	onChange: () => {},
 	onError: () => {},
+	onKeyPress: () => {},
 	initialContent: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] },
 	placeholder: '',
 	isReadOnly: false,
@@ -86,6 +88,7 @@ const Editor = (props) => {
 						return true;
 					},
 				}),
+				handleKeyPress: props.onKeyPress,
 				handleClickOn: props.handleSingleClick,
 				handleDoubleClickOn: props.handleDoubleClick,
 				dispatchTransaction: (transaction) => {
