@@ -177,6 +177,7 @@ storiesOf('Editor', module)
 	})
 	.add('collaborative2', () => {
 		const Thing = () => {
+			/* eslint-disable-next-line */
 			const [changeObject, updatechangeObject] = useState({});
 			return (
 				<div style={editorWrapperStyle}>

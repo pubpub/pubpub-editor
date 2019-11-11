@@ -126,9 +126,7 @@ export default (schema, props, collabDocPluginKey) => {
 				};
 			},
 			apply: (transaction, pluginState, prevEditorState, editorState) => {
-				const { localClientId, localClientData } = collabDocPluginKey.getState(
-					editorState,
-				);
+				const { localClientId, localClientData } = collabDocPluginKey.getState(editorState);
 				/* Remove Stale Cursors */
 				pluginState.cursorDecorations.find().forEach((decoration) => {
 					const expirationTime = 1000 * 60 * 5; /* 5 minutes */
