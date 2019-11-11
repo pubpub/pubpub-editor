@@ -36,3 +36,32 @@ export const optionalPlugins = {
 	placeholder: buildPlaceholder,
 	localHighlights: buildLocalHighlights,
 };
+
+export const getPlugins = (schema, props) => {
+	const allPlugins = {
+		...optionalPlugins,
+		...props.customPlugins,
+		...requiredPlugins,
+	};
+	return Object.keys(allPlugins)
+		.filter((key) => {
+			return !!allPlugins[key];
+		})
+		.sort((foo, bar) => {
+			if (foo === 'onChange') {
+				return 1;
+			}
+			if (bar === 'onChange') {
+				return -1;
+			}
+			return 0;
+		})
+		.map((key) => {
+			return allPlugins[key](schema, props);
+		})
+		.reduce((prev, curr) => {
+			/* Some plugin generation functions return an */
+			/* array of plugins. Flatten those cases. */
+			return prev.concat(curr);
+		}, []);
+};

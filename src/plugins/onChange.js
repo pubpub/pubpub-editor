@@ -16,6 +16,8 @@ import {
 	toggleHeaderColumn,
 	toggleHeaderCell,
 } from 'prosemirror-tables';
+import { collabDocPluginKey } from './collaborative';
+// import { collaborativePluginKey } from './plugins/collaborative';
 
 const getInsertFunctions = (editorView) => {
 	/* Gather all node insert functions. These will be used to populate menus. */
@@ -503,6 +505,101 @@ const getActiveLink = (editorView) => {
 	};
 };
 
+const updateAttrs = (isNode, editorView) => {
+	if (!isNode) {
+		return undefined;
+	}
+
+	return (newAttrs) => {
+		const start = editorView.state.selection.from;
+		if (start !== undefined) {
+			const oldNodeAttrs = editorView.state.selection.node.attrs;
+			const transaction = editorView.state.tr.setNodeMarkup(start, null, {
+				...oldNodeAttrs,
+				...newAttrs,
+			});
+			if (editorView.state.selection.node.type.isInline) {
+				/* Inline nodeviews lose focus on content change */
+				/* this fixes that issue. */
+				const sel = NodeSelection.create(transaction.doc, start);
+				transaction.setSelection(sel);
+			}
+			editorView.dispatch(transaction);
+		}
+	};
+};
+
+const changeNode = (isNode, editorView) => {
+	if (!isNode) {
+		return undefined;
+	}
+	return (nodeType, attrs, content) => {
+		const newNode = nodeType.create(
+			{
+				...attrs,
+			},
+			content,
+		);
+		const start = editorView.state.selection.from;
+		const end = editorView.state.selection.to;
+		const transaction = editorView.state.tr.replaceRangeWith(start, end, newNode);
+		editorView.dispatch(transaction);
+		// this.view.focus();
+		/* Changing a node between inline and block will cause it to lose focus */
+		/* Attempting to regain that focus seems difficult due to the fuzzy nature */
+		/* of replaceRangeWith. For the moment, changing from inline to block will */
+		/* simply result in losing focus. */
+	};
+};
+export const getChangeObject = (editorView) => {
+	const isNode = !!editorView.state.selection.node;
+	const collaborativePluginState = collabDocPluginKey.getState(editorView.state) || {};
+	// const hasFocus = editorView.hasFocus();
+	return {
+		/* The current editor view. */
+		// view: {
+		// 	state: editorView.state,
+		// 	dispatch: editorView.dispatch,
+		// 	hasFocus: () => {
+		// 		return hasFocus;
+		// 	},
+		// },
+		view: editorView,
+		/* The active selection. */
+		selection: editorView.state.selection,
+		/* The bounding box for the active selection. */
+		selectionBoundingBox: getRangeBoundingBox(
+			editorView,
+			editorView.state.selection.from,
+			editorView.state.selection.to,
+		),
+		/* The text, prefix, and suffix of the current selection */
+		selectedText: getSelectedText(editorView),
+		/* If the active selection is of a NodeView, provide the selected node. */
+		selectedNode: isNode ? editorView.state.selection.node : undefined,
+		/* If the active selection is of a NodeView, provide a function to update the selected node. */
+		/* The updateNode function expects an object of attrs as its sole input */
+		updateNode: updateAttrs(isNode, editorView),
+		/* If the active selection is of a NodeView, provide a function to change the selected node. */
+		changeNode: changeNode(isNode, editorView),
+		/* The full list of available node insert functions. */
+		/* Each insert function expect an object of attrs as */
+		/* its sole input. */
+		insertFunctions: getInsertFunctions(editorView),
+		/* The full list of menu items, their status, and their click handler. */
+		menuItems: getMenuItems(editorView),
+		/* The full list of decorations and their bounding boxes */
+		decorations: getDecorations(editorView),
+		/* The list of shortcut keys and the text following them. */
+		/* Useful for inline insert menus and autocompletes. */
+		shortcutValues: getShortcutValues(editorView),
+		/* activeLink is useful for displaying a link editing interface. */
+		activeLink: getActiveLink(editorView),
+		/* boolean alerting whether the collab plugin has finished loading */
+		isCollabLoaded: collaborativePluginState.isLoaded,
+	};
+};
+
 /* This plugin is used to call onChange with */
 /* all of the new editor values. */
 export default (schema, props) => {
@@ -510,86 +607,7 @@ export default (schema, props) => {
 		view: () => {
 			return {
 				update: (editorView) => {
-					const updateAttrs = (newAttrs) => {
-						const start = editorView.state.selection.from;
-						if (start !== undefined) {
-							const oldNodeAttrs = editorView.state.selection.node.attrs;
-							const transaction = editorView.state.tr.setNodeMarkup(start, null, {
-								...oldNodeAttrs,
-								...newAttrs,
-							});
-							if (editorView.state.selection.node.type.isInline) {
-								/* Inline nodeviews lose focus on content change */
-								/* this fixes that issue. */
-								const sel = NodeSelection.create(transaction.doc, start);
-								transaction.setSelection(sel);
-							}
-							editorView.dispatch(transaction);
-						}
-					};
-
-					const changeNode = (nodeType, attrs, content) => {
-						const newNode = nodeType.create(
-							{
-								...attrs,
-							},
-							content,
-						);
-						const start = editorView.state.selection.from;
-						const end = editorView.state.selection.to;
-						const transaction = editorView.state.tr.replaceRangeWith(
-							start,
-							end,
-							newNode,
-						);
-						editorView.dispatch(transaction);
-						// this.view.focus();
-						/* Changing a node between inline and block will cause it to lose focus */
-						/* Attempting to regain that focus seems difficult due to the fuzzy nature */
-						/* of replaceRangeWith. For the moment, changing from inline to block will */
-						/* simply result in losing focus. */
-					};
-
-					const isNode = !!editorView.state.selection.node;
-
-					props.onChange({
-						/* The current editor view. */
-						view: editorView,
-						/* The active selection. */
-						selection: editorView.state.selection,
-						/* The bounding box for the active selection. */
-						selectionBoundingBox: getRangeBoundingBox(
-							editorView,
-							editorView.state.selection.from,
-							editorView.state.selection.to,
-						),
-						/* The text, prefix, and suffix of the current selection */
-						selectedText: getSelectedText(editorView),
-						/* If the active selection is of a NodeView, provide the selected node. */
-						selectedNode: isNode ? editorView.state.selection.node : undefined,
-						/* If the active selection is of a NodeView, provide a function to update the selected node. */
-						/* The updateNode function expects an object of attrs as its sole input */
-						updateNode: isNode ? updateAttrs : undefined,
-						/* If the active selection is of a NodeView, provide a function to change the selected node. */
-						changeNode: isNode ? changeNode : undefined,
-						/* The full list of available node insert functions. */
-						/* Each insert function expect an object of attrs as */
-						/* its sole input. */
-						insertFunctions: getInsertFunctions(editorView),
-						/* The full list of menu items, their status, and their click handler. */
-						menuItems: getMenuItems(editorView),
-						/* The full list of decorations and their bounding boxes */
-						decorations: getDecorations(editorView),
-						/* The list of shortcut keys and the text following them. */
-						/* Useful for inline insert menus and autocompletes. */
-						shortcutValues: getShortcutValues(editorView),
-						/* activeLink is useful for displaying a link editing interface. */
-						activeLink: getActiveLink(editorView),
-						/* boolean alerting whether the collab plugin has finished loading */
-						isCollabLoaded: editorView.state.collaborative$
-							? editorView.state.collaborative$.isLoaded
-							: false,
-					});
+					props.onChange(getChangeObject(editorView));
 				},
 			};
 		},

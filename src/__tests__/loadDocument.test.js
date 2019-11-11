@@ -1,7 +1,7 @@
 /* global describe, it, expect */
 import { configureTest } from './utils/configure';
 import { createEditorViewWithInitialDoc } from './utils/editor';
-import collaborative, { collaborativePluginKey } from '../plugins/collaborative';
+import collaborative, { collabDocPluginKey } from '../plugins/collaborative';
 import { getEmptyDoc } from '../utils';
 
 const { doc, branchRef } = configureTest('simple');
@@ -19,7 +19,7 @@ describe('collaborative.js loading', () => {
 			},
 		});
 		const editorView = createEditorViewWithInitialDoc(initialDoc, plugins);
-		await collaborativePluginKey.get(editorView.state).loadDocument();
+		await collabDocPluginKey.get(editorView.state).loadDocument();
 		const loadedDoc = editorView.state.doc.toJSON();
 		expect(loadedDoc).toEqual(doc);
 	});

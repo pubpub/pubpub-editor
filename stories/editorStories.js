@@ -10,7 +10,7 @@ import {
 	convertLocalHighlightToDiscussion,
 } from '../src/utils';
 
-const rootKey = 'test3';
+const rootKey = 'ttest11';
 const branchKey = 'branch-f4bf24f7-6184-4f5f-b2d3-2b9d2563cb62';
 const firebaseRootRef = initFirebase(rootKey, '');
 const firebaseBranchRef = firebaseRootRef.child(branchKey);
@@ -44,6 +44,7 @@ const CursorOptionsDemoPub = () => {
 	);
 };
 
+let times = 0;
 storiesOf('Editor', module)
 	.add('default', () => (
 		<div style={editorWrapperStyle}>
@@ -51,6 +52,7 @@ storiesOf('Editor', module)
 				placeholder="Begin writing..."
 				initialContent={initialContent}
 				// isReadOnly={true}
+				onError={(err) => console.error(err)}
 				onChange={(changeObject) => {
 					// console.log('====');
 					// console.log(JSON.stringify(changeObject.view.state.doc.toJSON(), null, 4));
@@ -146,7 +148,6 @@ storiesOf('Editor', module)
 								convertLocalHighlightToDiscussion(
 									changeObject.view,
 									newDiscussionId,
-									firebaseBranchRef,
 								),
 							);
 						}}
@@ -160,12 +161,96 @@ storiesOf('Editor', module)
 						onChange={(evt) => {
 							updatechangeObject(evt);
 						}}
+						onError={(err) => console.error(err)}
 						collaborativeOptions={{
 							firebaseRef: firebaseBranchRef,
 							clientData: clientData,
 							initialDocKey: -1,
 							// onClientChange: () => {},
-							// onStatusChange: () => {},
+							onStatusChange: (status) => console.info('collab status is', status),
+						}}
+					/>
+				</div>
+			);
+		};
+		return <Thing />;
+	})
+	.add('collaborative2', () => {
+		const Thing = () => {
+			/* eslint-disable-next-line */
+			const [changeObject, updatechangeObject] = useState({});
+			return (
+				<div style={editorWrapperStyle}>
+					{/* <button
+						type="button"
+						onClick={() => {
+							firebaseBranchRef
+								.child('discussions')
+								.child(Math.floor(Math.random() * 999999))
+								.set(getDiscussionData(changeObject.view));
+						}}
+					>
+						New
+					</button> */}
+					<button
+						type="button"
+						onClick={() => {
+							setLocalHighlight(
+								changeObject.view,
+								changeObject.view.state.selection.from,
+								changeObject.view.state.selection.to,
+								newDiscussionId,
+							);
+						}}
+					>
+						New Local Highlight
+					</button>
+					<button
+						type="button"
+						onClick={() => {
+							removeLocalHighlight(changeObject.view, newDiscussionId);
+						}}
+					>
+						Remove Local Highlight
+					</button>
+					<button
+						type="button"
+						onClick={() => {
+							console.log(
+								convertLocalHighlightToDiscussion(
+									changeObject.view,
+									newDiscussionId,
+								),
+							);
+						}}
+					>
+						Convert Highlight to Discussion
+					</button>
+
+					<Editor
+						key={firebaseBranchRef ? 'ready' : 'unready'}
+						placeholder="Begin writing..."
+						onChange={(evt) => {
+							// updatechangeObject(evt);
+							if (times < 15) {
+								times += 1;
+								setTimeout(() => {
+									evt.view.dispatch(
+										evt.view.state.tr.insertText(
+											'G',
+											evt.view.state.doc.content.size - 1,
+										),
+									);
+								}, 1000);
+							}
+						}}
+						onError={(err) => console.error(err)}
+						collaborativeOptions={{
+							firebaseRef: firebaseBranchRef,
+							clientData: clientData,
+							initialDocKey: -1,
+							// onClientChange: () => {},
+							onStatusChange: (status) => console.info('collab status is', status),
 						}}
 					/>
 				</div>

@@ -389,7 +389,7 @@ class CollaborativePlugin extends Plugin {
 				return isRemoved;
 			});
 
-		/* Cursor Decorations to Add */
+		/* Discussion Decorations to Add */
 		const setDiscussionData = transaction.meta.setDiscussion;
 		const discussionDecorationsToAdd = setDiscussionData
 			? this.generateDiscussionDecorations(
