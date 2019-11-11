@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { renderHtmlChildren } from '../utils/schemaUtils';
 
 export default {
@@ -6,6 +8,7 @@ export default {
 		attrs: {
 			value: { default: '' },
 			html: { default: '' },
+			renderForPandoc: { default: false },
 		},
 		parseDOM: [
 			{
@@ -23,6 +26,15 @@ export default {
 			},
 		],
 		toDOM: (node) => {
+			if (node.attrs.renderForPandoc) {
+				return (
+					<script
+						type="math/tex"
+						// eslint-disable-next-line react/no-danger
+						dangerouslySetInnerHTML={{ __html: node.attrs.value }}
+					/>
+				);
+			}
 			return [
 				'span',
 				{
@@ -53,6 +65,7 @@ export default {
 		attrs: {
 			value: { default: '' },
 			html: { default: '' },
+			renderForPandoc: { default: false },
 		},
 		parseDOM: [
 			{
@@ -70,6 +83,15 @@ export default {
 			},
 		],
 		toDOM: (node) => {
+			if (node.attrs.renderForPandoc) {
+				return (
+					<script
+						type="math/tex-display"
+						// eslint-disable-next-line react/no-danger
+						dangerouslySetInnerHTML={{ __html: node.attrs.value }}
+					/>
+				);
+			}
 			return [
 				'div',
 				{
