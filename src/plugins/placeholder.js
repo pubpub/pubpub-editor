@@ -11,9 +11,9 @@ export default (schema, props) => {
 				if (docIsEmpty(doc) && props.placeholder) {
 					const decorations = [];
 					state.doc.descendants((node, pos) => {
-						const collaborativePluginState = collabDocPluginKey.getState(state);
+						const collaborativePluginState = collabDocPluginKey.getState(state) || {};
 						const placeholderText =
-							props.collaborativeOptions.firebaseRef &&
+							props.collaborativeOptions.clientData &&
 							!collaborativePluginState.isLoaded
 								? 'Loading...'
 								: props.placeholder;
