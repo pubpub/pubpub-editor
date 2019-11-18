@@ -371,7 +371,7 @@ const getShortcutValues = (editorView) => {
 	// TODO: Clean up this function!
 	const editorState = editorView.state;
 	const toPos = editorState.selection.to;
-	const currentNode = editorState.doc.nodeAt(toPos - 1);
+	const currentNode = editorState.doc.nodeAt(Math.max(toPos - 1, 0));
 	const text = currentNode && currentNode.textContent ? currentNode.textContent : '';
 	const currentLine = text.replace(/\s/g, ' ');
 	let parentOffset = editorState.selection.$to.parentOffset;
