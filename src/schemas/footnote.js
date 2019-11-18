@@ -22,9 +22,12 @@ export default {
 			},
 		],
 		toDOM: (node) => {
+			const { href, id } = node.attrs;
 			return [
-				'span',
+				href ? 'a' : 'span',
 				{
+					...(href && { href: href }),
+					...(id && { id: id }),
 					'data-node-type': 'footnote',
 					'data-value': node.attrs.value,
 					'date-structured-value': node.attrs.structuredValue,

@@ -142,6 +142,11 @@ const renderReactFromSpec = (elem, key, holeContent) => {
 		delete attrs.colspan;
 	}
 
+	if ('rowspan' in attrs) {
+		attrs.rowSpan = attrs.rowspan;
+		delete attrs.rowspan;
+	}
+
 	if ('style' in attrs && typeof attrs.style === 'string') {
 		attrs.style = parseStyleToObject(attrs.style);
 	}

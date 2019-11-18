@@ -22,10 +22,13 @@ export default {
 			},
 		],
 		toDOM: (node) => {
+			const { href, id } = node.attrs;
 			const inlineRenderFunc = node.type.spec.defaultOptions.inlineRenderer;
 			return [
-				'span',
+				href ? 'a' : 'span',
 				{
+					...(href && { href: href }),
+					...(id && { id: id }),
 					'data-node-type': 'citation',
 					'data-value': node.attrs.value,
 					'data-unstructured-value': node.attrs.unstructuredValue,

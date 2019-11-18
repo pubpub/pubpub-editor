@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.6.0] - 2019-11-18
+- Add optional `href` attribute to citations and footnotes, allowing them to be rendered as links
+- Update (s)css structure so it can be bundled by PubPub's document exporter
+- Replace `rowspan` with `rowSpan` for React
+
 ## [6.5.0] - 2019-11-11
 - dev: Add onKeyPress handler prop to Editor component
 

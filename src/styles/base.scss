@@ -1,51 +1,52 @@
-@import '~prosemirror-view/style/prosemirror.css';
-@import '~prosemirror-gapcursor/style/gapcursor.css';
-@import '~prosemirror-tables/style/tables.css';
+@import '~prosemirror-view/style/prosemirror';
+@import '~prosemirror-gapcursor/style/gapcursor';
+@import '~prosemirror-tables/style/tables';
+
+@import './latex.scss';
 
 .editor {
-	&:focus {
-		outline: none !important;
-	}
-	.prosemirror-placeholder {
-		opacity: 0.5;
-		white-space: nowrap;
-		position: relative;
-		&:after {
-			position: absolute;
-			top: 0;
-			content: attr(data-content);
-		}
-	}
+    &:focus {
+        outline: none !important;
+    }
+    .prosemirror-placeholder {
+        opacity: 0.5;
+        white-space: nowrap;
+        position: relative;
+        &:after {
+            position: absolute;
+            top: 0;
+            content: attr(data-content);
+        }
+    }
 
-	.ProseMirror-selectednode {
-		outline: 2px solid #bbbdc0;
-	}
-	&.read-only {
-		.ProseMirror-selectednode {
-			outline: 0px solid #bbbdc0;
-		}
-	}
-	h1,
-	h2,
-	h3,
-	h4,
-	h5,
-	h6 {
-		a {
-			text-decoration: none;
-			color: inherit;
-		}
-	}
-	span.footnote {
-		vertical-align: super;
-		font-size: 0.85em;
-	}
-	span.citation {
-		font-weight: bold;
-	}
-	@import './collab.scss';
-	@import './figure.scss';
-	@import './file.scss';
-	@import './latex.scss';
-	@import './table.scss';
+    .ProseMirror-selectednode {
+        outline: 2px solid #bbbdc0;
+    }
+    &.read-only {
+        .ProseMirror-selectednode {
+            outline: 0px solid #bbbdc0;
+        }
+    }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+    }
+    span.footnote {
+        vertical-align: super;
+        font-size: 0.85em;
+    }
+    span.citation {
+        font-weight: bold;
+    }
+    @import './collab.scss';
+    @import './figure.scss';
+    @import './file.scss';
+    @import './table.scss';
 }
