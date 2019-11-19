@@ -45,6 +45,14 @@
     span.citation {
         font-weight: bold;
     }
+
+    table {
+        /* Prosemirror requires white-space: pre-wrap, but it's overriden by the quirks.css */
+        /* built-in that Firefox provides, breaking the editor. */
+        /* See https://github.com/ProseMirror/prosemirror/issues/651#issuecomment-313436150 */
+        white-space: pre-wrap !important;
+    }
+
     @import './collab.scss';
     @import './figure.scss';
     @import './file.scss';

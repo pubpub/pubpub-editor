@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.6.1] - 2019-11-19
+- Fix a CSS issue that broke table editing in Firefox
+- Update prosemirror-tables to v0.9.5
+
 ## [6.6.0] - 2019-11-18
 - Add optional `href` attribute to citations and footnotes, allowing them to be rendered as links
 - Update (s)css structure so it can be bundled by PubPub's document exporter

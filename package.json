@@ -1,6 +1,6 @@
 {
   "name": "@pubpub/editor",
-  "version": "6.6.0",
+  "version": "6.6.1",
   "description": "PubPub Collaborative Editor",
   "main": "dist/index.js",
   "author": "PubPub Team <pubpub@media.mit.edu>",
@@ -36,7 +36,7 @@
     "prosemirror-schema-list": "^1.0.4",
     "prosemirror-schema-table": "^0.22.0",
     "prosemirror-state": "^1.2.4",
-    "prosemirror-tables": "^0.7.11",
+    "prosemirror-tables": "^0.9.5",
     "prosemirror-transform": "^1.1.5",
     "prosemirror-view": "^1.12.1"
   },
