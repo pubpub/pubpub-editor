@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [6.6.2] - 2019-11-25
+- Cache initial call to renderStatic() with React.memo() for performance improvement.
+
 ## [6.6.1] - 2019-11-19
 - Fix a CSS issue that broke table editing in Firefox
 - Update prosemirror-tables to v0.9.5

@@ -45,6 +45,13 @@ const defaultProps = {
 	handleDoubleClick: undefined,
 };
 
+const StaticDoc = React.memo(({ schema, content }) => renderStatic(schema, content));
+
+StaticDoc.propTypes = {
+	schema: PropTypes.object.isRequired,
+	content: PropTypes.object.isRequired,
+};
+
 const Editor = (props) => {
 	const editorRef = useRef();
 	const schema = useRef(null);
@@ -105,7 +112,6 @@ const Editor = (props) => {
 				},
 			},
 		);
-
 		props.onChange(getChangeObject(view));
 	}, []);
 
@@ -113,12 +119,13 @@ const Editor = (props) => {
 	/* generate a static version of the doc for server-side rendering. */
 	/* This static version is overwritten when the editorView is */
 	/* mounted into the editor dom node. */
+
 	return (
 		<div
 			ref={editorRef}
 			className={`editor ProseMirror ${props.isReadOnly ? 'read-only' : ''}`}
 		>
-			{renderStatic(schema.current, props.initialContent.content, props)}
+			<StaticDoc schema={schema.current} content={props.initialContent.content} />
 		</div>
 	);
 };

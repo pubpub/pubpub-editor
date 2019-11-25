@@ -154,11 +154,11 @@ const renderReactFromSpec = (elem, key, holeContent) => {
 	return React.createElement(elem[0], { ...attrs, key: key }, children);
 };
 
-export const renderStatic = (schema = buildSchema(), nodeArray, editorProps) => {
+export const renderStatic = (schema = buildSchema(), nodeArray) => {
 	return nodeArray.map((node, index) => {
 		let children;
 		if (node.content) {
-			children = renderStatic(schema, node.content, editorProps);
+			children = renderStatic(schema, node.content);
 		}
 		if (node.type === 'text') {
 			const marks = node.marks || [];
