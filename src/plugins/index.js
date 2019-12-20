@@ -1,15 +1,16 @@
 import { history } from 'prosemirror-history';
 import { gapCursor } from 'prosemirror-gapcursor';
-import buildOnChange from './onChange';
+import buildCitation from './citation';
+import buildCollaborative from './collaborative';
+import buildDomEvents from './domEvents';
+import buildFootnote from './footnote';
+import buildHeaderIds from './headerIds';
 import buildInputRules from './inputRules';
 import buildKeymap from './keymap';
-import buildHeaderIds from './headerIds';
-import buildPlaceholder from './placeholder';
 import buildLocalHighlights from './localHighlights';
+import buildOnChange from './onChange';
+import buildPlaceholder from './placeholder';
 import buildTable from './table';
-import buildCollaborative from './collaborative';
-import buildCitation from './citation';
-import buildFootnote from './footnote';
 
 const buildGapCursor = () => {
 	return gapCursor();
@@ -20,6 +21,7 @@ const buildHistory = () => {
 };
 
 export const requiredPlugins = {
+	domEvents: buildDomEvents,
 	onChange: buildOnChange,
 	gapCursor: buildGapCursor,
 	history: buildHistory,

@@ -217,23 +217,10 @@ export const importDocJson = (editorView, docJson) => {
 	return doc;
 };
 
-export const importHtml = (editorView, htmlString) => {
-	/* Create wrapper DOM node */
+export const getDocForHtmlString = (htmlString, schema) => {
 	const wrapperElem = document.createElement('div');
-
-	/* Insert htmlString into wrapperElem to generate full DOM tree */
 	wrapperElem.innerHTML = htmlString;
-
-	/* Generate new ProseMirror doc from DOM node */
-	const newDoc = DOMParser.fromSchema(editorView.state.schema).parse(wrapperElem);
-
-	/* Create transaction and set selection to the beginning of the doc */
-	const tr = editorView.state.tr;
-	tr.setSelection(Selection.atStart(editorView.state.doc));
-	tr.replaceSelection(new Slice(newDoc.content, 0, 0));
-
-	/* Dispatch transaction to setSelection and insert content */
-	editorView.dispatch(tr);
+	return DOMParser.fromSchema(schema).parse(wrapperElem);
 };
 
 export const focus = (editorView) => {

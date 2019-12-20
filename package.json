@@ -1,6 +1,6 @@
 {
   "name": "@pubpub/editor",
-  "version": "6.6.2",
+  "version": "7.0.0",
   "description": "PubPub Collaborative Editor",
   "main": "dist/index.js",
   "author": "PubPub Team <pubpub@media.mit.edu>",
@@ -79,7 +79,7 @@
     "node-sass": "^4.11.0",
     "prettier": "^1.16.4",
     "prop-types": "^15.7.2",
-    "react": "^16.11.0",
+    "react": "^16.12.0",
     "react-dom": "^16.11.0",
     "react-stylable-diff": "^2.0.0",
     "react-transition-group": "^4.3.0",

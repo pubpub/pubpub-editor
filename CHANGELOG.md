@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [7.0.0] - 2012-12-20
+- Add domEvents plugin that captures latestDomEvent and adds it to editorChangeObject
+- Replace importHtml with getDocForHtmlString
+- Add onScrollToSelection prop to Editor so callers can interfere with scrolling
+
 ## [6.6.2] - 2019-11-25
 - Cache initial call to renderStatic() with React.memo() for performance improvement.
 

@@ -22,6 +22,7 @@ const propTypes = {
 	onChange: PropTypes.func,
 	onKeyPress: PropTypes.func,
 	onError: PropTypes.func,
+	onScrollToSelection: PropTypes.func,
 	initialContent: PropTypes.object,
 	placeholder: PropTypes.string,
 	isReadOnly: PropTypes.bool,
@@ -38,6 +39,7 @@ const defaultProps = {
 	onChange: () => {},
 	onError: () => {},
 	onKeyPress: () => {},
+	onScrollToSelection: undefined,
 	initialContent: { type: 'doc', attrs: { meta: {} }, content: [{ type: 'paragraph' }] },
 	placeholder: '',
 	isReadOnly: false,
@@ -49,7 +51,7 @@ const StaticDoc = React.memo(({ schema, content }) => renderStatic(schema, conte
 
 StaticDoc.propTypes = {
 	schema: PropTypes.object.isRequired,
-	content: PropTypes.object.isRequired,
+	content: PropTypes.array.isRequired,
 };
 
 const Editor = (props) => {
@@ -98,6 +100,7 @@ const Editor = (props) => {
 				handleKeyPress: props.onKeyPress,
 				handleClickOn: props.handleSingleClick,
 				handleDoubleClickOn: props.handleDoubleClick,
+				handleScrollToSelection: props.onScrollToSelection,
 				dispatchTransaction: (transaction) => {
 					try {
 						const newState = view.state.apply(transaction);

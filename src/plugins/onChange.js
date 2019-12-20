@@ -17,6 +17,7 @@ import {
 	toggleHeaderCell,
 } from 'prosemirror-tables';
 import { collabDocPluginKey } from './collaborative';
+import { domEventsPluginKey } from './domEvents';
 // import { collaborativePluginKey } from './plugins/collaborative';
 
 const getInsertFunctions = (editorView) => {
@@ -554,6 +555,7 @@ const changeNode = (isNode, editorView) => {
 export const getChangeObject = (editorView) => {
 	const isNode = !!editorView.state.selection.node;
 	const collaborativePluginState = collabDocPluginKey.getState(editorView.state) || {};
+	const { latestDomEvent } = domEventsPluginKey.getState(editorView.state);
 	// const hasFocus = editorView.hasFocus();
 	return {
 		/* The current editor view. */
@@ -573,6 +575,8 @@ export const getChangeObject = (editorView) => {
 			editorView.state.selection.from,
 			editorView.state.selection.to,
 		),
+		/* boolean indicating whether the selection is in a table */
+		selectionInTable: isInTable(editorView.state),
 		/* The text, prefix, and suffix of the current selection */
 		selectedText: getSelectedText(editorView),
 		/* If the active selection is of a NodeView, provide the selected node. */
@@ -597,12 +601,13 @@ export const getChangeObject = (editorView) => {
 		activeLink: getActiveLink(editorView),
 		/* boolean alerting whether the collab plugin has finished loading */
 		isCollabLoaded: collaborativePluginState.isLoaded,
+		latestDomEvent: latestDomEvent,
 	};
 };
 
 /* This plugin is used to call onChange with */
 /* all of the new editor values. */
-export default (schema, props) => {
+export default (_, props) => {
 	return new Plugin({
 		view: () => {
 			return {
