@@ -6,6 +6,7 @@ export const baseNodes = {
 		},
 	},
 	paragraph: {
+		selectable: false,
 		content: 'inline*',
 		group: 'block',
 		attrs: {
@@ -32,6 +33,7 @@ export const baseNodes = {
 	blockquote: {
 		content: 'block+',
 		group: 'block',
+		selectable: false,
 		parseDOM: [{ tag: 'blockquote' }],
 		toDOM: () => {
 			return ['blockquote', 0];
@@ -40,6 +42,7 @@ export const baseNodes = {
 	horizontal_rule: {
 		group: 'block',
 		parseDOM: [{ tag: 'hr' }],
+		selectable: false,
 		toDOM: () => {
 			return ['div', ['hr']];
 		},
@@ -60,6 +63,7 @@ export const baseNodes = {
 		content: 'inline*',
 		group: 'block',
 		defining: true,
+		selectable: false,
 		parseDOM: [
 			{
 				tag: 'h1',
@@ -106,6 +110,7 @@ export const baseNodes = {
 		content: 'list_item+',
 		group: 'block',
 		attrs: { order: { default: 1 } },
+		selectable: false,
 		parseDOM: [
 			{
 				tag: 'ol',
@@ -121,6 +126,7 @@ export const baseNodes = {
 	bullet_list: {
 		content: 'list_item+',
 		group: 'block',
+		selectable: false,
 		parseDOM: [{ tag: 'ul' }],
 		toDOM: () => {
 			return ['ul', 0];
@@ -129,6 +135,7 @@ export const baseNodes = {
 	list_item: {
 		content: 'paragraph block*',
 		defining: true,
+		selectable: false,
 		parseDOM: [{ tag: 'li' }],
 		toDOM: () => {
 			return ['li', 0];
@@ -138,6 +145,7 @@ export const baseNodes = {
 		content: 'text*',
 		group: 'block',
 		code: true,
+		selectable: false,
 		parseDOM: [{ tag: 'pre', preserveWhitespace: 'full' }],
 		toDOM: () => {
 			return ['pre', ['code', 0]];

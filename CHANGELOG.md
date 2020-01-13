@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [7.0.0] - 2012-12-20
+## [7.1.0] - 2020-01-13
+- Set { selectable:false } for most base schema nodes like headers and lists
+
+## [7.0.0] - 2019-12-20
 - Add domEvents plugin that captures latestDomEvent and adds it to editorChangeObject
 - Replace importHtml with getDocForHtmlString
 - Add onScrollToSelection prop to Editor so callers can interfere with scrolling
