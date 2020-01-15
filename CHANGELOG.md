@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [7.2.0] - 2020-01-15
+- Introduce setEditorSelectionFromClick utility
+
 ## [7.1.0] - 2020-01-13
 - Set { selectable:false } for most base schema nodes like headers and lists
 

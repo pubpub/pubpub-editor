@@ -1,5 +1,5 @@
 import React from 'react';
-import { Selection } from 'prosemirror-state';
+import { Selection, NodeSelection } from 'prosemirror-state';
 import { DOMParser, Schema, Slice, Node } from 'prosemirror-model';
 import {
 	compressSelectionJSON,
@@ -838,3 +838,23 @@ export const getNotes = (doc) => {
 // 	transaction.setMeta('removeDiscussion', { id: discussionId });
 // 	editorView.dispatch(transaction);
 // };
+
+export const setEditorSelectionFromClick = (editorView, clickEvent) => {
+	const { clientX, clientY } = clickEvent;
+	const posAtCoords = editorView.posAtCoords({ left: clientX, top: clientY });
+	if (posAtCoords) {
+		const { pos, inside } = posAtCoords;
+		const txn = editorView.state.tr;
+		const insideNode = editorView.state.doc.nodeAt(inside);
+		if (NodeSelection.isSelectable(insideNode)) {
+			const selection = NodeSelection.create(editorView.state.doc, inside);
+			txn.setSelection(selection);
+		} else {
+			const resolvedPos = editorView.state.doc.resolve(pos);
+			const selection = Selection.near(resolvedPos);
+			txn.setSelection(selection);
+		}
+		txn.setMeta('latestDomEvent', clickEvent);
+		editorView.dispatch(txn);
+	}
+};
