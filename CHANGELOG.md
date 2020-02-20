@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [7.2.1] - 2020-02-20
+- update: Add from, to values to getLocalHighlightText()
+
 ## [7.2.0] - 2020-01-15
 - Introduce setEditorSelectionFromClick utility
 

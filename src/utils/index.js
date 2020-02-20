@@ -772,6 +772,8 @@ export const getLocalHighlightText = (editorView, highlightId) => {
 		Math.min(editorView.state.doc.nodeSize - 2, toPos + 10),
 	);
 	return {
+		from: fromPos,
+		to: toPos,
 		exact: exact,
 		prefix: prefix,
 		suffix: suffix,
