@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [7.2.2] - 2020-02-28
+- fix: only trigger collab plugin on transactions containing steps to avoid double-sending changes.
+
 ## [7.2.1] - 2020-02-20
 - update: Add from, to values to getLocalHighlightText()
 

@@ -104,8 +104,9 @@ const Editor = (props) => {
 				dispatchTransaction: (transaction) => {
 					try {
 						const newState = view.state.apply(transaction);
+						const transactionHasSteps = transaction.steps.length;
 						view.updateState(newState);
-						if (props.collaborativeOptions.firebaseRef) {
+						if (props.collaborativeOptions.firebaseRef && transactionHasSteps) {
 							collabDocPluginKey.getState(newState).sendCollabChanges(newState);
 						}
 					} catch (err) {
