@@ -1,5 +1,5 @@
-import { Selection } from 'prosemirror-state';
 import { Node } from 'prosemirror-model';
+import { Selection } from 'prosemirror-state';
 import { Step, Mapping } from 'prosemirror-transform';
 import {
 	compressSelectionJSON,

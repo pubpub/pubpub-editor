@@ -1,3 +1,4 @@
+import { Node } from 'prosemirror-model';
 import { Step } from 'prosemirror-transform';
 import { uncompressStateJSON, uncompressStepJSON } from 'prosemirror-compress-pubpub';
 

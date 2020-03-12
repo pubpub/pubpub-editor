@@ -1,4 +1,5 @@
 import { Schema } from 'prosemirror-model';
+
 import { defaultNodes, defaultMarks } from '../schemas';
 
 export const buildSchema = (customNodes = {}, customMarks = {}, nodeOptions = {}) => {

@@ -1,4 +1,5 @@
-import { Slice, Node } from 'prosemirror-model';
+import { Selection } from 'prosemirror-state';
+import { Node, Slice } from 'prosemirror-model';
 
 export const dispatchEmptyTransaction = (editorView) => {
 	const emptyInitTransaction = editorView.state.tr;

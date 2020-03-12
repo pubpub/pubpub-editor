@@ -1,4 +1,4 @@
-import { NodeSelection, TextSelection } from 'prosemirror-state';
+import { NodeSelection, Selection, TextSelection } from 'prosemirror-state';
 
 export const moveSelectionToStart = (editorView) => {
 	/* Create transaction and set selection to the beginning of the doc */
