@@ -1,14 +1,25 @@
 /* eslint-disable no-console */
 import React, { useState } from 'react';
 import { storiesOf } from '@storybook/react';
-import Editor, { cursor } from '../src/index';
+import Editor from '../src/index';
 import { editorWrapperStyle, initFirebase, clientData } from './_utilities';
 import initialContent from './initialDocs/plainDoc';
 import {
-	setLocalHighlight,
-	removeLocalHighlight,
 	convertLocalHighlightToDiscussion,
+	moveSelectionToEnd,
+	moveSelectionToStart,
+	moveToEndOfSelection,
+	moveToStartOfSelection,
+	removeLocalHighlight,
+	setLocalHighlight,
 } from '../src/utils';
+
+const cursorCommands = {
+	moveSelectionToStart: moveSelectionToStart,
+	moveSelectionToEnd: moveSelectionToEnd,
+	moveToStartOfSelection: moveToStartOfSelection,
+	moveToEndOfSelection: moveToEndOfSelection,
+};
 
 const rootKey = 'ttest11';
 const branchKey = 'branch-f4bf24f7-6184-4f5f-b2d3-2b9d2563cb62';
@@ -19,10 +30,10 @@ const newDiscussionId = String(Math.floor(Math.random() * 999999));
 const CursorOptionsDemoPub = () => {
 	const [editorView, setEditorView] = useState();
 
-	const cursorButtons = Object.keys(cursor).map((key) => ({
+	const cursorButtons = Object.keys(cursorCommands).map((key) => ({
 		children: key,
 		onClick: () => {
-			cursor[key](editorView);
+			cursorCommands[key](editorView);
 			editorView.focus();
 		},
 	}));

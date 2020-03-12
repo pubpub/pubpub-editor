@@ -1,4 +1,4 @@
-import { renderHtmlChildren } from '../utils/schemaUtils';
+import { renderHtmlChildren } from '../utils/render';
 
 export default {
 	video: {

@@ -6,9 +6,9 @@ module.exports = ({ config }) => {
 		test: /\.scss$/,
 		use: [
 			{ loader: 'style-loader' }, // creates style nodes from JS strings
-			{ loader: 'css-loader'}, // translates CSS into CommonJS
+			{ loader: 'css-loader' }, // translates CSS into CommonJS
 			{ loader: 'resolve-url-loader' },
-			{ loader: 'sass-loader', options: {sourceMap: true, sourceMapContents: false} }, // compiles Sass to CSS
+			{ loader: 'sass-loader', options: { sourceMap: true, sourceMapContents: false } }, // compiles Sass to CSS
 		],
 	});
 	config.module.rules.push({

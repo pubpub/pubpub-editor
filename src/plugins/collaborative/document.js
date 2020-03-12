@@ -3,6 +3,7 @@ import { receiveTransaction, sendableSteps } from 'prosemirror-collab';
 import { Step } from 'prosemirror-transform';
 import { compressStepJSON, uncompressStepJSON } from 'prosemirror-compress-pubpub';
 import uuidv4 from 'uuid/v4';
+
 import { storeCheckpoint, firebaseTimestamp } from '../../utils';
 
 /*
