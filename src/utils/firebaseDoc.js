@@ -5,12 +5,10 @@ import { uncompressStateJSON, uncompressStepJSON } from 'prosemirror-compress-pu
 import { getEmptyDoc } from './doc';
 import { flattenKeyables, storeCheckpoint } from './firebase';
 
-const getMostRecentDocJson = async (firebaseRef, versionNumber = null) => {
-	const hasVersionNumber = versionNumber || versionNumber === 0;
+const getMostRecentDocJson = async (firebaseRef, checkpointMap, versionNumber = null) => {
+	const hasVersionNumber = !!versionNumber || versionNumber === 0;
 	// First see whether we have a checkpointMap -- this should indicate that there is one
 	// or more checkpoint available in the `checkpoints` child.
-	const checkpointMapSnapshot = await firebaseRef.child('checkpointMap').once('value');
-	const checkpointMap = checkpointMapSnapshot.val();
 	if (checkpointMap) {
 		// We're interested in the keys of this object, which are strings. Cast them to numbers.
 		const checkpointKeys = Object.keys(checkpointMap).map((key) => parseInt(key, 10));
@@ -36,8 +34,11 @@ const getMostRecentDocJson = async (firebaseRef, versionNumber = null) => {
 	const checkpoint = checkpointSnapshot.val();
 	if (checkpoint) {
 		const { k: keyString } = checkpoint;
-		const { doc } = uncompressStateJSON(checkpoint);
-		return { doc: doc, key: parseInt(keyString, 10) };
+		const key = parseInt(keyString, 10);
+		if (key <= versionNumber) {
+			const { doc } = uncompressStateJSON(checkpoint);
+			return { doc: doc, key: key };
+		}
 	}
 	// There's no checkpoint, so let's just return an empty doc.
 	return {
@@ -46,38 +47,9 @@ const getMostRecentDocJson = async (firebaseRef, versionNumber = null) => {
 	};
 };
 
-export const getFirstKeyAndTimestamp = async (firebaseRef) => {
-	const firstChangeSnapshot = await firebaseRef
-		.child('changes')
-		.orderByKey()
-		.limitToFirst(1)
-		.once('value');
-
-	const firstChange = firstChangeSnapshot.val();
-	if (firstChange) {
-		const [key] = Object.keys(firstChange);
-		const change = firstChange[key];
-		const timestamp = change && change.t;
-		if (change) {
-			return { key: key, timestamp: timestamp };
-		}
-	}
-
-	return null;
-};
-
-export const getLatestKeyAndTimestamp = async (firebaseRef) => {
-	const getLatestChange = firebaseRef
-		.child('changes')
-		.orderByKey()
-		.limitToLast(1)
-		.once('value');
-
-	const getLatestMerge = firebaseRef
-		.child('merges')
-		.orderByKey()
-		.limitToLast(1)
-		.once('value');
+const ordinalKeyTimestampGetter = (traverseRef, chooseKey) => async (firebaseRef) => {
+	const getLatestChange = traverseRef(firebaseRef.child('changes').orderByKey()).once('value');
+	const getLatestMerge = traverseRef(firebaseRef.child('merges').orderByKey()).once('value');
 
 	const [latestChangeSnaphot, latestMergeSnapshot] = await Promise.all([
 		getLatestChange,
@@ -89,23 +61,33 @@ export const getLatestKeyAndTimestamp = async (firebaseRef) => {
 		...latestMergeSnapshot.val(),
 	};
 
-	const latestKey = Object.keys(latestUpdates)
-		.map((key) => parseInt(key, 10))
-		.reduce((max, next) => Math.max(max, next), 0);
+	const allKeys = Object.keys(latestUpdates).map((key) => parseInt(key, 10));
+	const bestKey = chooseKey(allKeys);
+	// reduce((max, next) => Math.max(max, next), 0);
 
-	const latestUpdateWrapped = latestUpdates[latestKey];
-	const latestUpdate = Array.isArray(latestUpdateWrapped)
-		? latestUpdateWrapped[latestUpdateWrapped.length - 1]
-		: latestUpdateWrapped;
-	const latestTimestamp = latestUpdate && latestUpdate.t;
+	const updateWrapped = latestUpdates[bestKey];
+	const update = Array.isArray(updateWrapped)
+		? updateWrapped[updateWrapped.length - 1]
+		: updateWrapped;
+	const timestamp = update && update.t;
 
-	return { latestKey: latestKey, latestTimestamp: latestTimestamp };
+	return { key: bestKey, timestamp: timestamp };
 };
+
+export const getFirstKeyAndTimestamp = ordinalKeyTimestampGetter(
+	(ref) => ref.limitToFirst(1),
+	(keys) => keys.reduce((a, b) => Math.min(a, b), 0),
+);
+
+export const getLatestKeyAndTimestamp = ordinalKeyTimestampGetter(
+	(ref) => ref.limitToLast(1),
+	(keys) => keys.reduce((a, b) => Math.max(a, b), 0),
+);
 
 const getStepsJsonFromChanges = (changes) => {
 	return changes
 		.map((change) => {
-			const { s: compressedStepsJson } = change.s;
+			const { s: compressedStepsJson } = change;
 			return compressedStepsJson.map(uncompressStepJSON);
 		})
 		.reduce((a, b) => [...a, ...b], []);
@@ -117,8 +99,12 @@ export const getFirebaseDoc = async (
 	versionNumber = null,
 	updateOutdatedCheckpoint = false,
 ) => {
+	const checkpointMapSnapshot = await firebaseRef.child('checkpointMap').once('value');
+	const checkpointMap = checkpointMapSnapshot.val();
+
 	const { doc: checkpointDocJson, key: checkpointKey } = await getMostRecentDocJson(
 		firebaseRef,
+		checkpointMap,
 		versionNumber,
 	);
 
@@ -147,7 +133,9 @@ export const getFirebaseDoc = async (
 	const stepsJson = getStepsJsonFromChanges(flattenedChanges);
 
 	const keys = Object.keys(allKeyables);
-	const currentKey = keys.length ? Math.max(...keys) : checkpointKey;
+	const currentKey = keys.length
+		? keys.map((key) => parseInt(key, 10)).reduce((a, b) => Math.max(a, b))
+		: checkpointKey;
 
 	const currentTimestamp =
 		flattenedChanges.length > 0 ? flattenedChanges[flattenedChanges.length - 1].t : null;
@@ -171,5 +159,6 @@ export const getFirebaseDoc = async (
 		doc: currentDoc.toJSON(),
 		key: currentKey,
 		timestamp: currentTimestamp,
+		checkpointMap: checkpointMap,
 	};
 };

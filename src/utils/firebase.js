@@ -15,13 +15,21 @@ export const storeCheckpoint = async (firebaseRef, docNode, keyNumber) => {
 	]);
 };
 
-export const flattenKeyables = (keyables) =>
+export const flattenKeyables = (keyables) => {
 	/* flattenedMergeStepArray is an array of { steps, client, time } values */
 	/* It flattens the case where we have a merge-object which is an array of */
 	/* { steps, client, time } values. */
-	Object.keys(keyables).reduce((prev, curr) => {
-		if (Array.isArray(keyables[curr])) {
-			return [...prev, ...keyables[curr]];
-		}
-		return [...prev, keyables[curr]];
-	}, []);
+	const objectWithIntKeys = {};
+	Object.keys(keyables).forEach((key) => {
+		const intKey = parseInt(key, 10);
+		objectWithIntKeys[intKey] = keyables[key];
+	});
+	return Object.keys(objectWithIntKeys)
+		.sort((a, b) => a - b)
+		.reduce((arr, intKey) => {
+			if (Array.isArray(keyables[intKey])) {
+				return [...arr, ...keyables[intKey]];
+			}
+			return [...arr, keyables[intKey]];
+		}, []);
+};
