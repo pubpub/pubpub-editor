@@ -24,7 +24,7 @@ const getMostRecentDocJson = async (firebaseRef, checkpointMap, versionNumber = 
 			const checkpoint = checkpointSnapshot.val();
 			if (checkpoint) {
 				const { doc } = uncompressStateJSON(checkpoint);
-				return { doc: doc, key: bestKey };
+				return { doc: doc, key: bestKey, timestamp: checkpointMap[bestKey] };
 			}
 		}
 	}
@@ -102,11 +102,11 @@ export const getFirebaseDoc = async (
 	const checkpointMapSnapshot = await firebaseRef.child('checkpointMap').once('value');
 	const checkpointMap = checkpointMapSnapshot.val();
 
-	const { doc: checkpointDocJson, key: checkpointKey } = await getMostRecentDocJson(
-		firebaseRef,
-		checkpointMap,
-		versionNumber,
-	);
+	const {
+		doc: checkpointDocJson,
+		key: checkpointKey,
+		timestamp: checkpointTimestamp,
+	} = await getMostRecentDocJson(firebaseRef, checkpointMap, versionNumber);
 
 	const getChanges = firebaseRef
 		.child('changes')
@@ -138,7 +138,9 @@ export const getFirebaseDoc = async (
 		: checkpointKey;
 
 	const currentTimestamp =
-		flattenedChanges.length > 0 ? flattenedChanges[flattenedChanges.length - 1].t : null;
+		flattenedChanges.length > 0
+			? flattenedChanges[flattenedChanges.length - 1].t
+			: checkpointTimestamp;
 
 	const currentDoc = stepsJson.reduce((intermediateDoc, stepJson) => {
 		const step = Step.fromJSON(prosemirrorSchema, stepJson);
