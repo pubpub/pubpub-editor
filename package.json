@@ -15,7 +15,7 @@
     "install-git-hooks": "rm -f ./.git/hooks/* && cp ./.githooks/* ./.git/hooks && chmod +x ./.git/hooks/*",
     "lint": "eslint src stories .storybook",
     "prepublish-soon": "npm run lint && rm -rf node_modules && npm install && npm run build",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "npm run lint && npm run build",
     "pretty": "prettier --write '**/*.js'",
     "start": "start-storybook -p 9002 -c .storybook",
     "test": "jest --silent"
