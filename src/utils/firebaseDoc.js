@@ -82,7 +82,7 @@ export const getLatestKeyAndTimestamp = ordinalKeyTimestampGetter(
 	(ref) => ref.limitToLast(1),
 	(keys) => (keys.length ? keys.reduce((a, b) => Math.max(a, b), -Infinity) : -1),
 );
- 
+
 const getStepsJsonFromChanges = (changes) => {
 	return changes
 		.map((change) => {
