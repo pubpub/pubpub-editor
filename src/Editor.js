@@ -103,6 +103,9 @@ const Editor = (props) => {
 				handleScrollToSelection: props.onScrollToSelection,
 			},
 		);
+		// Sometimes the view will call its dispatchTransaction from the constructor, but the
+		// function itself references the `view` variable bound above. So we need to set this
+		// prop immediately after it's constructed.
 		view.setProps({
 			dispatchTransaction: (transaction) => {
 				try {
