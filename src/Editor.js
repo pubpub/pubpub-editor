@@ -101,21 +101,23 @@ const Editor = (props) => {
 				handleClickOn: props.handleSingleClick,
 				handleDoubleClickOn: props.handleDoubleClick,
 				handleScrollToSelection: props.onScrollToSelection,
-				dispatchTransaction: (transaction) => {
-					try {
-						const newState = view.state.apply(transaction);
-						const transactionHasSteps = transaction.steps.length;
-						view.updateState(newState);
-						if (props.collaborativeOptions.firebaseRef && transactionHasSteps) {
-							collabDocPluginKey.getState(newState).sendCollabChanges(newState);
-						}
-					} catch (err) {
-						console.error('Error applying transaction:', err);
-						props.onError(err);
-					}
-				},
 			},
 		);
+		view.setProps({
+			dispatchTransaction: (transaction) => {
+				try {
+					const newState = view.state.apply(transaction);
+					const transactionHasSteps = transaction.steps.length;
+					view.updateState(newState);
+					if (props.collaborativeOptions.firebaseRef && transactionHasSteps) {
+						collabDocPluginKey.getState(newState).sendCollabChanges(newState);
+					}
+				} catch (err) {
+					console.error('Error applying transaction:', err);
+					props.onError(err);
+				}
+			},
+		});
 		props.onChange(getChangeObject(view));
 	}, []);
 
