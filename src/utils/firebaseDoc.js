@@ -63,7 +63,6 @@ const ordinalKeyTimestampGetter = (traverseRef, chooseKey) => async (firebaseRef
 
 	const allKeys = Object.keys(latestUpdates).map((key) => parseInt(key, 10));
 	const bestKey = chooseKey(allKeys);
-	// reduce((max, next) => Math.max(max, next), 0);
 
 	const updateWrapped = latestUpdates[bestKey];
 	const update = Array.isArray(updateWrapped)
@@ -76,14 +75,14 @@ const ordinalKeyTimestampGetter = (traverseRef, chooseKey) => async (firebaseRef
 
 export const getFirstKeyAndTimestamp = ordinalKeyTimestampGetter(
 	(ref) => ref.limitToFirst(1),
-	(keys) => keys.reduce((a, b) => Math.min(a, b), 0),
+	(keys) => (keys.length ? keys.reduce((a, b) => Math.min(a, b), Infinity) : -1),
 );
 
 export const getLatestKeyAndTimestamp = ordinalKeyTimestampGetter(
 	(ref) => ref.limitToLast(1),
-	(keys) => keys.reduce((a, b) => Math.max(a, b), 0),
+	(keys) => (keys.length ? keys.reduce((a, b) => Math.max(a, b), -Infinity) : -1),
 );
-
+ 
 const getStepsJsonFromChanges = (changes) => {
 	return changes
 		.map((change) => {
