@@ -5,6 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- update: Increase length of prefix and suffix in getLocalHighlightText
 
 ## [7.2.2] - 2020-02-28
 - fix: only trigger collab plugin on transactions containing steps to avoid double-sending changes.
