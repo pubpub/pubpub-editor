@@ -24,8 +24,24 @@ export default {
 			},
 		],
 		toDOM: (node) => {
-			const { href, id, count, label } = node.attrs;
-			const labelString = label || `[${count}]`;
+			const { href, id, count } = node.attrs;
+
+			const { citationsRef, citationInlineStyle } = node.type.spec.defaultOptions;
+			// const labelString = 'foobya!' || label || `[${count}]`;
+
+			/*	There is a two-fold approach here. toDOM will render the
+				citations from citationsRef so that server-side and PDF rendering will function as
+				intended (that is, take the citationInlineStyle regardless of node.attrs.label).
+				To keep things in sync, while toDOM is not called (e.g. on re-renders, count updates, etc)
+				the citations plugin sets node.attra.label, which causes this to rerender. 
+				If we simply render from node.attrs.label, server-side and PDF rendering may be out of date 
+				from the citationInlineStyling, which may have been changed more recently than the firebase
+				steps were stored.
+			*/
+			const labelString =
+				(citationsRef.current[count - 1] &&
+					citationsRef.current[count - 1][citationInlineStyle]) ||
+				`[${count}]`;
 			return [
 				href ? 'a' : 'span',
 				{
@@ -50,6 +66,9 @@ export default {
 			const transaction = view.state.tr.replaceSelectionWith(citationNode);
 			view.dispatch(transaction);
 		},
-		defaultOptions: {},
+		defaultOptions: {
+			citationsRef: { current: [] },
+			citationInlineStyle: 'count',
+		},
 	},
 };
