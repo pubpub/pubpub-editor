@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `renderStatic` no longer uses the result of `buildSchema` as its default first argument -- you
   must pass this value in yourself.
 - Major refactor of `utils/` to keep things tidy.
+- update: Increase length of prefix and suffix in getLocalHighlightText
 
 ## [7.2.2] - 2020-02-28
 - fix: only trigger collab plugin on transactions containing steps to avoid double-sending changes.

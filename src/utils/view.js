@@ -121,13 +121,14 @@ export const getLocalHighlightText = (editorView, highlightId) => {
 	const fromPos = localHighlight.from;
 	const toPos = localHighlight.to;
 	const exact = editorView.state.doc.textBetween(fromPos, toPos);
+	const contextLength = 100;
 	const prefix = editorView.state.doc.textBetween(
-		Math.max(0, fromPos - 10),
+		Math.max(0, fromPos - contextLength),
 		Math.max(0, fromPos),
 	);
 	const suffix = editorView.state.doc.textBetween(
 		Math.min(editorView.state.doc.nodeSize - 2, toPos),
-		Math.min(editorView.state.doc.nodeSize - 2, toPos + 10),
+		Math.min(editorView.state.doc.nodeSize - 2, toPos + contextLength),
 	);
 	return {
 		from: fromPos,
