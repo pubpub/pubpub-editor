@@ -1,12 +1,13 @@
 import { Plugin } from 'prosemirror-state';
 
-export default (schema) => {
+export default (schema, props) => {
 	if (!schema.nodes.citation) {
 		return [];
 	}
 	return new Plugin({
 		appendTransaction: (transactions, oldState, newState) => {
-			const counts = {}; /* counts is an object with items of the following form. { citationHtml: { count: citationCount, value: citationValue } } */
+			const { citationsRef, citationInlineStyle } = props;
+			const counts = {}; /* counts is an object with items of the following form. { citationHtml: citationCount } */
 			let didUpdate = false;
 			const newTransaction = newState.tr;
 			newState.doc.nodesBetween(0, newState.doc.nodeSize - 2, (node, nodePos) => {
@@ -38,10 +39,33 @@ export default (schema) => {
 					if (!existingCount) {
 						counts[key] = {
 							count: nextCount,
-							value: node.attrs.value,
-							html: node.attrs.html,
-							unstructuredValue: node.attrs.unstructuredValue,
 						};
+					}
+
+					const activeCount = existingCount || nextCount;
+					if (citationInlineStyle === 'count' && node.attrs.label) {
+						/* If we're in count mode, and a label is set, clear it */
+						didUpdate = true;
+						newTransaction.setNodeMarkup(nodePos, null, {
+							...node.attrs,
+							label: '',
+						});
+						newTransaction.setMeta('citation', true);
+					}
+					if (
+						citationInlineStyle !== 'count' &&
+						citationsRef.current[activeCount - 1] &&
+						node.attrs.label !==
+							citationsRef.current[activeCount - 1][citationInlineStyle]
+					) {
+						/* If we're not in count mode, and the label is not */
+						/* up to date, refresh it. */
+						didUpdate = true;
+						newTransaction.setNodeMarkup(nodePos, null, {
+							...node.attrs,
+							label: citationsRef.current[activeCount - 1][citationInlineStyle],
+						});
+						newTransaction.setMeta('citation', true);
 					}
 				}
 				return true;

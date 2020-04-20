@@ -5,6 +5,7 @@ export default {
 			value: { default: '' },
 			unstructuredValue: { default: '' },
 			count: { default: 0 },
+			label: { default: '' },
 		},
 		parseDOM: [
 			{
@@ -17,13 +18,14 @@ export default {
 						value: node.getAttribute('data-value') || '',
 						unstructuredValue: node.getAttribute('data-unstructured-value') || '',
 						count: Number(node.getAttribute('data-count')) || undefined,
+						label: node.getAttribute('data-label') || '',
 					};
 				},
 			},
 		],
 		toDOM: (node) => {
-			const { href, id } = node.attrs;
-			const inlineRenderFunc = node.type.spec.defaultOptions.inlineRenderer;
+			const { href, id, count, label } = node.attrs;
+			const labelString = label || `[${count}]`;
 			return [
 				href ? 'a' : 'span',
 				{
@@ -33,9 +35,10 @@ export default {
 					'data-value': node.attrs.value,
 					'data-unstructured-value': node.attrs.unstructuredValue,
 					'data-count': node.attrs.count,
+					'data-label': node.attrs.label,
 					class: 'citation',
 				},
-				inlineRenderFunc(node.attrs.count),
+				labelString,
 			];
 		},
 		inline: true,
@@ -47,10 +50,6 @@ export default {
 			const transaction = view.state.tr.replaceSelectionWith(citationNode);
 			view.dispatch(transaction);
 		},
-		defaultOptions: {
-			inlineRenderer: (count) => {
-				return `[${count}]`;
-			},
-		},
+		defaultOptions: {},
 	},
 };

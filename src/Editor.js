@@ -28,6 +28,8 @@ const propTypes = {
 	isReadOnly: PropTypes.bool,
 	handleSingleClick: PropTypes.func,
 	handleDoubleClick: PropTypes.func,
+	citationsRef: PropTypes.object,
+	citationInlineStyle: PropTypes.string,
 };
 
 const defaultProps = {
@@ -45,6 +47,8 @@ const defaultProps = {
 	isReadOnly: false,
 	handleSingleClick: undefined,
 	handleDoubleClick: undefined,
+	citationsRef: { current: [] },
+	citationInlineStyle: 'count',
 };
 
 const StaticDoc = React.memo(({ schema, content }) => renderStatic(schema, content));
@@ -74,6 +78,8 @@ const Editor = (props) => {
 				initialContent: props.initialContent,
 				placeholder: props.placeholder,
 				isReadOnly: props.isReadOnly,
+				citationsRef: props.citationsRef,
+				citationInlineStyle: props.citationInlineStyle,
 			}),
 		});
 
