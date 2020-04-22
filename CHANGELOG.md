@@ -5,15 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-- `getFirebaseDoc` will now check `checkpointMap` and `checkpoints` in a branch ref to find the
+- update: `getFirebaseDoc` will now check `checkpointMap` and `checkpoints` in a branch ref to find the
   latest checkpoint, and `storeCheckpoint` will _append_ to these values with a new doc rather than
   overwriting the value as with the `checkpoint` child of the branch. This will make looking up
   older versions of a branch much more performant. The signature of this function has been changed
   to move PubPub-specific concerns back to PubPub.
-- `renderStatic` no longer uses the result of `buildSchema` as its default first argument -- you
+- update: `renderStatic` no longer uses the result of `buildSchema` as its default first argument -- you
   must pass this value in yourself.
-- Major refactor of `utils/` to keep things tidy.
+- dev: Major refactor of `utils/` to keep things tidy.
 - update: Increase length of prefix and suffix in getLocalHighlightText
+- update: Support for inline citation styles
 
 ## [7.2.2] - 2020-02-28
 - fix: only trigger collab plugin on transactions containing steps to avoid double-sending changes.
