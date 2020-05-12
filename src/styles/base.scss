@@ -34,8 +34,11 @@
     h5,
     h6 {
         a {
-            text-decoration: none;
+            text-decoration: underline;
             color: inherit;
+            &:hover, &:visited {
+                text-decoration: none;
+            }
         }
     }
     span.footnote {
