@@ -36,9 +36,6 @@
         a, a:hover, a:visited {
             text-decoration: underline;
             color: inherit;
-            &:hover {
-                text-decoration: none;
-            }
         }
     }
     span.footnote {
