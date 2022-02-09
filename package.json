@@ -76,7 +76,7 @@
     "firebase-server": "^1.0.2",
     "jest": "^24.8.0",
     "js-beautify": "^1.10.0",
-    "node-sass": "^4.11.0",
+    "node-sass": "^7.0.0",
     "prettier": "^1.16.4",
     "prop-types": "^15.7.2",
     "react": "^16.12.0",
